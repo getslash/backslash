@@ -1,0 +1,2 @@
+- name: Install virtualenv
+  shell: virtualenv --distribute --no-site-packages $deploy_root/virtualenv creates=$deploy_root/virtualenv/bin/python

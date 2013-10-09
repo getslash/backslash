@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Oops...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <style type="text/css">
+  body {
+    background: url(/static/img/500_bg.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  #explanation {
+    color: black;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 0.5em;
+    box-shadow: 0px -1px 50px black;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 5%;
+    font-size: xx-large;
+    font-weight: bolder;
+    line-height: 1.2em;
+  }
+
+  #caption {
+    display: inline-block;
+    font-size: large;
+    font-weight: bolder;
+    color: #ff0000;
+    max-width: 1em;
+    margin-left: -1em;
+    vertical-align: top;
+    text-shadow: 0px 0px 3px black,
+                 2px 2px 0px #bb0000;
+  }
+
+  </style>
+  <body>
+
+    <img src="/static/img/500.png" id="logo"><div id="caption">Internal Server Error</div>
+
+    <div id="explanation">
+      <p>An internal server error has occurred. Report of this error has been sent to the site administrators, and they will take care of it shortly.</p>
+
+      <p>In some cases refreshing the page might help, but we wouldn't bet our lives on it.</p>
+    </div>
+    <script src="/static/js/libs/jquery-2.0.0.min.js"></script>
+  </body>
+</html>

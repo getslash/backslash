@@ -1,0 +1,29 @@
+- name: untar sources
+  shell: cd $deploy_root && rm -rf flask_app src && tar xf $webapp_archive_location 2>&1 > /tmp/untar.log
+  notify: 
+    - fix permissions and ownerships
+    - update virtualenv requirements
+    - migrate db
+    - ensure private config
+    - reload supervisor
+- name: update virtualenv requirements
+  action: pip requirements=$deploy_root/flask_app/pip_requirements.txt virtualenv=$deploy_root/virtualenv
+  notify:
+    - fix permissions and ownerships
+    - reload supervisor
+- name: migrate db
+  shell: $deploy_root/virtualenv/bin/python $deploy_root/manage.py create_db
+- name: fix permissions and ownerships
+  shell: chown -R $user_name:$group_name $item
+  with_items:
+    - $deploy_root
+- name: ensure private config
+  shell: python $deploy_root/flask_app/init_private_config.py > $deploy_root/conf.d/000-private.yml creates=$deploy_root/conf.d/000-private.yml
+- name: reload supervisor
+  shell: supervisorctl reload
+  notify: 
+    - ensure supervisor service
+- name: ensure supervisor service
+  action: service name=supervisor state=started
+- name: restart nginx
+  action: service name=nginx state=restarted

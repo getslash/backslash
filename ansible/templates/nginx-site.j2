@@ -1,0 +1,9 @@
+server {
+    location /static {
+       alias {{deploy_root}}/static;
+    }
+    location / {
+       	 include uwsgi_params;
+         uwsgi_pass unix:{{unix_socket_name}};
+    }
+}

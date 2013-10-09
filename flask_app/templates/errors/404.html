@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Oops...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Cinzel:700' rel='stylesheet' type='text/css'>
+  </head>
+  <style type="text/css">
+  body {
+    background: url(/static/img/404_bg.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  #explanation {
+    color: black;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 0.5em;
+    box-shadow: 0px -1px 50px black;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 5%;
+    font-size: xx-large;
+    font-weight: bolder;
+    line-height: 1.2em;
+  }
+
+  #errorcode {
+    color: white;
+    display: inline-block;
+    font-size: 400%;
+    font-family: 'Cinzel', serif;
+    margin: 30px;
+  }
+
+  #caption {
+    display: inline-block;
+    font-size: x-large;
+    font-weight: bolder;
+    color: rgba(90, 186, 250, 0.8);
+    text-shadow: 0 0 10px black;
+    max-width: 1em;
+    vertical-align: bottom;
+    position: relative;
+    top: -1em;
+    left: -1em;
+  }
+
+  </style>
+  <body>
+
+    <div id="errorcode">404</div><div id="caption">Knot Found</div>
+
+    <div id="explanation">
+      <p>The page you are trying to reach could knot be found.</p>
+    </div>
+    <script src="/static/js/libs/jquery-2.0.0.min.js"></script>
+  </body>
+</html>
