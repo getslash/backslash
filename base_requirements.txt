@@ -1,5 +1,6 @@
 ansible>=1.2
 Flask-Script
+Flask-DebugToolbar
 nose
 nose-testconfig
 requests>=1.2

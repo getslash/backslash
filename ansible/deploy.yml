@@ -5,7 +5,6 @@
     - vars.yml
   tasks:
     - include: tasks/base_system.yml
-    - include: tasks/database.yml
     - include: tasks/virtualenv.yml
     - include: tasks/configuration.yml
     - include: tasks/extra_services.yml

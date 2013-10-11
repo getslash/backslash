@@ -3,7 +3,6 @@
   notify: 
     - fix permissions and ownerships
     - update virtualenv requirements
-    - migrate db
     - ensure private config
     - reload supervisor
 - name: update virtualenv requirements
@@ -11,8 +10,6 @@
   notify:
     - fix permissions and ownerships
     - reload supervisor
-- name: migrate db
-  shell: $deploy_root/virtualenv/bin/python $deploy_root/manage.py create_db
 - name: fix permissions and ownerships
   shell: chown -R $user_name:$group_name $item
   with_items:

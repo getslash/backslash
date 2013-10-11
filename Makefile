@@ -21,10 +21,9 @@ src_pkg.tar:
 travis_install:
 	sudo apt-get update
 	sudo apt-get install -y build-essential python-dev libevent-dev
-	npm install -g less
 	pip install --use-mirrors -r base_requirements.txt
-	pip install --use-mirrors -r src/pip_requirements.txt
 	make local_deploy
 
-travis_test:
-	nosetests -w tests --tc www_port:80
+travis_test: .env/.up-to-date
+	.env/bin/pip install nose
+	.env/bin/nosetests -w tests --tc www_port:80

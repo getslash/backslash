@@ -3,7 +3,7 @@ import os
 import requests
 import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from src import app
+from flask_app import app
 
 class TestCase(unittest.TestCase):
     def setUp(self):
