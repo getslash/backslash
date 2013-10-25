@@ -1,2 +1,0 @@
-- name: Deployment Config
-  template: src=templates/deployment_conf.yml.j2 dest=$deploy_root/conf.d/001-deployment_conf.yml mode=0600 owner=$app_name group=$app_name

@@ -8,10 +8,21 @@ testserver: .env
 	touch .env/.up-to-date
 
 deploy: src_pkg.tar
-	python scripts/deploy $(target)
+	ansible-playbook -i ansible/inventories/production ansible/site.yml
 
-local_deploy: src_pkg.tar
-	python scripts/deploy --sudo localhost
+deploy_staging: src_pkg.tar
+	ansible-playbook -i ansible/inventories/staging ansible/site.yml
+
+
+deploy_localhost: src_pkg.tar
+	ansible-playbook -i 127.0.0.1, --sudo -c local ansible/site.yml
+
+deploy_vagrant: vagrant_up
+	ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
+
+vagrant_up:
+	vagrant up
+.PHONY: vagrant_up
 
 src_pkg.tar:
 	python scripts/build_tar.py
@@ -22,7 +33,7 @@ travis_install:
 	sudo apt-get update
 	sudo apt-get install -y build-essential python-dev libevent-dev
 	pip install --use-mirrors -r base_requirements.txt
-	make local_deploy
+	make deploy_localhost
 
 travis_test: .env/.up-to-date
 	.env/bin/pip install nose

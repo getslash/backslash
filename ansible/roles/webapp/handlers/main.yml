@@ -23,4 +23,4 @@
 - name: ensure supervisor service
   action: service name=supervisor state=started
 - name: restart nginx
-  action: service name=nginx state=restarted
+  shell: nginx -s reload

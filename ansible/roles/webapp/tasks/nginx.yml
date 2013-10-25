@@ -1,0 +1,8 @@
+- name: nginx configuration
+  action: template src=../templates/nginx-site.j2 dest=/etc/nginx/sites-enabled/{{app_name}}.conf
+  notify: restart nginx
+- name: nginx running
+  action: service name=nginx state=started
+- name: ensure no nginx default conf
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx
