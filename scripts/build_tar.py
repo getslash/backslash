@@ -8,6 +8,8 @@ tarfile = os.path.join(root_dir, "src_pkg.tar")
 def _is_dir_newer(directory, filename):
     file_mtime = os.stat(filename).st_mtime
     for dirname, _, filenames in os.walk(directory):
+        if _is_file_newer(dirname, file_mtime):
+            return True
         for filename in filenames:
             if filename.endswith(".pyc"):
                 continue
@@ -16,7 +18,8 @@ def _is_dir_newer(directory, filename):
     return False
 
 def _is_file_newer(filename, file_mtime):
-    return os.stat(filename).st_mtime > file_mtime
+    returned = os.stat(filename).st_mtime > file_mtime
+    return returned
 
 def _tar():
     if 0 != subprocess.call("tar cvf {0} flask_app manage.py static".format(tarfile), shell=True, cwd=root_dir):
