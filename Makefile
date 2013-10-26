@@ -7,15 +7,15 @@ testserver: .env
 	.env/bin/pip install -r flask_app/pip_requirements.txt
 	touch .env/.up-to-date
 
-deploy: src_pkg.tar
-	ansible-playbook -i ansible/inventories/production ansible/site.yml
+deploy: src_pkg.tar .env/.up-to-date
+	.env/bin/ansible-playbook -i ansible/inventories/production ansible/site.yml
 
-deploy_staging: src_pkg.tar
-	ansible-playbook -i ansible/inventories/staging ansible/site.yml
+deploy_staging: src_pkg.tar .env/.up-to-date
+	.env/bin/ansible-playbook -i ansible/inventories/staging ansible/site.yml
 
 
-deploy_localhost: src_pkg.tar
-	ansible-playbook -i 127.0.0.1, --sudo -c local ansible/site.yml
+deploy_localhost: src_pkg.tar .env/.up-to-date
+	.env/bin/ansible-playbook -i 127.0.0.1, --sudo -c local ansible/site.yml
 
 deploy_vagrant: vagrant_up
 	ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
@@ -26,15 +26,14 @@ vagrant_up:
 
 src_pkg.tar:
 	python scripts/build_tar.py
-
 .PHONY: src_pkg.tar
 
-travis_install:
-	sudo apt-get update
-	sudo apt-get install -y build-essential python-dev libevent-dev
-	pip install --use-mirrors -r base_requirements.txt
-	make deploy_localhost
-
-travis_test: .env/.up-to-date
+travis_test: travis_system_install deploy_localhost
 	.env/bin/pip install nose
 	.env/bin/nosetests -w tests --tc www_port:80
+
+travis_system_install:
+	sudo apt-get update
+	sudo apt-get install -y build-essential python-dev libevent-dev
+
+
