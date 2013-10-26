@@ -32,3 +32,4 @@ app.logger.addHandler(console_handler)
 Mail(app)
 
 from . import errors
+from . import views

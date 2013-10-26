@@ -15,7 +15,7 @@ deploy_staging: src_pkg.tar .env/.up-to-date
 
 
 deploy_localhost: src_pkg.tar .env/.up-to-date
-	.env/bin/ansible-playbook -i 127.0.0.1, --sudo -c local ansible/site.yml
+	.env/bin/ansible-playbook -i ansible/inventories/localhost -c local --sudo ansible/site.yml
 
 deploy_vagrant: vagrant_up
 	ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
@@ -30,10 +30,11 @@ src_pkg.tar:
 
 travis_test: travis_system_install deploy_localhost
 	.env/bin/pip install nose
+	sleep 5 # travis uses slow nodes and tends to take time to bring the uwsgi app online
 	.env/bin/nosetests -w tests --tc www_port:80
 
 travis_system_install:
 	sudo apt-get update
-	sudo apt-get install -y build-essential python-dev libevent-dev
+	sudo apt-get install -y build-essential python-dev libevent-dev python-virtualenv
 
 
