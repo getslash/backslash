@@ -10,7 +10,9 @@ ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
 
+# Defaults
 app.config["SECRET_KEY"] = ""
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/__demo_db.sqlite'
 
 _CONF_D_PATH = os.path.join(ROOT_DIR, "..", "conf.d")
 
