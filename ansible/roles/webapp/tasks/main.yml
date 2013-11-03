@@ -12,7 +12,7 @@
   copy: src=../src_pkg.tar dest=$webapp_archive_location
   register: sources
 - include: install_sources.yml
-  when: sources.changed
+  when: sources.changed or configuration.changed
 - name: configure supervisor
   action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/$app_name-wsgi.conf
   register: supervisor_conf

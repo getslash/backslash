@@ -1,6 +1,3 @@
 - name: Deployment Config
   template: src=../templates/deployment_conf.yml.j2 dest=$deploy_root/conf.d/001-deployment_conf.yml mode=0600 owner=$app_name group=$app_name
-- template: src=../templates/add_debug_conf.yml.j2 dest=$deploy_root/conf.d/002-debug.yml mode=0600 owner=$app_name group=$app_name
-  when: install_with_debug is defined and install_with_debug
-- file: path=$deploy_root/conf.d/002-debug.yml state=absent
-  when: install_with_debug is not defined or not install_with_debug
+  register: configuration
