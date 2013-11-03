@@ -1,7 +1,7 @@
 Weber
 =====
 
-![Build Status](https://secure.travis-ci.org/vmalloc/weber.png?branch=master,dev ) 
+![Build Status](https://secure.travis-ci.org/vmalloc/weber-minimal.png?branch=master ) 
 
 Weber is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible.
 
