@@ -7,6 +7,12 @@ Weber is a Flask application template, intended to get you started with a Flask-
 
 Weber puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
 
+Variants
+========
+
+* *weber-minimal* - includes deployment infrastructure and basic flask skeleton only. Useful for very small, headless, web services or very tiny apps
+* *weber-backend* - includes database installation (Postgres by default) and Flask-SQLAlchemy, along with db migrations.
+
 Getting Started
 ===============
 
