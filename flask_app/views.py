@@ -2,6 +2,7 @@ from .app import app
 
 @app.route("/")
 def index():
+    raise Exception()
     return """<html>
     <head>
     <style>

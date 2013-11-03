@@ -17,7 +17,7 @@ deploy_staging: src_pkg.tar .env/.up-to-date
 deploy_localhost: src_pkg.tar .env/.up-to-date
 	.env/bin/ansible-playbook -i ansible/inventories/localhost -c local --sudo ansible/site.yml
 
-deploy_vagrant: vagrant_up
+deploy_vagrant: src_pkg.tar vagrant_up
 	ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
 
 vagrant_up:
