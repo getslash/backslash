@@ -22,12 +22,14 @@ def _is_file_newer(filename, file_mtime):
     return returned
 
 def _tar():
-    if 0 != subprocess.call("tar cvf {0} flask_app manage.py static".format(tarfile), shell=True, cwd=root_dir):
+    if 0 != subprocess.call("tar cvf {0} flask_app manage.py static migrations alembic.ini".format(tarfile), shell=True, cwd=root_dir):
         raise Exception("Tar failed")
 
 if __name__ == '__main__':
     if not os.path.exists(tarfile) or \
        _is_dir_newer(os.path.join(root_dir, "flask_app"), tarfile) or \
        _is_dir_newer(os.path.join(root_dir, "static"), tarfile) or \
+       _is_dir_newer(os.path.join(root_dir, "migrations"), tarfile) or \
+       _is_dir_newer(os.path.join(root_dir, "alembic.ini"), tarfile) or \
        _is_file_newer(os.path.join(root_dir, "manage.py"), os.stat(tarfile).st_mtime):
         _tar()

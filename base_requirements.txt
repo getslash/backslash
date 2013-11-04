@@ -1,4 +1,5 @@
 ansible>=1.2
+alembic
 Flask-Script
 Flask-DebugToolbar
 nose

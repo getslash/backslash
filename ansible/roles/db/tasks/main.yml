@@ -1,9 +1,14 @@
-- name: install db prerequisites
-  action: apt pkg=$item state=latest
+- apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+- apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main 9.3' state=present
+- apt: pkg={{item}} state=latest update_cache=yes
   with_items:
-    - python-psycopg2
-    - postgresql-9.1
-    - postgresql-server-dev-9.1
+    - postgresql-client-9.3
+    - postgresql-9.3
+    - postgresql-server-dev-9.3
+- name: install db prerequisites
+  apt: pkg=$item state=latest update_cache=yes
+  with_items:
+    - python-psycopg2 # needed for the postgresql ansible tasks
   tags: db
 - name: setup db
   action: postgresql_db name=$app_name

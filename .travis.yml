@@ -1,5 +1,8 @@
 language: python
 python:
   - 2.7
-# command to run tests, e.g. python setup.py test
+before_install:
+  # get rid of artifacts on travis interfering with installation of postgres.
+  - sudo update-alternatives --remove postmaster.1.gz /usr/share/postgresql/9.1/man/man1/postmaster.1.gz
+  - sudo apt-get -y --purge remove postgresql libpq-dev libpq5 postgresql-client-common postgresql-common
 script: make travis_test
