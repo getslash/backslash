@@ -1,5 +1,9 @@
-testserver: .env
+testserver: .env/.up-to-date
 	.env/bin/python manage.py testserver
+
+clean:
+	rm -rf .env
+	find . -name "*.pyc" -delete
 
 .env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt
 	virtualenv .env
