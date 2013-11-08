@@ -12,5 +12,7 @@
   shell: supervisorctl reload
 - name: ensure supervisor service
   action: service name=supervisor state=started
+- name: try to get local page
+  shell: curl http://localhost/
 - name: move source tar back to prevent future reinstallations
   shell: mv -f {{webapp_archive_location}}.untarred {{webapp_archive_location}}
