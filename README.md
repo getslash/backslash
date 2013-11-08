@@ -1,17 +1,11 @@
-Weber
-=====
+Weber-Minimal
+=============
 
 ![Build Status](https://secure.travis-ci.org/vmalloc/weber-minimal.png?branch=master ) 
 
-Weber is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible.
+weber-minimal is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible. Unlike [weber-backend](https://github.com/vmalloc/weber-backend ), weber-minimal aims at a minimalistic app, with no database engine or other bells and whistles.
 
-Weber puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
-
-Variants
-========
-
-* *weber-minimal* - includes deployment infrastructure and basic flask skeleton only. Useful for very small, headless, web services or very tiny apps
-* *weber-backend* - includes database installation (Postgres by default) and Flask-SQLAlchemy, along with db migrations.
+weber-minimal puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
 
 Getting Started
 ===============
