@@ -45,4 +45,3 @@ travis_test: travis_system_install deploy_localhost
 travis_system_install:
 	sudo apt-get update
 	sudo apt-get install -y build-essential python-dev libevent-dev python-virtualenv
-
