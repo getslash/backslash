@@ -6,6 +6,8 @@ import sys
 import yaml
 from flask.ext.mail import Mail
 
+import logbook
+
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
@@ -28,6 +30,8 @@ for yaml_path in configs:
 console_handler = logging.StreamHandler(sys.stderr)
 console_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(console_handler)
+
+logbook.info("Started")
 
 Mail(app)
 
