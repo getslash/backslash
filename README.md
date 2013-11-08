@@ -1,17 +1,11 @@
-Weber
-=====
+Weber-Backend
+=============
 
 ![Build Status](https://secure.travis-ci.org/vmalloc/weber-backend.png?branch=master ) 
 
-Weber is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible.
+weber-backend is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible. weber-backend includes a database layer through Flask-SQLAlchemy, migrations through Alembic, asynchronous tasks via RQ and Redis, and more.
 
-Weber puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
-
-Variants
-========
-
-* *weber-minimal* - includes deployment infrastructure and basic flask skeleton only. Useful for very small, headless, web services or very tiny apps
-* *weber-backend* - includes database installation (Postgres by default) and Flask-SQLAlchemy, along with db migrations.
+weber-backend puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
 
 Getting Started
 ===============
@@ -23,6 +17,18 @@ Getting Started
 
 	$ make testserver
 
+Database Migrations
+===================
+
+Create a new revision automatically with:
+
+	$ make db_revision
+
+And migrate with
+
+	$ make db_migrate
+
+Migration is done automatically on deployment
 
 Deployment
 ==========

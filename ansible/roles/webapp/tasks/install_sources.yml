@@ -1,5 +1,7 @@
+- name: temporarily move source tar
+  shell: mv -f {{webapp_archive_location}} {{webapp_archive_location}}.untarred
 - name: untar sources
-  shell: cd $deploy_root && rm -rf flask_app src && tar xf $webapp_archive_location 2>&1 > /tmp/untar.log
+  shell: cd $deploy_root && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
 - name: update virtualenv requirements
   action: pip requirements=$deploy_root/flask_app/pip_requirements.txt virtualenv=$deploy_root/virtualenv
 - name: install psycopg2
@@ -14,3 +16,7 @@
   shell: supervisorctl reload
 - name: ensure supervisor service
   action: service name=supervisor state=started
+- name: try to get local page
+  shell: curl http://localhost/
+- name: move source tar back to prevent future reinstallations
+  shell: mv -f {{webapp_archive_location}}.untarred {{webapp_archive_location}}
