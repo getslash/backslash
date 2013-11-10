@@ -1,8 +1,9 @@
 alembic
 Flask>=0.10.1
-gevent
 Flask-Mail
 Flask-Script
 Flask-SQLAlchemy
+gevent
+Logbook>=0.6.0
 PyYAML
 uwsgi
