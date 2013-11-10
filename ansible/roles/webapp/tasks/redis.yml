@@ -1,0 +1,2 @@
+- apt: pkg=redis-server state=latest
+- service: name=redis-server state=started

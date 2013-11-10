@@ -3,6 +3,7 @@
   with_items:
     - $deploy_root
     - $deploy_root/conf.d
+- include: redis.yml
 - include: nginx.yml
 - include: virtualenv.yml
 - include: configuration.yml
