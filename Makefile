@@ -13,6 +13,7 @@ env: .env/.up-to-date
 	virtualenv .env
 	.env/bin/pip install -r base_requirements.txt
 	.env/bin/pip install -r flask_app/pip_requirements.txt
+	.env/bin/pip install nose
 	touch .env/.up-to-date
 
 deploy: src_pkg.tar env
@@ -25,6 +26,9 @@ deploy_staging: src_pkg.tar env
 deploy_localhost: src_pkg.tar env
 	.env/bin/ansible-playbook -i ansible/inventories/localhost -c local --sudo ansible/site.yml
 
+deploy_localhost_travis: deploy_localhost
+	sleep 5 # travis uses slow nodes and tends to take time to bring the uwsgi app online
+
 deploy_vagrant: src_pkg.tar vagrant_up
 	ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
 
@@ -36,11 +40,11 @@ src_pkg.tar:
 	python scripts/build_tar.py
 .PHONY: src_pkg.tar
 
+test: env
+	.env/bin/nosetests tests/test_ut
 
-travis_test: travis_system_install deploy_localhost
-	.env/bin/pip install nose
-	sleep 5 # travis uses slow nodes and tends to take time to bring the uwsgi app online
-	.env/bin/nosetests -w tests --tc www_port:80
+travis_test: travis_system_install test deploy_localhost_travis
+	.env/bin/nosetests tests/test_deployment --tc www_port:80
 
 travis_system_install:
 	sudo apt-get update
