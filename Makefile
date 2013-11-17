@@ -1,3 +1,5 @@
+default: test
+
 testserver: .env/.up-to-date
 	.env/bin/python manage.py testserver
 
