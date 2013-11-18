@@ -37,5 +37,6 @@ logbook.info("Started")
 
 Mail(app)
 
+from . import models
 from . import errors
 from . import views

@@ -20,8 +20,8 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from flask_app.models import db
-target_metadata = db.metadata
+from flask_app.app import models
+target_metadata = models.db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
