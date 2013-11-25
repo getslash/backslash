@@ -13,6 +13,7 @@ class TestCase(unittest.TestCase):
         super(TestCase, self).setUp()
         self.app = app.app.test_client()
         app.app.config["SECRET_KEY"] = "testing_key"
+        app.app.config["TESTING"] = True
 
 def _make_request_shortcut(method):
     def shortcut(self, *args, **kwargs):
