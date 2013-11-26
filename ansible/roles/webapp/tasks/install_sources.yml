@@ -1,17 +1,17 @@
 - name: temporarily move source tar
   shell: mv -f {{webapp_archive_location}} {{webapp_archive_location}}.untarred
 - name: untar sources
-  shell: cd $deploy_root && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
+  shell: cd {{deploy_root}} && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
 - name: update virtualenv requirements
-  action: pip requirements=$deploy_root/flask_app/pip_requirements.txt virtualenv=$deploy_root/virtualenv
+  action: pip requirements={{deploy_root}}/flask_app/pip_requirements.txt virtualenv={{deploy_root}}/virtualenv
 - name: install psycopg2
-  action: pip name=psycopg2 virtualenv=$deploy_root/virtualenv
+  action: pip name=psycopg2 virtualenv={{deploy_root}}/virtualenv
 - name: fix permissions
-  shell: chown -R $user_name:$group_name $deploy_root
+  shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure private config
-  shell: python $deploy_root/flask_app/init_private_config.py > $deploy_root/conf.d/000-private.yml creates=$deploy_root/conf.d/000-private.yml
+  shell: python {{deploy_root}}/flask_app/init_private_config.py > {{deploy_root}}/conf.d/000-private.yml creates={{deploy_root}}/conf.d/000-private.yml
 - name: migrate db
-  shell: cd $deploy_root && $deploy_root/virtualenv/bin/alembic upgrade head
+  shell: cd {{deploy_root}} && {{deploy_root}}/virtualenv/bin/alembic upgrade head
 - name: reload supervisor
   shell: supervisorctl reload
 - name: ensure supervisor service

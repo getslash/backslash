@@ -7,3 +7,4 @@ gevent
 Logbook>=0.6.0
 PyYAML
 uwsgi
+weber-utils

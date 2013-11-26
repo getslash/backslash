@@ -1,11 +1,11 @@
 - name: setup group
-  action: group name=$group_name state=present
+  action: group name={{group_name}} state=present
 - name: setup user
-  action: user name=$user_name state=present group=$group_name
+  action: user name={{user_name}} state=present group={{group_name}}
 - name: Install apt-add-repository
   apt: pkg=python-software-properties state=latest
 - name: set up packages
-  action: apt pkg=$item state=latest
+  action: apt pkg={{item}} state=latest
   with_items:
     - curl
     - git
