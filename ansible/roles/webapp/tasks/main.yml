@@ -1,14 +1,14 @@
 - name: ensure directories
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
-    - {{deploy_root}}
-    - {{deploy_root}}/conf.d
+    - "{{deploy_root}}"
+    - "{{deploy_root}}/conf.d"
 - include: redis.yml
 - include: nginx.yml
 - include: virtualenv.yml
 - include: configuration.yml
 - name: ensure uwsgi is installed
-  shell: {{deploy_root}}/virtualenv/bin/easy_install -U uwsgi creates={{deploy_root}}/virtualenv/bin/uwsgi
+  shell: "{{deploy_root}}/virtualenv/bin/easy_install -U uwsgi creates={{deploy_root}}/virtualenv/bin/uwsgi"
 - name: copy source
   copy: src=../src_pkg.tar dest={{webapp_archive_location}}
   register: sources
