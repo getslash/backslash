@@ -10,6 +10,7 @@
   with_items:
     - python-psycopg2 # needed for the postgresql ansible tasks
   tags: db
+- service: name=postgresql state=started
 - name: setup db
   action: postgresql_db name={{app_name}}
   sudo_user: postgres
