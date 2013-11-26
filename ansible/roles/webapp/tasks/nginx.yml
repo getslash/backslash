@@ -1,3 +1,5 @@
+- apt_repository: repo='ppa:nginx/stable'
+- apt: pkg=nginx state=latest update_cache=yes
 - name: nginx configuration
   action: template src=../templates/nginx-site.j2 dest=/etc/nginx/sites-enabled/{{app_name}}.conf
   notify: reload nginx config

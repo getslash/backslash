@@ -9,7 +9,6 @@
   with_items:
     - curl
     - git
-    - nginx
     - redis-server
     - supervisor
     - python-setuptools
