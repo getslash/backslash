@@ -1,6 +1,3 @@
-# accounts
-user_name: "{{app_name}}"
-group_name: "{{app_name}}"
 # paths
 deploy_root: "/opt/{{app_name}}"
 unix_socket_name: "/tmp/{{app_name}}-wsgi.sock"
