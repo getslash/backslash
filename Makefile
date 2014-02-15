@@ -11,11 +11,11 @@ env: .env/.up-to-date
 
 .PHONY: env
 
-.env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt
+.env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt Makefile
 	virtualenv .env
 	.env/bin/pip install -r base_requirements.txt
 	.env/bin/pip install -r flask_app/pip_requirements.txt
-	.env/bin/pip install nose
+	.env/bin/pip install pytest
 	touch .env/.up-to-date
 
 deploy: src_pkg.tar env
@@ -43,10 +43,10 @@ src_pkg.tar:
 .PHONY: src_pkg.tar
 
 test: env
-	.env/bin/nosetests tests/test_ut
+	.env/bin/py.test tests/test_ut
 
 travis_test: travis_system_install test deploy_localhost_travis
-	.env/bin/nosetests tests/test_deployment --tc www_port:80
+	.env/bin/py.test tests/test_deployment --tc www_port:80
 
 travis_system_install:
 	sudo apt-get update
