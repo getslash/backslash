@@ -11,6 +11,7 @@
 - name: copy source
   copy: src=../src_pkg.tar dest={{webapp_archive_location}}
   register: sources
+  notify: reload nginx config
 - include: install_sources.yml
   when: sources.changed or configuration.changed
 - name: configure supervisor
