@@ -4,5 +4,6 @@ Flask>=0.10.1
 Logbook>=0.6.0
 PyYAML
 gevent
+urlobject
 uwsgi
 weber-utils

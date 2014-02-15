@@ -1,5 +1,5 @@
-from .deployment_test import DeploymentTest
+import requests
 
-class SanityTest(DeploymentTest):
-    def test__sanity(self):
-        self.request("get", "/").raise_for_status()
+
+def test_sanity(webapp_url):
+    requests.get(webapp_url).raise_for_status()

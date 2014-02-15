@@ -1,7 +1,6 @@
 ansible>=1.2
 Flask-Script
 Flask-DebugToolbar
-nose
-nose-testconfig
+pytest
 requests>=1.2
 URLObject
