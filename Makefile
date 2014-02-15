@@ -46,7 +46,7 @@ test: env
 	.env/bin/py.test tests/test_ut
 
 travis_test: travis_system_install test deploy_localhost_travis
-	.env/bin/py.test tests/test_deployment --tc www_port:80
+	.env/bin/py.test tests/ --www-port=80
 
 travis_system_install:
 	sudo apt-get update

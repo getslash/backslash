@@ -6,5 +6,6 @@ Flask-SQLAlchemy
 gevent
 Logbook>=0.6.0
 PyYAML
+urlobject
 uwsgi
 weber-utils
