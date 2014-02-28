@@ -1,42 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
+    {% block head %}
     <title>{% block title %}{{config.app_name}}{% endblock %}</title>
-    <style>
-    body {
-      padding-top: 90px; /* 70px to make the container go all the way to the bottom of the topbar */
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-    </style>
-
-    <link rel="stylesheet" type="text/css" href="/static/css/base.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/vendor/pines-notify/jquery.pnotify.default.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/vendor/pines-notify/jquery.pnotify.default.icons.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome/css/font-awesome.min.css"/>
-
-    <link rel="shortcut icon" href="/static/ico/favicon.ico"/>
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png"/>
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png"/>
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png"/>
-    <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png"/>
+    {% endblock %}
   </head>
   <body>
 
    {% block body %}
    {% endblock %}
 
-    <script type="text/javascript" src="/static/vendor/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/vendor/prefix-free/prefixfree.min.js"></script>
-    <script type="text/javascript" src="/static/vendor/handlebars/handlebars.js"></script>
-    <script type="text/javascript" src="/static/vendor/ember/ember.js"></script>
-    <script type="text/javascript" src="/static/vendor/pines-notify/jquery.pnotify.min.js"></script>
-    <script type="text/javascript" src="/static/vendor/bootstrap/js/dropdown.js"></script>
-
-    <script src="/static/js/app-notifications.js"></script>
-    <script src="/static/js/ui.js"></script>
    {% block scriptincludes %}
    {% endblock %}
+
     <script type="text/javascript">
     {% block script %}
     {% endblock %}
