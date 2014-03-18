@@ -1,6 +1,6 @@
 default: test
 
-testserver: env
+testserver: env frontend
 	.env/bin/python manage.py testserver
 
 clean:
@@ -12,6 +12,7 @@ env: .env/.up-to-date
 .PHONY: env
 
 .env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt Makefile
+	@echo "\x1b[32;01mSetting up environment. This could take a while...\x1b[0m"
 	virtualenv .env
 	.env/bin/pip install -r base_requirements.txt
 	.env/bin/pip install -r flask_app/pip_requirements.txt
@@ -31,8 +32,8 @@ deploy_localhost: src_pkg.tar env
 deploy_localhost_travis: deploy_localhost
 	sleep 5 # travis uses slow nodes and tends to take time to bring the uwsgi app online
 
-deploy_vagrant: src_pkg.tar vagrant_up
-	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
+deploy_vagrant: env src_pkg.tar vagrant_up
+	ANSIBLE_HOST_KEY_CHECKING=False .env/bin/ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
 
 vagrant_up:
 	vagrant up
