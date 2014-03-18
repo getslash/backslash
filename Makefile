@@ -32,8 +32,8 @@ deploy_localhost: src_pkg.tar env
 deploy_localhost_travis: deploy_localhost
 	sleep 5 # travis uses slow nodes and tends to take time to bring the uwsgi app online
 
-deploy_vagrant: src_pkg.tar vagrant_up
-	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
+deploy_vagrant: env src_pkg.tar vagrant_up
+	ANSIBLE_HOST_KEY_CHECKING=False .env/bin/ansible-playbook -i ansible/inventories/vagrant ansible/site.yml
 
 vagrant_up:
 	vagrant up
