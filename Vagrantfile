@@ -9,5 +9,6 @@ Vagrant::Config.run do |config|
     config.vm.forward_port 80, 8080
     config.vm.provision :shell, :inline => "test -d ~root/.ssh || sudo mkdir ~root/.ssh"
     config.vm.provision :shell, :inline => "sudo cp ~vagrant/.ssh/authorized_keys ~root/.ssh/authorized_keys"
+    config.vm.provision :shell, :inline => "sudo apt-get update"
   end
 end

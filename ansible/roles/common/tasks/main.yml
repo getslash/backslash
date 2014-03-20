@@ -5,7 +5,7 @@
 - name: Install apt-add-repository
   apt: pkg=python-software-properties state=latest
 - name: set up packages
-  action: apt pkg={{item}} state=latest
+  action: apt pkg={{item}} state=latest update_cache=yes
   with_items:
     - curl
     - git
