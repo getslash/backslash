@@ -7,7 +7,7 @@ from flask.ext.loopback import FlaskLoopback
 from urlobject import URLObject as URL
 
 import pytest
-from flask_app import app
+from flask_app import app, models
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -20,13 +20,19 @@ def webapp_path(request):
     return URL("http://127.0.0.1").with_port(port)
 
 @pytest.fixture
-def webapp(request):
+def webapp(request, db):
     returned = Webapp(app.app)
     returned.app.config["SECRET_KEY"] = "testing_key"
     returned.app.config["TESTING"] = True
     returned.activate()
     request.addfinalizer(returned.deactivate)
     return returned
+
+@pytest.fixture
+def db(request):
+    models.db.session.close()
+    models.db.drop_all()
+    models.db.create_all()
 
 
 class Webapp(object):
