@@ -16,7 +16,7 @@ env: .env/.up-to-date
 	virtualenv .env
 	.env/bin/pip install -r base_requirements.txt
 	.env/bin/pip install -r flask_app/pip_requirements.txt
-	.env/bin/pip install pytest
+	.env/bin/pip install pytest flask-loopback requests
 	touch .env/.up-to-date
 
 deploy: src_pkg.tar env
