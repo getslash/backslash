@@ -1,13 +1,9 @@
-import httplib
+import requests
 
-from ..test_utils import TestCase
+def test_index_view(webapp):
+    webapp.get("/").raise_for_status()
 
-class IndexViewTest(TestCase):
+def test_not_found_errors(webapp):
+    assert webapp.get("/nonexistent_path").status_code == requests.codes.not_found
 
-    def test_index_view(self):
-        self._get("/")
-
-    def test_not_found_errors(self):
-        rv = self.app.get("/nonexistent_path")
-        self.assertEquals(rv.status_code, httplib.NOT_FOUND)
 
