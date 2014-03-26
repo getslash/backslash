@@ -39,3 +39,7 @@ src/static/vendor/bootstrap/bootstrap.css
 .DS_Store
 .env
 .wheels
+bower_components
+static/js/app.js
+static/js/app.js.map
+static/js/_build

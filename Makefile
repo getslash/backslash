@@ -3,6 +3,10 @@ default: test
 testserver: env frontend
 	.env/bin/python manage.py testserver
 
+frontend:
+	gulp
+.PHONY: frontend
+
 clean:
 	rm -rf .env
 	find . -name "*.pyc" -delete
