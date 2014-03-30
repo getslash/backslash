@@ -1,10 +1,20 @@
 var gulp = require("gulp"),
     es6 = require("gulp-es6-module-transpiler"),
     handlebars = require("gulp-ember-handlebars"),
+    rename = require("gulp-rename"),
     uglify = require("gulp-uglify"),
     gulpif = require("gulp-if"),
+    sass = require('gulp-sass'),
+    minifyCSS = require('gulp-minify-css'),
     concat = require("gulp-concat-sourcemap");
 
+gulp.task("css", function() {
+    gulp.src('webapp/styles/style.scss')
+        .pipe(sass())
+        .pipe(minifyCSS())
+        .pipe(rename("app.css"))
+        .pipe(gulp.dest('static/css/'));
+});
 
 gulp.task("javascripts", function() {
     return gulp.src("./webapp/**/*.js")
@@ -25,12 +35,12 @@ gulp.task('templates', function(){
     .pipe(gulp.dest('static/js/_build/'));
 });
 
-gulp.task("default", ["javascripts", "templates"], function() {
+gulp.task("default", ["javascripts", "templates", "css"], function() {
 
     return _build(false);
 });
 
-gulp.task("prod", ["javascripts", "templates"], function() {
+gulp.task("prod", ["javascripts", "templates", "css"], function() {
 
     return _build(true);
 });
