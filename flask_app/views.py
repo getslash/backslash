@@ -1,8 +1,8 @@
-from flask import render_template
+from flask import send_from_directory
 
 from .app import app
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return send_from_directory(app.static_folder, "index.html")
