@@ -50,19 +50,29 @@ class Webapp(object):
         self.loopback.deactivate_address((self.hostname, 80))
 
     def _request(self, method, path, *args, **kwargs):
+        raw_response = kwargs.pop("raw_response", False)
         if path.startswith("/"):
             path = path[1:]
             assert not path.startswith("/")
-        return requests.request(method, "http://{0}/{1}".format(self.hostname, path), *args, **kwargs)
+        returned = requests.request(method, "http://{0}/{1}".format(self.hostname, path), *args, **kwargs)
+        if raw_response:
+            return returned
 
-    def get(self, *args, **kwargs):
-        return self._request("get", *args, **kwargs)
+        returned.raise_for_status()
+        return returned.json()
 
-    def post(self, *args, **kwargs):
-        return self._request("post", *args, **kwargs)
+def _make_request_shortcut(method_name):
+    def json_method(self, *args, **kwargs):
+        return self._request(method_name, *args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        return self._request("delete", *args, **kwargs)
+    json_method.__name__ = method_name
+    setattr(Webapp, method_name, json_method)
 
-    def put(self, *args, **kwargs):
-        return self._request("put", *args, **kwargs)
+    def raw_method(self, *args, **kwargs):
+        return self._request(method_name, raw_response=True, *args, **kwargs)
+
+    raw_method.__name__ = "{0}_raw".format(method_name)
+    setattr(Webapp, raw_method.__name__, raw_method)
+
+for _method in ("get", "put", "post", "delete"):
+    _make_request_shortcut(_method)
