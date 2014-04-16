@@ -53,5 +53,5 @@ gulp.task("default", ["js", "css"], function() {
 });
 
 gulp.task("watch", ["default"], function() {
-    gulp.watch(["gulpfile.js", "webapp/**/*.js", "webapp/**/*.hbs"], ["default"]);
+    gulp.watch(["gulpfile.js", "webapp/**/*.js", "webapp/**/*.hbs", "webapp/**/*.scss"], ["default"]);
 });
