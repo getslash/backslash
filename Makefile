@@ -3,7 +3,7 @@ default: test
 testserver: env frontend
 	.env/bin/python manage.py testserver
 
-frontend:
+frontend: env
 	gulp
 .PHONY: frontend
 
@@ -15,12 +15,15 @@ env: .env/.up-to-date
 
 .PHONY: env
 
-.env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt Makefile
+.env/.up-to-date: base_requirements.txt flask_app/pip_requirements.txt Makefile package.json bower.json
 	@echo "\x1b[32;01mSetting up environment. This could take a while...\x1b[0m"
 	virtualenv .env
 	.env/bin/pip install -r base_requirements.txt
 	.env/bin/pip install -r flask_app/pip_requirements.txt
 	.env/bin/pip install pytest flask-loopback requests
+	npm install
+	npm install -g gulp
+	bower install
 	touch .env/.up-to-date
 
 deploy: src_pkg.tar env
