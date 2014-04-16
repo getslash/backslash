@@ -3,6 +3,7 @@ import functools
 from flask.ext.script import Manager
 from flask.ext.debugtoolbar import DebugToolbarExtension
 from flask_app.app import app
+from flask_app.models import db
 
 manager = Manager(app)
 
