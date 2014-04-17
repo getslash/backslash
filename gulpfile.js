@@ -1,13 +1,13 @@
 var argv = require('minimist')(process.argv.slice(2));
 
 var gulp = require("gulp"),
-    browserify = require("gulp-browserify"),
+    browserify = require("browserify"),
     rename = require("gulp-rename"),
     uglify = require("gulp-uglify"),
     gulpif = require("gulp-if"),
+    source = require("vinyl-source-stream"),
     sass = require('gulp-sass'),
     minifyCSS = require('gulp-minify-css');
- //   concat = require("gulp-concat-sourcemap");
 
 gulp.task("css", function() {
     return gulp.src('webapp/styles/style.scss')
@@ -18,33 +18,20 @@ gulp.task("css", function() {
 });
 
 gulp.task("js", function() {
-    return gulp.src(["./webapp/app.js"])
-        .pipe(browserify({
-            insertGlobals : true,
+    return browserify(
+        ['./app.js'],
+        {
             extensions: [".js", ".hbs"],
-            transform: ['hbsfy'],
-            debug: !argv.production,
-            shim: {
-                jquery: {
-                    path: './bower_components/jquery/dist/jquery.min.js',
-                    exports: '$'
-                },
-                Ember: {
-                    path: './bower_components/ember/ember.js',
-                    exports: 'Ember',
-                    depends: {
-                        jquery: 'jquery',
-                        Handlebars: 'Handlebars'
-                    }
-                },
-                Handlebars: {
-                    path: './bower_components/handlebars/handlebars.js',
-                    exports: 'Handlebars'
-                }
-            }}))
-        .pipe(rename('app.js'))
-        .pipe(gulpif(argv.production, uglify()))
-        .pipe(gulp.dest("./static/js"));
+            basedir: "./webapp",
+            noParse: [
+                "../bower_components/jquery/dist/jquery.js",
+                "../bower_components/handlebars/handlebars.js",
+                "../bower_components/ember/ember.js"
+            ]
+        })
+        .bundle({insertGlobals: true})
+        .pipe(source('app.js'))
+        .pipe(gulp.dest('./static/js/'));
 });
 
 gulp.task("default", ["js", "css"], function() {

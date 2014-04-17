@@ -1,6 +1,4 @@
-var Ember = require('Ember');
-
-Ember.TEMPLATES['index'] = require('../templates/index');
+Ember.TEMPLATES['index'] = require('../templates/index.hbs');
 
 module.exports = Ember.Route.extend({
 });
