@@ -37,6 +37,9 @@ gulp.task("vendor", function() {
     .pipe(gulpif(argv.production, streamify(uglify())))
     .pipe(gulp.dest("static/js"));
 
+    gulp.src("bower_components/font-awesome/fonts/*")
+    .pipe(gulp.dest("static/fonts"));
+
 });
 
 gulp.task("app", function() {
