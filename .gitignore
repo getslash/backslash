@@ -44,3 +44,4 @@ static/js/app.js
 static/js/app.js.map
 static/js/_build
 static/css
+static/js/vendor.js

@@ -6,7 +6,9 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     gulpif = require("gulp-if"),
     source = require("vinyl-source-stream"),
+    streamify = require("gulp-streamify"),
     sass = require('gulp-sass'),
+    concat = require('gulp-concat'),
     minifyCSS = require('gulp-minify-css');
 
 gulp.task("css", function() {
@@ -17,24 +19,40 @@ gulp.task("css", function() {
         .pipe(gulp.dest('static/css/'));
 });
 
-gulp.task("js", function() {
+gulp.task("vendor", function() {
+
+    var deps = [
+        "./bower_components/jquery/dist/jquery.js",
+        "./bower_components/handlebars/handlebars.js"
+    ];
+
+    if (argv.production) {
+        deps.push("./bower_components/ember/ember.prod.js");
+    } else {
+        deps.push("./bower_components/ember/ember.js");
+    }
+
+    gulp.src(deps)
+    .pipe(concat('vendor.js'))
+    .pipe(gulpif(argv.production, streamify(uglify())))
+    .pipe(gulp.dest("static/js"));
+
+});
+
+gulp.task("app", function() {
+
     return browserify(
-        ['./app.js'],
+        ['./webapp/app.js'],
         {
-            extensions: [".js", ".hbs"],
-            basedir: "./webapp",
-            noParse: [
-                "../bower_components/jquery/dist/jquery.js",
-                "../bower_components/handlebars/handlebars.js",
-                "../bower_components/ember/ember.js"
-            ]
+            extensions: [".js", ".hbs"]
         })
-        .bundle({insertGlobals: true})
+        .bundle({insertGlobals: true, debug: !argv.production, detectGlobals: false})
         .pipe(source('app.js'))
+        .pipe(gulpif(argv.production, streamify(uglify())))
         .pipe(gulp.dest('./static/js/'));
 });
 
-gulp.task("default", ["js", "css"], function() {
+gulp.task("default", ["app", "vendor", "css"], function() {
 
 
 });
