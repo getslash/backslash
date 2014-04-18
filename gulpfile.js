@@ -3,6 +3,7 @@ var argv = require('minimist')(process.argv.slice(2));
 var gulp = require("gulp"),
     browserify = require("browserify"),
     rename = require("gulp-rename"),
+    livereload = require("gulp-livereload"),
     uglify = require("gulp-uglify"),
     gulpif = require("gulp-if"),
     source = require("vinyl-source-stream"),
@@ -56,10 +57,13 @@ gulp.task("app", function() {
 });
 
 gulp.task("default", ["app", "vendor", "css"], function() {
-
-
 });
 
 gulp.task("watch", ["default"], function() {
-    gulp.watch(["gulpfile.js", "webapp/**/*.js", "webapp/**/*.hbs", "webapp/**/*.scss"], ["default"]);
+    var server = livereload();
+    gulp.watch(["gulpfile.js", "webapp/**/*.js", "webapp/**/*.hbs", "webapp/**/*.scss"], ["default"])
+    .on('change', function(file) {
+        server.changed(file.path);
+    });
+    ;
 });
