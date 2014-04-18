@@ -12,7 +12,7 @@ from flask_app import app, models
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 def pytest_addoption(parser):
-    parser.addoption("--www-port", action="store", default=8080, type=int)
+    parser.addoption("--www-port", action="store", default=8000, type=int)
 
 @pytest.fixture
 def deployment_webapp_url(request):

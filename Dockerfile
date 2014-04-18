@@ -16,7 +16,7 @@ RUN cd src && make env
 
 WORKDIR /src
 
-EXPOSE 8080
+EXPOSE 8000
 
-CMD .env/bin/uwsgi --http 0.0.0.0:8080 -b 16384 --home .env --module flask_app.app --callable app -p 10
+CMD .env/bin/uwsgi --http 0.0.0.0:8000 -b 16384 --home .env --module flask_app.app --callable app -p 10
 
