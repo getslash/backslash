@@ -8,4 +8,4 @@ Logbook>=0.6.0
 PyYAML
 urlobject
 uwsgi
-weber-utils
+weber-utils>=1.1.4
