@@ -18,7 +18,7 @@ def testserver():
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
     toolbar = DebugToolbarExtension(app)
-    app.run(port=8080, extra_files=[
+    app.run(port=8000, extra_files=[
         _FROM_HERE("flask_app", "app.yml")
     ])
 
