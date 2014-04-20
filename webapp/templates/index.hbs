@@ -5,9 +5,9 @@
   <div class="container">
     <div class="alert alert-success">
       <h1>Status Report</h1>
-      <p><i class="fa fa-check-circle"></i> Font Awesome</p>
-      <p><i class="fa fa-check-circle"></i> Bootstrap</p>
-      <p><i class="fa fa-check-circle"></i> Ember.js</p>
+      {{#each features}}
+      <p><i {{bind-attr class=":fa ok:fa-check-circle"}}></i> {{name}}</p>
+      {{/each}}
     </div>
   </div>
 </div>

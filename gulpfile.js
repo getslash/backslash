@@ -10,6 +10,7 @@ var gulp = require("gulp"),
     streamify = require("gulp-streamify"),
     sass = require('gulp-sass'),
     concat = require('gulp-concat'),
+    handlebars = require('gulp-ember-handlebars'),
     minifyCSS = require('gulp-minify-css');
 
 gulp.task("css", function() {
@@ -43,20 +44,37 @@ gulp.task("vendor", function() {
 
 });
 
+gulp.task("templates", function() {
+
+    return gulp.src("./webapp/templates/*.hbs")
+        .pipe(handlebars({
+
+            outputType: 'browser'
+        }))
+        .pipe(concat('templates.js'))
+        .pipe(gulp.dest('./_build/'));
+});
+
 gulp.task("app", function() {
 
     return browserify(
         ['./webapp/app.js'],
         {
-            extensions: [".js", ".hbs"]
+            extensions: [".js"]
         })
         .bundle({insertGlobals: true, debug: !argv.production, detectGlobals: false})
         .pipe(source('app.js'))
         .pipe(gulpif(argv.production, streamify(uglify())))
-        .pipe(gulp.dest('./static/js/'));
+        .pipe(gulp.dest('./_build/'));
 });
 
-gulp.task("default", ["app", "vendor", "css"], function() {
+gulp.task("appbundle", ["app", "templates"], function() {
+    return gulp.src(["./_build/templates.js", "./_build/app.js"])
+        .pipe(concat("app.js"))
+        .pipe(gulp.dest("./static/js"));
+});
+
+gulp.task("default", ["appbundle", "vendor", "css"], function() {
 });
 
 gulp.task("watch", ["default"], function() {
