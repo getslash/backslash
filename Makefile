@@ -57,5 +57,5 @@ db_revision: env
 	.env/bin/alembic revision --autogenerate
 
 db_migrate: env
-	.env/bin/alembic upgrade head
+	.env/bin/python manage.py db
 
