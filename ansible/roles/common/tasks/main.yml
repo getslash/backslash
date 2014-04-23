@@ -13,5 +13,6 @@
     - supervisor
     - python-setuptools
     - python-virtualenv
+    - python-pycurl
     - python-dev
     - libevent-dev

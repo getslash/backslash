@@ -11,7 +11,7 @@
 - name: ensure private config
   shell: python {{deploy_root}}/flask_app/init_private_config.py > {{deploy_root}}/conf.d/000-private.yml creates={{deploy_root}}/conf.d/000-private.yml
 - name: migrate db
-  shell: cd {{deploy_root}} && {{deploy_root}}/virtualenv/bin/alembic upgrade head
+  shell: cd {{deploy_root}} && {{deploy_root}}/virtualenv/bin/python manage.py db upgrade
 - name: reload supervisor
   shell: supervisorctl reload
 - name: ensure supervisor service
