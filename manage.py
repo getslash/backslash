@@ -1,7 +1,6 @@
 import functools
 import os
 
-from flask.ext.debugtoolbar import DebugToolbarExtension
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager
 
@@ -18,10 +17,12 @@ _FROM_HERE = functools.partial(os.path.join, os.path.dirname(__file__))
 
 @manager.command
 def testserver():
+    from flask.ext.debugtoolbar import DebugToolbarExtension
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
-    toolbar = DebugToolbarExtension(app)
+
+    DebugToolbarExtension(app)
     app.run(port=8000, extra_files=[
         _FROM_HERE("flask_app", "app.yml")
     ])
