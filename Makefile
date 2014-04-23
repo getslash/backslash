@@ -1,6 +1,6 @@
 default: test
 
-testserver: env frontend
+testserver: env
 	.env/bin/python manage.py testserver
 
 clean:
