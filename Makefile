@@ -54,8 +54,8 @@ travis_system_install:
 	sudo apt-get install -y build-essential python-dev libevent-dev python-virtualenv
 
 db_revision: env
-	.env/bin/alembic revision --autogenerate
+	.env/bin/python manage.py db revision --autogenerate
 
 db_migrate: env
-	.env/bin/python manage.py db
+	.env/bin/python manage.py db upgrade
 
