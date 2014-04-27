@@ -4,3 +4,4 @@ Flask-DebugToolbar
 pytest
 requests>=1.2
 URLObject
+waiting
