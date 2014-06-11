@@ -16,6 +16,10 @@ manager.add_command('db', MigrateCommand)
 _FROM_HERE = functools.partial(os.path.join, os.path.dirname(__file__))
 
 @manager.command
+def drop_db():
+    db.drop_all()
+
+@manager.command
 def testserver():
     from flask.ext.debugtoolbar import DebugToolbarExtension
     app.config["DEBUG"] = True
