@@ -3,7 +3,10 @@
 - name: untar sources
   shell: cd {{deploy_root}} && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
 - name: update virtualenv requirements
-  action: pip requirements={{deploy_root}}/flask_app/pip_requirements.txt virtualenv={{deploy_root}}/virtualenv
+  action: pip requirements={{deploy_root}}/deps/{{item}}.txt virtualenv={{deploy_root}}/virtualenv
+  with_items:
+    - base
+    - app
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure private config
