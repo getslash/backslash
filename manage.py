@@ -99,11 +99,7 @@ def _run_fulltest(extra_args=()):
 @cli.command('travis-test')
 def travis_test():
     _run_unittest()
-    if os.environ.get('USE_DOCKER', 'true').lower() == 'true':
-        _run_docker_build()
-        _run_docker_start(80)
-    else:
-        _run_deploy('localhost')
+    _run_deploy('localhost')
     _wait_for_travis_availability()
     _run_fulltest(["--www-port=80"])
 
