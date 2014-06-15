@@ -13,8 +13,10 @@
   shell: python {{deploy_root}}/flask_app/init_private_config.py > {{deploy_root}}/conf.d/000-private.yml creates={{deploy_root}}/conf.d/000-private.yml
 - name: reload supervisor
   shell: supervisorctl reload
+  when: in_docker is not defined
 - name: ensure supervisor service
   action: service name=supervisor state=started
+  when: in_docker is not defined
 - name: try to get local page
   shell: curl http://localhost/
 - name: move source tar back to prevent future reinstallations

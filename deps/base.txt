@@ -4,3 +4,4 @@ colorama
 requests
 Logbook
 Flask-Script
+PyYAML

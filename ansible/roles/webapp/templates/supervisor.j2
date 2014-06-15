@@ -1,6 +1,6 @@
 [program:{{app_name}}-wsgi]
 process_name={{app_name}}-uwsgi
-command={{deploy_root}}/virtualenv/bin/uwsgi --uid {{user_name}} --pythonpath={{deploy_root}} -b 16384 --chmod-socket=666 --home {{deploy_root}}/virtualenv --module flask_app.app --callable app -s {{unix_socket_name}} {% if install_with_debug is defined and install_with_debug %}--catch-exceptions{% endif %} 
+command={{deploy_root}}/virtualenv/bin/uwsgi --uid {{user_name}} --pythonpath={{deploy_root}} -b 16384 --chmod-socket=666 --home {{deploy_root}}/virtualenv --module flask_app.app --callable app -s {{unix_socket_name}} {% if install_with_debug is defined and install_with_debug %}--catch-exceptions{% endif %} -p {{ansible_processor_cores}}
 stdout_logfile=/var/log/{{app_name}}-wsgi.log
 stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=3
