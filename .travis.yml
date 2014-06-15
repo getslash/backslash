@@ -3,3 +3,7 @@ python:
   - 2.7
 # command to run tests, e.g. python setup.py test
 script: python manage.py travis-test
+after_failure:
+  - sudo supervisorctl status
+  - sudo cat /var/log/*-wsgi.log
+  - sudo cat /var/log/nginx/error.log

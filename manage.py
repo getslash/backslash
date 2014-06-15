@@ -102,6 +102,7 @@ def travis_test():
 
 def _wait_for_travis_availability():
     _logger.info("Waiting for service to become available on travis")
+    time.sleep(10)
     for retry in range(10):
         _logger.debug("Checking service...")
         resp = requests.get("http://localhost/")
