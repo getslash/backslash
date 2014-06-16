@@ -7,13 +7,12 @@ from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, f
 bootstrap_env(["base"])
 
 
+from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
+from _lib.deployment import generate_nginx_config, run_uwsgi
 import click
 import requests
-import yaml
 
-with open(from_project_root("flask_app", "app.yml")) as f:
-    APP_NAME = yaml.load(f)["app_name"]
 
 
 ##### ACTUAL CODE ONLY BENEATH THIS POINT ######
@@ -22,6 +21,10 @@ with open(from_project_root("flask_app", "app.yml")) as f:
 @click.group()
 def cli():
     pass
+
+
+cli.command()(run_uwsgi)
+cli.command()(generate_nginx_config)
 
 
 @cli.command()
