@@ -1,35 +1,205 @@
-import functools
+#! /usr/bin/python
+from __future__ import print_function
+from contextlib import contextmanager
 import os
+import time
+import random
+import string
+import subprocess
 
-from flask.ext.migrate import Migrate, MigrateCommand
-from flask.ext.script import Manager
 
-from flask_app.app import app
-from flask_app.models import db
+from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
+bootstrap_env(["base"])
 
-manager = Manager(app)
 
-migrate = Migrate(app, db)
+from _lib.params import APP_NAME
+from _lib.source_package import prepare_source_package
+from _lib.deployment import generate_nginx_config, run_uwsgi
+import click
+import requests
 
-manager.add_command('db', MigrateCommand)
 
-_FROM_HERE = functools.partial(os.path.join, os.path.dirname(__file__))
+##### ACTUAL CODE ONLY BENEATH THIS POINT ######
 
-@manager.command
-def drop_db():
-    db.drop_all()
 
-@manager.command
+@click.group()
+def cli():
+    pass
+
+
+cli.command()(run_uwsgi)
+cli.command()(generate_nginx_config)
+
+@cli.command('ensure-secret')
+@click.argument("conf_file")
+def ensure_secret(conf_file):
+    dirname = os.path.dirname(conf_file)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+    if os.path.exists(conf_file):
+        return
+    with open(conf_file, "w") as f:
+        secret_key = "".join([random.choice(string.ascii_letters) for i in range(50)])
+        print('SECRET_KEY: "{0}"'.format(secret_key), file=f)
+
+@cli.command()
+@click.option("--develop", is_flag=True)
+@click.option("--app", is_flag=True)
+def bootstrap(develop, app):
+    deps = ["base"]
+    if develop:
+        deps.append("develop")
+    if app:
+        deps.append("app")
+    bootstrap_env(deps)
+    click.echo(click.style("Environment up to date", fg='green'))
+
+
+@cli.command()
+@requires_env("app")
 def testserver():
-    from flask.ext.debugtoolbar import DebugToolbarExtension
+    from flask_app.app import app
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
-
-    DebugToolbarExtension(app)
     app.run(port=8000, extra_files=[
-        _FROM_HERE("flask_app", "app.yml")
+        from_project_root("flask_app", "app.yml")
     ])
 
-if __name__ == '__main__':
-    manager.run()
+
+@cli.command()
+@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
+def deploy(dest):
+    _run_deploy(dest)
+
+
+def _run_deploy(dest):
+    prepare_source_package()
+    cmd = [from_env_bin("python"), from_env_bin("ansible-playbook"), "-i"]
+    click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
+
+    cmd.append(from_project_root("ansible", "inventories", dest))
+    if dest in ("localhost",):
+        cmd.extend(["-c", "local"])
+        if dest == "localhost":
+            cmd.append("--sudo")
+    cmd.append(from_project_root("ansible", "site.yml"))
+
+    if dest == "vagrant":
+        subprocess.check_call('vagrant up', shell=True)
+
+        os.environ["ANSIBLE_HOST_KEY_CHECKING"] = 'false'
+    subprocess.check_call(cmd)
+
+
+@cli.command()
+def unittest():
+    _run_unittest()
+
+
+@requires_env("app", "develop")
+def _run_unittest():
+    subprocess.check_call(
+        [from_env_bin("py.test"), "tests/test_ut"], cwd=from_project_root())
+
+
+@cli.command()
+def fulltest():
+    _run_fulltest()
+
+
+@requires_env("app", "develop")
+def _run_fulltest(extra_args=()):
+    subprocess.check_call([from_env_bin("py.test"), "tests"]
+                          + list(extra_args), cwd=from_project_root())
+
+
+@cli.command('travis-test')
+def travis_test():
+    _run_unittest()
+    _run_deploy('localhost')
+    _wait_for_travis_availability()
+    _run_fulltest(["--www-port=80"])
+
+
+def _wait_for_travis_availability():
+    click.echo(click.style("Waiting for service to become available on travis", fg='magenta'))
+    time.sleep(10)
+    for retry in range(10):
+        click.echo("Checking service...")
+        resp = requests.get("http://localhost/")
+        click.echo("Request returned {0}".format(resp.status_code))
+        if resp.status_code == 200:
+            break
+        time.sleep(5)
+    else:
+        raise RuntimeError("Web service did not become responsive")
+    click.echo(click.style("Service is up", fg='green'))
+
+
+@cli.group()
+def docker():
+    pass
+
+@docker.command()
+def build():
+    _run_docker_build()
+
+def _run_docker_build():
+    prepare_source_package()
+    subprocess.check_call("docker build -t {0} .".format(APP_NAME), shell=True, cwd=from_project_root())
+
+@docker.command()
+@click.option("-p", "--port", default=80, type=int)
+def start(port):
+    _run_docker_start(port)
+
+def _run_docker_start(port):
+    persistent_dir = from_project_root('persistent')
+    if not os.path.isdir(persistent_dir):
+        os.makedirs(persistent_dir)
+    subprocess.check_call("docker run -d -v {0}:/persistent --name {1}-container -p {2}:80 {1}".format(persistent_dir, APP_NAME, port), shell=True)
+
+@docker.command()
+def stop():
+    click.echo(click.style("Stopping container...", fg='magenta'))
+    subprocess.check_call("docker stop {0}-container".format(APP_NAME), shell=True)
+    subprocess.check_call("docker rm {0}-container".format(APP_NAME), shell=True)
+
+
+@cli.group()
+def db():
+    pass
+
+@db.command()
+@requires_env("app")
+def drop():
+    from flask_app.models import db
+    db.drop_all()
+
+@db.command()
+@requires_env("app")
+def revision():
+    with _migrate_context() as migrate:
+        migrate.upgrade()
+        migrate.revision(autogenerate=True)
+
+@db.command()
+@requires_env("app")
+def upgrade():
+    with _migrate_context() as migrate:
+        migrate.upgrade()
+
+@contextmanager
+def _migrate_context():
+    from flask_app.app import app
+    from flask_app.models import db
+    from flask.ext import migrate
+
+    migrate.Migrate(app, db)
+
+    with app.app_context():
+        yield migrate
+
+if __name__ == "__main__":
+    cli()

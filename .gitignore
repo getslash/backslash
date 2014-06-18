@@ -39,3 +39,4 @@ src/static/vendor/bootstrap/bootstrap.css
 .DS_Store
 .env
 .wheels
+persistent

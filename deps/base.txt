@@ -1,0 +1,7 @@
+ansible>=1.2
+click>=2.0
+colorama
+requests
+Logbook
+Flask-Script
+PyYAML

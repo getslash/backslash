@@ -1,3 +1,5 @@
+alembic
+psycopg2
 Flask>=0.10.1
 Flask-Mail
 Flask-Script
@@ -6,6 +8,6 @@ Flask-SQLAlchemy
 gevent
 Logbook>=0.6.0
 PyYAML
-urlobject
+URLObject
 uwsgi
 weber-utils>=1.1.5
