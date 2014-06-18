@@ -1,7 +1,11 @@
 #! /usr/bin/python
+from __future__ import print_function
 import os
 import time
+import random
+import string
 import subprocess
+
 
 from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
 bootstrap_env(["base"])
@@ -12,7 +16,6 @@ from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 import click
 import requests
-
 
 
 ##### ACTUAL CODE ONLY BENEATH THIS POINT ######
@@ -26,6 +29,17 @@ def cli():
 cli.command()(run_uwsgi)
 cli.command()(generate_nginx_config)
 
+@cli.command('ensure-secret')
+@click.argument("conf_file")
+def ensure_secret(conf_file):
+    dirname = os.path.dirname(conf_file)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+    if os.path.exists(conf_file):
+        return
+    with open(conf_file, "w") as f:
+        secret_key = "".join([random.choice(string.ascii_letters) for i in range(50)])
+        print('SECRET_KEY: "{0}"'.format(secret_key), file=f)
 
 @cli.command()
 @click.option("--develop", is_flag=True)
@@ -131,6 +145,7 @@ def build():
     _run_docker_build()
 
 def _run_docker_build():
+    prepare_source_package()
     subprocess.check_call("docker build -t {0} .".format(APP_NAME), shell=True, cwd=from_project_root())
 
 @docker.command()
@@ -139,7 +154,10 @@ def start(port):
     _run_docker_start(port)
 
 def _run_docker_start(port):
-    subprocess.check_call("docker run -d --name {0}-container -p {1}:80 {0}".format(APP_NAME, port), shell=True)
+    persistent_dir = from_project_root('persistent')
+    if not os.path.isdir(persistent_dir):
+        os.makedirs(persistent_dir)
+    subprocess.check_call("docker run -d -v {0}:/persistent --name {1}-container -p {2}:80 {1}".format(persistent_dir, APP_NAME, port), shell=True)
 
 @docker.command()
 def stop():

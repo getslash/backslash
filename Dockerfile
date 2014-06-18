@@ -16,7 +16,13 @@ RUN easy_install pip
 
 RUN pip install virtualenv
 
-ADD . /src
+ADD ./src_pkg.tar /tmp/
+
+RUN mkdir /src /persistent /persistent/config
+
+ENV CONFIG_DIRECTORY /persistent/config
+
+RUN cd /src && tar xvf /tmp/src_pkg.tar
 
 RUN cd /src && rm -rf .env && find . -name "*.pyc" -delete
 
@@ -28,4 +34,4 @@ RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/w
 
 EXPOSE 80
 
-CMD service redis-server start && service nginx start && cd /src && python manage.py run_uwsgi
+CMD service redis-server start && service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py run_uwsgi
