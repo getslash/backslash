@@ -18,10 +18,10 @@ Getting Started
 $ python manage.py testserver
 ```
 
-Deployment
-==========
+Installation/Deployment
+=======================
 
-WIP
+See `INSTALLING.md`
 
 Development
 ===========

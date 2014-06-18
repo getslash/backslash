@@ -67,7 +67,7 @@ def testserver():
 
 
 @cli.command()
-@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant", "docker"]), help="Deployment target", required=True)
+@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
 def deploy(dest):
     _run_deploy(dest)
 
@@ -78,7 +78,7 @@ def _run_deploy(dest):
     click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
 
     cmd.append(from_project_root("ansible", "inventories", dest))
-    if dest in ("localhost", "docker"):
+    if dest in ("localhost",):
         cmd.extend(["-c", "local"])
         if dest == "localhost":
             cmd.append("--sudo")
