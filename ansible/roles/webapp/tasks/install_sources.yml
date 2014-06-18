@@ -7,7 +7,7 @@
 - name: ensure private config
   shell: python {{deploy_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
 - name: migrate db
-  shell: python {{deploy_root}}/manage.py db upgrade
+  shell: cd {{deploy_root}} && python manage.py db upgrade
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure nginx configuration

@@ -2,6 +2,7 @@
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
     - "{{deploy_root}}"
+    - "{{deploy_root}}/conf.d"
 - include: redis.yml
 - include: nginx.yml
 - include: configuration.yml
