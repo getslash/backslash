@@ -14,6 +14,7 @@ bootstrap_env(["base"])
 from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
+from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 import click
 import requests
 
@@ -146,7 +147,7 @@ def build():
 
 def _run_docker_build():
     prepare_source_package()
-    subprocess.check_call("docker build -t {0} .".format(APP_NAME), shell=True, cwd=from_project_root())
+    build_docker_image(tag=APP_NAME, root=from_project_root())
 
 @docker.command()
 @click.option("-p", "--port", default=80, type=int)
@@ -157,46 +158,15 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    container_name = "{0}-container".format(APP_NAME)
-    container = _try_get_container(_webapp_container_name())
-    if container is not None:
-        click.echo("Container already started. Not doing anything...")
-        return
-    container = _try_get_container(_webapp_container_name(), only_running=False)
-    if container is not None:
-        _get_docker_client().remove_container(container['Id'])
-    result = _get_docker_client().create_container(
-        image=APP_NAME,
-        detach=True,
-        name=container_name)
-    _get_docker_client().start(container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
-    click.echo("Container started: {0}".format(result['Id']))
+    container_name = _webapp_container_name()
+    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
 
 @docker.command()
 def stop():
-    running = _try_get_container(_webapp_container_name())
-    if running is not None:
-        click.echo(click.style("Stopping container...", fg='magenta'))
-        _get_docker_client().stop(running['Id'])
+    stop_docker_container(_webapp_container_name())
 
 def _webapp_container_name():
     return '{0}-container'.format(APP_NAME)
-
-def _terminate_docker_container(container_name):
-    container = _try_get_container(container_name)
-    if container is not None:
-        _get_docker_client().stop(container_name)
-
-def _try_get_container(container_name, only_running=True):
-    for container in _get_docker_client().containers(all=not only_running):
-        if '/' + container_name in container['Names']:
-            return container
-    return None
-
-def _get_docker_client():
-    from docker import Client
-    return Client()
-
 
 if __name__ == "__main__":
     cli()
