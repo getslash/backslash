@@ -15,6 +15,7 @@ bootstrap_env(["base"])
 from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
+from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 import click
 import requests
 
@@ -147,7 +148,7 @@ def build():
 
 def _run_docker_build():
     prepare_source_package()
-    subprocess.check_call("docker build -t {0} .".format(APP_NAME), shell=True, cwd=from_project_root())
+    build_docker_image(tag=APP_NAME, root=from_project_root())
 
 @docker.command()
 @click.option("-p", "--port", default=80, type=int)
@@ -158,13 +159,15 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    subprocess.check_call("docker run -d -v {0}:/persistent --name {1}-container -p {2}:80 {1}".format(persistent_dir, APP_NAME, port), shell=True)
+    container_name = _webapp_container_name()
+    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
 
 @docker.command()
 def stop():
-    click.echo(click.style("Stopping container...", fg='magenta'))
-    subprocess.check_call("docker stop {0}-container".format(APP_NAME), shell=True)
-    subprocess.check_call("docker rm {0}-container".format(APP_NAME), shell=True)
+    stop_docker_container(_webapp_container_name())
+
+def _webapp_container_name():
+    return '{0}-container'.format(APP_NAME)
 
 
 @cli.group()
