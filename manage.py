@@ -157,13 +157,46 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    subprocess.check_call("docker run -d -v {0}:/persistent --name {1}-container -p {2}:80 {1}".format(persistent_dir, APP_NAME, port), shell=True)
+    container_name = "{0}-container".format(APP_NAME)
+    container = _try_get_container(_webapp_container_name())
+    if container is not None:
+        click.echo("Container already started. Not doing anything...")
+        return
+    container = _try_get_container(_webapp_container_name(), only_running=False)
+    if container is not None:
+        _get_docker_client().remove_container(container['Id'])
+    result = _get_docker_client().create_container(
+        image=APP_NAME,
+        detach=True,
+        name=container_name)
+    _get_docker_client().start(container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
+    click.echo("Container started: {0}".format(result['Id']))
 
 @docker.command()
 def stop():
-    click.echo(click.style("Stopping container...", fg='magenta'))
-    subprocess.check_call("docker stop {0}-container".format(APP_NAME), shell=True)
-    subprocess.check_call("docker rm {0}-container".format(APP_NAME), shell=True)
+    running = _try_get_container(_webapp_container_name())
+    if running is not None:
+        click.echo(click.style("Stopping container...", fg='magenta'))
+        _get_docker_client().stop(running['Id'])
+
+def _webapp_container_name():
+    return '{0}-container'.format(APP_NAME)
+
+def _terminate_docker_container(container_name):
+    container = _try_get_container(container_name)
+    if container is not None:
+        _get_docker_client().stop(container_name)
+
+def _try_get_container(container_name, only_running=True):
+    for container in _get_docker_client().containers(all=not only_running):
+        if '/' + container_name in container['Names']:
+            return container
+    return None
+
+def _get_docker_client():
+    from docker import Client
+    return Client()
+
 
 if __name__ == "__main__":
     cli()
