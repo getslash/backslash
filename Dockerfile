@@ -10,6 +10,8 @@ RUN apt-get update
 
 RUN apt-get install -y python python-dev build-essential wget ca-certificates libxml2-dev libxslt1-dev python-software-properties libevent-dev git nginx redis-server
 
+RUN sudo apt-get -y install libpq-dev
+
 RUN wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python
 
 RUN easy_install pip
@@ -34,4 +36,6 @@ RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/w
 
 EXPOSE 80
 
-CMD service redis-server start && service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py run_uwsgi
+ENV SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres@$DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT/db
+
+CMD service redis-server start && service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db ensure && python manage.py db upgrade && python manage.py run_uwsgi

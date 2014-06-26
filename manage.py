@@ -2,6 +2,7 @@
 from __future__ import print_function
 from contextlib import contextmanager
 import os
+import sys
 import time
 import random
 import string
@@ -17,6 +18,7 @@ from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 import click
+import logbook
 import requests
 
 
@@ -159,8 +161,13 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
+    db_container_name = _db_container_name()
+    start_docker_container(image='postgres', name=db_container_name,
+                           binds={os.path.join(persistent_dir, "db"):'/var/lib/postgresql/data'})
     container_name = _webapp_container_name()
-    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
+    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'},
+                           port_bindings={80: port},
+                           links={db_container_name: 'db'})
 
 @docker.command()
 def stop():
@@ -169,10 +176,39 @@ def stop():
 def _webapp_container_name():
     return '{0}-container'.format(APP_NAME)
 
+def _db_container_name():
+    return '{0}-db'.format(APP_NAME)
 
 @cli.group()
 def db():
     pass
+
+@db.command()
+@requires_env("app")
+def ensure():
+    import sqlalchemy
+    from flask_app.app import app
+
+    uri = app.config['SQLALCHEMY_DATABASE_URI']
+    if 'postgres' not in uri and 'psycopg2' not in uri:
+        logbook.error("Don't know how to create database - unrecognized connection type: {!r}", uri)
+        sys.exit(-1)
+
+    try:
+        sqlalchemy.create_engine(uri).connect()
+    except sqlalchemy.exc.OperationalError:
+        uri, db_name = uri.rsplit('/', 1)
+        engine = sqlalchemy.create_engine(uri + '/postgres')
+        conn = engine.connect()
+        conn.execute("commit")
+        conn.execute("create database {}".format(db_name))
+        conn.close()
+        logbook.info("Database {} successfully created on {}.", db_name, uri)
+    else:
+        logbook.info("Database exists. Not doing anything.")
+
+
+
 
 @db.command()
 @requires_env("app")

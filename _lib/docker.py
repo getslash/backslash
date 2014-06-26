@@ -19,7 +19,7 @@ def build_docker_image(root, tag):
         "docker build -t {0} .".format(tag), shell=True, cwd=root)
 
 
-def start_docker_container(image, name, binds, port_bindings):
+def start_docker_container(image, name, binds, port_bindings=(), links=()):
     docker = get_docker_client()
     container = _try_get_container(name, only_running=False)
     if container is not None:
@@ -35,7 +35,7 @@ def start_docker_container(image, name, binds, port_bindings):
         image=image,
         detach=True,
         name=name)
-    docker.start(name, binds=binds, port_bindings=port_bindings)
+    docker.start(name, binds=binds, port_bindings=port_bindings, links=links)
     logbook.info("Container started. Id: {}", container['Id'])
     return container['Id']
 
