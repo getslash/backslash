@@ -10,7 +10,7 @@ _docker = None
 def get_docker_client():
     global _docker
     if _docker is None:
-        _docker = docker.Client()
+        _docker = docker.Client(version='1.11')
     return _docker
 
 
