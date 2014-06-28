@@ -1,6 +1,10 @@
 language: python
 python:
   - 2.7
-script: make travis_test
 addons:
   postgresql: "9.3"
+script: python manage.py travis-test
+after_failure:
+  - sudo supervisorctl status
+  - sudo cat /var/log/*-wsgi.log
+  - sudo cat /var/log/nginx/error.log

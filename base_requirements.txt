@@ -1,8 +1,0 @@
-ansible>=1.2
-alembic
-Flask-Script
-Flask-DebugToolbar
-pytest
-requests>=1.2
-URLObject
-waiting

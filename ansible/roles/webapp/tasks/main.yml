@@ -5,10 +5,7 @@
     - "{{deploy_root}}/conf.d"
 - include: redis.yml
 - include: nginx.yml
-- include: virtualenv.yml
 - include: configuration.yml
-- name: ensure uwsgi is installed
-  shell: "{{deploy_root}}/virtualenv/bin/easy_install -U uwsgi creates={{deploy_root}}/virtualenv/bin/uwsgi"
 - name: copy source
   copy: src=../src_pkg.tar dest={{webapp_archive_location}}
   register: sources
@@ -19,4 +16,4 @@
   action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/{{app_name}}-wsgi.conf
   register: supervisor_conf
 - shell: supervisorctl reload
-  when: supervisor_conf.changed
+  when: supervisor_conf.changed and in_docker is not defined

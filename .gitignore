@@ -51,3 +51,4 @@ static/fonts/fontawesome-webfont.svg
 static/fonts/fontawesome-webfont.ttf
 static/fonts/fontawesome-webfont.woff
 _build
+persistent
