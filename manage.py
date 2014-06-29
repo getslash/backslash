@@ -27,8 +27,8 @@ def cli():
     pass
 
 
-cli.command()(run_uwsgi)
-cli.command()(generate_nginx_config)
+cli.add_command(run_uwsgi)
+cli.add_command(generate_nginx_config)
 
 @cli.command('ensure-secret')
 @click.argument("conf_file")

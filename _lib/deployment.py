@@ -11,6 +11,7 @@ _UNIX_SOCKET_NAME = "/tmp/__{0}_uwsgi.sock".format(APP_NAME)
 
 
 @click.option("--catch-exceptions", is_flag=True)
+@click.command()
 @requires_env("app")
 def run_uwsgi(catch_exceptions):
     uwsgi_bin = from_env_bin("uwsgi")
@@ -21,6 +22,7 @@ def run_uwsgi(catch_exceptions):
         cmd.append("--catch-exceptions")
     os.execv(uwsgi_bin, cmd)
 
+@click.command()
 @click.argument('path')
 def generate_nginx_config(path):
     if not os.path.isdir(os.path.dirname(path)):
