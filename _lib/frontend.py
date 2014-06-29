@@ -33,7 +33,7 @@ def _bootstrap_npm():
             _execute("npm install gulp")
             _execute("npm install -g gulp")
             _execute("npm install -g bower")
-            _execute("bower install")
+            _execute("bower install --allow-root -f")
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
