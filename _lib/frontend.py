@@ -32,6 +32,7 @@ def _bootstrap_npm():
             _execute("npm install")
             _execute("npm install gulp")
             _execute("npm install -g gulp")
+            _execute("npm install -g bower")
             _execute("bower install")
 
 @contextmanager
