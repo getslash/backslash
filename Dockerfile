@@ -6,11 +6,15 @@ RUN apt-get install -y software-properties-common python-software-properties
 
 RUN apt-add-repository ppa:nginx/stable
 
+RUN apt-add-repository ppa:chris-lea/node.js
+
 RUN apt-get update
 
 RUN apt-get install -y python python-dev build-essential wget ca-certificates libxml2-dev libxslt1-dev python-software-properties libevent-dev git nginx redis-server
 
 RUN sudo apt-get -y install libpq-dev
+
+RUN apt-get -y install nodejs
 
 RUN wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python
 
@@ -33,6 +37,8 @@ RUN cd /src && python manage.py bootstrap --app
 RUN rm -rf /etc/nginx/sites-enabled/*
 
 RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp
+
+RUN cd /src && python manage.py frontend build
 
 EXPOSE 80
 
