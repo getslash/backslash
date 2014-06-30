@@ -33,7 +33,7 @@ def _bootstrap_npm():
             _execute("npm install gulp")
             _execute("npm install -g gulp")
             _execute("npm install -g bower")
-            _execute("bower install --allow-root -f")
+            _execute("bower install --allow-root -f -V")
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
@@ -46,7 +46,7 @@ def _get_timestamp_update_context(timestamp_path, paths):
         pass
 
 def _execute(cmd):
-    subprocess.call(cmd, shell=True, cwd=from_project_root())
+    subprocess.check_call(cmd, shell=True, cwd=from_project_root())
 
 def _get_timestamp(path):
     try:
