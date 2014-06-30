@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-_ENV_DIR = os.path.join(_PROJECT_ROOT, ".env")
+_ENV_DIR = os.environ.get("VIRTUALENV_PATH", os.path.join(_PROJECT_ROOT, ".env"))
 
 from_project_root = functools.partial(os.path.join, _PROJECT_ROOT)
 from_env = functools.partial(os.path.join, _ENV_DIR)
