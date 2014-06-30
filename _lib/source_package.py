@@ -33,3 +33,4 @@ def prepare_source_package():
     if not os.path.exists(tarfile) or \
        _is_any_file_newer(paths, tarfile):
         _tar(paths)
+    return tarfile
