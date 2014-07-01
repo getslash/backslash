@@ -2,8 +2,6 @@ alembic
 psycopg2
 Flask>=0.10.1
 Flask-Mail
-Flask-Script
-Flask>=0.10.1
 Flask-Migrate
 Flask-SQLAlchemy
 gevent
