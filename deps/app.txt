@@ -2,11 +2,9 @@ alembic
 psycopg2
 Flask>=0.10.1
 Flask-Mail
-Flask-Script
 Flask-Migrate
 Flask-SQLAlchemy
 gevent
-Logbook>=0.6.0
 PyYAML
 URLObject
 uwsgi

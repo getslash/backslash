@@ -2,17 +2,6 @@
   action: group name={{group_name}} state=present
 - name: setup user
   action: user name={{user_name}} state=present group={{group_name}}
-- name: Install apt-add-repository
-  apt: pkg=python-software-properties state=latest
 - name: set up packages
   action: apt pkg={{item}} state=latest update_cache=yes
-  with_items:
-    - curl
-    - git
-    - redis-server
-    - supervisor
-    - python-setuptools
-    - python-virtualenv
-    - python-pycurl
-    - python-dev
-    - libevent-dev
+  with_items: required_packages

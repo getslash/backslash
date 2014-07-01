@@ -1,8 +1,6 @@
 #! /usr/bin/python
 from __future__ import print_function
-from contextlib import contextmanager
 import os
-import sys
 import time
 import random
 import string
@@ -18,8 +16,8 @@ from _lib.frontend import frontend
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
+from _lib.db import db
 import click
-import logbook
 import requests
 
 
@@ -31,8 +29,9 @@ def cli():
     pass
 
 
-cli.command()(run_uwsgi)
-cli.command()(generate_nginx_config)
+cli.add_command(run_uwsgi)
+cli.add_command(generate_nginx_config)
+cli.add_command(db)
 cli.add_command(frontend)
 
 @cli.command('ensure-secret')
@@ -180,67 +179,6 @@ def _webapp_container_name():
 
 def _db_container_name():
     return '{0}-db'.format(APP_NAME)
-
-@cli.group()
-def db():
-    pass
-
-@db.command()
-@requires_env("app")
-def ensure():
-    import sqlalchemy
-    from flask_app.app import app
-
-    uri = app.config['SQLALCHEMY_DATABASE_URI']
-    if 'postgres' not in uri and 'psycopg2' not in uri:
-        logbook.error("Don't know how to create database - unrecognized connection type: {!r}", uri)
-        sys.exit(-1)
-
-    try:
-        sqlalchemy.create_engine(uri).connect()
-    except sqlalchemy.exc.OperationalError:
-        uri, db_name = uri.rsplit('/', 1)
-        engine = sqlalchemy.create_engine(uri + '/postgres')
-        conn = engine.connect()
-        conn.execute("commit")
-        conn.execute("create database {}".format(db_name))
-        conn.close()
-        logbook.info("Database {} successfully created on {}.", db_name, uri)
-    else:
-        logbook.info("Database exists. Not doing anything.")
-
-
-
-
-@db.command()
-@requires_env("app")
-def drop():
-    from flask_app.models import db
-    db.drop_all()
-
-@db.command()
-@requires_env("app")
-def revision():
-    with _migrate_context() as migrate:
-        migrate.upgrade()
-        migrate.revision(autogenerate=True)
-
-@db.command()
-@requires_env("app")
-def upgrade():
-    with _migrate_context() as migrate:
-        migrate.upgrade()
-
-@contextmanager
-def _migrate_context():
-    from flask_app.app import app
-    from flask_app.models import db
-    from flask.ext import migrate
-
-    migrate.Migrate(app, db)
-
-    with app.app_context():
-        yield migrate
 
 if __name__ == "__main__":
     cli()
