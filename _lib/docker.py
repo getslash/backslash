@@ -67,6 +67,7 @@ def _generate_dockerfile_lines():
     # set up configuration
     yield RUN('mkdir /src /persistent /persistent/config')
     yield ENV('CONFIG_DIRECTORY /persistent/config')
+    yield ENV('SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres@$DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT/db')
 
     # untar sources
     yield ADD('./src_pkg.tar /tmp/')
