@@ -22,6 +22,8 @@ Go have some coffee, then start your image
 $ python manage.py docker start
 ```
 
+This fetches the `postgres` Docker image, runs it along with your app and links them together.
+
 *NOTE*: a `persistent` directory will appear in your source directory. Do not delete it, as it contains data used by your app, to be persisted between sessions
 
 
