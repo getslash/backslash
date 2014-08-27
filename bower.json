@@ -1,7 +1,7 @@
 {
-  "name": "weber-frontend",
+  "name": "backslash",
   "version": "0.0.0",
-  "homepage": "https://github.com/vmalloc/weber-frontend",
+  "homepage": "https://github.com/vmalloc/backslash",
   "license": "BSD3",
   "private": true,
   "ignore": [

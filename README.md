@@ -1,11 +1,9 @@
-Weber-Backend
-=============
+Backslash
+=========
 
-![Build Status](https://secure.travis-ci.org/vmalloc/weber-backend.png?branch=master ) 
+![Build Status](https://secure.travis-ci.org/vmalloc/backslash.png?branch=master ) 
 
-weber-backend is a Flask application template, intended to get you started with a Flask-powered webapp as quickly as possible. weber-backend includes a database layer through Flask-SQLAlchemy, migrations through Alembic, asynchronous tasks via RQ and Redis, and more.
-
-weber-backend puts an emphasis on ease of deployment (with *ansible*), and not getting in your way while you focus on your actual app logic.
+Backslash is a centralized service for tracking execution of automated tests.
 
 Getting Started
 ===============
@@ -32,7 +30,15 @@ To start developing and testing, bootstrap the development environment with:
 $ python manage.py bootstrap --develop
 ```
 
+Next, you will need a running instance of Postgres, with a database named *backslash*:
+
+```
+$ pg_ctl init -D /tmp/db -w
+$ pg_ctl start -D /tmp/db -w
+$ createdb backslash
+```
+
 License
 =======
 
-Weber is distributed under the BSD 3-clause license.
+Backslash is distributed under the BSD 3-clause license.
