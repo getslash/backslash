@@ -1,5 +1,5 @@
 {
-  "name": "weber-frontend",
+  "name": "backslash",
   "version": "0.0.0",
   "description": "Weber-Backend =============",
   "main": "gulpfile.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/vmalloc/weber-frontend.git"
+    "url": "git://github.com/vmalloc/backslash.git"
   },
   "author": "",
   "license": "BSD3",
   "bugs": {
-    "url": "https://github.com/vmalloc/weber-frontend/issues"
+    "url": "https://github.com/vmalloc/backslash/issues"
   },
-  "homepage": "https://github.com/vmalloc/weber-frontend",
+  "homepage": "https://github.com/vmalloc/backslash",
   "devDependencies": {
     "gulp": "^3.6.1",
     "minimist": "0.0.8",
