@@ -38,6 +38,8 @@ $ pg_ctl start -D /tmp/db -w
 $ createdb backslash
 ```
 
+If you are testing an unstable release, most chances are that you'll need the development version of `backslash-python`, the official client library for Backslash, which is available at https://github.com/vmalloc/backslash-python.
+
 License
 =======
 
