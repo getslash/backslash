@@ -120,7 +120,9 @@ def _run_fulltest(extra_args=()):
 
 @cli.command('travis-test')
 def travis_test():
+    subprocess.check_call('createdb backslash', shell=True)
     _run_unittest()
+    subprocess.check_call('dropdb backslash', shell=True)
     _run_deploy('localhost')
     _wait_for_travis_availability()
     _run_fulltest(["--www-port=80"])
