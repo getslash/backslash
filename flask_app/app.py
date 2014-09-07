@@ -14,8 +14,7 @@ app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static")
 # Defaults
 app.config["SECRET_KEY"] = ""
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.path.expandvars(
-    os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:////tmp/__demo_db.sqlite'))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/backslash'
 
 
 _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "conf.d"))
@@ -40,5 +39,8 @@ logbook.info("Started")
 Mail(app)
 
 from . import models
+from . import api
 from . import errors
 from . import views
+
+app.register_blueprint(api.blueprint, url_prefix="/api")
