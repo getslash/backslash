@@ -40,7 +40,9 @@ Mail(app)
 
 from . import models
 from . import api
+from . import rest
 from . import errors
 from . import views
 
 app.register_blueprint(api.blueprint, url_prefix="/api")
+app.register_blueprint(rest.blueprint, url_prefix="/rest")
