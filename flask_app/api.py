@@ -29,7 +29,11 @@ def report_session_start(hostname=None):
 def report_session_end(id, duration=None):
     update = {'end_time': _now() if duration is None else Session.start_time + datetime.timedelta(seconds=duration)}
     if not Session.query.filter(Session.id==id, Session.end_time==None).update(update):
-        abort(requests.codes.not_found)
+        if Session.query.filter(Session.id==id).count():
+            # we have a session, but it already ended
+            abort(requests.codes.conflict)
+        else:
+            abort(requests.codes.not_found)
     db.session.commit()
 
 def _now():
