@@ -40,13 +40,14 @@ def get_api_decorator(blueprint):
     return decorator
 
 
-def auto_add_object(func):
-    """Makes a function returning model automatically add the created model to the database
+def auto_commit(func):
+    """Automatically commits to the database on success, possibly adding the returned object beforehand
     """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         returned = func(*args, **kwargs)
-        db.session.add(returned)
+        if returned is not None:
+            db.session.add(returned)
         db.session.commit()
         return returned
 
