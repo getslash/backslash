@@ -1,7 +1,8 @@
 import datetime
 
 import flux
-from flask import Blueprint, request
+import requests
+from flask import abort, Blueprint, request
 
 from weber_utils import Optional, takes_schema_args
 
@@ -27,7 +28,8 @@ def report_session_start(hostname=None):
 @takes_schema_args(id=int, duration=Optional((float, int)))
 def report_session_end(id, duration=None):
     update = {'end_time': _now() if duration is None else Session.start_time + datetime.timedelta(seconds=duration)}
-    Session.query.filter(Session.id==id, Session.end_time==None).update(update)
+    if not Session.query.filter(Session.id==id, Session.end_time==None).update(update):
+        abort(requests.codes.not_found)
     db.session.commit()
 
 def _now():

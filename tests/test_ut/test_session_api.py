@@ -1,5 +1,7 @@
 import socket
+
 import flux
+import requests
 
 import pytest
 
@@ -32,6 +34,14 @@ def test_end_session(started_session, use_duration):
     started_session.refresh()
     assert started_session.end_time == start_time + duration
 
+
+def test_end_session_doesnt_exist(client):
+    from backslash.session import Session
+
+    s = Session(client, {'id': 3489738})
+    with pytest.raises(requests.HTTPError) as caught:
+        s.report_end()
+    assert caught.value.response.status_code == requests.codes.not_found
 
 
 @pytest.fixture
