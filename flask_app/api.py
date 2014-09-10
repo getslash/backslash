@@ -7,7 +7,8 @@ from flask import abort, Blueprint, request
 from weber_utils import Optional, takes_schema_args
 
 from .api_utils import auto_commit, get_api_decorator
-from .models import db, Session
+from .models import db, Session, Test
+from sqlalchemy.orm.exc import NoResultFound
 
 blueprint = Blueprint('api', __name__)
 
@@ -35,6 +36,19 @@ def report_session_end(id, duration=None):
             abort(requests.codes.conflict)
         else:
             abort(requests.codes.not_found)
+
+
+@api_func
+@auto_commit
+@takes_schema_args(session_id=int, name=str)
+def report_test_start(session_id, name):
+    try:
+        session = Session.query.filter(Session.id == session_id).one()
+    except NoResultFound:
+        abort(requests.codes.not_found)
+    if session.end_time is not None:
+        abort(requests.codes.conflict)
+    return Test(session_id=session_id, name=name)
 
 def _now():
     return datetime.datetime.utcfromtimestamp(flux.current_timeline.time())

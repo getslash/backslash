@@ -1,6 +1,7 @@
 #! /usr/bin/python
 from __future__ import print_function
 import os
+import sys
 import time
 import random
 import string
@@ -183,4 +184,7 @@ def _db_container_name():
     return '{0}-db'.format(APP_NAME)
 
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
