@@ -1,6 +1,7 @@
 #! /usr/bin/python
 from __future__ import print_function
 import os
+import sys
 import time
 import random
 import string
@@ -120,7 +121,9 @@ def _run_fulltest(extra_args=()):
 
 @cli.command('travis-test')
 def travis_test():
+    subprocess.check_call('createdb backslash', shell=True)
     _run_unittest()
+    subprocess.check_call('dropdb backslash', shell=True)
     _run_deploy('localhost')
     _wait_for_travis_availability()
     _run_fulltest(["--www-port=80"])
@@ -181,4 +184,7 @@ def _db_container_name():
     return '{0}-db'.format(APP_NAME)
 
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)

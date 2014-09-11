@@ -1,3 +1,4 @@
 pytest
 Flask-Loopback
+-e git://github.com/vmalloc/backslash-python.git#egg=backslash-python
 
