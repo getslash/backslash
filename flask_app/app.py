@@ -15,7 +15,7 @@ app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static")
 app.config["SECRET_KEY"] = ""
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.path.expandvars(
-    os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:////tmp/__demo_db.sqlite'))
+    os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://backslash:12345678@localhost/backslash'))
 
 
 _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "conf.d"))
