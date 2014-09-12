@@ -43,17 +43,6 @@ def test_start_session_with_product_name_and_version(client):
     assert session.product_version == product_version
     assert session.product_revision == None
 
-def test_start_session_with_full_product_name(client):
-    logical_id = 1
-    product_name = 'foo'
-    product_version = 'bar'
-    product_revision = 'qux'
-    session = client.report_session_start(logical_id=logical_id, product_name=product_name,
-                                          product_version=product_version, product_revision=product_revision)
-    assert session.product_name == product_name
-    assert session.product_version == product_version
-    assert session.product_revision == product_revision
-
 def test_start_session_with_full_product_name(started_session):
     product_name = 'foo'
     product_version = 'bar'
