@@ -6,8 +6,8 @@ import requests
 import pytest
 
 
-def test_report_test_start(started_session, started_test, test_name):
-    test = started_session.report_test_start(name=test_name)
+def test_report_test_start(started_session, test_name):
+    test = started_session.report_test_start(test_logical_id=11, name=test_name)
     assert test is not None
 
 
@@ -17,13 +17,13 @@ def test_test_session_id(started_session, started_test):
 
 def test_cannot_start_test_ended_session(ended_session):
     with pytest.raises(requests.HTTPError) as caught:
-        ended_session.report_test_start(name='name')
+        ended_session.report_test_start(test_logical_id=11, name='name')
     assert caught.value.response.status_code == requests.codes.conflict
 
 
 def test_cannot_start_test_nonexistent_session(nonexistent_session):
     with pytest.raises(requests.HTTPError) as caught:
-        nonexistent_session.report_test_start(name='name')
+        nonexistent_session.report_test_start(test_logical_id=11, name='name')
     assert caught.value.response.status_code == requests.codes.not_found
 
 

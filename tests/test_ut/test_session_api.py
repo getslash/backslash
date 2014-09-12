@@ -7,9 +7,14 @@ import pytest
 
 
 def test_start_session(client):
-    session = client.report_session_start()
+    logical_id = 1
+    session = client.report_session_start(logical_id=logical_id)
     assert session
 
+def test_start_session_no_logical_id(client):
+    with pytest.raises(requests.HTTPError) as caught:
+        session = client.report_session_start(logical_id=None)
+    assert caught.value.response.status_code == requests.codes.bad_request
 
 def test_started_session_hostname(started_session):
     assert started_session.hostname == socket.getfqdn()
@@ -17,9 +22,47 @@ def test_started_session_hostname(started_session):
 
 def test_started_session_hostname_specify_explicitly(client):
     hostname = 'some_hostname'
-    session = client.report_session_start(hostname=hostname)
+    logical_id = 1
+    session = client.report_session_start(logical_id=logical_id, hostname=hostname)
     assert session.hostname == hostname
 
+def test_start_session_with_product_name(client):
+    logical_id = 1
+    product_name = 'foo'
+    session = client.report_session_start(logical_id=logical_id, product_name=product_name)
+    assert session.product_name == product_name
+    assert session.product_version == None
+    assert session.product_revision == None
+
+def test_start_session_with_product_name_and_version(client):
+    logical_id = 1
+    product_name = 'foo'
+    product_version = 'bar'
+    session = client.report_session_start(logical_id=logical_id, product_name=product_name, product_version=product_version)
+    assert session.product_name == product_name
+    assert session.product_version == product_version
+    assert session.product_revision == None
+
+def test_start_session_with_full_product_name(client):
+    logical_id = 1
+    product_name = 'foo'
+    product_version = 'bar'
+    product_revision = 'qux'
+    session = client.report_session_start(logical_id=logical_id, product_name=product_name,
+                                          product_version=product_version, product_revision=product_revision)
+    assert session.product_name == product_name
+    assert session.product_version == product_version
+    assert session.product_revision == product_revision
+
+def test_start_session_with_full_product_name(started_session):
+    product_name = 'foo'
+    product_version = 'bar'
+    product_revision = 'qux'
+    started_session.set_product(name=product_name, version=product_version, revision=product_revision)
+    started_session.refresh()
+    assert started_session.product_name == product_name
+    assert started_session.product_version == product_version
+    assert started_session.product_revision == product_revision
 
 def test_started_session_times(started_session):
     assert started_session.start_time is not None
