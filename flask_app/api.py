@@ -50,8 +50,7 @@ def report_session_start(logical_id, hostname=None,
 @auto_commit
 @takes_schema_args(logical_id=int, duration=Optional((float, int)))
 def report_session_end(logical_id, duration=None):
-    update = {'end_time': get_current_time(
-    ) if duration is None else Session.start_time + datetime.timedelta(seconds=duration)}
+    update = {'end_time': get_current_time() if duration is None else Session.start_time + duration}
     if not Session.query.filter(Session.logical_id == logical_id, Session.end_time == None).update(update):
         if Session.query.filter(Session.logical_id == logical_id).count():
             # we have a session, but it already ended
@@ -77,8 +76,7 @@ def report_test_start(session_logical_id, test_logical_id, name):
 @auto_commit
 @takes_schema_args(logical_id=int, duration=Optional((float, int)))
 def report_test_end(logical_id, duration=None):
-    update = {'end_time': get_current_time(
-    ) if duration is None else Test.start_time + datetime.timedelta(seconds=duration)}
+    update = {'end_time': get_current_time() if duration is None else Test.start_time + duration}
     if not Test.query.filter(Test.logical_id == logical_id, Test.end_time == None).update(update):
         if Test.query.filter(Test.logical_id == logical_id).count():
             # we have a test, but it already ended
