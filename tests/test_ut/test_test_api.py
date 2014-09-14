@@ -3,8 +3,7 @@ from uuid import uuid1
 import flux
 import requests
 
-import pytest
-
+from .utils import raises_not_found, raises_conflict
 
 def test_report_test_start(started_session, started_test, test_name):
     test = started_session.report_test_start(name=test_name)
@@ -45,13 +44,10 @@ def test_report_test_end(started_test, use_duration):
 
 
 def test_end_test_doesnt_exist(nonexistent_test):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_not_found():
         nonexistent_test.report_end()
-    assert caught.value.response.status_code == requests.codes.not_found
 
 
 def test_end_test_twice(ended_test):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_conflict():
         ended_test.report_end()
-    assert caught.value.response.status_code == requests.codes.conflict
-

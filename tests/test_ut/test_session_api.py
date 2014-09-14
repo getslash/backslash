@@ -1,9 +1,10 @@
 import socket
 
 import flux
-import requests
 
 import pytest
+
+from .utils import raises_not_found, raises_conflict
 
 
 def test_start_session(client):
@@ -40,13 +41,11 @@ def test_end_session(started_session, use_duration):
 
 
 def test_end_session_doesnt_exist(nonexistent_session):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_not_found():
         nonexistent_session.report_end()
-    assert caught.value.response.status_code == requests.codes.not_found
 
 
 def test_end_session_twice(ended_session):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_conflict():
         ended_session.report_end()
-    assert caught.value.response.status_code == requests.codes.conflict
 
