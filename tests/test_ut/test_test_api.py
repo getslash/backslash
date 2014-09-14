@@ -1,7 +1,5 @@
-from uuid import uuid1
-
 import flux
-import requests
+import pytest
 
 from .utils import raises_not_found, raises_conflict
 
@@ -15,15 +13,13 @@ def test_test_session_id(started_session, started_test):
 
 
 def test_cannot_start_test_ended_session(ended_session):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_conflict():
         ended_session.report_test_start(name='name')
-    assert caught.value.response.status_code == requests.codes.conflict
 
 
 def test_cannot_start_test_nonexistent_session(nonexistent_session):
-    with pytest.raises(requests.HTTPError) as caught:
+    with raises_not_found():
         nonexistent_session.report_test_start(name='name')
-    assert caught.value.response.status_code == requests.codes.not_found
 
 
 def test_start_time(started_test):
