@@ -27,6 +27,12 @@ def test_started_session_times(started_session):
     assert started_session.end_time is None
 
 
+def test_query_all_sessions(client, started_session):
+    [session] = client.query_sessions()
+    assert session.id == started_session.id
+    assert session == started_session
+
+
 @pytest.mark.parametrize('use_duration', [True, False])
 def test_end_session(started_session, use_duration):
     duration = 10
