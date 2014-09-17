@@ -6,6 +6,7 @@ from sqlalchemy.orm import backref
 
 from .app import app
 from .utils import get_current_time
+from .rendering import computed_field
 
 db = SQLAlchemy(app)
 
@@ -27,3 +28,9 @@ class Test(db.Model):
     start_time = db.Column(db.DateTime, default=get_current_time)
     end_time = db.Column(db.DateTime, default=None)
     name = db.Column(db.String(256))
+
+    @computed_field
+    def duration(self):
+        if self.end_time is None or self.start_time is None:
+            return None
+        return (self.end_time - self.start_time).total_seconds()

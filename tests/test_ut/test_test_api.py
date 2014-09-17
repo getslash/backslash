@@ -3,6 +3,7 @@ import pytest
 
 from .utils import raises_not_found, raises_conflict
 
+
 def test_report_test_start(started_session, started_test, test_name):
     test = started_session.report_test_start(name=test_name)
     assert test is not None
@@ -24,6 +25,18 @@ def test_cannot_start_test_nonexistent_session(nonexistent_session):
 
 def test_start_time(started_test):
     assert started_test.start_time == flux.current_timeline.time()
+
+
+def test_duration_empty(started_test):
+    assert started_test.duration is None
+
+
+def test_duration(started_test):
+    duration = 10.5
+    flux.current_timeline.sleep(duration)
+    started_test.report_end()
+    started_test.refresh()
+    assert started_test.duration == duration
 
 
 @pytest.mark.parametrize('use_duration', [True, False])

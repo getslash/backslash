@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from .models import Session, Test
 from weber_utils import paginated_view
-from .api_utils import auto_render, render_api_object
+from .rendering import auto_render, render_api_object
 
 blueprint = Blueprint('rest', __name__)
 
