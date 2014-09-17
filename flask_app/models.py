@@ -15,7 +15,7 @@ db = SQLAlchemy(app)
 class Session(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    logical_id = db.Column(db.Integer, unique=True)
+    logical_id = db.Column(db.String(256))
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     hostname = db.Column(db.String(100))
@@ -24,26 +24,40 @@ class Session(db.Model):
     product_revision = db.Column(db.String(256))
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
 
-    def __init__(self, logical_id, hostname=None,
-                 product_name=None, product_version=None, product_revision=None):
-        self.logical_id = logical_id
-        self.hostname = hostname
-        self.product_name = product_name
-        self.product_version = product_version
-        self.product_revision = product_revision
+    @computed_field
+    def status(self):
+        if self.end_time is None:
+            return 'RUNNING'
+        else:
+            for test in self.tests:
+                if test.status == 'FAILED':
+                    return 'FAILED'
+                elif test.status == 'ERROR':
+                    return 'ERROR'
+            return 'PASSED'
 
 
 class Test(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
-    logical_id = db.Column(db.Integer, unique=True)
+    logical_id = db.Column(db.String(256))
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     name = db.Column(db.String(256))
+    skipped = db.Column(db.Boolean, default=False)
+    num_errors = db.Column(db.Integer, default=0)
+    num_failures = db.Column(db.Integer, default=0)
 
-    def __init__(self, session_id, logical_id, name):
-        self.session_id = session_id  # this is not the logical_id - the real ID is the foreign key
-        self.logical_id = logical_id
-        self.name = name
-
+    @computed_field
+    def status(self):
+        if self.end_time is None:
+            return 'RUNNING'
+        else:
+            if self.skipped:
+                return 'SKIPPED'
+            if self.num_failures > 0:
+                return 'FAILED'
+            elif self.num_errors > 0:
+                return 'ERROR'
+        return 'PASSED'

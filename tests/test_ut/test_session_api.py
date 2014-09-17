@@ -7,7 +7,11 @@ import pytest
 
 
 def test_start_session(client):
-    logical_id = 1
+    session = client.report_session_start()
+    assert session
+
+def test_start_session_logical_id(client):
+    logical_id = '1'
     session = client.report_session_start(logical_id=logical_id)
     assert session
 
@@ -22,32 +26,31 @@ def test_started_session_hostname(started_session):
 
 def test_started_session_hostname_specify_explicitly(client):
     hostname = 'some_hostname'
-    logical_id = 1
-    session = client.report_session_start(logical_id=logical_id, hostname=hostname)
+    session = client.report_session_start(hostname=hostname)
     assert session.hostname == hostname
 
 def test_start_session_with_product_name(client):
-    logical_id = 1
     product_name = 'foo'
-    session = client.report_session_start(logical_id=logical_id, product_name=product_name)
+    session = client.report_session_start(product_name=product_name)
     assert session.product_name == product_name
     assert session.product_version == None
     assert session.product_revision == None
 
 def test_start_session_with_product_name_and_version(client):
-    logical_id = 1
     product_name = 'foo'
     product_version = 'bar'
-    session = client.report_session_start(logical_id=logical_id, product_name=product_name, product_version=product_version)
+    session = client.report_session_start(product_name=product_name, product_version=product_version)
     assert session.product_name == product_name
     assert session.product_version == product_version
     assert session.product_revision == None
 
-def test_start_session_with_full_product_name(started_session):
+def test_start_session_with_full_product_name(started_session, product_info):
     product_name = 'foo'
     product_version = 'bar'
     product_revision = 'qux'
-    started_session.set_product(name=product_name, version=product_version, revision=product_revision)
+    started_session.set_product(name=product_info['product_name'],
+                                version=product_info['product_version'],
+                                revision=product_info['product_revision'])
     started_session.refresh()
     assert started_session.product_name == product_name
     assert started_session.product_version == product_version

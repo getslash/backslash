@@ -69,6 +69,10 @@ def auto_render(func):
 def render_api_object(obj):
     returned = {c.name: render_api_value(obj.__getattribute__(c.name))
                 for c in obj.__table__.columns}
+    for method_name in dir(obj):
+        method = getattr(obj, method_name)
+        if _is_computed_field(method):
+            returned[method_name] = method()
     returned['type'] = typename = type(obj).__name__.lower()
     returned['api_path'] = '/rest/{0}s/{1}'.format(typename, obj.id)
     return returned

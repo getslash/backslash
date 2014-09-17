@@ -18,16 +18,18 @@ def freeze_timeline(request):
 
 
 @pytest.fixture
+def product_info():
+    return {'product_name': 'foo', 'product_version': 'bar', 'product_revision': 'qux'}
+
+@pytest.fixture
 def started_session(client):
-    logical_id = 1
-    return client.report_session_start(logical_id=logical_id)
+    return client.report_session_start()
 
 
 @pytest.fixture
 def ended_session(client):
-    logical_id = 1
     # we don't use started_session to enable tests to use both...
-    session = client.report_session_start(logical_id=logical_id)
+    session = client.report_session_start()
     session.report_end()
     return session
 
@@ -35,7 +37,7 @@ def ended_session(client):
 @pytest.fixture
 def nonexistent_session(client):
     from backslash.session import Session
-    return Session(client, {'id': 238723287, 'logical_id': 238723287})
+    return Session(client, {'id': 238723287})
 
 
 @pytest.fixture
@@ -45,12 +47,12 @@ def test_name():
 
 @pytest.fixture
 def started_test(started_session, test_name):
-    return started_session.report_test_start(test_logical_id=11, name=test_name)
+    return started_session.report_test_start(name=test_name, test_logical_id='11')
 
 
 @pytest.fixture
 def ended_test(started_session, test_name):
-    returned = started_session.report_test_start(test_logical_id=11, name=test_name)
+    returned = started_session.report_test_start(name=test_name, test_logical_id='11')
     returned.report_end()
     return returned
 
@@ -58,4 +60,4 @@ def ended_test(started_session, test_name):
 @pytest.fixture
 def nonexistent_test(client, started_session):
     from backslash.test import Test
-    return Test(client, {'id': 6666, 'session_id': started_session.id, 'logical_id': 6677})
+    return Test(client, {'id': 6666, 'session_id': started_session.id, 'logical_id': '6677'})
