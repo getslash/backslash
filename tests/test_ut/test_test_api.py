@@ -28,7 +28,7 @@ def test_cannot_start_test_nonexistent_session(nonexistent_session):
 
 
 def test_start_time(started_test):
-    assert abs(started_test.start_time - flux.current_timeline.time()) < 0.0001
+    assert started_test.start_time == flux.current_timeline.time()
 
 
 def test_duration_empty(started_test):
@@ -60,7 +60,7 @@ def test_test_duration(started_test):
     start_time = started_test.start_time
     started_test.report_end(duration=duration)
     started_test.refresh()
-    assert started_test.duration == 10
+    assert started_test.duration == duration
 
 def test_end_test_doesnt_exist(nonexistent_test):
     with raises_not_found():
