@@ -89,7 +89,7 @@ def test_get_status_failure(started_test):
     started_test.add_failure()
     started_test.report_end()
     started_test.refresh()
-    assert started_test.status == 'FAILED'
+    assert started_test.status == 'FAILURE'
 
 def test_get_status_skipped(started_test):
     started_test.add_failure()
@@ -104,5 +104,5 @@ def test_report_test_end(started_test, use_duration):
     else:
         started_test.report_end()
     started_test.refresh()
-    assert started_test.status == 'PASSED'
+    assert started_test.status == 'SUCCESS'
 

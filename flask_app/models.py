@@ -31,11 +31,9 @@ class Session(db.Model):
             return 'RUNNING'
         else:
             for test in self.tests:
-                if test.status == 'FAILED':
-                    return 'FAILED'
-                elif test.status == 'ERROR':
-                    return 'ERROR'
-            return 'PASSED'
+                if test.status() == 'FAILURE' or test.status() == 'ERROR':
+                    return 'FAILURE'
+            return 'SUCCESS'
 
 
 class Test(db.Model):
@@ -54,7 +52,8 @@ class Test(db.Model):
     def duration(self):
         if self.end_time is None or self.start_time is None:
             return None
-        return (self.end_time - self.start_time).total_seconds()
+        return self.end_time - self.start_time
+
     @computed_field
     def status(self):
         if self.end_time is None:
@@ -63,7 +62,7 @@ class Test(db.Model):
             if self.skipped:
                 return 'SKIPPED'
             if self.num_failures > 0:
-                return 'FAILED'
+                return 'FAILURE'
             elif self.num_errors > 0:
                 return 'ERROR'
-        return 'PASSED'
+        return 'SUCCESS'

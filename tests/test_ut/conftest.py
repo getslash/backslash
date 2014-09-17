@@ -49,6 +49,11 @@ def test_name():
 def started_test(started_session, test_name):
     return started_session.report_test_start(name=test_name, test_logical_id='11')
 
+@pytest.fixture
+def started_session_with_ended_test(started_session, test_name):
+    test = started_session.report_test_start(name=test_name, test_logical_id='11')
+    test.report_end()
+    return (started_session, test)
 
 @pytest.fixture
 def ended_test(started_session, test_name):

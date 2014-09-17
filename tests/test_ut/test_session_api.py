@@ -17,9 +17,8 @@ def test_start_session_logical_id(client):
     assert session
 
 def test_start_session_no_logical_id(client):
-    with pytest.raises(requests.HTTPError) as caught:
-        session = client.report_session_start(logical_id=None)
-    assert caught.value.response.status_code == requests.codes.bad_request
+    session = client.report_session_start()
+    assert session
 
 def test_started_session_hostname(started_session):
     assert started_session.hostname == socket.getfqdn()
@@ -89,4 +88,34 @@ def test_end_session_doesnt_exist(nonexistent_session):
 def test_end_session_twice(ended_session):
     with raises_conflict():
         ended_session.report_end()
+
+def test_session_status_running(started_session):
+    started_session.refresh()
+    assert started_session.status == 'RUNNING'
+
+def test_session_status_finished(ended_session):
+    ended_session.refresh()
+    assert ended_session.status == 'SUCCESS'
+
+def test_session_status_failure(started_session_with_ended_test):
+    (started_session, test) = started_session_with_ended_test
+    test.add_failure()
+    started_session.report_end()
+    started_session.refresh()
+    assert started_session.status == 'FAILURE'
+
+def test_session_status_error(started_session_with_ended_test):
+    (started_session, test) = started_session_with_ended_test
+    test.add_error()
+    started_session.report_end()
+    started_session.refresh()
+    assert started_session.status == 'FAILURE'
+
+def test_session_status_error_and_failure(started_session_with_ended_test):
+    (started_session, test) = started_session_with_ended_test
+    test.add_error()
+    test.add_failure()
+    started_session.report_end()
+    started_session.refresh()
+    assert started_session.status == 'FAILURE'
 

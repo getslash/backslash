@@ -62,7 +62,7 @@ def report_session_end(id, duration=None):
 @api_func
 @auto_commit
 @takes_schema_args(session_id=int, name=Optional(str), test_logical_id=Optional(str))
-def report_test_start(session_id, name, test_logical_id):
+def report_test_start(session_id, name=None, test_logical_id=None):
     try:
         session = Session.query.filter(Session.id == session_id).one()
     except NoResultFound:
