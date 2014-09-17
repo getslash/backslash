@@ -4,8 +4,12 @@ import pytest
 from .utils import raises_not_found, raises_conflict
 
 
-def test_report_test_start(started_session, started_test, test_name):
+def test_report_test_start(started_session, test_name):
     test = started_session.report_test_start(name=test_name)
+    assert test is not None
+
+def test_report_test_start_logical_id(started_session, test_name):
+    test = started_session.report_test_start(name=test_name, test_logical_id='11')
     assert test is not None
 
 
@@ -24,7 +28,7 @@ def test_cannot_start_test_nonexistent_session(nonexistent_session):
 
 
 def test_start_time(started_test):
-    assert started_test.start_time == flux.current_timeline.time()
+    assert abs(started_test.start_time - flux.current_timeline.time()) < 0.0001
 
 
 def test_duration_empty(started_test):
@@ -51,6 +55,12 @@ def test_report_test_end(started_test, use_duration):
     started_test.refresh()
     assert started_test.end_time == start_time + duration
 
+def test_test_duration(started_test):
+    duration = 10
+    start_time = started_test.start_time
+    started_test.report_end(duration=duration)
+    started_test.refresh()
+    assert started_test.duration == 10
 
 def test_end_test_doesnt_exist(nonexistent_test):
     with raises_not_found():
@@ -60,3 +70,45 @@ def test_end_test_doesnt_exist(nonexistent_test):
 def test_end_test_twice(ended_test):
     with raises_conflict():
         ended_test.report_end()
+
+def test_test_add_error(started_test):
+    started_test.add_error()
+    started_test.refresh()
+    assert started_test.num_errors == 1
+
+def test_test_add_failure(started_test):
+    started_test.add_failure()
+    started_test.refresh()
+    assert started_test.num_failures == 1
+
+def test_get_status_running(started_test):
+    started_test.refresh() #probably not needed
+    assert started_test.status == 'RUNNING'
+
+def test_get_status_error(started_test):
+    started_test.add_error()
+    started_test.report_end()
+    started_test.refresh()
+    assert started_test.status == 'ERROR'
+
+def test_get_status_failure(started_test):
+    started_test.add_failure()
+    started_test.report_end()
+    started_test.refresh()
+    assert started_test.status == 'FAILURE'
+
+def test_get_status_skipped(started_test):
+    started_test.add_failure()
+    started_test.report_end(skipped=True)
+    started_test.refresh()
+    assert started_test.status == 'SKIPPED'
+
+@pytest.mark.parametrize('use_duration', [True, False])
+def test_report_test_end(started_test, use_duration):
+    if use_duration:
+        started_test.report_end(duration=10)
+    else:
+        started_test.report_end()
+    started_test.refresh()
+    assert started_test.status == 'SUCCESS'
+

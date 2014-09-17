@@ -18,6 +18,10 @@ def freeze_timeline(request):
 
 
 @pytest.fixture
+def product_info():
+    return {'product_name': 'foo', 'product_version': 'bar', 'product_revision': 'qux'}
+
+@pytest.fixture
 def started_session(client):
     return client.report_session_start()
 
@@ -43,12 +47,17 @@ def test_name():
 
 @pytest.fixture
 def started_test(started_session, test_name):
-    return started_session.report_test_start(name=test_name)
+    return started_session.report_test_start(name=test_name, test_logical_id='11')
 
+@pytest.fixture
+def started_session_with_ended_test(started_session, test_name):
+    test = started_session.report_test_start(name=test_name, test_logical_id='11')
+    test.report_end()
+    return (started_session, test)
 
 @pytest.fixture
 def ended_test(started_session, test_name):
-    returned = started_session.report_test_start(name=test_name)
+    returned = started_session.report_test_start(name=test_name, test_logical_id='11')
     returned.report_end()
     return returned
 
@@ -56,4 +65,4 @@ def ended_test(started_session, test_name):
 @pytest.fixture
 def nonexistent_test(client, started_session):
     from backslash.test import Test
-    return Test(client, {'id': 6666, 'session_id': started_session.id})
+    return Test(client, {'id': 6666, 'session_id': started_session.id, 'logical_id': '6677'})
