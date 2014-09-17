@@ -1,20 +1,11 @@
-import datetime
 import functools
 
-from flask import jsonify, Response
-import flux
+from flask import Response
 
 from .models import db
+from .rendering import render_api_object
+from .responses import API_SUCCESS, API_RESPONSE
 
-
-def API_RESPONSE(rv=None, metadata=None, error=None):
-    return jsonify({
-        'error': error,
-        'result': rv,
-        'metadata': metadata,
-    })
-
-API_SUCCESS = API_RESPONSE
 
 
 def get_api_decorator(blueprint):
@@ -53,31 +44,3 @@ def auto_commit(func):
         return returned
 
     return new_func
-
-
-def auto_render(func):
-    """Automatically renders returned objects using render_api_object
-    """
-
-    @functools.wraps(func)
-    def new_func(*args, **kwargs):
-        return API_SUCCESS(render_api_object(func(*args, **kwargs)))
-
-    return new_func
-
-
-def render_api_object(obj):
-    returned = {c.name: render_api_value(obj.__getattribute__(c.name))
-                for c in obj.__table__.columns}
-    for method_name in dir(obj):
-        method = getattr(obj, method_name)
-        if _is_computed_field(method):
-            returned[method_name] = method()
-    returned['type'] = typename = type(obj).__name__.lower()
-    returned['api_path'] = '/rest/{0}s/{1}'.format(typename, obj.id)
-    return returned
-
-def render_api_value(value):
-    if isinstance(value, datetime.datetime):
-        value = (value - datetime.datetime.utcfromtimestamp(0)).total_seconds()
-    return value

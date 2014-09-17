@@ -6,6 +6,7 @@ from sqlalchemy.orm import backref
 
 from .app import app
 from .utils import get_current_time
+from .rendering import computed_field
 
 db = SQLAlchemy(app)
 
@@ -49,6 +50,11 @@ class Test(db.Model):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
 
+    @computed_field
+    def duration(self):
+        if self.end_time is None or self.start_time is None:
+            return None
+        return (self.end_time - self.start_time).total_seconds()
     @computed_field
     def status(self):
         if self.end_time is None:
