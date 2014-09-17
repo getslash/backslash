@@ -55,6 +55,12 @@ def test_report_test_end(started_test, use_duration):
     started_test.refresh()
     assert started_test.end_time == start_time + duration
 
+def test_test_duration(started_test):
+    duration = 10
+    start_time = started_test.start_time
+    started_test.report_end(duration=duration)
+    started_test.refresh()
+    assert started_test.duration == 10
 
 def test_end_test_doesnt_exist(nonexistent_test):
     with raises_not_found():
