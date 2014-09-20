@@ -1,3 +1,4 @@
+import math
 from uuid import uuid1
 
 import flux
@@ -15,6 +16,9 @@ def freeze_timeline(request):
         flux.current_timeline.set_time_factor(original_factor)
 
     flux.current_timeline.set_time_factor(0)
+    current_time = flux.current_timeline.time()
+    next_round_time = math.ceil(current_time * 10000) / 10000.0
+    flux.current_timeline.sleep(next_round_time - current_time)
 
 
 @pytest.fixture
