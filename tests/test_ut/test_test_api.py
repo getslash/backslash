@@ -1,5 +1,6 @@
 import flux
 import pytest
+import datetime
 
 from .utils import raises_not_found, raises_conflict
 
@@ -28,7 +29,9 @@ def test_cannot_start_test_nonexistent_session(nonexistent_session):
 
 
 def test_start_time(started_test):
-    assert started_test.start_time == flux.current_timeline.time()
+    original_time = flux.current_timeline.time()
+    test_time = started_test.start_time
+    assert test_time == original_time
 
 
 def test_duration_empty(started_test):
