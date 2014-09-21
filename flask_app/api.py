@@ -24,9 +24,7 @@ api_func = get_api_decorator(blueprint)
                    revision=Optional(str))
 def set_product(id, name, version=None, revision=None):
     update = {'product_name': name, 'product_version': version, 'product_revision': revision}
-    try:
-        Session.query.filter(Session.id == id).update(update)
-    except NoResultFound:
+    if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
 @api_func

@@ -21,9 +21,11 @@ def freeze_timeline(request):
     flux.current_timeline.sleep(next_round_time - current_time)
 
 
-@pytest.fixture
-def product_info():
-    return {'product_name': 'foo', 'product_version': 'bar', 'product_revision': 'qux'}
+@pytest.fixture(params=[('name',), ('name', 'version'), ('name', 'version', 'revision')])
+def product_info(request):
+    included_field_names = request.param
+    info = {'name': 'foo', 'version': 'bar', 'revision': 'qux'}
+    return dict((field_name, info[field_name]) for field_name in included_field_names)
 
 @pytest.fixture
 def started_session(client):
