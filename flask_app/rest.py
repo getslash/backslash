@@ -2,12 +2,13 @@ from flask import Blueprint
 
 from .models import Session, Test
 from weber_utils import paginated_view
+from .filtering import filterable_view
 from .rendering import auto_render, render_api_object
 
 blueprint = Blueprint('rest', __name__)
 
 
-def _register_rest_getters(objtype):
+def _register_rest_getters(objtype, filters=()):
     typename = objtype.__name__.lower()
     @blueprint.route('/{0}s/<int:object_id>'.format(typename), endpoint='get_single_{0}'.format(typename))
     @auto_render
@@ -16,6 +17,7 @@ def _register_rest_getters(objtype):
 
     @blueprint.route('/{0}s'.format(typename), endpoint='query_{0}s'.format(typename))
     @paginated_view(renderer=render_api_object)
+    @filterable_view(filters)
     def query_objects():
         return objtype.query
 
@@ -28,6 +30,6 @@ def get_tests_of_session():
 
 ################################################################################
 
-_register_rest_getters(Session)
+_register_rest_getters(Session, filters=['product_name'])
 _register_rest_getters(Test)
 get_tests_of_session()
