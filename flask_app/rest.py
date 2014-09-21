@@ -20,8 +20,14 @@ def _register_rest_getters(objtype):
         return objtype.query
 
 
+def get_tests_of_session():
+    @blueprint.route('/sessions/<int:object_id>/tests', endpoint='get_tests_of_session')
+    @paginated_view(renderer=render_api_object)
+    def get_tests_of_session(object_id):
+        return Test.query.filter(Test.session_id == object_id)
 
 ################################################################################
 
 _register_rest_getters(Session)
 _register_rest_getters(Test)
+get_tests_of_session()

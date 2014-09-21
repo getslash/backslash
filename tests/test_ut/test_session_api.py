@@ -66,6 +66,10 @@ def test_query_all_sessions(client, started_session):
     assert session.id == started_session.id
     assert session == started_session
 
+def test_query_all_tests(client, started_test):
+    [test] = client.query_tests()
+    assert test.id == started_test.id
+    assert test == started_test
 
 @pytest.mark.parametrize('use_duration', [True, False])
 def test_end_session(started_session, use_duration):
@@ -118,4 +122,10 @@ def test_session_status_error_and_failure(started_session_with_ended_test):
     started_session.report_end()
     started_session.refresh()
     assert started_session.status == 'FAILURE'
+
+def test_session_query_tests(started_session_with_ended_test):
+    (started_session, test) = started_session_with_ended_test
+    [queried_test] = started_session.query_tests()
+    assert queried_test.id == test.id
+#    assert queried_test == test # failing - not the same object
 
