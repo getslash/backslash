@@ -35,6 +35,7 @@ cli.add_command(generate_nginx_config)
 cli.add_command(db)
 cli.add_command(frontend)
 
+
 @cli.command('ensure-secret')
 @click.argument("conf_file")
 def ensure_secret(conf_file):
@@ -44,8 +45,10 @@ def ensure_secret(conf_file):
     if os.path.exists(conf_file):
         return
     with open(conf_file, "w") as f:
-        secret_key = "".join([random.choice(string.ascii_letters) for i in range(50)])
+        secret_key = "".join(
+            [random.choice(string.ascii_letters) for i in range(50)])
         print('SECRET_KEY: "{0}"'.format(secret_key), file=f)
+
 
 @cli.command()
 @click.option("--develop", is_flag=True)
@@ -81,7 +84,8 @@ def deploy(dest):
 def _run_deploy(dest):
     prepare_source_package()
     cmd = [from_env_bin("python"), from_env_bin("ansible-playbook"), "-i"]
-    click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
+    click.echo(click.style(
+        "Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
 
     cmd.append(from_project_root("ansible", "inventories", dest))
     if dest in ("localhost",):
@@ -105,7 +109,7 @@ def unittest():
 @requires_env("app", "develop")
 def _run_unittest():
     subprocess.check_call(
-        [from_env_bin("py.test"), "tests/test_ut"], cwd=from_project_root())
+        [from_env_bin("py.test"), "tests/test_ut", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
 
 
 @cli.command()
@@ -130,7 +134,8 @@ def travis_test():
 
 
 def _wait_for_travis_availability():
-    click.echo(click.style("Waiting for service to become available on travis", fg='magenta'))
+    click.echo(
+        click.style("Waiting for service to become available on travis", fg='magenta'))
     time.sleep(10)
     for retry in range(10):
         click.echo("Checking service...")
@@ -148,18 +153,22 @@ def _wait_for_travis_availability():
 def docker():
     pass
 
+
 @docker.command()
 def build():
     _run_docker_build()
+
 
 def _run_docker_build():
     prepare_source_package()
     build_docker_image(tag=APP_NAME, root=from_project_root())
 
+
 @docker.command()
 @click.option("-p", "--port", default=80, type=int)
 def start(port):
     _run_docker_start(port)
+
 
 def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
@@ -167,18 +176,21 @@ def _run_docker_start(port):
         os.makedirs(persistent_dir)
     db_container_name = _db_container_name()
     start_docker_container(image='postgres', name=db_container_name,
-                           binds={os.path.join(persistent_dir, "db"):'/var/lib/postgresql/data'})
+                           binds={os.path.join(persistent_dir, "db"): '/var/lib/postgresql/data'})
     container_name = _webapp_container_name()
-    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'},
+    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir: '/persistent'},
                            port_bindings={80: port},
                            links={db_container_name: 'db'})
+
 
 @docker.command()
 def stop():
     stop_docker_container(_webapp_container_name())
 
+
 def _webapp_container_name():
     return '{0}-container'.format(APP_NAME)
+
 
 def _db_container_name():
     return '{0}-db'.format(APP_NAME)
