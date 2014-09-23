@@ -29,8 +29,7 @@ def filterable_view(filterable_fields):
                 filter_obj = filters.get(arg_name)
                 if filter_obj is None:
                     abort(requests.codes.bad_request)
-                for filter in filters:
-                    returned = filter_obj.filter_query(returned, filter_value)
+                returned = filter_obj.filter_query(returned, filter_value)
             return returned
 
         return new_func
