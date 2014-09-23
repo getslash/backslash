@@ -29,6 +29,15 @@ def set_product(id, name, version=None, revision=None):
 
 @api_func
 @auto_commit
+@takes_schema_args(id=int,
+                   user_name=str)
+def set_user(id, user_name):
+    update = {'user_name': user_name}
+    if not Session.query.filter(Session.id == id).update(update):
+        abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
 @takes_schema_args(logical_id=Optional(str),
                    hostname=Optional(str),
                    product_name=Optional(str),

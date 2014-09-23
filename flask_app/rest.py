@@ -2,8 +2,9 @@ from flask import Blueprint
 
 from .models import Session, Test
 from weber_utils import paginated_view
-from .filtering import filterable_view
+from .filtering import filterable_view, Filter
 from .rendering import auto_render, render_api_object
+from .statuses import filter_query_by_session_status
 
 blueprint = Blueprint('rest', __name__)
 
@@ -30,6 +31,6 @@ def get_tests_of_session():
 
 ################################################################################
 
-_register_rest_getters(Session, filters=['product_name'])
-_register_rest_getters(Test)
+_register_rest_getters(Session, filters=['product_name', 'user_name', 'logical_id', Filter('status', filter_func=filter_query_by_session_status)])
+_register_rest_getters(Test, filters=['name', 'logical_id'])
 get_tests_of_session()

@@ -16,13 +16,14 @@ db = SQLAlchemy(app)
 class Session(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    logical_id = db.Column(db.String(256))
+    logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     hostname = db.Column(db.String(100))
     product_name = db.Column(db.String(256), index=True)
     product_version = db.Column(db.String(256), index=True)
     product_revision = db.Column(db.String(256), index=True)
+    user_name = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
 
     @computed_field
@@ -40,10 +41,10 @@ class Test(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
-    logical_id = db.Column(db.String(256))
+    logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
-    name = db.Column(db.String(256))
+    name = db.Column(db.String(256), index=True)
     skipped = db.Column(db.Boolean, default=False)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
