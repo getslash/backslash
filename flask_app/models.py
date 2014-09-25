@@ -7,7 +7,6 @@ from sqlalchemy.orm import backref
 from .app import app
 from .utils import get_current_time
 from .rendering import computed_field
-
 db = SQLAlchemy(app)
 
 ### Add models here

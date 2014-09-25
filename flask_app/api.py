@@ -95,12 +95,12 @@ def report_test_end(id, duration=None, skipped=False):
 @auto_commit
 @takes_schema_args(id=int)
 def test_add_error(id):
-
     try:
         test = Test.query.filter(Test.id == id).one()
         test.num_errors = Test.num_errors + 1
     except NoResultFound:
         abort(requests.codes.not_found)
+
 
 @api_func
 @auto_commit

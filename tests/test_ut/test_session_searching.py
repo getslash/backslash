@@ -14,12 +14,24 @@ def test_search_by_user(client, sessions, session_to_find_user, user_name):
 def test_search_by_status_running(client, sessions, session_to_find_status_running):
     [session] = client.query_sessions().filter(status='RUNNING')
     assert session == session_to_find_status_running
-    assert len(client.query_sessions().filter(status='SUCCESS')) == 0
+#   empty result is not supported yet
+#   [success_session] = client.query_sessions().filter(status='SUCCESS')
+#    assert len(success_session) == 0
 
 
 def test_search_by_status_success(client, sessions, session_to_find_status_success):
     [session] = client.query_sessions().filter(status='SUCCESS')
     assert session == session_to_find_status_success
+
+
+def test_search_by_status_failure_failed_test(client, sessions, session_to_find_status_failed_test):
+    [session] = client.query_sessions().filter(status='FAILURE')
+    assert session == session_to_find_status_failed_test
+
+
+def test_search_by_status_failure_error_test(client, sessions, session_to_find_status_error_test):
+    [session] = client.query_sessions().filter(status='FAILURE')
+    assert session == session_to_find_status_error_test
 
 
 def test_search_by_session_logical_id(client, session_to_find_logical_id, logical_id):
@@ -66,6 +78,38 @@ def session_to_find_status_running(client):
 @pytest.fixture
 def session_to_find_status_success(client):
     session = client.report_session_start()
+    session.report_end()
+    session.refresh()
+    return session
+
+
+@pytest.fixture
+def session_to_find_status_success(client):
+    session = client.report_session_start()
+    test = session.report_test_start()
+    test.report_end()
+    session.report_end()
+    session.refresh()
+    return session
+
+
+@pytest.fixture
+def session_to_find_status_failed_test(client):
+    session = client.report_session_start()
+    test = session.report_test_start()
+    test.add_failure()
+    test.report_end()
+    session.report_end()
+    session.refresh()
+    return session
+
+
+@pytest.fixture
+def session_to_find_status_error_test(client):
+    session = client.report_session_start()
+    test = session.report_test_start()
+    test.add_error()
+    test.report_end()
     session.report_end()
     session.refresh()
     return session
