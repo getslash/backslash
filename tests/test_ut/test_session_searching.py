@@ -1,5 +1,5 @@
 import pytest
-
+from .utils import raises_bad_request
 
 def test_search_by_product_name(client, sessions, session_to_find_product, product_info):
     [session] = client.query_sessions().filter(product_name=product_info['name'])
@@ -9,6 +9,12 @@ def test_search_by_product_name(client, sessions, session_to_find_product, produ
 def test_search_by_user(client, sessions, session_to_find_user, user_name):
     [session] = client.query_sessions().filter(user_name=user_name)
     assert session == session_to_find_user
+
+
+def test_search_by_bad_filter_name(client):
+    with raises_bad_request():
+        #because of lazy evaluation we need to assign and "use" the result
+        [dontcare] = client.query_sessions().filter(nonexistant_name='dontcare')
 
 
 def test_search_by_status_running(client, sessions, session_to_find_status_running):
@@ -22,6 +28,12 @@ def test_search_by_status_running(client, sessions, session_to_find_status_runni
 def test_search_by_status_success(client, sessions, session_to_find_status_success):
     [session] = client.query_sessions().filter(status='SUCCESS')
     assert session == session_to_find_status_success
+
+
+def test_search_by_bad_status(client):
+    with raises_bad_request():
+        #because of lazy evaluation we need to assign and "use" the result
+        [dontcare] = client.query_sessions().filter(status='BADSTATUS')
 
 
 def test_search_by_status_failure_failed_test(client, sessions, session_to_find_status_failed_test):

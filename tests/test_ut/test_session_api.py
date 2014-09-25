@@ -63,6 +63,13 @@ def test_session_set_product_nonexistent_session(nonexistent_session, product_in
         nonexistent_session.set_product(**product_info)
 
 
+def test_session_add_user_nonexistent_session(nonexistent_session):
+    with raises_not_found():
+        user_name = 'user1'
+        nonexistent_session.set_user(user_name)
+
+
+
 def test_started_session_times(started_session):
     assert started_session.start_time is not None
     assert started_session.end_time is None

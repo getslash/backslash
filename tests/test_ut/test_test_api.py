@@ -73,6 +73,16 @@ def test_end_test_doesnt_exist(nonexistent_test):
         nonexistent_test.report_end()
 
 
+def test_add_error_nonexistent_test(nonexistent_test):
+    with raises_not_found():
+        nonexistent_test.add_error()
+
+
+def test_add_failure_nonexistent_test(nonexistent_test):
+    with raises_not_found():
+        nonexistent_test.add_failure()
+
+
 def test_end_test_twice(ended_test):
     with raises_conflict():
         ended_test.report_end()

@@ -1,4 +1,5 @@
 import pytest
+from .utils import raises_bad_request
 
 
 def test_search_by_test_name(client, test_to_find_name, test_name):
@@ -9,6 +10,13 @@ def test_search_by_test_name(client, test_to_find_name, test_name):
 def test_search_by_test_logical_id(client, test_to_find_logical_id, logical_id):
     [test] = client.query_tests().filter(logical_id=logical_id)
     assert test == test_to_find_logical_id
+
+
+def test_search_by_bad_status(client):
+    with raises_bad_request():
+        #because of lazy evaluation we need to assign and "use" the result
+        [dontcare] = client.query_tests().filter(status='BADSTATUS')
+
 
 
 def test_search_by_status_success(client, test_to_find_status_success):

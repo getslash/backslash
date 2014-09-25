@@ -33,12 +33,3 @@ def filter_query_by_test_status(query, status):
         return query.filter(Test.skipped)
 
 
-
-def get_session_status(session):
-    if session.end_time is None:
-        return 'RUNNING'
-    else:
-        for test in session.tests:
-            if test.status() == 'FAILURE' or test.status() == 'ERROR':
-                return 'FAILURE'
-        return 'SUCCESS'
