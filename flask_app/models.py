@@ -7,6 +7,9 @@ from sqlalchemy.orm import backref
 from .app import app
 from .utils import get_current_time
 from .rendering import computed_field
+
+from sqlalchemy.dialects.postgresql import JSON
+
 db = SQLAlchemy(app)
 
 ### Add models here
@@ -47,6 +50,7 @@ class Test(db.Model):
     skipped = db.Column(db.Boolean, default=False)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
+    metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
 
     @computed_field
     def duration(self):
@@ -66,3 +70,18 @@ class Test(db.Model):
             elif self.num_errors > 0:
                 return 'ERROR'
         return 'SUCCESS'
+
+    @computed_field
+    def test_metadata(self):
+        combined_json_object = {}
+        for metadata_object in self.metadata_objects:
+            for key, value in metadata_object.metadata_item.iteritems():
+                combined_json_object[key] = value
+        return combined_json_object
+
+
+class TestMetadata(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
+    metadata_item = db.Column(JSON)

@@ -7,7 +7,7 @@ from weber_utils import Optional, takes_schema_args
 
 from .api_utils import auto_commit, get_api_decorator, API_SUCCESS
 from .utils import get_current_time
-from .models import Session, Test
+from .models import Session, Test, TestMetadata
 from sqlalchemy.orm.exc import NoResultFound
 
 blueprint = Blueprint('api', __name__)
@@ -110,5 +110,17 @@ def test_add_failure(id):
     try:
         test = Test.query.filter(Test.id == id).one()
         test.num_failures = Test.num_failures + 1
+    except NoResultFound:
+        abort(requests.codes.not_found)
+
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int, metadata=dict)
+def test_add_metadata(id, metadata):
+
+    try:
+        test = Test.query.filter(Test.id == id).one()
+        test.metadata_objects.append(TestMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)

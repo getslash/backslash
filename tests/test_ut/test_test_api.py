@@ -2,7 +2,7 @@ import flux
 import pytest
 import datetime
 
-from .utils import raises_not_found, raises_conflict
+from .utils import raises_not_found, raises_conflict, raises_bad_request
 
 
 def test_report_test_start(started_session, test_name):
@@ -125,6 +125,7 @@ def test_get_status_skipped(started_test):
     started_test.refresh()
     assert started_test.status == 'SKIPPED'
 
+
 @pytest.mark.parametrize('use_duration', [True, False])
 def test_report_test_end(started_test, use_duration):
     if use_duration:
@@ -133,4 +134,32 @@ def test_report_test_end(started_test, use_duration):
         started_test.report_end()
     started_test.refresh()
     assert started_test.status == 'SUCCESS'
+
+
+def test_add_metadata(started_test):
+    metadata = {'logfile': '/var/log/foo'}
+    started_test.add_metadata(metadata)
+    started_test.refresh()
+    assert started_test.test_metadata == metadata
+
+
+def test_add_two_metadata_items(started_test):
+    metadata1 = {'logfile': '/var/log/foo'}
+    metadata2 = {'foo': 'bar'}
+    metadata = dict(metadata1.items() + metadata2.items())
+    started_test.add_metadata(metadata1)
+    started_test.add_metadata(metadata2)
+    started_test.refresh()
+    assert started_test.test_metadata == metadata
+
+
+def test_add_bad_metadata(started_test):
+    with raises_bad_request():
+        started_test.add_metadata('bad_metadata')
+
+
+def test_add_metadata_nonexistent_test(nonexistent_test):
+    with raises_not_found():
+        nonexistent_test.add_metadata({'foo':'bar'})
+
 
