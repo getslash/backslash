@@ -31,7 +31,7 @@ def set_product(id, name, version=None, revision=None):
 @auto_commit
 @takes_schema_args(id=int,
                    user_name=str)
-def set_user(id, user_name):
+def set_session_user(id, user_name):
     update = {'user_name': user_name}
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
@@ -94,7 +94,7 @@ def report_test_end(id, duration=None, skipped=False):
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def test_add_error(id):
+def add_test_error(id):
     try:
         test = Test.query.filter(Test.id == id).one()
         test.num_errors = Test.num_errors + 1
@@ -105,7 +105,7 @@ def test_add_error(id):
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def test_add_failure(id):
+def add_test_failure(id):
 
     try:
         test = Test.query.filter(Test.id == id).one()
@@ -117,7 +117,7 @@ def test_add_failure(id):
 @api_func
 @auto_commit
 @takes_schema_args(id=int, metadata=dict)
-def test_add_metadata(id, metadata):
+def add_test_metadata(id, metadata):
 
     try:
         test = Test.query.filter(Test.id == id).one()
