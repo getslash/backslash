@@ -50,9 +50,24 @@ def test_session_set_product(started_session, product_info):
     assert started_session.product_revision == product_info.get('revision')
 
 
+def test_session_set_user(started_session):
+    assert started_session.user_name is None
+    user_name = 'user1'
+    started_session.set_user(user_name)
+    started_session.refresh()
+    assert started_session.user_name == user_name
+
+
 def test_session_set_product_nonexistent_session(nonexistent_session, product_info):
     with raises_not_found():
         nonexistent_session.set_product(**product_info)
+
+
+def test_session_add_user_nonexistent_session(nonexistent_session):
+    with raises_not_found():
+        user_name = 'user1'
+        nonexistent_session.set_user(user_name)
+
 
 
 def test_started_session_times(started_session):

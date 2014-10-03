@@ -7,7 +7,7 @@ from weber_utils import Optional, takes_schema_args
 
 from .api_utils import auto_commit, get_api_decorator, API_SUCCESS
 from .utils import get_current_time
-from .models import Session, Test
+from .models import Session, Test, TestMetadata
 from sqlalchemy.orm.exc import NoResultFound
 
 blueprint = Blueprint('api', __name__)
@@ -24,6 +24,15 @@ api_func = get_api_decorator(blueprint)
                    revision=Optional(str))
 def set_product(id, name, version=None, revision=None):
     update = {'product_name': name, 'product_version': version, 'product_revision': revision}
+    if not Session.query.filter(Session.id == id).update(update):
+        abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int,
+                   user_name=str)
+def set_session_user(id, user_name):
+    update = {'user_name': user_name}
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
@@ -85,21 +94,33 @@ def report_test_end(id, duration=None, skipped=False):
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def test_add_error(id):
-
+def add_test_error(id):
     try:
         test = Test.query.filter(Test.id == id).one()
         test.num_errors = Test.num_errors + 1
     except NoResultFound:
         abort(requests.codes.not_found)
 
+
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def test_add_failure(id):
+def add_test_failure(id):
 
     try:
         test = Test.query.filter(Test.id == id).one()
         test.num_failures = Test.num_failures + 1
+    except NoResultFound:
+        abort(requests.codes.not_found)
+
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int, metadata=dict)
+def add_test_metadata(id, metadata):
+
+    try:
+        test = Test.query.filter(Test.id == id).one()
+        test.metadata_objects.append(TestMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)

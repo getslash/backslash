@@ -8,6 +8,11 @@ import pytest
 def raises_conflict():
     return raises_http_error(requests.codes.conflict)
 
+
+def raises_bad_request():
+    return raises_http_error(requests.codes.bad_request)
+
+
 def raises_not_found():
     return raises_http_error(requests.codes.not_found)
 

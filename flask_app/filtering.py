@@ -37,9 +37,12 @@ def filterable_view(filterable_fields):
 
 class Filter(object):
 
-    def __init__(self, name):
+    def __init__(self, name, filter_func=None):
         super(Filter, self).__init__()
         self.name = name
+        self.filter_func = filter_func
 
     def filter_query(self, query, value):
+        if self.filter_func:
+            return self.filter_func(query, value)
         return query.filter_by(**{self.name: value})
