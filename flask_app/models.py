@@ -12,8 +12,6 @@ from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy(app)
 
-### Add models here
-
 
 class Session(db.Model):
 

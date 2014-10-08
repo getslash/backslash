@@ -1,8 +1,30 @@
+import flux
+
 import pytest
+from backslash import FIELDS
 from .utils import raises_bad_request
 
+
+def test_sessions_have_different_start_end_times(sessions):
+    """Mostly checks that the fixture is sane, not an actual product test
+    """
+    times = set()
+    for session in sessions:
+        times.add(session.start_time)
+        times.add(session.end_time)
+    assert len(times) == len(sessions) * 2
+
+
+def test_search_by_start_time_range(client, session_triplet):
+    a, b, c = session_triplet
+    assert a.start_time < b.start_time < c.start_time
+    [matching] = client.query_sessions().filter(a.start_time+1 < FIELDS.start_time < c.start_time-1)
+    assert matching == b
+
+
 def test_search_by_product_name(client, sessions, session_to_find_product, product_info):
-    [session] = client.query_sessions().filter(product_name=product_info['name'])
+    [session] = client.query_sessions().filter(
+        product_name=product_info['name'])
     assert session == session_to_find_product
 
 
@@ -13,8 +35,9 @@ def test_search_by_user(client, sessions, session_to_find_user, user_name):
 
 def test_search_by_bad_filter_name(client):
     with raises_bad_request():
-        #because of lazy evaluation we need to assign and "use" the result
-        [dontcare] = client.query_sessions().filter(nonexistant_name='dontcare')
+        # because of lazy evaluation we need to assign and "use" the result
+        [dontcare] = client.query_sessions().filter(
+            nonexistant_name='dontcare')
 
 
 def test_search_by_status_running(client, sessions, session_to_find_status_running):
@@ -32,7 +55,7 @@ def test_search_by_status_success(client, sessions, session_to_find_status_succe
 
 def test_search_by_bad_status(client):
     with raises_bad_request():
-        #because of lazy evaluation we need to assign and "use" the result
+        # because of lazy evaluation we need to assign and "use" the result
         [dontcare] = client.query_sessions().filter(status='BADSTATUS')
 
 
@@ -51,9 +74,10 @@ def test_search_by_session_logical_id(client, session_to_find_logical_id, logica
     assert session == session_to_find_logical_id
 
 
-#just to see we can filter according to more than one field
+# just to see we can filter according to more than one field
 def test_search_by_user_and_product(client, sessions, session_to_find_user_and_product, user_name, product_info):
-    [session] = client.query_sessions().filter(product_name=product_info['name'], user_name=user_name)
+    [session] = client.query_sessions().filter(
+        product_name=product_info['name'], user_name=user_name)
     assert session == session_to_find_user_and_product
 
 
@@ -147,9 +171,19 @@ def session_to_find_logical_id(client, logical_id):
 
 @pytest.fixture
 def sessions(client):
-    num_sessions = 3
+    returned = []
+    num_sessions = 5
     for i in range(num_sessions):
+        flux.current_timeline.sleep(10)
         s = client.report_session_start()
+        flux.current_timeline.sleep(10)
         s.report_end()
+        s.refresh()
+        returned.append(s)
     assert len(client.query_sessions()) == num_sessions
+    return returned
 
+
+@pytest.fixture
+def session_triplet(sessions):
+    return sessions[2], sessions[3], sessions[4]

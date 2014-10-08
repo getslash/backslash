@@ -23,14 +23,20 @@ def _register_rest_getters(objtype, filters=()):
         return objtype.query
 
 
-def get_tests_of_session():
-    @blueprint.route('/sessions/<int:object_id>/tests', endpoint='get_tests_of_session')
-    @paginated_view(renderer=render_api_object)
-    def get_tests_of_session(object_id):
-        return Test.query.filter(Test.session_id == object_id)
-
 ################################################################################
 
-_register_rest_getters(Session, filters=['product_name', 'user_name', 'logical_id', Filter('status', filter_func=filter_query_by_session_status)])
-_register_rest_getters(Test, filters=['name', 'logical_id', Filter('status', filter_func=filter_query_by_test_status)])
-get_tests_of_session()
+_register_rest_getters(Session, filters=[
+    'product_name', 'user_name', 'logical_id',
+    Filter('start_time', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
+    Filter('status', filter_func=filter_query_by_session_status)])
+
+_register_rest_getters(Test, filters=[
+    'name', 'logical_id',
+    Filter('status', filter_func=filter_query_by_test_status)])
+
+## more specific views
+
+@blueprint.route('/sessions/<int:object_id>/tests', endpoint='get_tests_of_session')
+@paginated_view(renderer=render_api_object)
+def view_tests_of_session(object_id):
+    return Test.query.filter(Test.session_id == object_id)
