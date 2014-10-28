@@ -9,3 +9,8 @@ clean:
 
 test:
 	python manage.py unittest
+
+webapp:
+	.env/bin/python manage.py frontend build
+
+.PHONY: webapp
