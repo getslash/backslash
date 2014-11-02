@@ -17,9 +17,15 @@ def frontend():
 
 @frontend.command()
 @click.option("--watch", is_flag=True)
-def build(watch):
+@click.option("--production", is_flag=True)
+def build(watch, production):
     _bootstrap_frontend()
-    _execute('ember build --output-path=../static/ {0}'.format('--watch' if watch else ''))
+    cmd = 'ember build --output-path=../static/'
+    if watch:
+        cmd += ' --watch'
+    if production:
+        cmd += ' --environment=production'
+    _execute(cmd)
 
 def _bootstrap_frontend():
     with _get_timestamp_update_context(

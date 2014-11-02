@@ -78,7 +78,7 @@ def _generate_dockerfile_lines():
     yield RUN('cd /src && python manage.py bootstrap --app')
     yield RUN('rm -rf /etc/nginx/sites-enabled/*')
     yield RUN('cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp')
-    yield RUN('cd /src && python manage.py frontend build')
+    yield RUN('cd /src && python manage.py frontend build --production')
     yield EXPOSE('80')
     yield CMD('service', '&&'.join([
         'redis-server start',
