@@ -19,7 +19,7 @@ def frontend():
 @click.option("--watch", is_flag=True)
 def build(watch):
     _bootstrap_frontend()
-    _execute('ember build --output-path=../static/')
+    _execute('ember build --output-path=../static/ {0}'.format('--watch' if watch else ''))
 
 def _bootstrap_frontend():
     with _get_timestamp_update_context(
