@@ -56,7 +56,7 @@ def bootstrap(develop, app):
 
 
 @cli.command()
-@requires_env("app")
+@requires_env("app", "develop")
 def testserver():
     from flask_app.app import app
     app.config["DEBUG"] = True
