@@ -3,7 +3,7 @@ python:
   - 2.7
 addons:
   postgresql: "9.3"
-script: python manage.py travis-test
+script: make travis-test
 after_failure:
   - sudo supervisorctl status
   - sudo cat /var/log/*-wsgi.log

@@ -10,7 +10,10 @@ clean:
 test: webapp
 	python manage.py unittest
 
+travis-test: webapp
+	python manage.py travis-test
+
 webapp:
-	.env/bin/python manage.py frontend build
+	python manage.py frontend build
 
 .PHONY: webapp
