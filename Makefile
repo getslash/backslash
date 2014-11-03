@@ -7,7 +7,7 @@ clean:
 	rm -rf .env
 	find . -name "*.pyc" -delete
 
-test:
+test: webapp
 	python manage.py unittest
 
 webapp:

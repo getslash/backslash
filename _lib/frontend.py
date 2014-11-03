@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from contextlib import contextmanager
 
 import logbook
@@ -32,7 +33,9 @@ def _bootstrap_frontend():
             from_env("frontend.timestamp"), ["webapp/package.json"]) as uptodate:
         if not uptodate:
             _logger.info("Bootstrapping frontend environment...")
-            _execute("npm install ember-cli")
+            _execute("npm install -g ember-cli bower")
+            _execute("npm install")
+            _execute("bower install --allow-root")
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
@@ -47,7 +50,9 @@ def _get_timestamp_update_context(timestamp_path, paths):
 def _execute(cmd, cwd=None):
     if cwd is None:
         cwd = from_project_root('webapp')
-    subprocess.check_call(cmd, shell=True, cwd=cwd)
+    returncode = subprocess.call(cmd, shell=True, cwd=cwd)
+    if returncode != 0:
+        sys.exit(returncode)
 
 def _get_timestamp(path):
     try:
