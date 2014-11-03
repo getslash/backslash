@@ -7,10 +7,10 @@ clean:
 	rm -rf .env
 	find . -name "*.pyc" -delete
 
-test: webapp
+test:
 	python manage.py unittest
 
-travis-test: webapp
+travis-test:
 	python manage.py travis-test
 
 webapp:
