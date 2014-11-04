@@ -33,6 +33,8 @@ def build_docker_image(root, tag):
 
         subprocess.check_call(
             "docker build -t {0} .".format(tag), shell=True, cwd=path)
+    subprocess.check_call(
+        "docker pull postgres", shell=True)
 
 @contextmanager
 def _get_temp_path():
