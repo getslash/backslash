@@ -53,3 +53,4 @@ static/fonts/fontawesome-webfont.woff
 _build
 persistent
 htmlcov
+static

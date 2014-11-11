@@ -2,4 +2,5 @@ pytest
 pytest-cov
 Flask-Loopback
 -e git://github.com/vmalloc/backslash-python.git#egg=backslash-python
+tmuxp
 

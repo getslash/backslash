@@ -42,6 +42,7 @@ def ensure():
 @db.command()
 def wait(num_retries=60, retry_sleep_seconds=1):
     import sqlalchemy
+
     from flask_app.app import app
 
     uri = app.config['SQLALCHEMY_DATABASE_URI']
@@ -51,8 +52,12 @@ def wait(num_retries=60, retry_sleep_seconds=1):
             time.sleep(retry_sleep_seconds)
         try:
             sqlalchemy.create_engine(uri).connect()
-        except Exception:
-            logbook.error("Could not connect to database. Going to retry...", exc_info=True)
+        except sqlalchemy.exc.OperationalError as e:
+            if 'does not exist' in str(e):
+                break
+            logbook.error("Ignoring OperationError {0} (db still not availalbe?)", e)
+        except Exception as e:
+            logbook.error("Could not connect to database ({0.__class__}: {0}. Going to retry...", e, exc_info=True)
         else:
             break
     else:

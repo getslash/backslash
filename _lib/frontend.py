@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from contextlib import contextmanager
 
 import logbook
@@ -17,23 +18,24 @@ def frontend():
 
 @frontend.command()
 @click.option("--watch", is_flag=True)
-def build(watch):
-    _bootstrap_npm()
+@click.option("--production", is_flag=True)
+def build(watch, production):
+    _bootstrap_frontend()
+    cmd = 'ember build --output-path=../static/'
     if watch:
-        _execute("gulp watch")
-    else:
-        _execute("gulp")
+        cmd += ' --watch'
+    if production:
+        cmd += ' --environment=production'
+    _execute(cmd)
 
-def _bootstrap_npm():
+def _bootstrap_frontend():
     with _get_timestamp_update_context(
-            from_env("npm.timestamp"), ["bower.json", "package.json"]) as uptodate:
+            from_env("frontend.timestamp"), ["webapp/package.json"]) as uptodate:
         if not uptodate:
-            _logger.info("Bootstrapping npm environment...")
+            _logger.info("Bootstrapping frontend environment...")
+            _execute("npm install -g ember-cli bower")
             _execute("npm install")
-            _execute("npm install gulp")
-            _execute("npm install -g gulp")
-            _execute("npm install -g bower")
-            _execute("bower install --allow-root -f -V")
+            _execute("bower install --allow-root")
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
@@ -45,8 +47,12 @@ def _get_timestamp_update_context(timestamp_path, paths):
     with open(timestamp_path, "w"):
         pass
 
-def _execute(cmd):
-    subprocess.check_call(cmd, shell=True, cwd=from_project_root())
+def _execute(cmd, cwd=None):
+    if cwd is None:
+        cwd = from_project_root('webapp')
+    returncode = subprocess.call(cmd, shell=True, cwd=cwd)
+    if returncode != 0:
+        sys.exit(returncode)
 
 def _get_timestamp(path):
     try:
