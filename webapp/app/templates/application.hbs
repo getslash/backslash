@@ -1,13 +1,11 @@
-<div class="container">
-  <div class="container">
-    <div class="alert alert-success">
-      <h1>Status Report</h1>
-      {{#each features}}
-        <p><i {{bind-attr class=":fa ok:fa-check-circle"}}></i> {{name}}</p>
-      {{/each}}
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Backslash</a>
     </div>
+    
   </div>
-</div>
-
+</nav>
 
 {{outlet}}
