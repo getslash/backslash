@@ -67,6 +67,7 @@ def wait(num_retries=60, retry_sleep_seconds=1):
 @db.command()
 @requires_env("app")
 def drop():
+    from flask_app.app import app
     from flask_app.models import db
     db.drop_all()
 
