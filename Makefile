@@ -7,7 +7,7 @@ testdb:
 	.env/bin/python manage.py db upgrade
 
 testserver:
-	.env/bin/python manage.py testserver
+	python manage.py testserver
 
 clean:
 	rm -rf .env
