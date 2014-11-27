@@ -1,0 +1,36 @@
+<h1>session {{id}}</h1>
+
+<p>Logical ID: {{logicalId}}</p>
+<p>Status: {{status}}</p>
+<p>Start time: {{properStartTime}}</p>
+<p>End time: {{properEndTime}}</p>
+<p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
+<p>Hostname: {{hostname}}</p>
+<p>Username: {{userName}}</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Logical ID</th>
+        <th>name</th>
+        <th>Status</th>
+        <th>Start time</th>
+        <th>Duration</th>
+        <th>Errors number</th>
+        <th>Failures number</th>
+        <th>Skipped</th>
+    </tr>
+    {{#each test in tests}}
+      <tr>
+          <td>{{test.id}}</td>
+          <td>{{test.logicalId}}</td>
+          <td>{{test.name}}</td>
+          <td>{{test.status}}</td>
+          <td>{{test.properStartTime}}</td>
+          <td>{{test.duration}}</td>
+          <td>{{test.numErrors}}</td>
+          <td>{{test.numFailures}}</td>
+          <td>{{test.skipped}}</td>
+      </tr>
+  {{/each}}
+</table>

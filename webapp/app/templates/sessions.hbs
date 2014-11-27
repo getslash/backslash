@@ -1,1 +1,30 @@
-{{outlet}}
+<h1>Sessions</h1>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Logical ID</th>
+        <th>Status</th>
+        <th>Start time</th>
+        <th>End time</th>
+        <th>Product Name</th>
+        <th>Product Version</th>
+        <th>Product Revision</th>
+        <th>Hostname</th>
+        <th>User</th>
+    </tr>
+  {{#each model}}
+      <tr>
+          <td>{{#link-to 'session' this}}{{this.id}}{{/link-to}}</td>
+          <td>{{logicalId}}</td>
+          <td>{{status}}</td>
+          <td>{{properStartTime}}</td>
+          <td>{{properEndTime}}</td>
+          <td>{{productName}}</td>
+          <td>{{productVersion}}</td>
+          <td>{{productRevision}}</td>
+          <td>{{hostname}}</td>
+          <td>{{userName}}</td>
+      </tr>
+  {{/each}}
+</table>
