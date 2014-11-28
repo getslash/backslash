@@ -40,7 +40,7 @@ $ python manage.py db upgrade
 ```
 
 If you wish to run an out-of-the-box test server:
-- install tMux (http://tmux.sourceforge.net/) and
+- install tMux (http://tmux.sourceforge.net/)
 - run:
 ```
 $ make testserver
