@@ -36,7 +36,16 @@ Next, you will need a running instance of Postgres, with a database named *backs
 $ pg_ctl init -D /tmp/db -w
 $ pg_ctl start -D /tmp/db -w
 $ createdb backslash
+$ python manage.py db upgrade
 ```
+
+If you wish to run an out-of-the-box test server:
+- install tMux (http://tmux.sourceforge.net/) and
+- run:
+```
+$ make testserver
+```
+
 
 If you are testing an unstable release, most chances are that you'll need the development version of `backslash-python`, the official client library for Backslash, which is available at https://github.com/vmalloc/backslash-python.
 
