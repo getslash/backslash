@@ -15,7 +15,7 @@
     </tr>
   {{#each model}}
       <tr>
-          <td>{{#link-to 'session' this}}{{this.id}}{{/link-to}}</td>
+          <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
           <td>{{logicalId}}</td>
           <td>{{status}}</td>
           <td>{{properStartTime}}</td>
