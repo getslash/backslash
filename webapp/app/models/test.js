@@ -4,13 +4,14 @@ export default DS.Model.extend({
   logicalId: DS.attr('string'),
   startTime: DS.attr('date'),
   endTime: DS.attr('date'),
+  duration: DS.attr('number'),
   status: DS.attr('string'),
-  hostname: DS.attr('string'),
-  productName: DS.attr('string'),
-  productRevision: DS.attr('string'),
-  productVersion: DS.attr('string'),
-  userName: DS.attr('string'),
-  tests: DS.hasMany('test', {async: true}, {inverse: 'session'}),
+  name: DS.attr('string'),
+  testMetadata: DS.attr('string'),
+  numErrors: DS.attr('number'),
+  numFailures: DS.attr('number'),
+  skipped: DS.attr('boolean'),
+  session: DS.belongsTo('session', {async: true}, {inverse:'tests'}),
 
   //ember date needs the wrong units
   properStartTime: function() {

@@ -31,7 +31,7 @@ _register_rest_getters(Session, filters=[
     Filter('status', filter_func=filter_query_by_session_status)])
 
 _register_rest_getters(Test, filters=[
-    'name', 'logical_id',
+    'name', 'logical_id','session_id',
     Filter('status', filter_func=filter_query_by_test_status)])
 
 ## more specific views
