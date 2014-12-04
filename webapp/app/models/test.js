@@ -7,7 +7,7 @@ export default DS.Model.extend({
   duration: DS.attr('number'),
   status: DS.attr('string'),
   name: DS.attr('string'),
-  testMetadata: DS.attr('string'),
+  testMetadata: DS.attr('testMetaData'),
   numErrors: DS.attr('number'),
   numFailures: DS.attr('number'),
   skipped: DS.attr('boolean'),
@@ -27,5 +27,10 @@ export default DS.Model.extend({
     var d = new Date(0);
     d.setUTCSeconds(this.get('endTime'));
     return d;
-  }.property('endTime')
+  }.property('endTime'),
+
+  hasErrors: function() {
+    var status = this.get('status');
+    return ((status === 'FAILURE') || (status === 'ERROR'));
+  }.property('status')
 });

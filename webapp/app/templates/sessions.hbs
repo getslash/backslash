@@ -1,6 +1,6 @@
 <h1>Sessions</h1>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped">
     <tr>
         <th>ID</th>
         <th>Logical ID</th>
@@ -14,7 +14,7 @@
         <th>User</th>
     </tr>
   {{#each model}}
-      <tr>
+      <tr {{bind-attr class="hasErrors:failed-item"}}>
           <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
           <td>{{logicalId}}</td>
           <td>{{status}}</td>

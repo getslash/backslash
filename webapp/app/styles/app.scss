@@ -1,5 +1,18 @@
+//needs to be before bootstrap import to override the stripe
+.failed-item
+{
+  background-color: #ff4648
+}
+
+table.table.table-striped tr.failed-item td {
+  background-color: #ff4648;
+}
+
 @import '../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap';
 
 body {
-     padding-top: 70px;
+  padding-top: 70px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 70px;
 }

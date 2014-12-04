@@ -21,7 +21,7 @@
         <th>Skipped</th>
     </tr>
     {{#each test in tests}}
-      <tr>
+      <tr {{bind-attr class="hasErrors:failed-item"}}>
           <td>{{#link-to 'test' test.id}}{{test.id}}{{/link-to}}</td>
           <td>{{test.logicalId}}</td>
           <td>{{test.name}}</td>

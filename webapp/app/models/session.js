@@ -26,5 +26,10 @@ export default DS.Model.extend({
     var d = new Date(0);
     d.setUTCSeconds(this.get('endTime'));
     return d;
-  }.property('endTime')
+  }.property('endTime'),
+
+  hasErrors: function() {
+    var status = this.get('status');
+    return ((status === 'FAILURE') || (status === 'ERROR'));
+  }.property('status')
 });
