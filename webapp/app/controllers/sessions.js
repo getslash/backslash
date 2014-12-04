@@ -6,8 +6,9 @@ export default Ember.ArrayController.extend({
   filteredSessions: function() {
     var sessions = this.get('model');
 
-    if (!sessions || !this.get('showRunning'))
+    if (!sessions || !this.get('showRunning')) {
       return sessions;
+    }
 
     return sessions.filter(function(item) {
       return item.get('isRunning');
