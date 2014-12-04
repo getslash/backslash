@@ -31,5 +31,9 @@ export default DS.Model.extend({
   hasErrors: function() {
     var status = this.get('status');
     return ((status === 'FAILURE') || (status === 'ERROR'));
+  }.property('status'),
+
+  isRunning: function() {
+    return (this.get('status') === 'RUNNING');
   }.property('status')
 });

@@ -1,5 +1,5 @@
 <h1>Sessions</h1>
-
+<p>{{view Ember.Checkbox checkedBinding="showRunning"}} Show only running sessions</p>
 <table class="table table-bordered table-striped">
     <tr>
         <th>ID</th>
@@ -13,7 +13,7 @@
         <th>Hostname</th>
         <th>User</th>
     </tr>
-  {{#each model}}
+  {{#each filteredSessions}}
       <tr {{bind-attr class="hasErrors:failed-item"}}>
           <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
           <td>{{logicalId}}</td>
