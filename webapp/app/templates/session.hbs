@@ -18,19 +18,17 @@
         <th>Duration</th>
         <th>Errors number</th>
         <th>Failures number</th>
-        <th>Skipped</th>
     </tr>
     {{#each test in tests}}
-      <tr {{bind-attr class="hasErrors:failed-item"}}>
+      <tr>
           <td>{{#link-to 'test' test.id}}{{test.id}}{{/link-to}}</td>
           <td>{{test.logicalId}}</td>
           <td>{{test.name}}</td>
-          <td>{{test.status}}</td>
+          <td {{bind-attr class="test.hasErrors:failed-item:success-item"}}>{{test.status}}</td>
           <td>{{test.properStartTime}}</td>
           <td>{{test.duration}}</td>
           <td>{{test.numErrors}}</td>
           <td>{{test.numFailures}}</td>
-          <td>{{test.skipped}}</td>
       </tr>
   {{/each}}
 </table>

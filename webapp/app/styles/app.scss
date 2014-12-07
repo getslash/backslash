@@ -8,6 +8,15 @@ table.table.table-striped tr.failed-item td {
   background-color: #ff4648;
 }
 
+.success-item
+{
+  background-color: #56ff71
+}
+
+table.table.table-striped tr.success-item td {
+  background-color: #56ff71;
+}
+
 @import '../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap';
 
 body {

@@ -14,10 +14,10 @@
         <th>User</th>
     </tr>
   {{#each filteredSessions}}
-      <tr {{bind-attr class="hasErrors:failed-item"}}>
+      <tr>
           <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
           <td>{{logicalId}}</td>
-          <td>{{status}}</td>
+          <td {{bind-attr class="hasErrors:failed-item:success-item"}}>{{status}}</td>
           <td>{{properStartTime}}</td>
           <td>{{properEndTime}}</td>
           <td>{{productName}}</td>
