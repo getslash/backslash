@@ -81,10 +81,34 @@ def report_test_start(session_id, name=None, test_logical_id=None):
 
 @api_func
 @auto_commit
-@takes_schema_args(id=int, duration=Optional((float, int)), skipped=Optional(bool))
-def report_test_end(id, duration=None, skipped=False):
-    update = {'end_time': get_current_time() if duration is None else Test.start_time + duration, 'skipped': skipped}
+@takes_schema_args(id=int, duration=Optional((float, int)))
+def report_test_end(id, duration=None):
+    update = {'end_time': get_current_time() if duration is None else Test.start_time + duration}
     if not Test.query.filter(Test.id == id, Test.end_time == None).update(update):
+        if Test.query.filter(Test.id == id).count():
+            # we have a test, but it already ended
+            abort(requests.codes.conflict)
+        else:
+            abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int)
+def report_test_skipped(id):
+    update = {'skipped': True}
+    if not Test.query.filter(Test.id == id).update(update):
+        if Test.query.filter(Test.id == id).count():
+            # we have a test, but it already ended
+            abort(requests.codes.conflict)
+        else:
+            abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int)
+def report_test_interrupted(id):
+    update = {'interrupted': True}
+    if not Test.query.filter(Test.id == id).update(update):
         if Test.query.filter(Test.id == id).count():
             # we have a test, but it already ended
             abort(requests.codes.conflict)

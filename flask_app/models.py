@@ -46,6 +46,7 @@ class Test(db.Model):
     end_time = db.Column(db.Float, default=None)
     name = db.Column(db.String(256), index=True)
     skipped = db.Column(db.Boolean, default=False)
+    interrupted = db.Column(db.Boolean, default=False)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
@@ -58,6 +59,8 @@ class Test(db.Model):
 
     @computed_field
     def status(self):
+        if self.interrupted:
+            return 'INTERRUPTED'
         if self.end_time is None:
             return 'RUNNING'
         else:
