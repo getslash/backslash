@@ -94,7 +94,7 @@ def report_test_end(id, duration=None):
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def mark_skipped_test(id):
+def report_test_skipped(id):
     update = {'skipped': True}
     if not Test.query.filter(Test.id == id).update(update):
         if Test.query.filter(Test.id == id).count():
@@ -106,7 +106,7 @@ def mark_skipped_test(id):
 @api_func
 @auto_commit
 @takes_schema_args(id=int)
-def mark_interrupted_test(id):
+def report_test_interrupted(id):
     update = {'interrupted': True}
     if not Test.query.filter(Test.id == id).update(update):
         if Test.query.filter(Test.id == id).count():
