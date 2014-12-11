@@ -82,7 +82,8 @@ def test_to_find_status_error(started_session):
 @pytest.fixture
 def test_to_find_status_skipped(started_session):
     test = started_session.report_test_start()
-    test.report_end(skipped=True)
+    test.mark_skipped()
+    test.report_end()
     test.refresh()
     return test
 
