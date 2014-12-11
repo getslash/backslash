@@ -19,7 +19,7 @@ def filter_query_by_session_status(query, status):
 
 
 def filter_query_by_test_status(query, status):
-    if status not in ['RUNNING', 'SUCCESS', 'SKIPPED', 'FAILURE', 'ERROR']:
+    if status not in ['RUNNING', 'SUCCESS', 'SKIPPED', 'FAILURE', 'ERROR', 'INTERRUPTED']:
         abort(requests.codes.bad_request)
     if status == 'RUNNING':
         return query.filter_by(end_time=None)
@@ -31,5 +31,7 @@ def filter_query_by_test_status(query, status):
         return query.filter(Test.num_errors > 0)
     elif status == 'SKIPPED':
         return query.filter(Test.skipped)
+    elif status == 'INTERRUPTED':
+        return query.filter(Test.interrupted)
 
 
