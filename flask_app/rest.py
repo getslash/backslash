@@ -26,7 +26,7 @@ def _register_rest_getters(objtype, filters=()):
 ################################################################################
 
 _register_rest_getters(Session, filters=[
-    'product_name', 'user_name', 'logical_id',
+    'product_name', 'product_version', 'user_name', 'logical_id',
     Filter('start_time', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_session_status)])
 
