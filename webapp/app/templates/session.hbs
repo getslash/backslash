@@ -1,3 +1,4 @@
+<a class="back" {{action goBack}}>back to sessions</a>
 <h1>session {{id}}</h1>
 
 <p>Logical ID: {{logicalId}}</p>
@@ -21,7 +22,7 @@
     </tr>
     {{#each test in tests}}
       <tr>
-          <td>{{#link-to 'test' test.id}}{{test.id}}{{/link-to}}</td>
+          <td>{{#link-to-animated 'test' test.id animations="main:slideLeft"}}{{test.id}}{{/link-to-animated}}</td>
           <td>{{test.logicalId}}</td>
           <td>{{test.name}}</td>
           <td {{bind-attr class="test.hasErrors:failed-item:success-item"}}>{{test.status}}</td>

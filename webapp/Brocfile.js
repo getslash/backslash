@@ -32,5 +32,7 @@ var cssTree = pickFiles('bower_components/fontawesome/css', {
   destDir: '/assets/css'
 });
 
+app.import('vendor/ember-animated-outlet.js');
+app.import('vendor/ember-animated-outlet.css');
 
 module.exports = mergeTrees([app.toTree(), fontTree, cssTree]);
