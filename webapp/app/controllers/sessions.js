@@ -14,7 +14,7 @@ export default Ember.ArrayController.extend({
     return sessions.filter(function(item) {
       return item.get('isRunning');
     });
-  }.property('showRunning'),
+  }.property('showRunning','model.[]'),
 
   sessionStatuses: ['', 'SUCCESS', 'FAILURE', 'RUNNING'],
   actions: {
@@ -55,7 +55,7 @@ export default Ember.ArrayController.extend({
         not_first_param = true;
       }
 
-      this.transitionToRoute("search-sessions", query);
+      this.transitionTo("search-sessions", query);
     }
   }
 
