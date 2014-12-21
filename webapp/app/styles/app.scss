@@ -22,11 +22,9 @@ table.table.table-striped tr.success-item td {
   width: 100%
 }
 
+body {
+  padding: 70px 20px;
+}
+
 @import '../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap';
 
-body {
-  padding-top: 70px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 70px;
-}

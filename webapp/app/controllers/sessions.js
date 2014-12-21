@@ -3,7 +3,6 @@ import Ember from 'ember';
 export default Ember.ArrayController.extend({
   showRunning: false,
   selectedStatus: null,
-
   filteredSessions: function() {
     var sessions = this.get('model');
 
@@ -55,7 +54,7 @@ export default Ember.ArrayController.extend({
         not_first_param = true;
       }
 
-      this.transitionTo("search-sessions", query);
+      this.transitionToRoute("search-sessions", query);
     }
   }
 
