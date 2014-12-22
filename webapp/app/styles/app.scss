@@ -26,5 +26,23 @@ body {
   padding: 70px 20px;
 }
 
+.headerSortDown:after {
+  content: " ▾";
+  font-family: Arial, sans-serif;
+}
+
+.headerSortUp:after {
+  content: " ▴";
+  font-family: Arial, sans-serif;
+}
+
+.sessions-table th {
+  cursor: pointer;
+}
+
+.tests-table th {
+  cursor: pointer;
+}
+
 @import '../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap';
 

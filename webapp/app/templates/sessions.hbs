@@ -41,18 +41,18 @@
       <p>{{view Ember.Checkbox checkedBinding="showRunning"}} Show only running sessions</p>
     </div>
 </div>
-<table class="table table-bordered table-striped">
-    <tr>
-        <th>ID</th>
-        <th>Logical ID</th>
-        <th>Status</th>
-        <th>Start time</th>
-        <th>End time</th>
-        <th>Product Name</th>
-        <th>Product Version</th>
-        <th>Product Revision</th>
-        <th>Hostname</th>
-        <th>User</th>
+<table class="sessions-table table table-bordered table-striped">
+    <tr id="sessions-header">
+        <th id="header-id" class="headerSortDown" {{action 'sortBy' 'id'}}>ID</th>
+        <th id="header-logicalId" {{action 'sortBy' 'logicalId'}}>Logical ID</th>
+        <th id="header-status" {{action 'sortBy' 'status'}}>Status</th>
+        <th id="header-startTime" {{action 'sortBy' 'startTime'}}>Start time</th>
+        <th id="header-endTime" {{action 'sortBy' 'endTime'}}>End time</th>
+        <th id="header-productName" {{action 'sortBy' 'productName'}}>Product Name</th>
+        <th id="header-productVersion" {{action 'sortBy' 'productVersion'}}>Product Version</th>
+        <th id="header-productRevision" {{action 'sortBy' 'productRevision'}}>Product Revision</th>
+        <th id="header-hostname" {{action 'sortBy' 'hostname'}}>Hostname</th>
+        <th id="header-userName" {{action 'sortBy' 'userName'}}>User</th>
     </tr>
   {{#each filteredSessions}}
       <tr>

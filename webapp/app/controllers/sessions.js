@@ -3,8 +3,9 @@ import Ember from 'ember';
 export default Ember.ArrayController.extend({
   showRunning: false,
   selectedStatus: null,
+  sortProperties: ['id'],
   filteredSessions: function() {
-    var sessions = this.get('model');
+    var sessions = this.get('arrangedContent');
 
     if (!sessions || !this.get('showRunning')) {
       return sessions;
@@ -13,7 +14,7 @@ export default Ember.ArrayController.extend({
     return sessions.filter(function(item) {
       return item.get('isRunning');
     });
-  }.property('showRunning','model.[]'),
+  }.property('showRunning','arrangedContent', 'model.[]'),
 
   sessionStatuses: ['', 'SUCCESS', 'FAILURE', 'RUNNING'],
   actions: {
@@ -55,7 +56,23 @@ export default Ember.ArrayController.extend({
       }
 
       this.transitionToRoute("search-sessions", query);
+    },
+    sortBy: function(property) {
+      this.set('sortProperties', [property]);
+      this.set('sortAscending', !this.get('sortAscending'));
+      Ember.$("#sessions-header").children().removeClass('headerSortDown');
+      Ember.$("#sessions-header").children().removeClass('headerSortUp');
+      var header_name = "#header-" + property;
+      if (this.get('sortAscending'))
+      {
+        Ember.$(header_name).addClass('headerSortDown');
+      }
+      else
+      {
+        Ember.$(header_name).addClass('headerSortUp');
+      }
     }
+
   }
 
 });
