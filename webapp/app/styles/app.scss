@@ -1,16 +1,36 @@
 //needs to be before bootstrap import to override the stripe
-.failed-item
-{
-  background-color: #ff4648
-}
-
 table.table.table-striped tr.failed-item td {
   background-color: #ff4648;
 }
 
-.success-item
+.is-success
 {
   background-color: #56ff71
+}
+
+.is-error
+{
+  background-color: #ff8056
+}
+
+.is-failure
+{
+  background-color: #ff4648
+}
+
+.is-running
+{
+  background-color: #ecff65
+}
+
+.is-interrupted
+{
+  background-color: #f2ffa6
+}
+
+.is-skipped
+{
+  background-color: #f2ffa6
 }
 
 table.table.table-striped tr.success-item td {
@@ -22,8 +42,8 @@ table.table.table-striped tr.success-item td {
   width: 100%
 }
 
-body {
-  padding: 70px 20px;
+.main-container {
+  padding: 70px 10px;
 }
 
 .headerSortDown:after {

@@ -1,6 +1,10 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
+  nId: function() {
+    return +this.get('id');
+  }.property('id'),
+
   logicalId: DS.attr('string'),
   startTime: DS.attr('date'),
   endTime: DS.attr('date'),
@@ -28,9 +32,16 @@ export default DS.Model.extend({
     return d;
   }.property('endTime'),
 
-  hasErrors: function() {
-    var status = this.get('status');
-    return ((status === 'FAILURE') || (status === 'ERROR'));
+  isError: function() {
+    return (this.get('status') === 'ERROR');
+  }.property('status'),
+
+  isFailure: function() {
+    return (this.get('status') === 'FAILURE');
+  }.property('status'),
+
+  isSuccess: function() {
+    return (this.get('status') === 'SUCCESS');
   }.property('status'),
 
   isRunning: function() {

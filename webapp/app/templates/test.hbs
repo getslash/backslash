@@ -1,13 +1,14 @@
-<a class="back" {{action goBack}}>back to session</a>
-<h1>test {{id}}{{#if name}} - {{name}}{{/if}}</h1>
+<div class="main-container">
+    <a class="back" {{action goBack}}>back to session</a>
+    <h1>test {{id}}{{#if name}} - {{name}}{{/if}}</h1>
 
-<p>Logical ID: {{logicalId}}</p>
-<p>Name: {{name}}</p>
-<p>Status: {{status}}</p>
-<p>Start time: {{properStartTime}}</p>
-<p>Duration: {{duration}}</p>
-<p>Errors number: {{numErrors}}</p>
-<p>Failures number: {{numFailures}}</p>
-<p>Skipped: {{userName}}</p>
-<br/><br/>
-
+    <p>Logical ID: {{logicalId}}</p>
+    <p>Name: {{name}}</p>
+    <p>Status: {{status}}</p>
+    <p>Start time: {{properStartTime}}</p>
+    <p>Duration: {{duration}}</p>
+    <p>Errors number: {{numErrors}}</p>
+    <p>Failures number: {{numFailures}}</p>
+    <p>Skipped: {{userName}}</p>
+    <br/><br/>
+</div>

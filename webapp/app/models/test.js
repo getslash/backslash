@@ -29,8 +29,28 @@ export default DS.Model.extend({
     return d;
   }.property('endTime'),
 
-  hasErrors: function() {
-    var status = this.get('status');
-    return ((status === 'FAILURE') || (status === 'ERROR'));
+  isError: function() {
+    return (this.get('status') === 'ERROR');
+  }.property('status'),
+
+  isFailure: function() {
+    return (this.get('status') === 'FAILURE');
+  }.property('status'),
+
+  isSuccess: function() {
+    return (this.get('status') === 'SUCCESS');
+  }.property('status'),
+
+  isRunning: function() {
+    return (this.get('status') === 'RUNNING');
+  }.property('status'),
+
+  isInterrupted: function() {
+    return (this.get('status') === 'INTERRUPTED');
+  }.property('status'),
+
+  isSkipped: function() {
+    return (this.get('status') === 'SKIPPED');
   }.property('status')
+
 });

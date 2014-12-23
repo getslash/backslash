@@ -3,7 +3,8 @@ import Ember from 'ember';
 export default Ember.ArrayController.extend({
   showRunning: false,
   selectedStatus: null,
-  sortProperties: ['id'],
+  sortProperties: ['nId'],
+  sortAscending: false,
   filteredSessions: function() {
     var sessions = this.get('arrangedContent');
 

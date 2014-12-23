@@ -1,35 +1,37 @@
-<a class="back" {{action goBack}}>back to sessions</a>
-<h1>session {{id}}</h1>
+<div class="main-container">
+    <a class="back" {{action goBack}}>back to sessions</a>
+    <h1>session {{id}}</h1>
 
-<p>Logical ID: {{logicalId}}</p>
-<p>Status: {{status}}</p>
-<p>Start time: {{properStartTime}}</p>
-<p>End time: {{properEndTime}}</p>
-<p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
-<p>Hostname: {{hostname}}</p>
-<p>Username: {{userName}}</p>
+    <p>Logical ID: {{logicalId}}</p>
+    <p>Status: {{status}}</p>
+    <p>Start time: {{properStartTime}}</p>
+    <p>End time: {{properEndTime}}</p>
+    <p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
+    <p>Hostname: {{hostname}}</p>
+    <p>Username: {{userName}}</p>
 
-<table class="table table-bordered">
-    <tr>
-        <th>ID</th>
-        <th>Logical ID</th>
-        <th>name</th>
-        <th>Status</th>
-        <th>Start time</th>
-        <th>Duration</th>
-        <th>Errors number</th>
-        <th>Failures number</th>
-    </tr>
-    {{#each test in tests}}
-      <tr>
-          <td>{{#link-to-animated 'test' test.id animations="main:slideLeft"}}{{test.id}}{{/link-to-animated}}</td>
-          <td>{{test.logicalId}}</td>
-          <td>{{test.name}}</td>
-          <td {{bind-attr class="test.hasErrors:failed-item:success-item"}}>{{test.status}}</td>
-          <td>{{test.properStartTime}}</td>
-          <td>{{test.duration}}</td>
-          <td>{{test.numErrors}}</td>
-          <td>{{test.numFailures}}</td>
-      </tr>
-  {{/each}}
-</table>
+    <table class="tests-table table table-bordered">
+        <tr>
+            <th {{action 'sortBy' 'id'}}>ID</th>
+            <th {{action 'sortBy' 'logicalId'}}>Logical ID</th>
+            <th {{action 'sortBy' 'name'}}>name</th>
+            <th {{action 'sortBy' 'status'}}>Status</th>
+            <th {{action 'sortBy' 'startTime'}}>Start time</th>
+            <th {{action 'sortBy' 'duration'}}>Duration</th>
+            <th {{action 'sortBy' 'numErrors'}}>Errors number</th>
+            <th {{action 'sortBy' 'numFailures'}}>Failures number</th>
+        </tr>
+      {{#each test in tests}}
+          <tr>
+              <td>{{#link-to-animated 'test' test.id animations="main:slideLeft"}}{{test.id}}{{/link-to-animated}}</td>
+              <td>{{test.logicalId}}</td>
+              <td>{{test.name}}</td>
+              <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
+              <td>{{test.properStartTime}}</td>
+              <td>{{test.duration}}</td>
+              <td>{{test.numErrors}}</td>
+              <td>{{test.numFailures}}</td>
+          </tr>
+      {{/each}}
+    </table>
+</div>
