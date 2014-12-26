@@ -1,6 +1,10 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
+  nId: function() {
+    return +this.get('id');
+  }.property('id'),
+
   logicalId: DS.attr('string'),
   startTime: DS.attr('date'),
   endTime: DS.attr('date'),
