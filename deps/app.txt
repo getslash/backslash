@@ -1,6 +1,6 @@
 alembic
 psycopg2
-flux
+flux>=1.3.0
 Flask>=0.10.1
 Flask-Mail
 Flask-Migrate
