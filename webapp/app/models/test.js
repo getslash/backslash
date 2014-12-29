@@ -11,7 +11,7 @@ export default DS.Model.extend({
   duration: DS.attr('number'),
   status: DS.attr('string'),
   name: DS.attr('string'),
-  testMetadata: DS.attr('testMetaData'),
+  testMetadata: DS.attr(),
   numErrors: DS.attr('number'),
   numFailures: DS.attr('number'),
   skipped: DS.attr('boolean'),

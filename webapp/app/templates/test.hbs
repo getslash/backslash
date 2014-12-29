@@ -2,7 +2,7 @@
     <a class="back" {{action goBack}}>back to session</a>
     <h1>test {{id}}{{#if name}} - {{name}}{{/if}}</h1>
 
-    <p>Logical ID: {{logicalId}}</p>
+    <p>Logical ID: {{this.logicalId}}</p>
     <p>Name: {{name}}</p>
     <p>Status: {{status}}</p>
     <p>Start time: {{properStartTime}}</p>
@@ -10,5 +10,14 @@
     <p>Errors number: {{numErrors}}</p>
     <p>Failures number: {{numFailures}}</p>
     <p>Skipped: {{userName}}</p>
-    <br/><br/>
+    <table class="table table-bordered tree">
+        <tbody>
+        {{#each metadata in treeCompliantMetadata}}
+            <tr {{bind-attr class="metadata.index-class metadata.parent-class"}} >
+                <td>{{metadata.key}}</td>
+                <td>{{metadata.value}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </div>
