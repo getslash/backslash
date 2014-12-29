@@ -1,21 +1,24 @@
 <div class="main-container">
     <a class="back" {{action goBack}}>back to session</a>
-    <h1>test {{id}}{{#if name}} - {{name}}{{/if}}</h1>
+    <h1>test {{model.id}}{{#if model.name}} - {{model.name}}{{/if}}</h1>
 
-    <p>Logical ID: {{this.logicalId}}</p>
-    <p>Name: {{name}}</p>
-    <p>Status: {{status}}</p>
-    <p>Start time: {{properStartTime}}</p>
-    <p>Duration: {{duration}}</p>
-    <p>Errors number: {{numErrors}}</p>
-    <p>Failures number: {{numFailures}}</p>
-    <p>Skipped: {{userName}}</p>
+    <p>Logical ID: {{model.logicalId}}</p>
+    <p>Name: {{model.name}}</p>
+    <p>Status: {{model.status}}</p>
+    <p>Start time: {{model.properStartTime}}</p>
+    <p>Duration: {{model.duration}}</p>
+    <p>Errors number: {{model.numErrors}}</p>
+    <p>Failures number: {{model.numFailures}}</p>
     <table class="table table-bordered tree">
         <tbody>
         {{#each metadata in treeCompliantMetadata}}
             <tr {{bind-attr class="metadata.index-class metadata.parent-class"}} >
                 <td>{{metadata.key}}</td>
-                <td>{{metadata.value}}</td>
+                {{#if metadata.isLink}}
+                    <td><a {{bind-attr href=metadata.value}} target="_blank">{{metadata.value}}</a></td>
+                {{else}}
+                    <td>{{metadata.value}}</td>
+                {{/if}}
             </tr>
         {{/each}}
         </tbody>
