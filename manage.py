@@ -126,7 +126,9 @@ def _run_fulltest(extra_args=()):
 
 @cli.command('travis-test')
 def travis_test():
+    subprocess.check_call('createdb {0}'.format(APP_NAME), shell=True)
     _run_unittest()
+    subprocess.check_call('dropdb {0}'.format(APP_NAME), shell=True)
     _run_deploy('localhost')
     _wait_for_travis_availability()
     _run_fulltest(["--www-port=80"])
