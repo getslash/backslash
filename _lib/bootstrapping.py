@@ -3,6 +3,8 @@ import os
 import subprocess
 import sys
 
+PYTHON_INTERPRETER = "python2.7"
+
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 _ENV_DIR = os.environ.get("VIRTUALENV_PATH", os.path.join(_PROJECT_ROOT, ".env"))
 
@@ -21,12 +23,23 @@ def requires_env(*names):
     return decorator
 
 
+def _which(bin):
+    for directory in os.environ['PATH'].split(':'):
+        full_path = os.path.join(directory, bin)
+        if os.path.isfile(full_path):
+            return full_path
+
+    raise ValueError('Could not find a python interpreter named {}'.format(bin))
+
+
 def bootstrap_env(deps=("base",)):
     out_of_date = [dep for dep in deps if _is_dep_out_of_date(dep)]
 
+    interpreter = _which(PYTHON_INTERPRETER)
+
     if out_of_date:
         if not os.path.exists(from_env_bin("python")):
-            subprocess.check_call("virtualenv {}".format(_ENV_DIR), shell=True)
+            subprocess.check_call("virtualenv {} -p {}".format(_ENV_DIR, interpreter), shell=True)
         cmd = "{}/bin/pip install".format(_ENV_DIR)
         for dep in out_of_date:
             cmd += " -r {}".format(_get_depfile_path(dep))
