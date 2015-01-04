@@ -23,7 +23,7 @@ def requires_env(*names):
     return decorator
 
 
-def _which(bin):
+def which(bin):
     for directory in os.environ['PATH'].split(':'):
         full_path = os.path.join(directory, bin)
         if os.path.isfile(full_path):
@@ -35,7 +35,7 @@ def _which(bin):
 def bootstrap_env(deps=("base",)):
     out_of_date = [dep for dep in deps if _is_dep_out_of_date(dep)]
 
-    interpreter = _which(PYTHON_INTERPRETER)
+    interpreter = which(PYTHON_INTERPRETER)
 
     if out_of_date:
         if not os.path.exists(from_env_bin("python")):
