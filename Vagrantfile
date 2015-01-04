@@ -7,8 +7,16 @@ Vagrant::Config.run do |config|
     config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
     config.vm.host_name = "server"
     config.vm.forward_port 80, 8000
-    config.vm.provision :shell, :inline => "test -d ~root/.ssh || sudo mkdir ~root/.ssh"
-    config.vm.provision :shell, :inline => "sudo cp ~vagrant/.ssh/authorized_keys ~root/.ssh/authorized_keys"
     config.vm.provision :shell, :inline => "sudo apt-get update"
+    config.vm.provision "ansible" do |ansible|
+      ansible.groups = {
+        "webapp" => ["server"],
+      }
+      ansible.playbook = "ansible/site.yml"
+      ansible.extra_vars = {
+        install_with_debug: true
+      }
+      ansible.sudo = true
+    end
   end
 end

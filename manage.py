@@ -7,7 +7,8 @@ import string
 import subprocess
 
 
-from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
+from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin, from_env
+
 bootstrap_env(["base"])
 
 
@@ -75,21 +76,22 @@ def deploy(dest):
 
 def _run_deploy(dest):
     prepare_source_package()
-    cmd = [from_env_bin("python"), from_env_bin("ansible-playbook"), "-i"]
     click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
 
-    cmd.append(from_project_root("ansible", "inventories", dest))
-    if dest in ("localhost",):
-        cmd.extend(["-c", "local"])
-        if dest == "localhost":
-            cmd.append("--sudo")
-    cmd.append(from_project_root("ansible", "site.yml"))
-
     if dest == "vagrant":
-        subprocess.check_call('vagrant up', shell=True)
-
-        os.environ["ANSIBLE_HOST_KEY_CHECKING"] = 'false'
-    subprocess.check_call(cmd)
+        # Vagrant will invoke ansible
+        environ = os.environ.copy()
+        environ["PATH"] = "{}:{}".format(from_env("bin"), environ["PATH"])
+        subprocess.check_call('vagrant up', shell=True, env=environ)
+    else:
+        cmd = [from_env_bin("python"), from_env_bin("ansible-playbook"), "-i",
+               from_project_root("ansible", "inventories", dest)]
+        if dest in ("localhost",):
+            cmd.extend(["-c", "local"])
+            if dest == "localhost":
+                cmd.append("--sudo")
+        cmd.append(from_project_root("ansible", "site.yml"))
+        subprocess.check_call(cmd)
 
 
 @cli.command()
