@@ -7,8 +7,8 @@ import string
 import subprocess
 
 
-from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin, from_env
-
+from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
+from _lib.ansible import ensure_ansible
 bootstrap_env(["base"])
 
 
@@ -76,15 +76,16 @@ def deploy(dest):
 
 def _run_deploy(dest):
     prepare_source_package()
+    ansible = ensure_ansible()
     click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
 
     if dest == "vagrant":
         # Vagrant will invoke ansible
         environ = os.environ.copy()
-        environ["PATH"] = "{}:{}".format(from_env("bin"), environ["PATH"])
+        environ["PATH"] = "{}:{}".format(os.path.dirname(ansible), environ["PATH"])
         subprocess.check_call('vagrant up', shell=True, env=environ)
     else:
-        cmd = [from_env_bin("python"), from_env_bin("ansible-playbook"), "-i",
+        cmd = [ansible, "-i",
                from_project_root("ansible", "inventories", dest)]
         if dest in ("localhost",):
             cmd.extend(["-c", "local"])

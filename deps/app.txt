@@ -2,7 +2,6 @@ Flask-Mail
 Flask-Script
 Flask>=0.10.1
 PyYAML
-gevent
 URLObject
 uwsgi
 weber-utils
