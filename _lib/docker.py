@@ -76,7 +76,7 @@ def _generate_dockerfile_lines():
     yield RUN('rm -rf /etc/nginx/sites-enabled/*')
     yield RUN('cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp')
     yield EXPOSE('80')
-    yield CMD('service redis-server start && service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py run_uwsgi')
+    yield CMD('service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py run_uwsgi')
 
 
 
