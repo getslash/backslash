@@ -32,6 +32,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label col-xs-1 col-xl-1">Start time after:</label>
+            <div class="col-xs-4 col-xl-4">
+              {{date-picker date=queryStartDate allowBlank=true valueFormat='DD-MM-YYYY' format='DD-MM-YYYY'}}
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-xs-1 col-xl-1">
                 <button id="query-sessions" {{action "querySessions"}}>Search</button>
             </div>

@@ -56,7 +56,23 @@ export default Ember.ArrayController.extend({
         not_first_param = true;
       }
 
-      this.transitionToRoute("search-sessions", query);
+      if ((this.queryStartDate !== undefined) && (this.queryStartDate !== null))
+      {
+        if (not_first_param) {
+          query += "&";
+        }
+        console.log(this.queryStartDate);
+        var momentDate = moment(this.queryStartDate, "DD-MM-YYYY");
+        query += 'start_time=gt:' + momentDate.unix();
+      }
+
+      if (query !== "") {
+        this.transitionToRoute("search-sessions", query);
+      }
+      else
+      {
+        this.transitionToRoute("sessions");
+      }
     },
     sortBy: function(property) {
       this.set('sortProperties', [property]);
