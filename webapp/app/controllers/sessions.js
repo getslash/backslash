@@ -42,7 +42,7 @@ export default Ember.ArrayController.extend({
             if (not_first_param) {
               query += "&";
             }
-            query += key + '=' + encodeURIComponent(arr_simple_params[key]);
+            query += key + '=contains:' + encodeURIComponent(arr_simple_params[key]);
             not_first_param = true;
           }
         }
