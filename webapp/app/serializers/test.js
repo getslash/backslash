@@ -1,6 +1,14 @@
 import DS from 'ember-data';
 
 export default DS.ActiveModelSerializer.extend({
+  extractMeta: function(store, type, payload) {
+    console.log(store, type, payload);
+    if (payload && payload.metadata) {
+      store.metaForType(type, payload.metadata);
+      delete payload.metadata;
+    }
+  },
+
   normalizePayload: function(payload) {
     payload.tests = payload.result;
     delete payload.error;

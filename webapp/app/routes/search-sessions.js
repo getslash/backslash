@@ -1,8 +1,21 @@
 import Ember from 'ember';
+import RouteMixin from 'ember-cli-pagination/remote/route-mixin';
 
-export default Ember.Route.extend({
+Ember.$.extend({
+
+  getQueryParameters : function(str) {
+    return (str).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = decodeURIComponent(n[1]),this}.bind({}))[0];
+  }
+
+});
+
+export default Ember.Route.extend(RouteMixin, {
     model: function(params) {
-      return this.store.findQuery('session', params.filters);
+      var new_params = Ember.$.getQueryParameters(params.filters);
+      new_params.paramMapping = {page: "page",
+        perPage: "page_size",
+        total_pages: "total_num_pages"};
+      return this.findPaged('session', new_params);
     },
     controllerName: 'sessions',
 

@@ -1,6 +1,17 @@
 import Ember from 'ember';
 
 export default Ember.ArrayController.extend({
+  queryParams: ["page","perPage"],
+  page: 1,
+  perPage: 10,
+  perPageChanged: function(){
+    this.set('page', 1);
+  }.observes('perPage'),
+
+  pageBinding: "content.page",
+  perPageBinding: "content.perPage",
+  totalPagesBinding: "content.totalPages",
+
   showRunning: false,
   selectedStatus: null,
   sortProperties: ['nId'],
@@ -18,6 +29,7 @@ export default Ember.ArrayController.extend({
   }.property('showRunning','arrangedContent', 'model.[]'),
 
   sessionStatuses: ['', 'SUCCESS', 'FAILURE', 'RUNNING'],
+  resultsPerPage: [10, 20, 50, 100],
   actions: {
     querySessions: function () {
       var arr_simple_params = {};
@@ -34,46 +46,34 @@ export default Ember.ArrayController.extend({
         arr_simple_params["product_version"] = FilterProductVersion;
       }
 
-      var query = "";
-      var not_first_param = false;
+      var query_params = {};
       for (var key in arr_simple_params) {
         if (arr_simple_params.hasOwnProperty(key)) {
           if (arr_simple_params[key]) {
-            if (not_first_param) {
-              query += "&";
-            }
-            query += key + '=contains:' + encodeURIComponent(arr_simple_params[key]);
-            not_first_param = true;
+            query_params[key] = 'contains:' + encodeURIComponent(arr_simple_params[key]);
           }
         }
       }
 
       if (this.selectedStatus !== "") {
-        if (not_first_param) {
-          query += "&";
-        }
-        query += 'status=' + this.selectedStatus;
-        not_first_param = true;
+        query_params['status'] = this.selectedStatus;
       }
 
       if ((this.queryStartDate !== undefined) && (this.queryStartDate !== null))
       {
-        if (not_first_param) {
-          query += "&";
-        }
-        console.log(this.queryStartDate);
         var momentDate = moment(this.queryStartDate, "DD-MM-YYYY");
-        query += 'start_time=gt:' + momentDate.unix();
+        query_params['start_time'] = 'gt:' + momentDate.unix();
       }
 
-      if (query !== "") {
-        this.transitionToRoute("search-sessions", query);
+      if (Object.keys(query_params).length > 0) {
+        this.transitionToRoute("search-sessions", Ember.$.param( query_params ));
       }
       else
       {
         this.transitionToRoute("sessions");
       }
     },
+
     sortBy: function(property) {
       this.set('sortProperties', [property]);
       this.set('sortAscending', !this.get('sortAscending'));

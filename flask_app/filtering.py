@@ -6,7 +6,7 @@ from flask import abort, request
 
 _IGNORED_FIELD_NAMES = frozenset(['page', 'page_size'])
 
-def filterable_view(filterable_fields):
+def filterable_view(filterable_fields, typename):
     """Makes a view returning an SQLAlchemy query filterable
 
     :param filterable_fields: A list of either field names to enable filtering by, or :class:`Filter` objects
@@ -26,6 +26,7 @@ def filterable_view(filterable_fields):
             returned = func(*args, **kwargs)
             # TODO: filters should be added to the query based on the filter order, not the request arg order
             for arg_name, filter_values in request.args.iterlists():
+                print arg_name, filter_values
                 if arg_name in _IGNORED_FIELD_NAMES:
                     continue
                 for filter_value in filter_values:
@@ -33,7 +34,7 @@ def filterable_view(filterable_fields):
                     if filter_obj is None:
                         abort(requests.codes.bad_request)
                     returned = filter_obj.filter_query(returned, filter_value)
-            return returned
+            return returned.order_by("{0}_id desc".format(typename))
 
         return new_func
     return decorator
