@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.ArrayController.extend({
-  sortProperties: ['nId'],
+  sortProperties: ['integerId'],
   sortAscending: false,
   actions: {
     sortBy: function(property) {
