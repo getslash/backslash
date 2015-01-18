@@ -26,7 +26,6 @@ def filterable_view(filterable_fields, typename):
             returned = func(*args, **kwargs)
             # TODO: filters should be added to the query based on the filter order, not the request arg order
             for arg_name, filter_values in request.args.iterlists():
-                print arg_name, filter_values
                 if arg_name in _IGNORED_FIELD_NAMES:
                     continue
                 for filter_value in filter_values:
