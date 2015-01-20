@@ -10,18 +10,5 @@
     <p>Errors number: {{model.numErrors}}</p>
     <p>Failures number: {{model.numFailures}}</p>
     <p>Test MetaData:</p>
-    <table class="table table-bordered tree">
-        <tbody>
-        {{#each metadata in treeCompliantMetadata}}
-            <tr {{bind-attr class="metadata.index-class metadata.parent-class"}} >
-                <td>{{metadata.key}}</td>
-                {{#if metadata.isLink}}
-                    <td><a {{bind-attr href=metadata.value}} target="_blank">{{metadata.value}}</a></td>
-                {{else}}
-                    <td>{{metadata.value}}</td>
-                {{/if}}
-            </tr>
-        {{/each}}
-        </tbody>
-    </table>
+    {{metadata-table-tree metadata=model.testMetadata}}
 </div>
