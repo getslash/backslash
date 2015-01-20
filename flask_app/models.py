@@ -8,7 +8,7 @@ from .app import app
 from .utils import get_current_time
 from .rendering import computed_field
 
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 
 db = SQLAlchemy(app)
 
@@ -85,4 +85,4 @@ class TestMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
-    metadata_item = db.Column(JSON)
+    metadata_item = db.Column(JSONB)
