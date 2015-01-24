@@ -1,3 +1,8 @@
+<div class="row">
+    <div class="col-xs-2 col-xl-2">
+        Results to display: {{view Ember.Select content=resultsPerPage selection=perPage}}
+    </div>
+</div>
 <table class="tests-table table table-bordered">
     <tr id="tests-header">
         <th id="header-integerId" class="headerSortUp" {{action 'sortBy' 'integerId'}}>ID</th>
@@ -22,3 +27,4 @@
       </tr>
   {{/each}}
 </table>
+{{page-numbers content=content}}
