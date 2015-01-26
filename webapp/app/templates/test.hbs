@@ -1,13 +1,14 @@
-<h1>test {{id}}</h1>
+<div class="main-container">
+    <a class="back" {{action 'goBack'}}>back</a>
+    <h1>test {{model.id}}{{#if model.name}} - {{model.name}}{{/if}}</h1>
 
-<p>Logical ID: {{logicalId}}</p>
-<p>Name: {{name}}</p>
-<p>Status: {{status}}</p>
-<p>Start time: {{properStartTime}}</p>
-<p>Duration: {{duration}}</p>
-<p>Errors number: {{numErrors}}</p>
-<p>Errors number: {{numFailures}}</p>
-<p>Skipped: {{userName}}</p>
-<br/><br/>
-<p>Test MetaData:</p>
-<p>{{testMetadata}}</p>
+    <p>Logical ID: {{model.logicalId}}</p>
+    <p>Name: {{model.name}}</p>
+    <p>Status: {{model.status}}</p>
+    <p>Start time: {{model.properStartTime}}</p>
+    <p>Duration: {{model.duration}}</p>
+    <p>Errors number: {{model.numErrors}}</p>
+    <p>Failures number: {{model.numFailures}}</p>
+    <p>Test MetaData:</p>
+    {{metadata-table-tree metadata=model.testMetadata}}
+</div>

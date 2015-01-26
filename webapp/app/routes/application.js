@@ -7,5 +7,12 @@ export default Ember.Route.extend({
             {name: "Ember.js", ok: true},
             {name: "Bootstrap", ok: true}
         ]};
+    },
+
+  actions: {
+    goBack: function() {
+      Ember.AnimatedContainerView.enqueueAnimations({main: 'slideRight'});
+      window.history.go(-1);
     }
+  }
 });

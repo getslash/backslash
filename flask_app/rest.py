@@ -18,7 +18,7 @@ def _register_rest_getters(objtype, filters=()):
 
     @blueprint.route('/{0}s'.format(typename), endpoint='query_{0}s'.format(typename))
     @paginated_view(renderer=render_api_object)
-    @filterable_view(filters)
+    @filterable_view(filters, typename)
     def query_objects():
         return objtype.query
 
@@ -26,12 +26,14 @@ def _register_rest_getters(objtype, filters=()):
 ################################################################################
 
 _register_rest_getters(Session, filters=[
-    'product_name', 'user_name', 'logical_id',
+    'product_name', 'product_version', 'user_name', 'logical_id',
     Filter('start_time', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_session_status)])
 
 _register_rest_getters(Test, filters=[
-    'name', 'logical_id','session_id',
+    'name', 'logical_id', 'session_id',
+    Filter('num_errors', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
+    Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_test_status)])
 
 ## more specific views

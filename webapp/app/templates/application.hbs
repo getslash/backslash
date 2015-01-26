@@ -5,10 +5,11 @@
       <a class="navbar-brand" href="#">Backslash</a>
     </div>
     <ul class="nav navbar-nav">
-      <li>{{#link-to 'sessions'}}Sessions{{/link-to}}</li>
+        <li>{{#link-to-animated 'sessions' animations="main:fade"}}Sessions{{/link-to-animated}}</li>
+        <li>{{#link-to-animated 'tests' animations="main:fade"}}Tests{{/link-to-animated}}</li>
     </ul>
 
   </div>
 </nav>
+{{animated-outlet name="main"}}
 
-{{outlet}}

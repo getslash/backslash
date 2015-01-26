@@ -6,7 +6,7 @@ from flask import abort, request
 
 _IGNORED_FIELD_NAMES = frozenset(['page', 'page_size'])
 
-def filterable_view(filterable_fields):
+def filterable_view(filterable_fields, typename):
     """Makes a view returning an SQLAlchemy query filterable
 
     :param filterable_fields: A list of either field names to enable filtering by, or :class:`Filter` objects
@@ -33,14 +33,14 @@ def filterable_view(filterable_fields):
                     if filter_obj is None:
                         abort(requests.codes.bad_request)
                     returned = filter_obj.filter_query(returned, filter_value)
-            return returned
+            return returned.order_by("{0}_id desc".format(typename))
 
         return new_func
     return decorator
 
 class Filter(object):
 
-    def __init__(self, field_name, filter_func=None, allowed_operators=('eq', 'ne')):
+    def __init__(self, field_name, filter_func=None, allowed_operators=('eq', 'ne', 'contains')):
         super(Filter, self).__init__()
         self.field_name = field_name
         self.filter_func = filter_func
@@ -54,7 +54,10 @@ class Filter(object):
             return self.filter_func(query, value)
         field = self._deduce_queried_field(query)
         value = self._coerce_filter_value(field, value)
-        return query.filter(op(field, value))
+        if op is operator.contains:
+            return query.filter(field.contains(value))
+        else:
+            return query.filter(op(field, value))
 
     def _coerce_filter_value(self, field, value):
         pythonic_type = field.property.columns[0].type.python_type

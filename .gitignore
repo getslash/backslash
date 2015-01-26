@@ -54,3 +54,4 @@ _build
 persistent
 htmlcov
 static
+*.map

@@ -32,5 +32,15 @@ var cssTree = pickFiles('bower_components/fontawesome/css', {
   destDir: '/assets/css'
 });
 
+app.import('vendor/ember-animated-outlet.js');
+app.import('vendor/ember-animated-outlet.css');
 
+app.import('bower_components/jquery-treegrid/css/jquery.treegrid.css');
+app.import('bower_components/jquery-treegrid/js/jquery.treegrid.js');
+app.import('bower_components/jquery-treegrid/img/collapse.png', {
+  destDir: '/img'
+});
+app.import('bower_components/jquery-treegrid/img/expand.png', {
+  destDir: '/img'
+});
 module.exports = mergeTrees([app.toTree(), fontTree, cssTree]);

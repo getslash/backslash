@@ -1,5 +1,73 @@
+//needs to be before bootstrap import to override the stripe
+table.table.table-striped tr.failed-item td {
+  background-color: #ff4648;
+}
+
+.is-success
+{
+  background-color: #56ff71
+}
+
+.is-error
+{
+  background-color: #ff8056
+}
+
+.is-failure
+{
+  background-color: #ff4648
+}
+
+.is-running
+{
+  background-color: #ecff65
+}
+
+.is-interrupted
+{
+  background-color: #f2ffa6
+}
+
+.is-skipped
+{
+  background-color: #f2ffa6
+}
+
+table.table.table-striped tr.success-item td {
+  background-color: #56ff71;
+}
+
+.sessions-query
+{
+  width: 100%
+}
+
+.tests-query
+{
+  width: 100%
+}
+
+.main-container {
+  padding: 70px 10px;
+}
+
+.headerSortDown:after {
+  content: " ▾";
+  font-family: Arial, sans-serif;
+}
+
+.headerSortUp:after {
+  content: " ▴";
+  font-family: Arial, sans-serif;
+}
+
+.sessions-table th {
+  cursor: pointer;
+}
+
+.tests-table th {
+  cursor: pointer;
+}
+
 @import '../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap';
 
-body {
-     padding-top: 70px;
-}

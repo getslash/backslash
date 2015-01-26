@@ -1,0 +1,15 @@
+<table class="table table-bordered tree">
+    <tbody>
+    {{#each metadata_line in treeCompliantMetadata}}
+        <tr {{bind-attr class="metadata_line.index-class metadata_line.parent-class"}} >
+            <td>{{metadata_line.key}}</td>
+          {{#if metadata_line.isLink}}
+              <td><a {{bind-attr href=metadata_line.value}} target="_blank">{{metadata_line.value}}</a></td>
+          {{else}}
+              <td>{{metadata_line.value}}</td>
+          {{/if}}
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+
