@@ -14,6 +14,10 @@ export default Ember.Route.extend(RouteMixin, {
 
   setupController: function(controller, model) {
     controller.set('model', model.session);
+
+    //for the rendering
+    model.tests.fromGeneralTestsTable = false;
+
     var testsController = this.controllerFor('tests');
     testsController.set('model', model.tests);
   }

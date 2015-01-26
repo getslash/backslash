@@ -16,6 +16,7 @@ export default Ember.ArrayController.extend({
   selectedStatus: null,
   sortProperties: ['integerId'],
   sortAscending: false,
+  resultsPerPage: [10, 20, 50, 100],
   filteredSessions: function() {
     var sessions = this.get('arrangedContent');
 
@@ -29,7 +30,6 @@ export default Ember.ArrayController.extend({
   }.property('showRunning','arrangedContent', 'model.[]'),
 
   sessionStatuses: ['', 'SUCCESS', 'FAILURE', 'RUNNING'],
-  resultsPerPage: [10, 20, 50, 100],
   actions: {
     querySessions: function () {
       var arr_simple_params = {};

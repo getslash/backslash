@@ -1,5 +1,5 @@
 <div class="main-container">
-    <a class="back" {{action goBack}}>back to sessions</a>
+    <a class="back" {{action 'goBack'}}>back</a>
     <h1>session {{id}}</h1>
 
     <p>Logical ID: {{logicalId}}</p>
@@ -10,5 +10,5 @@
     <p>Hostname: {{hostname}}</p>
     <p>Username: {{userName}}</p>
 
-    {{render "tests" tests}}
+    {{render "tests"}}
 </div>

@@ -1,30 +1,72 @@
-<div class="row">
-    <div class="col-xs-2 col-xl-2">
-        Results to display: {{view Ember.Select content=resultsPerPage selection=perPage}}
+<div {{bind-attr class="model.fromGeneralTestsTable:main-container"}}>
+  {{#if model.fromGeneralTestsTable}}
+      <h1>Tests</h1>
+      <form class="form-horizontal">
+          <div class="form-group">
+              <label class="control-label col-xs-2 col-xl-2">logical ID:</label>
+              <div class="col-xs-4 col-xl-4">
+                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterlogicalID"}}
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-xs-2 col-xl-2">Name:</label>
+              <div class="col-xs-4 col-xl-4">
+                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterTestName"}}
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-xs-2 col-xl-2">Status:</label>
+              <div class="col-xs-4 col-xl-4">
+                {{view Ember.Select content=testStatuses selection=selectedStatus}}
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-xs-2 col-xl-2">Errors number (>=):</label>
+              <div class="col-xs-4 col-xl-4">
+                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterErrorNum"}}
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-xs-2 col-xl-2">Failures number (>=):</label>
+              <div class="col-xs-4 col-xl-4">
+                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterFailureNum"}}
+              </div>
+          </div>
+          <div class="form-group">
+              <div class="col-xs-offset-1 col-xs-1 col-xl-offset-1 col-xl-1">
+                  <button id="query-tests" {{action "queryTests"}}>Search</button>
+              </div>
+          </div>
+      </form>
+  {{/if}}
+    <div class="row">
+        <div class="col-xs-2 col-xl-2">
+            Results to display: {{view Ember.Select content=resultsPerPage selection=perPage}}
+        </div>
     </div>
+    <table class="tests-table table table-bordered">
+        <tr id="tests-header">
+            <th id="header-integerId" class="headerSortUp" {{action 'sortBy' 'integerId'}}>ID</th>
+            <th id="header-logicalId" {{action 'sortBy' 'logicalId'}}>Logical ID</th>
+            <th id="header-name" {{action 'sortBy' 'name'}}>name</th>
+            <th id="header-status" {{action 'sortBy' 'status'}}>Status</th>
+            <th id="header-startTime" {{action 'sortBy' 'startTime'}}>Start time</th>
+            <th id="header-duration" {{action 'sortBy' 'duration'}}>Duration</th>
+            <th id="header-numErrors" {{action 'sortBy' 'numErrors'}}>Errors number</th>
+            <th id="header-numFailures" {{action 'sortBy' 'numFailures'}}>Failures number</th>
+        </tr>
+      {{#each test in controller}}
+          <tr>
+              <td>{{#link-to-animated 'test' test.id animations="main:slideLeft"}}{{test.id}}{{/link-to-animated}}</td>
+              <td>{{test.logicalId}}</td>
+              <td>{{test.name}}</td>
+              <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
+              <td>{{test.properStartTime}}</td>
+              <td>{{test.duration}}</td>
+              <td>{{test.numErrors}}</td>
+              <td>{{test.numFailures}}</td>
+          </tr>
+      {{/each}}
+    </table>
+  {{page-numbers content=content}}
 </div>
-<table class="tests-table table table-bordered">
-    <tr id="tests-header">
-        <th id="header-integerId" class="headerSortUp" {{action 'sortBy' 'integerId'}}>ID</th>
-        <th id="header-logicalId" {{action 'sortBy' 'logicalId'}}>Logical ID</th>
-        <th id="header-name" {{action 'sortBy' 'name'}}>name</th>
-        <th id="header-status" {{action 'sortBy' 'status'}}>Status</th>
-        <th id="header-startTime" {{action 'sortBy' 'startTime'}}>Start time</th>
-        <th id="header-duration" {{action 'sortBy' 'duration'}}>Duration</th>
-        <th id="header-numErrors" {{action 'sortBy' 'numErrors'}}>Errors number</th>
-        <th id="header-numFailures" {{action 'sortBy' 'numFailures'}}>Failures number</th>
-    </tr>
-  {{#each test in controller}}
-      <tr>
-          <td>{{#link-to-animated 'test' test.id animations="main:slideLeft"}}{{test.id}}{{/link-to-animated}}</td>
-          <td>{{test.logicalId}}</td>
-          <td>{{test.name}}</td>
-          <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
-          <td>{{test.properStartTime}}</td>
-          <td>{{test.duration}}</td>
-          <td>{{test.numErrors}}</td>
-          <td>{{test.numFailures}}</td>
-      </tr>
-  {{/each}}
-</table>
-{{page-numbers content=content}}

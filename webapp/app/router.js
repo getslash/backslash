@@ -13,6 +13,7 @@ Router.map(function() {
   this.resource("test", { path: "/tests/:test_id" });
 
   this.route('search-sessions', { path: '/sessions/search/:filters' });
+  this.route('search-tests', { path: '/tests/search/:filters' });
 });
 
 export default Router;
