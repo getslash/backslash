@@ -4,7 +4,7 @@ import RouteMixin from 'ember-cli-pagination/remote/route-mixin';
 Ember.$.extend({
 
   getQueryParameters : function(str) {
-    return (str).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = decodeURIComponent(n[1]),this}.bind({}))[0];
+    return (str).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = decodeURIComponent(n[1]),this;}.bind({}))[0];
   }
 
 });

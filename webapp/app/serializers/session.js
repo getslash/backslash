@@ -7,7 +7,7 @@ export default DS.ActiveModelSerializer.extend({
     }
     if ('metadata' in payload) // can be null, delete it anyway
     {
-      delete payload.metadata
+      delete payload.metadata;
     }
   },
 

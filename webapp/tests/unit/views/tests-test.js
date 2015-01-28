@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleFor('view:session', 'SessionView');
+moduleFor('view:tests', 'TestsView');
 
 // Replace this with your real tests.
 test('it exists', function() {
