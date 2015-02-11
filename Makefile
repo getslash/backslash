@@ -1,7 +1,7 @@
 default: test
 
 testserver:
-	.env/bin/python manage.py testserver
+	python manage.py testserver
 
 clean:
 	rm -rf .env
