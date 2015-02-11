@@ -10,7 +10,6 @@ required_packages:
     - libxml2-dev
     - libxslt1-dev
     - git
-    - redis-server
     - supervisor
     - python-setuptools
     - python-virtualenv
