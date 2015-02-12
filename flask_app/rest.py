@@ -5,6 +5,7 @@ from weber_utils import paginated_view
 from .filtering import filterable_view, Filter
 from .rendering import auto_render, render_api_object
 from .statuses import filter_query_by_session_status, filter_query_by_test_status
+from .metadata import filter_test_metadata
 
 blueprint = Blueprint('rest', __name__)
 
@@ -34,7 +35,8 @@ _register_rest_getters(Test, filters=[
     'name', 'logical_id', 'session_id',
     Filter('num_errors', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
-    Filter('status', filter_func=filter_query_by_test_status)])
+    Filter('status', filter_func=filter_query_by_test_status),
+    Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq','exists'))])
 
 ## more specific views
 

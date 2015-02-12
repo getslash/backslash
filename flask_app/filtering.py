@@ -29,10 +29,15 @@ def filterable_view(filterable_fields, typename):
                 if arg_name in _IGNORED_FIELD_NAMES:
                     continue
                 for filter_value in filter_values:
-                    filter_obj = filters.get(arg_name)
+                    full_arg_name = None
+                    prefix_arg_name = arg_name
+                    if '.' in arg_name:
+                        prefix_arg_name = arg_name.split('.')[0]
+                        full_arg_name = arg_name
+                    filter_obj = filters.get(prefix_arg_name)
                     if filter_obj is None:
                         abort(requests.codes.bad_request)
-                    returned = filter_obj.filter_query(returned, filter_value)
+                    returned = filter_obj.filter_query(returned, filter_value, full_arg_name)
             return returned.order_by("{0}_id desc".format(typename))
 
         return new_func
@@ -46,12 +51,15 @@ class Filter(object):
         self.filter_func = filter_func
         self._allowed_operators = frozenset(allowed_operators)
 
-    def filter_query(self, query, value):
+    def filter_query(self, query, value, field_value=None):
         op, value = self._parse_op_and_value(value)
         if self.filter_func:
-            if op is not operator.eq:
-                abort(requests.codes.bad_request)
-            return self.filter_func(query, value)
+            if field_value:
+                return self.filter_func(query, field_value, value)
+            else:
+                if op is not operator.eq:
+                    abort(requests.codes.bad_request)
+                return self.filter_func(query, value)
         field = self._deduce_queried_field(query)
         value = self._coerce_filter_value(field, value)
         if op is operator.contains:

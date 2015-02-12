@@ -43,4 +43,10 @@ app.import('bower_components/jquery-treegrid/img/collapse.png', {
 app.import('bower_components/jquery-treegrid/img/expand.png', {
   destDir: '/img'
 });
-module.exports = mergeTrees([app.toTree(), fontTree, cssTree]);
+
+var images = pickFiles('public/assets/img', {
+  srcDir: '/',
+  files: ['*'],
+  destDir: '/img'
+});
+module.exports = mergeTrees([app.toTree(), fontTree, cssTree, images]);
