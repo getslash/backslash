@@ -16,9 +16,6 @@ clean:
 test:
 	python manage.py unittest
 
-travis-test:
-	python manage.py travis-test
-
 webapp:
 	python manage.py frontend build
 
