@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import AfterRender from '../mixins/after-render';
 
-export default Ember.View.extend({
+export default Ember.View.extend(AfterRender, {
   metadata_queries: [Ember.Object.create({name: '', type: 'Exists', disableValue: true, queryValue:''})],
   metaTypes: ['Exists','Is Equal'],
   typeChanged: function(){
@@ -9,6 +10,10 @@ export default Ember.View.extend({
       Ember.set(item, "disableValue", item.type === "Exists");
     });
   }.observes('metadata_queries.@each.type'),
+
+  afterRenderEvent: function() {
+    this.get('controller').send("sortBy", '');   //just to refresh the up/down triangle
+  },
 
   actions: {
     addMetadataField: function () {
