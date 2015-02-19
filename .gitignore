@@ -55,4 +55,5 @@ _build
 persistent
 htmlcov
 static
+*.log
 *.map

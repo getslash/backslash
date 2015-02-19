@@ -18,6 +18,8 @@ export default Ember.ArrayController.extend({
   resultsPerPage: [10, 20, 50, 100],
 
   testStatuses: ['', 'SUCCESS', 'FAILURE', 'ERROR', 'INTERRUPTED', 'RUNNING'],
+  metadataQueries: [],
+
   actions: {
     queryTests: function () {
       var arr_simple_params = {};
@@ -49,6 +51,21 @@ export default Ember.ArrayController.extend({
         query_params["num_failures"] = 'ge:' + FilterFailureNum;
       }
 
+      //work on metadata
+      this.metadataQueries.forEach(function(metaQuery) {
+        if (metaQuery.name !== "")
+        {
+          if ((metaQuery.type === "Exists") || (metaQuery.queryValue === ""))
+          {
+            query_params["metadata." + metaQuery.name] = "";
+          }
+          else
+          {
+            query_params["metadata." + metaQuery.name] = "eq:" + metaQuery.queryValue;
+          }
+        }
+      });
+
       if (Object.keys(query_params).length > 0) {
         this.transitionToRoute("search-tests", Ember.$.param( query_params ));
       }
@@ -59,11 +76,20 @@ export default Ember.ArrayController.extend({
     },
 
     sortBy: function(property) {
-      this.set('sortProperties', [property]);
-      this.set('sortAscending', !this.get('sortAscending'));
+      var header_name;
+      if (property === "") //just refresh on init
+      {
+        var properties_array = this.get('sortProperties');
+        header_name = "#header-" + properties_array[0];
+      }
+      else
+      {
+        this.set('sortProperties', [property]);
+        this.set('sortAscending', !this.get('sortAscending'));
+        header_name = "#header-" + property;
+      }
       Ember.$("#tests-header").children().removeClass('headerSortDown');
       Ember.$("#tests-header").children().removeClass('headerSortUp');
-      var header_name = "#header-" + property;
       if (this.get('sortAscending'))
       {
         Ember.$(header_name).addClass('headerSortDown');

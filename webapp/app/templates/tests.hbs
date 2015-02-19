@@ -32,9 +32,33 @@
                 {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterFailureNum"}}
               </div>
           </div>
+        {{#each view.metadata_queries}}
+            <div class="form-group">
+                <label class="control-label col-xs-2 col-xl-2">Metadata key:</label>
+                <div class="col-xs-4 col-xl-4">
+                  {{view Ember.TextField classBinding=":tests-query" value=name}}
+                </div>
+                <div class="col-xs-1 col-xl-1">
+                  {{view Ember.Select content=view.metaTypes selection=type}}
+                </div>
+                {{#unless disableValue}}
+                <div class="col-xs-2 col-xl-2">
+                  {{view Ember.TextField classBinding=":tests-query" value=queryValue}}
+                </div>
+                {{/unless}}
+                <div class="col-xs-2 col-xl-2">
+                    <img src="static/img/close-delete-2-icon.png" {{action 'removeMetadataField' this target='view'}}>
+                </div>
+            </div>
+        {{/each}}
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-2 col-xl-offset-2 col-xl-2">
+                <img src="static/img/plus-icon.png" {{action 'addMetadataField' this target='view'}}>
+            </div>
+        </div>
           <div class="form-group">
               <div class="col-xs-offset-1 col-xs-1 col-xl-offset-1 col-xl-1">
-                  <button id="query-tests" {{action "queryTests"}}>Search</button>
+                  <button id="query-tests" {{action "search" target='view'}}>Search</button>
               </div>
           </div>
       </form>
@@ -46,7 +70,7 @@
     </div>
     <table class="tests-table table table-bordered">
         <tr id="tests-header">
-            <th id="header-integerId" class="headerSortUp" {{action 'sortBy' 'integerId'}}>ID</th>
+            <th id="header-integerId" {{action 'sortBy' 'integerId'}}>ID</th>
             <th id="header-logicalId" {{action 'sortBy' 'logicalId'}}>Logical ID</th>
             <th id="header-name" {{action 'sortBy' 'name'}}>name</th>
             <th id="header-status" {{action 'sortBy' 'status'}}>Status</th>
