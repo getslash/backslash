@@ -79,3 +79,18 @@ def logical_id():
     return 'my_logical_id'
 
 
+@pytest.fixture
+def error_data():
+    data = {
+        'exception': 'assert (2 + 2) == 5',
+        'exception_type': 'AssertionError',
+        'traceback': [{'filename': 'foo.py', 'lineno': 100, 'func_name': 'foo', 'locals': [], 'globals': [],
+                          'code_line': 'line of code', 'code_string': 'lots of lines of code'},
+                      {'filename': 'bar.py', 'lineno': 200, 'func_name': 'bar', 'locals': [], 'globals': [],
+                          'code_line': 'line of code', 'code_string': 'lots of lines of code'}]
+    }
+    return data
+
+
+
+
