@@ -4,31 +4,31 @@
         <div class="form-group">
             <label class="control-label col-xs-1 col-xl-1">logical ID:</label>
             <div class="col-xs-4 col-xl-4">
-              {{view Ember.TextField classBinding=":sessions-query" valueBinding="FilterlogicalID"}}
+              {{input classBinding=":sessions-query" valueBinding="FilterlogicalID"}}
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-1 col-xl-1">Username:</label>
             <div class="col-xs-4 col-xl-4">
-              {{view Ember.TextField classBinding=":sessions-query" valueBinding="FilterUserName"}}
+              {{input classBinding=":sessions-query" valueBinding="FilterUserName"}}
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-1 col-xl-1">Product Name:</label>
             <div class="col-xs-4 col-xl-4">
-              {{view Ember.TextField classBinding=":sessions-query" valueBinding="FilterProductName"}}
+              {{input classBinding=":sessions-query" valueBinding="FilterProductName"}}
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-1 col-xl-1">Product Version:</label>
             <div class="col-xs-4 col-xl-4">
-              {{view Ember.TextField classBinding=":sessions-query" valueBinding="FilterProductVersion"}}
+              {{input classBinding=":sessions-query" valueBinding="FilterProductVersion"}}
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-1 col-xl-1">Status:</label>
             <div class="col-xs-4 col-xl-4">
-              {{view Ember.Select content=sessionStatuses selection=selectedStatus}}
+              {{view "select" content=sessionStatuses selection=selectedStatus}}
             </div>
         </div>
         <div class="form-group">
@@ -45,10 +45,10 @@
     </form>
     <div class="row">
         <div class="col-xs-2 col-xl-2">
-            Results to display: {{view Ember.Select content=resultsPerPage selection=perPage}}
+            Results to display: {{view "select" content=resultsPerPage selection=perPage}}
         </div>
         <div class="col-xs-offset-8 col-xs-offset-8 col-xs-2 col-xl-2">
-            <p>{{view Ember.Checkbox checkedBinding="showRunning"}} Show only running sessions</p>
+            <p>{{input type="checkbox" checkedBinding="showRunning"}} Show only running sessions</p>
         </div>
     </div>
     <div class="row">

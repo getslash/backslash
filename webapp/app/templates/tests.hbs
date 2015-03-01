@@ -5,45 +5,45 @@
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">logical ID:</label>
               <div class="col-xs-4 col-xl-4">
-                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterlogicalID"}}
+                {{input classBinding=":tests-query" valueBinding="FilterlogicalID"}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Name:</label>
               <div class="col-xs-4 col-xl-4">
-                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterTestName"}}
+                {{input classBinding=":tests-query" valueBinding="FilterTestName"}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Status:</label>
               <div class="col-xs-4 col-xl-4">
-                {{view Ember.Select content=testStatuses selection=selectedStatus}}
+                {{view "select" content=testStatuses selection=selectedStatus}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Errors number (>=):</label>
               <div class="col-xs-4 col-xl-4">
-                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterErrorNum"}}
+                {{input classBinding=":tests-query" valueBinding="FilterErrorNum"}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Failures number (>=):</label>
               <div class="col-xs-4 col-xl-4">
-                {{view Ember.TextField classBinding=":tests-query" valueBinding="FilterFailureNum"}}
+                {{input classBinding=":tests-query" valueBinding="FilterFailureNum"}}
               </div>
           </div>
         {{#each view.metadata_queries}}
             <div class="form-group">
                 <label class="control-label col-xs-2 col-xl-2">Metadata key:</label>
                 <div class="col-xs-4 col-xl-4">
-                  {{view Ember.TextField classBinding=":tests-query" value=name}}
+                  {{input classBinding=":tests-query" value=name}}
                 </div>
                 <div class="col-xs-1 col-xl-1">
-                  {{view Ember.Select content=view.metaTypes selection=type}}
+                  {{view "select" content=view.metaTypes selection=type}}
                 </div>
                 {{#unless disableValue}}
                 <div class="col-xs-2 col-xl-2">
-                  {{view Ember.TextField classBinding=":tests-query" value=queryValue}}
+                  {{input classBinding=":tests-query" value=queryValue}}
                 </div>
                 {{/unless}}
                 <div class="col-xs-2 col-xl-2">
@@ -65,7 +65,7 @@
   {{/if}}
     <div class="row">
         <div class="col-xs-2 col-xl-2">
-            Results to display: {{view Ember.Select content=resultsPerPage selection=perPage}}
+            Results to display: {{view "select" content=resultsPerPage selection=perPage}}
         </div>
     </div>
     <table class="tests-table table table-bordered">
