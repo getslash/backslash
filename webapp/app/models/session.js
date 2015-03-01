@@ -15,6 +15,9 @@ export default DS.Model.extend({
   productVersion: DS.attr('string'),
   userName: DS.attr('string'),
   tests: DS.hasMany('test', {async: true}, {inverse: 'session'}),
+  apiPath: DS.attr('string'),
+  type: DS.attr('string'),
+
 
   //ember date needs the wrong units
   properStartTime: function() {
