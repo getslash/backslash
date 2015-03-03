@@ -4,9 +4,9 @@ export default DS.RESTSerializer.extend({
 
     extractMeta: function(store, type, payload) {
         if (payload && payload.metadata) {
-            store.metaForType(type, payload.metadata);
+            store.setMetadataFor(type, payload.metadata);
             delete payload.metadata;
-         
+
         }
     },
 
