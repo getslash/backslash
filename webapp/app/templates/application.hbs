@@ -2,8 +2,8 @@
   <div class="container">
     <div class="alert alert-success">
       <h1>Status Report</h1>
-      {{#each features}}
-        <p><i {{bind-attr class=":fa ok:fa-check-circle"}}></i> {{name}}</p>
+      {{#each feature in features}}
+        <p><i {{bind-attr class=":fa ok:fa-check-circle"}}></i> {{feature.name}}</p>
       {{/each}}
     </div>
   </div>
