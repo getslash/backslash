@@ -22,9 +22,10 @@ def _get_paths_to_tar():
     p = subprocess.Popen("git ls-files", stdout=subprocess.PIPE, cwd=from_project_root(), shell=True)
     returned = set()
     for subpath in p.stdout.readlines():
+        if subpath.startswith('webapp/'):
+            continue
         subpath = subpath.decode('UTF-8')
         subpath = subpath.strip()
-        returned.add(os.path.dirname(subpath))
         returned.add(subpath)
     if 0 != p.wait():
         raise RuntimeError("git ls-files failed")
