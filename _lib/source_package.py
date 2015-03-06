@@ -3,6 +3,7 @@ import os
 import subprocess
 
 from .bootstrapping import from_project_root
+from .frontend import build_frontend
 
 tarfile = from_project_root("src_pkg.tar")
 
@@ -27,9 +28,11 @@ def _get_paths_to_tar():
         returned.add(subpath)
     if 0 != p.wait():
         raise RuntimeError("git ls-files failed")
+    returned.add('static')
     return returned
 
 def prepare_source_package():
+    build_frontend(False, True)
     paths = _get_paths_to_tar()
     if not os.path.exists(tarfile) or \
        _is_any_file_newer(paths, tarfile):
