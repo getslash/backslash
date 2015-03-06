@@ -20,6 +20,9 @@ def frontend():
 @click.option("--watch", is_flag=True)
 @click.option("--production", is_flag=True)
 def build(watch, production):
+    return build_frontend(watch, production)
+
+def build_frontend(watch, production):
     _bootstrap_frontend()
     cmd = 'ember build --output-path=../static/'
     if watch:
