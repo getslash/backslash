@@ -85,7 +85,10 @@ def _run_deploy(dest):
         # Vagrant will invoke ansible
         environ = os.environ.copy()
         environ["PATH"] = "{}:{}".format(os.path.dirname(ansible), environ["PATH"])
+        # "vagrant up --provision" doesn't call provision if the virtual machine is already up,
+        # so we have to call vagrant provision explicitly
         subprocess.check_call('vagrant up', shell=True, env=environ)
+        subprocess.check_call('vagrant provision', shell=True, env=environ)
     else:
         cmd = [ansible, "-i",
                from_project_root("ansible", "inventories", dest)]
