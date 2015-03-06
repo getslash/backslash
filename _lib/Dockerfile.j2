@@ -18,7 +18,8 @@ RUN mkdir /src /persistent /persistent/config
 ENV CONFIG_DIRECTORY /persistent/config
 
 # untar sources
-ADD ./src_pkg.tar /src/
+COPY ./src_pkg.tar /tmp/src_pkg.tar
+RUN cd /src && tar xvf /tmp/src_pkg.tar
 RUN cd /src && rm -rf .env && find . -name "*.pyc" -delete
 RUN cd /src && python manage.py bootstrap --app
 RUN rm -rf /etc/nginx/sites-enabled/*
