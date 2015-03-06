@@ -173,7 +173,7 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    start_docker_container(binds={persistent_dir:'/persistent'}, port_bindings={80: port})
+    start_docker_container(persistent_dir=persistent_dir, port_bindings={80: port})
 
 @docker.command()
 def stop():

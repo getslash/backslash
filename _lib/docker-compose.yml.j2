@@ -6,9 +6,7 @@ web:
     - "{{src}}:{{dest}}"
     {%- endfor %}
   {%- endif %}
-  {%- if dir_bindings %}
+  {%- if persistent_dir %}
   volumes:
-    {%- for src, dest in dir_bindings.items() %}
-    - "{{src}}:{{dest}}"
-    {%- endfor %}
+    - "{{persistent_dir}}:/persistent"
   {%- endif %}

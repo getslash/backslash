@@ -67,8 +67,9 @@ def _get_pip_dependencies():
 class Compose(object):
     _COMPOSE_EXE = "docker-compose"
 
-    def __init__(self, dir_bindings=None, port_bindings=None):
-        self._dir_bindings = dir_bindings or {}
+    def __init__(self, persistent_dir=None, port_bindings=None):
+        super(Compose, self).__init__()
+        self._persistent_dir = persistent_dir
         self._port_bindings = port_bindings or {}
         self._compose_file = None
 
@@ -82,7 +83,7 @@ class Compose(object):
         self._compose_file = os.fdopen(fd, "w"), path
         template = self._get_compose_template()
         self._compose_file[0].write(template.render(
-            tag=APP_NAME, dir_bindings=self._dir_bindings, port_bindings=self._port_bindings))
+            tag=APP_NAME, persistent_dir=self._persistent_dir, port_bindings=self._port_bindings))
         self._compose_file[0].flush()
         return self
 
@@ -94,8 +95,8 @@ class Compose(object):
         subprocess.check_call([self._COMPOSE_EXE, "-f", self._compose_file[1], "-p", APP_NAME] + args)
 
 
-def start_docker_container(binds, port_bindings=None):
-    with Compose(dir_bindings=binds, port_bindings=port_bindings) as compose:
+def start_docker_container(persistent_dir, port_bindings=None):
+    with Compose(persistent_dir=persistent_dir, port_bindings=port_bindings) as compose:
         compose.run(["up", "-d"])
 
 def stop_docker_container():
