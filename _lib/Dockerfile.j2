@@ -1,0 +1,29 @@
+FROM ubuntu:14.04
+RUN apt-get update
+RUN apt-get install -y {{apt_packages}}
+RUN apt-add-repository ppa:nginx/stable
+RUN apt-get update
+RUN apt-get install -y nginx
+RUN wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python
+RUN easy_install pip
+RUN pip install virtualenv
+
+# configure virtualenv and install dependencies so that it will get cached by docker
+RUN virtualenv /env
+ENV VIRTUALENV_PATH /env
+RUN /env/bin/pip install {{pip_packages}}
+
+# set up configuration
+RUN mkdir /src /persistent /persistent/config
+ENV CONFIG_DIRECTORY /persistent/config
+ENV SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres@$DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT/db
+
+# untar sources
+COPY ./src_pkg.tar /tmp/src_pkg.tar
+RUN cd /src && tar xvf /tmp/src_pkg.tar
+RUN cd /src && rm -rf .env && find . -name "*.pyc" -delete
+RUN cd /src && python manage.py bootstrap --app
+RUN rm -rf /etc/nginx/sites-enabled/*
+RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp
+EXPOSE 80
+CMD service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db wait && python manage.py db ensure && python manage.py db upgrade && python manage.py run_uwsgi

@@ -177,20 +177,11 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    db_container_name = _db_container_name()
-    start_docker_container(image='postgres', name=db_container_name,
-                           binds={os.path.join(persistent_dir, "db"):'/var/lib/postgresql/data'})
-    container_name = _webapp_container_name()
-    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'},
-                           port_bindings={80: port},
-                           links={db_container_name: 'db'})
+    start_docker_container(persistent_dir=persistent_dir, port_bindings={80: port})
 
 @docker.command()
 def stop():
-    stop_docker_container(_webapp_container_name())
-
-def _webapp_container_name():
-    return '{0}-container'.format(APP_NAME)
+    stop_docker_container()
 
 def _db_container_name():
     return '{0}-db'.format(APP_NAME)

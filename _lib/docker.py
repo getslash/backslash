@@ -5,23 +5,14 @@ import os
 import shutil
 import subprocess
 from contextlib import contextmanager
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 
 from .bootstrapping import from_project_root
 from .source_package import prepare_source_package
+from .params import APP_NAME
 
-import logbook
 import yaml
-import docker
-
-_docker = None
-
-
-def get_docker_client():
-    global _docker
-    if _docker is None:
-        _docker = docker.Client(version='1.11')
-    return _docker
+from jinja2 import Template
 
 
 def build_docker_image(root, tag):
@@ -46,49 +37,14 @@ def _get_temp_path():
 
 
 def _generate_dockerfile(path):
+    with open(os.path.join(os.path.dirname(__file__), "Dockerfile.j2"), "r") as f:
+        template = Template(f.read())
+
     with open(path, "w") as outfile:
-        for line in _generate_dockerfile_lines():
-            print(line, file=outfile)
-
-def _generate_dockerfile_lines():
-    yield FROM('ubuntu:14.04')
-    yield RUN('apt-get update')
-    yield RUN('apt-get install -y', ' '.join(_get_apt_packages_from_ansible()))
-    yield RUN('apt-add-repository ppa:nginx/stable')
-    yield RUN('apt-get update')
-    yield RUN('apt-get install -y nginx')
-    yield RUN('wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python')
-    yield RUN('easy_install pip')
-    yield RUN('pip install virtualenv')
-
-    # configure virtualenv and install dependencies so that it will get cached by docker
-    yield RUN('virtualenv /env')
-    yield ENV('VIRTUALENV_PATH', '/env')
-    yield RUN('/env/bin/pip install', ' '.join(repr(x) for x in _get_pip_dependencies()))
-
-    # set up configuration
-    yield RUN('mkdir /src /persistent /persistent/config')
-    yield ENV('CONFIG_DIRECTORY /persistent/config')
-    yield ENV('SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres@$DB_PORT_5432_TCP_ADDR:$DB_PORT_5432_TCP_PORT/db')
-
-    # untar sources
-    yield ADD('./src_pkg.tar /tmp/')
-    yield RUN('cd /src && tar xvf /tmp/src_pkg.tar')
-    yield RUN('cd /src && rm -rf .env && find . -name "*.pyc" -delete')
-    yield RUN('cd /src && python manage.py bootstrap --app')
-    yield RUN('rm -rf /etc/nginx/sites-enabled/*')
-    yield RUN('cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp')
-    yield EXPOSE('80')
-    yield CMD('service', '&&'.join([
-        'redis-server start',
-        'service nginx start',
-        'cd /src',
-        'python manage.py ensure-secret /persistent/config/000-secret.yml',
-        'python manage.py db wait',
-        'python manage.py db ensure',
-        'python manage.py db upgrade',
-        'python manage.py run_uwsgi',]))
-
+        outfile.write(template.render(
+            apt_packages=' '.join(_get_apt_packages_from_ansible()),
+            pip_packages=' '.join(repr(x) for x in _get_pip_dependencies()))
+        )
 
 
 def _get_apt_packages_from_ansible():
@@ -96,6 +52,7 @@ def _get_apt_packages_from_ansible():
     with open(vars_file) as f:
         config = yaml.load(f)
     return config['required_packages']
+
 
 def _get_pip_dependencies():
     deps = set()
@@ -109,76 +66,41 @@ def _get_pip_dependencies():
     return sorted(deps)
 
 
+class Compose(object):
+    _COMPOSE_EXE = "docker-compose"
 
-def start_docker_container(image, name, binds, port_bindings=None, links=()):
-    if not port_bindings:
-        port_bindings = {}
+    def __init__(self, persistent_dir=None, port_bindings=None):
+        super(Compose, self).__init__()
+        self._persistent_dir = persistent_dir
+        self._port_bindings = port_bindings or {}
+        self._compose_file = None
 
-    docker = get_docker_client()
-    container = _try_get_container(name, only_running=False)
-    if container is not None:
-        if container['running']:
-            logbook.info(
-                "Container {} already running. Not doing anything...", container['Id'])
-            return container['Id']
+    @staticmethod
+    def _get_compose_template():
+        with open(os.path.join(os.path.dirname(__file__), "docker-compose.yml.j2"), "r") as f:
+            return Template(f.read())
 
-        logbook.info("Removing dead container {}", container['Id'])
-        docker.remove_container(container['Id'])
+    def __enter__(self):
+        fd, path = mkstemp()
+        self._compose_file = os.fdopen(fd, "w"), path
+        template = self._get_compose_template()
+        self._compose_file[0].write(template.render(
+            tag=APP_NAME, persistent_dir=self._persistent_dir, port_bindings=self._port_bindings))
+        self._compose_file[0].flush()
+        return self
 
-    container = docker.create_container(
-        image=image,
-        detach=True,
-        name=name)
-    docker.start(name, binds=binds, port_bindings=port_bindings, links=links)
-    logbook.info("Container started. Id: {}", container['Id'])
-    return container['Id']
+    def __exit__(self, _a, _b, _c):
+        self._compose_file[0].close()
+        os.unlink(self._compose_file[1])
 
-def stop_docker_container(name):
-    running = _try_get_container(name)
-    if running is not None:
-        logbook.info("Stopping container {}", running['Id'])
-        get_docker_client().stop(running['Id'])
-    else:
-        logbook.info("Container is not running. Not doing anything.")
+    def run(self, args):
+        subprocess.check_call([self._COMPOSE_EXE, "-f", self._compose_file[1], "-p", APP_NAME] + args)
 
 
-def _try_get_container(container_name, only_running=True):
-    for container in get_docker_client().containers(all=not only_running):
-        container['running'] = bool(
-            container['Status']) and 'exited' not in container['Status'].lower()
-        if '/' + container_name in container['Names']:
-            return container
-    return None
+def start_docker_container(persistent_dir, port_bindings=None):
+    with Compose(persistent_dir=persistent_dir, port_bindings=port_bindings) as compose:
+        compose.run(["up", "-d"])
 
-def _terminate_docker_container(container_name):
-    container = _try_get_container(container_name)
-    if container is not None:
-        get_docker_client().stop(container_name)
-
-
-class DockerInstruction(object):
-
-    def __init__(self, *args):
-        super(DockerInstruction, self).__init__()
-        self.args = args
-
-    def __repr__(self):
-        return '{0} {1}'.format(type(self).__name__, ' '.join(self.args))
-
-class FROM(DockerInstruction):
-    pass
-
-class RUN(DockerInstruction):
-    pass
-
-class ADD(DockerInstruction):
-    pass
-
-class ENV(DockerInstruction):
-    pass
-
-class EXPOSE(DockerInstruction):
-    pass
-
-class CMD(DockerInstruction):
-    pass
+def stop_docker_container():
+    with Compose() as compose:
+        compose.run(["stop"])
