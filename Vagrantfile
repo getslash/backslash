@@ -7,7 +7,6 @@ Vagrant::Config.run do |config|
     config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
     config.vm.host_name = "server"
     config.vm.forward_port 80, 8000
-    config.vm.provision :shell, :inline => "sudo apt-get update"
     config.vm.provision "ansible" do |ansible|
       ansible.groups = {
         "webapp" => ["server"],
