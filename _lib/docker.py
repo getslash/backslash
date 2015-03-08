@@ -110,7 +110,10 @@ def _get_pip_dependencies():
 
 
 
-def start_docker_container(image, name, binds, port_bindings=(), links=()):
+def start_docker_container(image, name, binds, port_bindings=None, links=()):
+    if not port_bindings:
+        port_bindings = {}
+
     docker = get_docker_client()
     container = _try_get_container(name, only_running=False)
     if container is not None:
