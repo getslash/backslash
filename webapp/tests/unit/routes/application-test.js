@@ -1,6 +1,7 @@
 import {
   moduleFor,
-  test
+  test,
+  ok
 } from 'ember-qunit';
 
 moduleFor('route:application', 'ApplicationRoute', {
