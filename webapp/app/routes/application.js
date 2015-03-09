@@ -11,7 +11,6 @@ export default Ember.Route.extend({
 
   actions: {
     goBack: function() {
-      Ember.AnimatedContainerView.enqueueAnimations({main: 'slideRight'});
       window.history.go(-1);
     }
   }

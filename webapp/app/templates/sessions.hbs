@@ -68,7 +68,7 @@
                 </tr>
               {{#each filteredSessions}}
                   <tr>
-                      <td>{{#link-to-animated 'session' this.id animations="main:slideLeft"}}{{this.id}}{{/link-to-animated}}</td>
+                      <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
                       <td>{{logicalId}}</td>
                       <td {{bind-attr class="isSuccess isError isFailure isRunning"}}>{{status}}</td>
                       <td>{{properStartTime}}</td>
