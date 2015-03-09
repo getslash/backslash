@@ -12,7 +12,7 @@
   tags: db
 - service: name=postgresql state=started
 - name: setup db
-  action: postgresql_db name={{app_name}}
+  action: postgresql_db name={{app_name}} encoding=utf8
   sudo_user: postgres
   sudo: true
   tags: db

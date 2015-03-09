@@ -35,7 +35,7 @@ def ensure():
         engine = sqlalchemy.create_engine(uri + '/postgres')
         conn = engine.connect()
         conn.execute("commit")
-        conn.execute("create database {}".format(db_name))
+        conn.execute("create database {} with encoding = 'UTF8'".format(db_name))
         conn.close()
         logbook.info("Database {} successfully created on {}.", db_name, uri)
     else:

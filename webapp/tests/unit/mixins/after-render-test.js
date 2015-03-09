@@ -8,5 +8,5 @@ module('AfterRenderMixin');
 test('it works', function(assert) {
   var AfterRenderObject = Ember.Object.extend(AfterRenderMixin);
   var subject = AfterRenderObject.create();
-  assert.ok(subject);
+  assert.assert.ok(subject);
 });
