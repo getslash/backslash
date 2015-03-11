@@ -26,6 +26,12 @@ class Session(db.Model):
     user_name = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
 
+    # test counts
+    num_failed_tests = db.Column(db.Integer, default=0)
+    num_error_tests = db.Column(db.Integer, default=0)
+    num_skipped_tests = db.Column(db.Integer, default=0)
+    num_finished_tests = db.Column(db.Integer, default=0)
+
     @computed_field
     def status(self):
         if self.end_time is None:

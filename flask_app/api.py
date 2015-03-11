@@ -84,12 +84,25 @@ def report_test_start(session_id, name=None, test_logical_id=None):
 @takes_schema_args(id=int, duration=Optional((float, int)))
 def report_test_end(id, duration=None):
     update = {'end_time': get_current_time() if duration is None else Test.start_time + duration}
-    if not Test.query.filter(Test.id == id, Test.end_time == None).update(update):
-        if Test.query.filter(Test.id == id).count():
-            # we have a test, but it already ended
-            abort(requests.codes.conflict)
-        else:
-            abort(requests.codes.not_found)
+    test = Test.query.get(id)
+    if test is None:
+        abort(requests.codes.not_found)
+    if test.end_time is not None:
+        # we have a test, but it already ended
+        abort(requests.codes.conflict)
+
+    test.end_time = get_current_time() if duration is None else test.start_time + duration
+
+    session_update = {'num_finished_tests': Session.num_finished_tests + 1}
+    if test.num_failures:
+        session_update['num_failed_tests'] = Session.num_failed_tests + 1
+    elif test.num_errors:
+        session_update['num_error_tests'] = Session.num_error_tests + 1
+    elif test.skipped:
+        session_update['num_skipped_tests'] = Session.num_skipped_tests + 1
+
+    Session.query.filter(Session.id == test.session_id).update(session_update)
+
 
 @api_func
 @auto_commit
