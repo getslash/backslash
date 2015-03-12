@@ -1,0 +1,14 @@
+web:
+  image: {{tag}}
+  {%- if port_bindings %}
+  ports:
+    {%- for src, dest in port_bindings.items() %}
+    - "{{src}}:{{dest}}"
+    {%- endfor %}
+  {%- endif %}
+  {%- if dir_bindings %}
+  volumes:
+    {%- for src, dest in dir_bindings.items() %}
+    - "{{src}}:{{dest}}"
+    {%- endfor %}
+  {%- endif %}
