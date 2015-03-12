@@ -151,7 +151,7 @@ def add_test_metadata(id, metadata):
 
 @api_func
 @auto_commit
-@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, long)))
+@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int, long)))
 def add_test_error_data(id, exception, exception_type, traceback, timestamp=None):
     if timestamp is None:
         timestamp = get_current_time()

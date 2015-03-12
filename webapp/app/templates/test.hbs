@@ -7,8 +7,21 @@
     <p>Status: {{model.status}}</p>
     <p>Start time: {{model.properStartTime}}</p>
     <p>Duration: {{model.duration}}</p>
-    <p>Errors number: {{model.numErrors}}</p>
-    <p>Failures number: {{model.numFailures}}</p>
-    <p>Test MetaData:</p>
+    <h3>Test MetaData</h3>
     {{metadata-table-tree metadata=model.testMetadata}}
+
+    <h3>Errors</h3>
+    <h4 {{bind-attr class="model.noErrors:no-errors:total-errors"}}>Total Errors: {{model.numErrors}}</h4>
+    {{#each error in model.testErrors}}
+      <div class="error-description">
+        <p class="exception-type">{{error.exception_type}}</p>
+        <p class="exception-description">{{error.exception}}</p>
+        {{#each traceback in error.traceback}}
+            <p class="traceback-line-headline">{{traceback.filename}}:{{traceback.lineno}} ({{traceback.func_name}})</p>
+            {{traceback-code traceback=traceback}}
+        {{/each}}
+      </div>
+    {{/each}}
+    <h3>Failures</h3>
+    <h4 {{bind-attr class="model.noFailures:no-errors:total-errors"}}>Total Failures: {{model.numFailures}}</h4>
 </div>

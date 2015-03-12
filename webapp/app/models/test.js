@@ -12,10 +12,14 @@ export default DS.Model.extend({
   status: DS.attr('string'),
   name: DS.attr('string'),
   testMetadata: DS.attr(),
+  testErrors: DS.attr(),
   numErrors: DS.attr('number'),
   numFailures: DS.attr('number'),
+  interrupted: DS.attr('boolean'),
   skipped: DS.attr('boolean'),
   session: DS.belongsTo('session', {async: true}, {inverse:'tests'}),
+  apiPath: DS.attr('string'),
+  type: DS.attr('string'),
 
   //ember date needs the wrong units
   properStartTime: function() {
@@ -55,6 +59,14 @@ export default DS.Model.extend({
 
   isSkipped: function() {
     return (this.get('status') === 'SKIPPED');
-  }.property('status')
+  }.property('status'),
+
+  noErrors: function() {
+    return (this.get('numErrors') == 0);
+  }.property('numErrors'),
+
+  noFailures: function() {
+    return (this.get('numFailures') == 0);
+  }.property('numFailures')
 
 });
