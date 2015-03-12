@@ -1,0 +1,8 @@
+session_name: frontend compilation
+windows:
+  - window_name: frontend compilation
+    panes:
+      - python manage.py testserver --no-tmux
+  - window_name: celery worker
+    panes:
+      - .env/bin/celery -A flask_app.tasks worker --loglevel=info

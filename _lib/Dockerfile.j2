@@ -28,4 +28,4 @@ RUN cd /src && python manage.py bootstrap --app
 RUN rm -rf /etc/nginx/sites-enabled/*
 RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp
 EXPOSE 80
-CMD service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db wait && python manage.py db ensure && python manage.py db upgrade && supervisord -n
+CMD service nginx start && /etc/init.d/redis-server start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db wait && python manage.py db ensure && python manage.py db upgrade && supervisord -n
