@@ -1,4 +1,4 @@
-docker-py
+jinja2
 click>=2.0
 colorama
 requests

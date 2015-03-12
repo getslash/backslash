@@ -173,15 +173,11 @@ def _run_docker_start(port):
     persistent_dir = from_project_root('persistent')
     if not os.path.isdir(persistent_dir):
         os.makedirs(persistent_dir)
-    container_name = _webapp_container_name()
-    start_docker_container(image=APP_NAME, name=container_name, binds={persistent_dir:'/persistent'}, port_bindings={80: port})
+    start_docker_container(binds={persistent_dir:'/persistent'}, port_bindings={80: port})
 
 @docker.command()
 def stop():
-    stop_docker_container(_webapp_container_name())
-
-def _webapp_container_name():
-    return '{0}-container'.format(APP_NAME)
+    stop_docker_container()
 
 if __name__ == "__main__":
     cli()
