@@ -72,11 +72,13 @@ def testserver():
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
-def deploy(dest):
-    _run_deploy(dest)
+@click.option("--sudo/--no-sudo", default=False)
+@click.option("--ask-sudo-pass/--no-ask-sudo-pass", default=False)
+def deploy(dest, sudo, ask_sudo_pass):
+    _run_deploy(dest, sudo, ask_sudo_pass)
 
 
-def _run_deploy(dest):
+def _run_deploy(dest, sudo=False, ask_sudo_pass=False):
     prepare_source_package()
     ansible = ensure_ansible()
     click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
@@ -96,6 +98,13 @@ def _run_deploy(dest):
             cmd.extend(["-c", "local"])
             if dest == "localhost":
                 cmd.append("--sudo")
+
+        if sudo:
+            cmd.append('--sudo')
+
+        if ask_sudo_pass:
+            cmd.append('--ask-sudo-pass')
+
         cmd.append(from_project_root("ansible", "site.yml"))
         subprocess.check_call(cmd)
 
