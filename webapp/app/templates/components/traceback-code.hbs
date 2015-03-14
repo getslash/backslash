@@ -1,5 +1,5 @@
 {{#if showOneLine}}
     <p class="traceback-line-code" {{action "toggleOneLine"}}>{{traceback.code_line}}</p>
 {{else}}
-    <p><pre class="clickable" {{action "toggleOneLine"}}>{{traceback.code_string}}</pre></p>
+    <p><pre class="clickable" {{action "toggleOneLine"}}>{{{formattedCode}}}</pre></p>
 {{/if}}

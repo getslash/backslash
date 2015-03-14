@@ -62,11 +62,11 @@ export default DS.Model.extend({
   }.property('status'),
 
   noErrors: function() {
-    return (this.get('numErrors') == 0);
+    return (this.get('numErrors') === 0);
   }.property('numErrors'),
 
   noFailures: function() {
-    return (this.get('numFailures') == 0);
+    return (this.get('numFailures') === 0);
   }.property('numFailures')
 
 });
