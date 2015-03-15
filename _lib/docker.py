@@ -27,6 +27,7 @@ def build_docker_image(root, tag):
     subprocess.check_call(
         "docker pull postgres", shell=True)
 
+
 @contextmanager
 def _get_temp_path():
     path = mkdtemp()
@@ -45,6 +46,7 @@ def _generate_supervisor_conf(path):
             app_name=APP_NAME,
             deploy_root="/src",
             user_name="root",
+            celery_bin="/env/bin/celery"
         ))
 
 

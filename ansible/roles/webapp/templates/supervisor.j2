@@ -8,3 +8,14 @@ stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=3
 stdout_events_enabled=true
 redirect_stderr=true
+
+[program:{{app_name}}-worker]
+process_name={{app_name}}-worker
+directory={{deploy_root}}
+command={{celery_bin}} -A flask_app.tasks worker --loglevel=info
+user={{user_name or app_name}}
+stdout_logfile=/var/log/{{app_name}}-worker.log
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=3
+stdout_events_enabled=true
+redirect_stderr=true
