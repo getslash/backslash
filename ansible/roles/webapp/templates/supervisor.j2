@@ -1,10 +1,10 @@
 [program:{{app_name}}-wsgi]
 process_name={{app_name}}-uwsgi
-command=python {{deploy_root}}/manage.py run_uwsgi {% if install_with_debug is defined and install_with_debug %}--catch-exceptions{% endif %} 
-user={{app_name}}
+command=python {{deploy_root}}/manage.py run_uwsgi {% if install_with_debug is defined and install_with_debug %}--catch-exceptions {% endif %}
+
+user={{user_name or app_name}}
 stdout_logfile=/var/log/{{app_name}}-wsgi.log
 stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=3
 stdout_events_enabled=true
 redirect_stderr=true
-
