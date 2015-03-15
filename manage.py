@@ -60,7 +60,10 @@ def bootstrap(develop, app):
 
 @cli.command()
 @requires_env("app", "develop")
-def testserver():
+@click.option('--tmux/--no-tmux', is_flag=True, default=True)
+def testserver(tmux):
+    if tmux:
+        return _run_tmux_frontend()
     from flask_app.app import app
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
@@ -69,6 +72,9 @@ def testserver():
         from_project_root("flask_app", "app.yml")
     ])
 
+def _run_tmux_frontend():
+    tmuxp = from_env_bin('tmuxp')
+    os.execv(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')])
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)

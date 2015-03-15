@@ -8,3 +8,4 @@ PyYAML
 URLObject
 uwsgi
 weber-utils>=1.1.5
+celery[redis]
