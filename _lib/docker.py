@@ -19,7 +19,7 @@ def build_docker_image(root, tag):
 
     with _get_temp_path() as path:
         _generate_dockerfile(os.path.join(path, "Dockerfile"))
-
+        _generate_supervisor_conf(os.path.join(path, "weber.conf"))
         shutil.copy(prepare_source_package(include_frontend=False), path)
 
         subprocess.check_call(
@@ -34,6 +34,18 @@ def _get_temp_path():
         yield path
     finally:
         shutil.rmtree(path)
+
+
+def _generate_supervisor_conf(path):
+    with open(os.path.join(os.path.dirname(__file__), "../ansible/roles/webapp/templates/supervisor.j2"), "r") as f:
+        template = Template(f.read())
+
+    with open(path, "w") as outfile:
+        outfile.write(template.render(
+            app_name=APP_NAME,
+            deploy_root="/src",
+            user_name="root",
+        ))
 
 
 def _generate_dockerfile(path):

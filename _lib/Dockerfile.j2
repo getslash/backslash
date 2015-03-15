@@ -22,6 +22,8 @@ ENV SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres@$DB_PORT_5432_TCP_ADD
 
 # untar sources
 COPY ./src_pkg.tar /tmp/src_pkg.tar
+RUN mkdir -p /etc/supervisor/conf.d
+COPY ./weber.conf /etc/supervisor/conf.d/weber.conf
 RUN cd /src && tar xvf /tmp/src_pkg.tar
 RUN cd /src && rm -rf .env && find . -name "*.pyc" -delete
 RUN cd /src && python manage.py bootstrap --app
@@ -29,4 +31,4 @@ RUN rm -rf /etc/nginx/sites-enabled/*
 RUN cd /src && python manage.py generate_nginx_config /etc/nginx/sites-enabled/webapp
 RUN cd /src && python manage.py frontend build --production
 EXPOSE 80
-CMD service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db wait && python manage.py db ensure && python manage.py db upgrade && python manage.py run_uwsgi
+CMD service nginx start && cd /src && python manage.py ensure-secret /persistent/config/000-secret.yml && python manage.py db wait && python manage.py db ensure && python manage.py db upgrade && supervisord -n
