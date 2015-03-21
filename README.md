@@ -11,7 +11,7 @@ Getting Started
 ===============
 
 1. Check out the repository
-2. Go through the configuration in `src/app.yml` - most configuration options there are self-explanatory, and you might be interested in tweaking them to your needs.
+2. Go through the configuration in `flask_app/app.yml` - most configuration options there are self-explanatory, and you might be interested in tweaking them to your needs.
 3. Make sure you have `virtualenv` installed
 4. Run the test server to experiment:
 ```
