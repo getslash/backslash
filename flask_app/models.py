@@ -8,7 +8,7 @@ from .app import app
 from .utils import get_current_time
 from .rendering import computed_field
 
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 db = SQLAlchemy(app)
 
@@ -56,6 +56,7 @@ class Test(db.Model):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
+    errors = db.relationship('Error', backref=backref('test'), cascade='all, delete, delete-orphan')
 
     @computed_field
     def duration(self):
@@ -92,3 +93,13 @@ class TestMetadata(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
     metadata_item = db.Column(JSONB)
+
+
+class Error(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
+    traceback = db.Column(JSON)
+    exception_type = db.Column(db.String(256), index=True)
+    exception = db.Column(db.String(256), index=True)
+    timestamp = db.Column(db.Float, default=get_current_time)

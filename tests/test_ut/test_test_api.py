@@ -161,6 +161,39 @@ def test_add_bad_metadata(started_test):
 
 def test_add_metadata_nonexistent_test(nonexistent_test):
     with raises_not_found():
-        nonexistent_test.add_metadata({'foo':'bar'})
+        nonexistent_test.add_metadata({'foo': 'bar'})
 
+
+def test_add_error_data(started_test, error_data):
+    timestamp = flux.current_timeline.time()
+    started_test.add_error_data(error_data['exception'],
+                                error_data['exception_type'],
+                                error_data['traceback'],
+                                timestamp=timestamp)
+    started_test.refresh()
+    [first_error] = started_test.query_errors()
+    assert first_error.exception == error_data['exception']
+    assert first_error.exception_type == error_data['exception_type']
+    assert first_error.timestamp == timestamp
+    assert first_error.traceback == error_data['traceback']
+
+
+def test_add_error_data_no_timestamp(started_test, error_data):
+    started_test.add_error_data(error_data['exception'],
+                                error_data['exception_type'],
+                                error_data['traceback'])
+    started_test.refresh()
+    [first_error] = started_test.query_errors()
+    print first_error
+    assert first_error.exception == error_data['exception']
+    assert first_error.exception_type == error_data['exception_type']
+    assert first_error.timestamp == flux.current_timeline.time()
+    assert first_error.traceback == error_data['traceback']
+
+
+def test_add_error_data_nonexistent_test(nonexistent_test, error_data):
+    with raises_not_found():
+        nonexistent_test.add_error_data(error_data['exception'],
+                                        error_data['exception_type'],
+                                        error_data['traceback'])
 
