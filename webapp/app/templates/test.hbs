@@ -1,17 +1,17 @@
 <div class="main-container">
     <a class="back" {{action 'goBack'}}>back</a>
-    <h1>test {{model.id}}{{#if model.name}} - {{model.name}}{{/if}}</h1>
+    <h1>test {{model.test.id}}{{#if model.test.name}} - {{model.test.name}}{{/if}}</h1>
 
-    <p>Logical ID: {{model.logicalId}}</p>
-    <p>Name: {{model.name}}</p>
-    <p>Status: {{model.status}}</p>
-    <p>Start time: {{model.properStartTime}}</p>
-    <p>Duration: {{model.duration}}</p>
+    <p>Logical ID: {{model.test.logicalId}}</p>
+    <p>Name: {{model.test.name}}</p>
+    <p>Status: {{model.test.status}}</p>
+    <p>Start time: {{model.test.properStartTime}}</p>
+    <p>Duration: {{model.test.duration}}</p>
     <h3>Test MetaData</h3>
-    {{metadata-table-tree metadata=model.testMetadata}}
+    {{metadata-table-tree metadata=model.test.testMetadata}}
 
     <h3>Errors</h3>
-    <h4 {{bind-attr class="model.noErrors:no-errors:total-errors"}}>Total Errors: {{model.numErrors}}</h4>
+    <h4 {{bind-attr class="model.test.noErrors:no-errors:total-errors"}}>Total Errors: {{model.test.numErrors}}</h4>
     {{#each error in model.testErrors}}
       <div class="error-description">
         <p class="exception-type">{{error.exception_type}}</p>
@@ -23,5 +23,6 @@
       </div>
     {{/each}}
     <h3>Failures</h3>
-    <h4 {{bind-attr class="model.noFailures:no-errors:total-errors"}}>Total Failures: {{model.numFailures}}</h4>
+    <h4 {{bind-attr class="model.test.noFailures:no-errors:total-errors"}}>Total Failures: {{model.test.numFailures}}</h4>
+    <!--currently failure is not existant in slash->backslash reporting-->
 </div>

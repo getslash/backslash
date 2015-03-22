@@ -161,5 +161,7 @@ def add_test_error_data(id, exception, exception_type, traceback, timestamp=None
                                  exception_type=exception_type,
                                  traceback=traceback,
                                  timestamp=timestamp))
+        test.num_errors = Test.num_errors + 1
+
     except NoResultFound:
         abort(requests.codes.not_found)

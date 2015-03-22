@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from .models import Session, Test
+from .models import Session, Test, Error
 from weber_utils import paginated_view
 from .filtering import filterable_view, Filter
 from .rendering import auto_render, render_api_object
@@ -37,6 +37,9 @@ _register_rest_getters(Test, filters=[
     Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_test_status),
     Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq','exists'))])
+
+_register_rest_getters(Error, filters=[
+    'test_id'])
 
 ## more specific views
 

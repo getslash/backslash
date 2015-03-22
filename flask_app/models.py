@@ -81,18 +81,6 @@ class Test(db.Model):
                 combined_json_object[key] = value
         return combined_json_object
 
-    @computed_field
-    def test_errors(self):
-        errors_list = []
-        for error_obj in self.errors:
-            json_error = {'exception': error_obj.exception,
-                          'exception_type': error_obj.exception_type,
-                          'traceback': error_obj.traceback,
-                          'timestamp': error_obj.timestamp
-                          }
-            errors_list.append(json_error)
-        return errors_list
-
 
 class TestMetadata(db.Model):
 
