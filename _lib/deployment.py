@@ -29,9 +29,15 @@ def generate_nginx_config(path):
         os.makedirs(os.path.dirname(path))
     with open(path, "w") as f:
         f.write("""server {{
+
     location /static {{
        alias {static_root};
     }}
+
+    location = / {{
+       rewrite ^/$ /static/index.html;
+    }}
+
     location / {{
        	 include uwsgi_params;
          uwsgi_pass unix:{sock_name};
