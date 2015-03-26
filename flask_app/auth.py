@@ -6,5 +6,4 @@ from .models import Role, User, db
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
-security = Security(app, user_datastore)
-
+security = Security(app, user_datastore, register_blueprint=False)
