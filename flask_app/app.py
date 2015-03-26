@@ -42,3 +42,4 @@ Mail(app)
 from . import models
 from . import errors
 from . import views
+from . import setup
