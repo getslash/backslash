@@ -5,3 +5,5 @@ PyYAML
 URLObject
 uwsgi
 weber-utils
+Werkzeug>=0.10.2
+watchdog
