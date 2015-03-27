@@ -1,1 +1,3 @@
 app_name: weber
+
+SECURITY_PASSWORD_HASH: sha512_crypt
