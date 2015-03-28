@@ -1,6 +1,7 @@
 session_name: frontend compilation
 windows:
   - window_name: frontend compilation
+    layout: even-horizontal
     panes:
       - python manage.py frontend build --watch
       - python manage.py testserver --no-tmux
