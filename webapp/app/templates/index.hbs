@@ -5,7 +5,12 @@
       {{#each feature in features}}
         <p><i {{bind-attr class=":fa feature.ok:fa-check-circle"}}></i> {{feature.name}}</p>
       {{/each}}<br/>
-      <p>Go {{#link-to "setup"}}here{{/link-to}} to setup your page</p>
+      <p>Go {{#link-to "setup"}}here{{/link-to}} to setup your first user</p><br/>
+      {{#if session.isAuthenticated}}
+      <p>Logged in as {{session.email}}. <a {{ action 'invalidateSession' }}>Logout</a></p>
+      {{else}}
+      <p>{{#link-to "login"}}Login{{/link-to}}</p>
+      {{/if}}
     </div>
   </div>
 </div>
