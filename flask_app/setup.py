@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 from .app import app
-from .models import user_datastore
+from .auth import user_datastore
 
 
 class MyForm(Form):

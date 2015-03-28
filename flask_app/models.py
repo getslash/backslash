@@ -1,8 +1,6 @@
-import random
 from .app import app
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.security import Security, SQLAlchemyUserDatastore, \
-    UserMixin, RoleMixin
+from flask.ext.security import UserMixin, RoleMixin
 
 db = SQLAlchemy(app)
 
@@ -29,7 +27,3 @@ class User(db.Model, UserMixin):
                             backref=db.backref('users', lazy='dynamic'))
 
 
-# Setup Flask-Security
-app.config.setdefault('SECURITY_PASSWORD_SALT', str(random.random()))
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-security = Security(app, user_datastore)
