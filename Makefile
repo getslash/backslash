@@ -1,6 +1,6 @@
 default: test
 
-testserver: env
+testserver:
 	python manage.py testserver
 
 clean:
