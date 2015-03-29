@@ -43,8 +43,11 @@ def ensure_secret(conf_file):
     if os.path.exists(conf_file):
         return
     with open(conf_file, "w") as f:
-        secret_key = "".join([random.choice(string.ascii_letters) for i in range(50)])
-        print('SECRET_KEY: "{0}"'.format(secret_key), file=f)
+        print('SECRET_KEY: "{0}"'.format(_generate_secret()), file=f)
+        print('SECURITY_PASSWORD_SALT: "{0}"'.format(_generate_secret()), file=f)
+
+def _generate_secret(length=50):
+    return "".join([random.choice(string.ascii_letters) for i in range(length)])
 
 @cli.command()
 @click.option("--develop", is_flag=True)
@@ -69,6 +72,7 @@ def testserver(tmux):
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
+    app.config["SECURITY_PASSWORD_SALT"] = app.extensions['security'].password_salt = "dummy secret password salt"
     app.run(port=8000, extra_files=[
         from_project_root("flask_app", "app.yml")
     ])
