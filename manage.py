@@ -18,6 +18,7 @@ from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 from _lib.db import db
+from _lib.utils import interact
 import click
 import requests
 
@@ -189,6 +190,20 @@ def stop():
 
 def _db_container_name():
     return '{0}-db'.format(APP_NAME)
+
+@cli.command()
+@requires_env("app", "develop")
+def shell():
+    from flask_app.app import app
+    from flask_app import models
+
+    interact({
+        'db': db,
+        'app': app,
+        'models': models,
+        'db': models.db,
+        })
+
 
 if __name__ == "__main__":
     cli()

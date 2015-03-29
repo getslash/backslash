@@ -1,10 +1,11 @@
 from flask import render_template, abort, redirect
 from flask_wtf import Form
+from flask.ext.security.utils import encrypt_password
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 from .app import app
-from .models import user_datastore
+from .auth import user_datastore
 
 
 class MyForm(Form):
@@ -25,7 +26,7 @@ def setup_submit():
         if _has_users():
             abort(403)
 
-        user_datastore.create_user(email=form.email.data, password=form.password.data)
+        user_datastore.create_user(email=form.email.data, password=encrypt_password(form.password.data))
         user_datastore.db.session.commit()
         return redirect("/")
     else:
