@@ -19,15 +19,7 @@ def db():
 
 
 def _create_sqlite(path):
-    from flask_app.models import db
-
-    if os.path.exists(path):
-        logbook.info("{} exists. Not doing anything", path)
-        return
-
-    db.create_all()
-    logbook.info("successfully created the tables")
-
+    pass
 
 def _create_postgres(match):
     import sqlalchemy
@@ -44,16 +36,15 @@ def _create_postgres(match):
         conn.execute("create database {} with encoding = 'UTF8'".format(db_name))
         conn.close()
         logbook.info("Database {} successfully created on {}.", db_name, uri)
-        db.create_all()
-        logbook.info("successfully created the tables")
     else:
-        logbook.info("Database exists. Not doing anything.")
+        logbook.info("Database {} exists.", db_name)
 
 
 @db.command()
 @requires_env("app")
 def ensure():
     from flask_app.app import app
+    from flask_app.models import db
 
     uri = app.config['SQLALCHEMY_DATABASE_URI']
     match = _DATABASE_URI_RE.match(uri)
@@ -62,9 +53,13 @@ def ensure():
         sys.exit(-1)
 
     if match.group('db_type') == 'sqlite':
-        return _create_sqlite(match.group('db'))
+        _create_sqlite(match.group('db'))
     elif match.group('db_type') == 'postgresql':
-        return _create_postgres(match)
+        _create_postgres(match)
+
+    db.create_all()
+    logbook.info("DB successfully created")
+
 
 
 @db.command()
