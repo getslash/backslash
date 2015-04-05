@@ -19,10 +19,15 @@ def deployment_webapp_url(request):
     port = request.config.getoption("--www-port")
     return URL("http://127.0.0.1").with_port(port)
 
+@pytest.fixture(autouse=True, scope='session')
+def app_security_settings():
+    app.app.config["SECRET_KEY"] = "testing_key"
+    app.app.config["SECURITY_PASSWORD_SALT"] = app.app.extensions['security'].password_salt = "testing_salt"
+
+
 @pytest.fixture
 def webapp(request, db):
     returned = Webapp(app.app)
-    returned.app.config["SECRET_KEY"] = "testing_key"
     returned.app.config["TESTING"] = True
     returned.activate()
     request.addfinalizer(returned.deactivate)
