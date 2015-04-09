@@ -8,32 +8,40 @@ from flask.ext.mail import Mail
 
 import logbook
 
-ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+def create_app():
+    ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
+    app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
 
-app.config["SECRET_KEY"] = ""
+    app.config["SECRET_KEY"] = ""
 
-_CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "conf.d"))
+    _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "conf.d"))
 
-configs = [os.path.join(ROOT_DIR, "app.yml")]
+    configs = [os.path.join(ROOT_DIR, "app.yml")]
 
-if os.path.isdir(_CONF_D_PATH):
-    configs.extend(sorted(os.path.join(_CONF_D_PATH, x) for x in os.listdir(_CONF_D_PATH) if x.endswith(".yml")))
+    if os.path.isdir(_CONF_D_PATH):
+        configs.extend(sorted(os.path.join(_CONF_D_PATH, x) for x in os.listdir(_CONF_D_PATH) if x.endswith(".yml")))
 
-for yaml_path in configs:
-    if os.path.isfile(yaml_path):
-        with open(yaml_path) as yaml_file:
-            app.config.update(yaml.load(yaml_file))
+    for yaml_path in configs:
+        if os.path.isfile(yaml_path):
+            with open(yaml_path) as yaml_file:
+                app.config.update(yaml.load(yaml_file))
 
 
-console_handler = logging.StreamHandler(sys.stderr)
-console_handler.setLevel(logging.DEBUG)
-app.logger.addHandler(console_handler)
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(console_handler)
 
-logbook.info("Started")
+    logbook.info("Started")
 
-Mail(app)
+    Mail(app)
 
-from . import errors
-from . import views
+    from .errors import errors
+    from .views import views
+
+    app.register_blueprint(views)
+
+    for code in errors:
+        app.errorhandler(code)(errors[code])
+
+    return app

@@ -16,7 +16,7 @@ _UNIX_SOCKET_NAME = "/tmp/__{0}_uwsgi.sock".format(APP_NAME)
 def run_uwsgi(catch_exceptions):
     uwsgi_bin = from_env_bin("uwsgi")
     cmd = [uwsgi_bin, "-b", "16384", "--chmod-socket=666",
-           "--home", from_env(), "--pythonpath", from_project_root(), "--module=flask_app.app", "--callable=app",
+           "--home", from_env(), "--pythonpath", from_project_root(), "--module=flask_app.wsgi", "--callable=app",
            "-s", _UNIX_SOCKET_NAME, "-p", str(cpu_count())]
     if catch_exceptions:
         cmd.append("--catch-exceptions")

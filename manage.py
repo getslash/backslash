@@ -59,7 +59,8 @@ def bootstrap(develop, app):
 @cli.command()
 @requires_env("app", "develop")
 def testserver():
-    from flask_app.app import app
+    from flask_app.app import create_app
+    app = create_app()
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
