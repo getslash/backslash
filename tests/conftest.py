@@ -21,7 +21,7 @@ def deployment_webapp_url(request):
 
 @pytest.fixture
 def webapp(request):
-    returned = Webapp(app.app)
+    returned = Webapp(app.create_app())
     returned.app.config["SECRET_KEY"] = "testing_key"
     returned.app.config["TESTING"] = True
     returned.activate()
