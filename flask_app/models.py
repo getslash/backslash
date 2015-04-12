@@ -1,8 +1,7 @@
-from .app import app
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import UserMixin, RoleMixin
 
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 ### Add models here
 

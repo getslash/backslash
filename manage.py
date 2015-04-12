@@ -70,7 +70,8 @@ def bootstrap(develop, app):
 def testserver(tmux):
     if tmux:
         return _run_tmux_frontend()
-    from flask_app.app import app
+    from flask_app.app import create_app
+    app = create_app()
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "dummy secret key"
@@ -198,12 +199,12 @@ def _db_container_name():
 @cli.command()
 @requires_env("app", "develop")
 def shell():
-    from flask_app.app import app
+    from flask_app.app import create_app
     from flask_app import models
 
     interact({
         'db': db,
-        'app': app,
+        'app': create_app(),
         'models': models,
         'db': models.db,
         })

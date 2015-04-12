@@ -1,14 +1,18 @@
-from flask import request, jsonify
+from flask import render_template, abort, redirect, Blueprint, jsonify, request
+from flask_wtf import Form
 from flask.ext.security.utils import encrypt_password
-from .app import app
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired, Email, EqualTo
+
 from .auth import user_datastore
 
+setup = Blueprint("setup", __name__, template_folder="templates")
 
 def _has_users():
     return user_datastore.user_model.query.count() > 0
 
 
-@app.route("/setup", methods=['POST'])
+@setup.route("/setup", methods=['POST'])
 def setup_submit():
     if _has_users():
         return "This site already has users defined in it", 403
@@ -19,6 +23,6 @@ def setup_submit():
     return ""
 
 
-@app.route("/has_users")
+@setup.route("/has_users")
 def has_users():
     return jsonify({"hasUsers": _has_users()})

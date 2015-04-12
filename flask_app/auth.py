@@ -1,18 +1,18 @@
-from flask import request, jsonify
-from flask.ext.security import Security, SQLAlchemyUserDatastore
+from flask import request, jsonify, Blueprint
+from flask.ext.security import SQLAlchemyUserDatastore
 from flask_security.utils import verify_and_update_password, login_user
 from flask_security.decorators import auth_token_required
 
-from .app import app
 from .models import Role, User, db
+
+
+auth = Blueprint("auth", __name__, template_folder="templates")
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
-security = Security(app, user_datastore, register_blueprint=False)
 
-
-@app.route("/login", methods=['POST'])
+@auth.route("/login", methods=['POST'])
 def login():
     data = request.json
     user = user_datastore.get_user(data['email'])
@@ -28,7 +28,7 @@ def login():
     })
 
 
-@app.route("/reauth", methods=['POST'])
+@auth.route("/reauth", methods=['POST'])
 @auth_token_required
 def reauth():
     return jsonify(request.json)
