@@ -54,6 +54,7 @@
     <div class="row">
         <div class="col-xs-12 col-xl-12">
             <table class="sessions-table table table-bordered table-striped">
+                <thead>
                 <tr id="sessions-header">
                     <th id="header-integerId" {{action 'sortBy' 'integerId'}}>ID</th>
                     <th id="header-logicalId" {{action 'sortBy' 'logicalId'}}>Logical ID</th>
@@ -66,22 +67,25 @@
                     <th id="header-hostname" {{action 'sortBy' 'hostname'}}>Hostname</th>
                     <th id="header-userName" {{action 'sortBy' 'userName'}}>User</th>
                 </tr>
-              {{#each filteredSessions}}
-                  <tr>
-                      <td>{{#link-to 'session' this.id}}{{this.id}}{{/link-to}}</td>
-                      <td>{{logicalId}}</td>
-                      <td {{bind-attr class="isSuccess isError isFailure isRunning"}}>{{status}}</td>
-                      <td>{{properStartTime}}</td>
-                      <td>{{properEndTime}}</td>
-                      <td>{{productName}}</td>
-                      <td>{{productVersion}}</td>
-                      <td>{{productRevision}}</td>
-                      <td>{{hostname}}</td>
-                      <td>{{userName}}</td>
-                  </tr>
-              {{/each}}
+                </thead>
+                <tbody>
+                {{#each session in filteredSessions}}
+                    <tr>
+                        <td>{{#link-to 'session' session.id}}{{session.id}}{{/link-to}}</td>
+                        <td>{{session.logicalId}}</td>
+                        <td {{bind-attr class="session.isSuccess session.isError session.isFailure session.isRunning"}}>{{session.status}}</td>
+                        <td>{{session.properStartTime}}</td>
+                        <td>{{session.properEndTime}}</td>
+                        <td>{{session.productName}}</td>
+                        <td>{{session.productVersion}}</td>
+                        <td>{{session.productRevision}}</td>
+                        <td>{{session.hostname}}</td>
+                        <td>{{session.userName}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
             </table>
-            {{page-numbers content=content}}
+          {{page-numbers content=content}}
         </div>
     </div>
 </div>
