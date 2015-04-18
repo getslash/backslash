@@ -94,6 +94,12 @@ def upgrade():
     with _migrate_context() as migrate:
         migrate.upgrade()
 
+@db.command()
+@requires_env("app")
+def downgrade():
+    with _migrate_context() as migrate:
+        migrate.downgrade()
+
 
 @contextmanager
 def _migrate_context():
