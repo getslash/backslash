@@ -8,6 +8,7 @@ stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=3
 stdout_events_enabled=true
 redirect_stderr=true
+stopsignal=QUIT
 
 [program:{{app_name}}-worker]
 process_name={{app_name}}-worker

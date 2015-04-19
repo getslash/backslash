@@ -135,6 +135,18 @@ def _run_unittest():
 
 
 @cli.command()
+@click.argument('pytest_args', nargs=-1)
+def pytest(pytest_args):
+    _run_pytest(pytest_args)
+
+
+@requires_env("app", "develop")
+def _run_pytest(pytest_args=()):
+    subprocess.check_call(
+        [from_env_bin("py.test")]+list(pytest_args), cwd=from_project_root())
+
+
+@cli.command()
 def fulltest():
     _run_fulltest()
 
