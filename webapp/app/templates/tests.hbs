@@ -77,6 +77,7 @@
             <th id="header-status" {{action 'sortBy' 'status'}}>Status</th>
             <th id="header-startTime" {{action 'sortBy' 'startTime'}}>Start time</th>
             <th id="header-duration" {{action 'sortBy' 'duration'}}>Duration</th>
+            <th id="header-testConclusion" {{action 'sortBy' 'testConclusion'}}>Test Conclusion</th>
             <th id="header-numErrors" {{action 'sortBy' 'numErrors'}}>Errors number</th>
             <th id="header-numFailures" {{action 'sortBy' 'numFailures'}}>Failures number</th>
         </tr>
@@ -90,6 +91,7 @@
                 <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
                 <td>{{test.properStartTime}}</td>
                 <td>{{test.duration}}</td>
+                <td>{{test.testConclusion}}</td>
                 <td>{{test.numErrors}}</td>
                 <td>{{test.numFailures}}</td>
             </tr>

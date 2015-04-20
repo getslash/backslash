@@ -10,6 +10,7 @@ export default DS.Model.extend({
   endTime: DS.attr('date'),
   duration: DS.attr('number'),
   status: DS.attr('string'),
+  testConclusion: DS.attr('string'),
   name: DS.attr('string'),
   testMetadata: DS.attr(),
   testErrors: DS.hasMany('error', {async: true}, {inverse: 'test'}),

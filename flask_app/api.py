@@ -178,3 +178,12 @@ def add_test_error_data(id, exception, exception_type, traceback, timestamp=None
 
     except NoResultFound:
         abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int,
+                   conclusion=str)
+def set_test_conclusion(id, conclusion):
+    update = {'test_conclusion': conclusion}
+    if not Test.query.filter(Test.id == id).update(update):
+        abort(requests.codes.not_found)

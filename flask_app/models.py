@@ -56,6 +56,7 @@ class Test(db.Model):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
+    test_conclusion = db.Column(db.String(256), index=True)
     errors = db.relationship('Error', backref=backref('test'), cascade='all, delete, delete-orphan')
 
     @computed_field
