@@ -9,6 +9,10 @@
     <p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
     <p>Hostname: {{hostname}}</p>
     <p>Username: {{userName}}</p>
-
+    <h4 {{bind-attr class="view.metaDataVisible:headerSortUp:headerSortDown"}} {{action 'toggleMetadata' this target='view'}}>Session MetaData:</h4>
+    {{#if view.metaDataVisible}}
+    {{metadata-table-tree metadata=sessionMetadata}}
+    {{/if}}
     {{render "tests"}}
+
 </div>
