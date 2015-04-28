@@ -7,7 +7,7 @@ from weber_utils import Optional, takes_schema_args
 
 from .api_utils import auto_commit, get_api_decorator, API_SUCCESS
 from .utils import get_current_time
-from .models import Session, Test, TestMetadata, SessionMetadata, Error
+from .models import Session, Test, TestMetadata, SessionMetadata, TestError, SessionError
 from sqlalchemy.orm.exc import NoResultFound
 
 blueprint = Blueprint('api', __name__)
@@ -181,11 +181,27 @@ def add_test_error_data(id, exception, exception_type, traceback, timestamp=None
         timestamp = get_current_time()
     try:
         test = Test.query.filter(Test.id == id).one()
-        test.errors.append(Error(exception=exception,
+        test.errors.append(TestError(exception=exception,
                                  exception_type=exception_type,
                                  traceback=traceback,
                                  timestamp=timestamp))
         test.num_errors = Test.num_errors + 1
+
+    except NoResultFound:
+        abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int, long)))
+def add_session_error_data(id, exception, exception_type, traceback, timestamp=None):
+    if timestamp is None:
+        timestamp = get_current_time()
+    try:
+        session = Session.query.filter(Session.id == id).one()
+        session.errors.append(SessionError(exception=exception,
+                                           exception_type=exception_type,
+                                           traceback=traceback,
+                                           timestamp=timestamp))
 
     except NoResultFound:
         abort(requests.codes.not_found)

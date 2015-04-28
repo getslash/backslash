@@ -8,7 +8,9 @@ export default Ember.Route.extend(RouteMixin, {
       total_pages: "total_num_pages"};
     return Ember.RSVP.hash({
       session: this.get('store').find('session', params.session_id),
-      tests: this.findPaged('test',params)
+      tests: this.findPaged('test',params),
+      sessionErrors: this.store.find('sessionError',{session_id: params.session_id})
+
     });
   },
 

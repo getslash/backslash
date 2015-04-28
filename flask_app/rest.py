@@ -1,17 +1,26 @@
 from flask import Blueprint
 
-from .models import Session, Test, Error
+from .models import Session, Test, TestError, SessionError
 from weber_utils import paginated_view
 from .filtering import filterable_view, Filter
 from .rendering import auto_render, render_api_object
 from .statuses import filter_query_by_session_status, filter_query_by_test_status
 from .metadata import filter_test_metadata
 
+import re
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+
+
+def convert_typename(name):
+    s1 = first_cap_re.sub(r'\1_\2', name)
+    return all_cap_re.sub(r'\1_\2', s1).lower()
+
 blueprint = Blueprint('rest', __name__)
 
 
 def _register_rest_getters(objtype, filters=()):
-    typename = objtype.__name__.lower()
+    typename = convert_typename(objtype.__name__)
     @blueprint.route('/{0}s/<int:object_id>'.format(typename), endpoint='get_single_{0}'.format(typename))
     @auto_render
     def get_single_object(object_id):
@@ -38,8 +47,11 @@ _register_rest_getters(Test, filters=[
     Filter('status', filter_func=filter_query_by_test_status),
     Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq','exists'))])
 
-_register_rest_getters(Error, filters=[
+_register_rest_getters(TestError, filters=[
     'test_id'])
+
+_register_rest_getters(SessionError, filters=[
+    'session_id'])
 
 ## more specific views
 

@@ -13,7 +13,7 @@ export default DS.Model.extend({
   testConclusion: DS.attr('string'),
   name: DS.attr('string'),
   testMetadata: DS.attr(),
-  testErrors: DS.hasMany('error', {async: true}, {inverse: 'test'}),
+  testErrors: DS.hasMany('testError', {async: true}, {inverse: 'test'}),
   numErrors: DS.attr('number'),
   numFailures: DS.attr('number'),
   interrupted: DS.attr('boolean'),

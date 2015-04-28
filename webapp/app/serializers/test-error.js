@@ -12,7 +12,7 @@ export default DS.ActiveModelSerializer.extend({
   },
 
   normalizePayload: function(payload) {
-    payload.errors = payload.result;
+    payload.testErrors = payload.result;
     delete payload.error;
     delete payload.result;
     return payload;
