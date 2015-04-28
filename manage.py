@@ -216,11 +216,14 @@ def shell():
     from flask_app.app import create_app
     from flask_app import models
 
-    interact({
-        'db': db,
-        'app': create_app(),
-        'models': models,
-        'db': models.db,
+    app = create_app()
+
+    with app.app_context():
+        interact({
+            'db': db,
+            'app': app,
+            'models': models,
+            'db': models.db,
         })
 
 
