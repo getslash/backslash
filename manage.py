@@ -13,7 +13,7 @@ bootstrap_env(["base"])
 
 
 from _lib.params import APP_NAME
-from _lib.frontend import frontend
+from _lib.frontend import frontend, ember
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
@@ -35,6 +35,8 @@ cli.add_command(run_uwsgi)
 cli.add_command(generate_nginx_config)
 cli.add_command(db)
 cli.add_command(frontend)
+cli.add_command(ember)
+
 
 @cli.command('ensure-secret')
 @click.argument("conf_file")

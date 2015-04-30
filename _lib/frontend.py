@@ -12,6 +12,14 @@ from .bootstrapping import from_env, from_project_root
 _logger = logbook.Logger(__name__)
 
 
+
+@click.command()
+@click.argument('args', nargs=-1)
+def ember(args):
+    _bootstrap_frontend()
+    _execute('ember {}'.format(' '.join(args)), cwd=from_project_root('webapp'))
+
+
 @click.group()
 def frontend():
     pass
