@@ -9,7 +9,7 @@ export default Ember.Route.extend(RouteMixin, {
     return Ember.RSVP.hash({
       session: this.get('store').find('session', params.session_id),
       tests: this.findPaged('test',params),
-      sessionErrors: this.store.find('sessionError',{session_id: params.session_id})
+      sessionErrors: this.store.find('error',{session_id: params.session_id})
 
     });
   },

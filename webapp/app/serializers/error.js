@@ -12,21 +12,9 @@ export default DS.ActiveModelSerializer.extend({
   },
 
   normalizePayload: function(payload) {
-    payload.sessionErrors = payload.result;
+    payload.errors = payload.result;
     delete payload.error;
     delete payload.result;
     return payload;
-  },
-
-  keyForRelationship: function(rel, kind) {
-    var underscored;
-    if (kind === 'belongsTo') {
-      underscored = rel.underscore();
-      return underscored + "_id";
-    } else {
-      var singular = rel.singularize();
-      underscored = singular.underscore();
-      return underscored + "_ids";
-    }
   }
 });

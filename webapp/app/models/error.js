@@ -9,7 +9,6 @@ export default DS.Model.extend({
   exceptionType: DS.attr('date'),
   timestamp: DS.attr('date'),
   traceback: DS.attr(),
-  session: DS.belongsTo('session', {async: true}, {inverse:'sessionErrors'}),
   apiPath: DS.attr('string'),
   type: DS.attr('string')
 });

@@ -13,6 +13,23 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB
 db = SQLAlchemy(app)
 
 
+test_error = db.Table('test_error',
+                      db.Column('test_id',
+                                db.Integer,
+                                db.ForeignKey('test.id')),
+                      db.Column('error_id',
+                                db.Integer,
+                                db.ForeignKey('error.id')))
+
+session_error = db.Table('session_error',
+                         db.Column('session_id',
+                                   db.Integer,
+                                   db.ForeignKey('session.id')),
+                         db.Column('error_id',
+                                   db.Integer,
+                                   db.ForeignKey('error.id')))
+
+
 class Session(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -26,7 +43,7 @@ class Session(db.Model):
     user_name = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     metadata_objects = db.relationship('SessionMetadata', backref=backref('session'), cascade='all, delete, delete-orphan')
-    errors = db.relationship('SessionError', backref=backref('session'), cascade='all, delete, delete-orphan')
+    errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
 
     # test counts
     num_failed_tests = db.Column(db.Integer, default=0)
@@ -69,7 +86,7 @@ class Test(db.Model):
     num_failures = db.Column(db.Integer, default=0)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
     test_conclusion = db.Column(db.String(256), index=True)
-    errors = db.relationship('TestError', backref=backref('test'), cascade='all, delete, delete-orphan')
+    errors = db.relationship('Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
 
     @computed_field
     def duration(self):
@@ -115,19 +132,11 @@ class SessionMetadata(db.Model):
     metadata_item = db.Column(JSONB)
 
 
-class TestError(db.Model):
+class Error(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
     traceback = db.Column(JSON)
     exception_type = db.Column(db.String(256), index=True)
     exception = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
 
 
-class SessionError(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
-    traceback = db.Column(JSON)
-    exception_type = db.Column(db.String(256), index=True)
-    exception = db.Column(db.String(256), index=True)
-    timestamp = db.Column(db.Float, default=get_current_time)
