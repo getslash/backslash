@@ -8,7 +8,10 @@ from flask.ext.mail import Mail
 
 import logbook
 
-def create_app():
+def create_app(config=None):
+    if config is None:
+        config = {}
+
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
@@ -27,6 +30,7 @@ def create_app():
             with open(yaml_path) as yaml_file:
                 app.config.update(yaml.load(yaml_file))
 
+    app.config.update(config)
 
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging.DEBUG)
