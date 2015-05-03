@@ -6,7 +6,7 @@ export default DS.Model.extend({
   }.property('id'),
 
   exception: DS.attr('string'),
-  exceptionType: DS.attr('date'),
+  exceptionType: DS.attr('string'),
   timestamp: DS.attr('date'),
   traceback: DS.attr(),
   apiPath: DS.attr('string'),
