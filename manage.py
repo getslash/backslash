@@ -70,7 +70,7 @@ def testserver(tmux):
         return _run_tmux_frontend()
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
-    
+
     app.run(port=8000, extra_files=[
         from_project_root("flask_app", "app.yml")
     ])
