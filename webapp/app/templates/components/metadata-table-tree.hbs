@@ -1,4 +1,4 @@
-<table class="table table-bordered tree">
+<table class="table table-bordered tree" isVisibleBinding="isVisible">
     <tbody>
     {{#each metadata_line in treeCompliantMetadata}}
         <tr {{bind-attr class="metadata_line.index-class metadata_line.parent-class"}} >

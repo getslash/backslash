@@ -8,7 +8,7 @@
     <p>Start time: {{model.test.properStartTime}}</p>
     <p>Duration: {{model.test.duration}}</p>
     <h3>Test MetaData</h3>
-    {{metadata-table-tree metadata=model.test.testMetadata}}
+    {{metadata-table-tree metadata=model.test.testMetadata isVisible=true}}
 
     <h3>Errors</h3>
     <h4 {{bind-attr class="model.test.noErrors:no-errors:total-errors"}}>Total Errors: {{model.test.numErrors}}</h4>

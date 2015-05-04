@@ -9,6 +9,21 @@
     <p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
     <p>Hostname: {{hostname}}</p>
     <p>Username: {{userName}}</p>
-
+    <h4 {{bind-attr class="view.metaDataVisible:headerSortUp:headerSortDown"}} {{action 'toggleMetadata' this target='view'}}>Session MetaData:</h4>
+    {{metadata-table-tree metadata=sessionMetadata isVisible=view.metaDataVisible}}
+    {{#if model.hasSessionErrors}}
+      <h3>Session Errors:</h3>
+      {{#each error in model.sessionErrors}}
+          <div class="error-description">
+              <p class="exception-type">{{error.exception_type}}</p>
+              <p class="exception-description">{{error.exception}}</p>
+            {{#each traceback in error.traceback}}
+                <p class="traceback-line-headline">{{traceback.filename}}:{{traceback.lineno}} ({{traceback.func_name}})</p>
+              {{traceback-code traceback=traceback}}
+            {{/each}}
+          </div>
+      {{/each}}
+    {{/if}}
     {{render "tests"}}
+
 </div>

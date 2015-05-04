@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 from .models import Session, Test, Error
 from weber_utils import paginated_view
@@ -7,11 +7,20 @@ from .rendering import auto_render, render_api_object
 from .statuses import filter_query_by_session_status, filter_query_by_test_status
 from .metadata import filter_test_metadata
 
+import re
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+
+
+def convert_typename(name):
+    s1 = first_cap_re.sub(r'\1_\2', name)
+    return all_cap_re.sub(r'\1_\2', s1).lower()
+
 blueprint = Blueprint('rest', __name__)
 
 
 def _register_rest_getters(objtype, filters=()):
-    typename = objtype.__name__.lower()
+    typename = convert_typename(objtype.__name__)
     @blueprint.route('/{0}s/<int:object_id>'.format(typename), endpoint='get_single_{0}'.format(typename))
     @auto_render
     def get_single_object(object_id):
@@ -36,12 +45,18 @@ _register_rest_getters(Test, filters=[
     Filter('num_errors', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_test_status),
-    Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq','exists'))])
-
-_register_rest_getters(Error, filters=[
-    'test_id'])
+    Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq', 'exists'))])
 
 ## more specific views
+@blueprint.route('/errors', endpoint='get_errors')
+@paginated_view(renderer=render_api_object)
+def get_session_errors():
+    if request.args.get('session_id'):
+        return Error.query.join((Session, Error.session)).filter(Session.id == request.args.get('session_id'))
+    elif request.args.get('test_id'):
+        return Error.query.join((Test, Error.test)).filter(Test.id == request.args.get('test_id'))
+    else:
+        return None
 
 @blueprint.route('/sessions/<int:object_id>/tests', endpoint='get_tests_of_session')
 @paginated_view(renderer=render_api_object)

@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleForModel('error', {
+moduleForModel('session-error', {
   // Specify the other units that are required for this test.
   needs: []
 });

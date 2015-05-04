@@ -3,6 +3,15 @@ import functools
 
 from .responses import API_SUCCESS
 
+import re
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+
+
+def convert_typename(name):
+    s1 = first_cap_re.sub(r'\1_\2', name)
+    return all_cap_re.sub(r'\1_\2', s1).lower()
+
 
 def auto_render(func):
     """Automatically renders returned objects using render_api_object
@@ -24,7 +33,7 @@ def render_api_object(obj):
         if is_computed_field(method):
             returned[method_name] = method()
 
-    returned['type'] = typename = type(obj).__name__.lower()
+    returned['type'] = typename = convert_typename(type(obj).__name__)
     returned['api_path'] = '/rest/{0}s/{1}'.format(typename, obj.id)
     return returned
 

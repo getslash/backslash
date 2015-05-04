@@ -15,6 +15,8 @@ export default DS.Model.extend({
   productVersion: DS.attr('string'),
   userName: DS.attr('string'),
   tests: DS.hasMany('test', {async: true}, {inverse: 'session'}),
+  sessionErrors: DS.attr(),
+  sessionMetadata: DS.attr(),
   apiPath: DS.attr('string'),
   type: DS.attr('string'),
 
@@ -49,5 +51,9 @@ export default DS.Model.extend({
 
   isRunning: function() {
     return (this.get('status') === 'RUNNING');
-  }.property('status')
+  }.property('status'),
+
+  hasSessionErrors: function() {
+    return (this.get('sessionErrors.length') > 0);
+  }.property('sessionErrors')
 });

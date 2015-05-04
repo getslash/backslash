@@ -13,6 +13,23 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB
 db = SQLAlchemy(app)
 
 
+test_error = db.Table('test_error',
+                      db.Column('test_id',
+                                db.Integer,
+                                db.ForeignKey('test.id')),
+                      db.Column('error_id',
+                                db.Integer,
+                                db.ForeignKey('error.id')))
+
+session_error = db.Table('session_error',
+                         db.Column('session_id',
+                                   db.Integer,
+                                   db.ForeignKey('session.id')),
+                         db.Column('error_id',
+                                   db.Integer,
+                                   db.ForeignKey('error.id')))
+
+
 class Session(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -25,6 +42,8 @@ class Session(db.Model):
     product_revision = db.Column(db.String(256), index=True)
     user_name = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
+    metadata_objects = db.relationship('SessionMetadata', backref=backref('session'), cascade='all, delete, delete-orphan')
+    errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
 
     # test counts
     num_failed_tests = db.Column(db.Integer, default=0)
@@ -34,6 +53,8 @@ class Session(db.Model):
 
     @computed_field
     def status(self):
+        if len(self.errors) > 0:
+            return 'FAILURE'
         if self.end_time is None:
             return 'RUNNING'
         else:
@@ -41,6 +62,14 @@ class Session(db.Model):
                 if test.status() == 'FAILURE' or test.status() == 'ERROR':
                     return 'FAILURE'
             return 'SUCCESS'
+
+    @computed_field
+    def session_metadata(self):
+        combined_json_object = {}
+        for metadata_object in self.metadata_objects:
+            for key, value in metadata_object.metadata_item.iteritems():
+                combined_json_object[key] = value
+        return combined_json_object
 
 
 class Test(db.Model):
@@ -56,7 +85,8 @@ class Test(db.Model):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
-    errors = db.relationship('Error', backref=backref('test'), cascade='all, delete, delete-orphan')
+    test_conclusion = db.Column(db.String(256), index=True)
+    errors = db.relationship('Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
 
     @computed_field
     def duration(self):
@@ -95,11 +125,18 @@ class TestMetadata(db.Model):
     metadata_item = db.Column(JSONB)
 
 
-class Error(db.Model):
+class SessionMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+    metadata_item = db.Column(JSONB)
+
+
+class Error(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
     exception_type = db.Column(db.String(256), index=True)
     exception = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
+
+
