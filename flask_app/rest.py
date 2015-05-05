@@ -36,12 +36,12 @@ def _register_rest_getters(objtype, filters=()):
 ################################################################################
 
 _register_rest_getters(Session, filters=[
-    'product_name', 'product_version', 'user_name', 'logical_id',
+    'product_name', 'product_version', 'user_name', 'logical_id', 'id',
     Filter('start_time', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_session_status)])
 
 _register_rest_getters(Test, filters=[
-    'name', 'logical_id', 'session_id',
+    'name', 'logical_id', 'session_id', 'id',
     Filter('num_errors', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
     Filter('status', filter_func=filter_query_by_test_status),
