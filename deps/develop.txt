@@ -1,4 +1,4 @@
 Flask-Loopback
-livereload
 pytest
 tmuxp
+livereload

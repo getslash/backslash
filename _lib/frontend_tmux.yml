@@ -8,6 +8,3 @@ windows:
   - window_name: celery worker
     panes:
       - .env/bin/celery -A flask_app.tasks worker --loglevel=info
-  - window_name: livereload
-    panes:
-      - .env/bin/livereload static/assets/webapp.js
