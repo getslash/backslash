@@ -63,17 +63,29 @@ def bootstrap(develop, app):
 
 
 @cli.command()
+@click.option('--livereload/--no-livereload', is_flag=True, default=True)
 @requires_env("app", "develop")
 @click.option('--tmux/--no-tmux', is_flag=True, default=True)
-def testserver(tmux):
+def testserver(tmux, livereload, port=8000):
     if tmux:
         return _run_tmux_frontend()
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
 
-    app.run(port=8000, extra_files=[
+    extra_files=[
         from_project_root("flask_app", "app.yml")
-    ])
+    ]
+
+    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy'})
+    if livereload:
+        from livereload import Server
+        s = Server(app)
+        for filename in extra_files:
+            s.watch(filename)
+        s.watch('flask_app')
+        s.serve(port=port, liveport=35729)
+    else:
+        app.run(port=port, extra_files=extra_files)
 
 def _run_tmux_frontend():
     tmuxp = from_env_bin('tmuxp')
