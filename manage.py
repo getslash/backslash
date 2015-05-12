@@ -87,7 +87,8 @@ def testserver(tmux, livereload, port=8000):
         for filename in extra_files:
             s.watch(filename)
         s.watch('flask_app')
-        s.watch('static/assets')
+        for filename in ['webapp.js', 'vendor.js', 'webapp.css']:
+            s.watch(os.path.join('static', 'assets', filename))
         s.serve(port=port, liveport=35729)
     else:
         app.run(port=port, extra_files=extra_files)
