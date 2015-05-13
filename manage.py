@@ -18,6 +18,7 @@ from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 from _lib.db import db
+from _lib.celery import celery
 from _lib.utils import interact
 import click
 import requests
@@ -34,6 +35,7 @@ def cli():
 cli.add_command(run_uwsgi)
 cli.add_command(generate_nginx_config)
 cli.add_command(db)
+cli.add_command(celery)
 
 @cli.command('ensure-secret')
 @click.argument("conf_file")
