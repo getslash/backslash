@@ -90,7 +90,7 @@ def testserver(tmux, livereload, port=8000):
             s.watch(filename)
         s.watch('flask_app')
         for filename in ['webapp.js', 'vendor.js', 'webapp.css']:
-            s.watch(os.path.join('static', 'assets', filename))
+            s.watch(os.path.join('static', 'assets', filename), delay=0.5)
         logbook.StreamHandler(sys.stderr, level='DEBUG').push_application()
         s.serve(port=port, liveport=35729)
     else:
