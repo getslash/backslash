@@ -73,6 +73,7 @@ table.table.table-striped tr.success-item td {
 {
   cursor: pointer;
 }
-@import '../../bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
+
+@import "bootstrap";
 @import 'test.scss';
 

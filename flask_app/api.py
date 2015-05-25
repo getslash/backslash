@@ -10,7 +10,7 @@ from .utils import get_current_time
 from .models import Session, Test, TestMetadata, SessionMetadata, Error, db
 from sqlalchemy.orm.exc import NoResultFound
 
-blueprint = Blueprint('api', __name__)
+blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api_func = get_api_decorator(blueprint)
 
