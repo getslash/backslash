@@ -2,7 +2,7 @@
   <div class="container">
     <div class="alert alert-success">
       <h1>Status Report</h1>
-      {{#each feature in features}}
+      {{#each feature in model.features}}
         <p><i {{bind-attr class=":fa feature.ok:fa-check-circle"}}></i> {{feature.name}}</p>
       {{/each}}<br/>
       <p>Go {{#link-to "setup"}}here{{/link-to}} to setup your first user</p><br/>
