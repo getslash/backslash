@@ -221,9 +221,6 @@ def _run_docker_start(port):
 def stop():
     stop_docker_container()
 
-def _db_container_name():
-    return '{0}-db'.format(APP_NAME)
-
 @cli.command()
 @requires_env("app", "develop")
 def shell():
