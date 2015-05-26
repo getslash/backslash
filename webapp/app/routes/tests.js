@@ -10,5 +10,10 @@ export default Ember.Route.extend(RouteMixin, {
     var paged = this.findPaged('test', params);
     paged.fromGeneralTestsTable = true;
     return paged;
+  },
+  actions: {
+    statusChanged: function() {
+      this.refresh();
+    }
   }
 });

@@ -8,5 +8,10 @@ export default Ember.Route.extend(RouteMixin, {
         total_pages: "total_num_pages"};
       var paged = this.findPaged('session',params);
       return paged;
+    },
+  actions: {
+    statusChanged: function() {
+      this.refresh();
     }
+  }
 });

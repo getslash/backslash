@@ -24,5 +24,10 @@ export default Ember.Route.extend(RouteMixin, {
     var testsController = this.controllerFor('tests');
     testsController.set('model', model.tests);
 
+  },
+  actions: {
+    statusChanged: function() {
+      this.refresh();
+    }
   }
 });

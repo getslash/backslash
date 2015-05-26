@@ -88,7 +88,7 @@
                 <td>{{#link-to 'test' test.id}}{{test.id}}{{/link-to}}</td>
                 <td>{{test.logicalId}}</td>
                 <td>{{test.name}}</td>
-                <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
+                <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped test.isEditedStatus"}} {{action 'showModal' 'edit-test-modal' test}}>{{test.status}}</td>
                 <td>{{test.properStartTime}}</td>
                 <td>{{test.duration}}</td>
                 <td>{{test.testConclusion}}</td>

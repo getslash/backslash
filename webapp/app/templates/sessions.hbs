@@ -73,7 +73,7 @@
                     <tr>
                         <td>{{#link-to 'session' session.id}}{{session.id}}{{/link-to}}</td>
                         <td>{{session.logicalId}}</td>
-                        <td {{bind-attr class="session.isSuccess session.isError session.isFailure session.isRunning"}}>{{session.status}}</td>
+                        <td {{bind-attr class="session.isSuccess session.isError session.isFailure session.isRunning session.isEditedStatus"}} {{action 'showModal' 'edit-session-modal' session}}>{{session.status}}</td>
                         <td>{{session.properStartTime}}</td>
                         <td>{{session.properEndTime}}</td>
                         <td>{{session.productName}}</td>

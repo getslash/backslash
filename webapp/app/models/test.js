@@ -12,6 +12,7 @@ export default DS.Model.extend({
   status: DS.attr('string'),
   testConclusion: DS.attr('string'),
   name: DS.attr('string'),
+  editedStatus: DS.attr('string'),
   testMetadata: DS.attr(),
   testErrors: DS.attr(),
   numErrors: DS.attr('number'),
@@ -65,6 +66,14 @@ export default DS.Model.extend({
   noErrors: function() {
     return (this.get('numErrors') === 0);
   }.property('numErrors'),
+
+  isEditedStatus: function() {
+    if(this.get('editedStatus'))
+    {
+      return true;
+    }
+    return false;
+  }.property('editedStatus'),
 
   noFailures: function() {
     return (this.get('numFailures') === 0);
