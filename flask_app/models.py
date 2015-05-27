@@ -1,16 +1,17 @@
 import datetime
 
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.security import UserMixin, RoleMixin
 
 from sqlalchemy.orm import backref
 
-from .app import app
 from .utils import get_current_time
 from .rendering import computed_field
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
-db = SQLAlchemy(app)
+
+db = SQLAlchemy()
 
 
 test_error = db.Table('test_error',
@@ -145,4 +146,22 @@ class Error(db.Model):
     exception = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
 
+roles_users = db.Table('roles_users',
+    db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+    db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
+
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(255))
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+    roles = db.relationship('Role', secondary=roles_users,
+                            backref=db.backref('users', lazy='dynamic'))

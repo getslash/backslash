@@ -26,20 +26,27 @@ def deployment_webapp_url(request):
     port = request.config.getoption("--www-port")
     return URL("http://127.0.0.1").with_port(port)
 
+@pytest.fixture(autouse=True)
+def app_security_settings(webapp):
+    webapp.app.config["SECRET_KEY"] = "testing_key"
+    webapp.app.config["SECURITY_PASSWORD_SALT"] = webapp.app.extensions['security'].password_salt = "testing_salt"
+
+
 @pytest.fixture
-def webapp(request, db):
-    returned = Webapp(app.app)
+def webapp(request):
+    returned = Webapp(app.create_app())
     returned.app.config["SECRET_KEY"] = "testing_key"
     returned.app.config["TESTING"] = True
     returned.activate()
     request.addfinalizer(returned.deactivate)
     return returned
 
-@pytest.fixture
-def db(request):
-    models.db.session.close()
-    models.db.drop_all()
-    models.db.create_all()
+@pytest.fixture(scope='function', autouse=True)
+def db(request, webapp):
+    with webapp.app.app_context():
+        models.db.session.close()
+        models.db.drop_all()
+        models.db.create_all()
 
 
 class Webapp(object):

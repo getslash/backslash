@@ -1,6 +1,8 @@
 import random
 import sys
 import time
+import re
+import os
 from contextlib import contextmanager
 from uuid import uuid4
 
@@ -10,43 +12,67 @@ import click
 
 from .bootstrapping import requires_env
 
+_DATABASE_URI_RE = re.compile(r"(?P<driver>(?P<db_type>sqlite|postgresql)(\+.*)?):\/\/(?P<host>[^/]*)\/(?P<db>.+)")
+
 
 @click.group()
 def db():
     pass
 
 
-@db.command()
-@requires_env("app")
-def ensure():
+def _create_sqlite(path):
+    pass
+
+def _create_postgres(match):
     import sqlalchemy
-    from flask_app.app import app
+    from flask_app.models import db
 
-    uri = app.config['SQLALCHEMY_DATABASE_URI']
-    if 'postgres' not in uri and 'psycopg2' not in uri:
-        logbook.error(
-            "Don't know how to create database - unrecognized connection type: {!r}", uri)
-        sys.exit(-1)
-
+    uri = match.group(0)
+    db_name = match.group('db')
     try:
         sqlalchemy.create_engine(uri).connect()
     except sqlalchemy.exc.OperationalError:
-        uri, db_name = uri.rsplit('/', 1)
-        engine = sqlalchemy.create_engine(uri + '/postgres')
+        engine = sqlalchemy.create_engine('{}://{}/postgres'.format(match.group('driver'), match.group('host')))
         conn = engine.connect()
         conn.execute("commit")
         conn.execute("create database {} with encoding = 'UTF8'".format(db_name))
         conn.close()
         logbook.info("Database {} successfully created on {}.", db_name, uri)
     else:
-        logbook.info("Database exists. Not doing anything.")
+        logbook.info("Database {} exists.", db_name)
+
+
+@db.command()
+@requires_env("app")
+def ensure():
+    from flask_app.app import create_app
+    from flask_app.models import db
+    app = create_app()
+
+    uri = app.config['SQLALCHEMY_DATABASE_URI']
+    match = _DATABASE_URI_RE.match(uri)
+    if not match:
+        logbook.error("Don't know how to create a database of type {}", uri)
+        sys.exit(-1)
+
+    if match.group('db_type') == 'sqlite':
+        _create_sqlite(match.group('db'))
+    elif match.group('db_type') == 'postgresql':
+        _create_postgres(match)
+
+    with app.app_context():
+        db.create_all()
+    logbook.info("DB successfully created")
+
+
 
 
 @db.command()
 def wait(num_retries=60, retry_sleep_seconds=1):
     import sqlalchemy
 
-    from flask_app.app import app
+    from flask_app.app import create_app
+    app = create_app()
 
     uri = app.config['SQLALCHEMY_DATABASE_URI']
     for retry in xrange(num_retries):
@@ -74,10 +100,12 @@ def wait(num_retries=60, retry_sleep_seconds=1):
 @db.command()
 @requires_env("app")
 def drop():
-    from flask_app.app import app
+    from flask_app.app import create_app
     from flask_app.models import db
-    db.drop_all()
-    db.engine.execute('DROP TABLE IF EXISTS alembic_version')
+    app = create_app()
+    with app.app_context():
+        db.drop_all()
+        db.engine.execute('DROP TABLE IF EXISTS alembic_version')
 
 
 @db.command()
@@ -103,9 +131,10 @@ def downgrade():
 
 @contextmanager
 def _migrate_context():
-    from flask_app.app import app
+    from flask_app.app import create_app
     from flask_app.models import db
     from flask.ext import migrate
+    app = create_app()
 
     migrate.Migrate(app, db)
 

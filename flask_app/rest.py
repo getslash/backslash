@@ -16,7 +16,7 @@ def convert_typename(name):
     s1 = first_cap_re.sub(r'\1_\2', name)
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
-blueprint = Blueprint('rest', __name__)
+blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
 
 def _register_rest_getters(objtype, filters=()):

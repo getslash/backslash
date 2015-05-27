@@ -3,6 +3,9 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 var app = new EmberApp({
+    'ember-cli-bootstrap-sassy': {
+        'quiet': true
+    },
     vendorFiles: {
         'handlebars.js': null
     }});
@@ -37,7 +40,6 @@ var cssTree = pickFiles('bower_components/fontawesome/css', {
 
 app.import('bower_components/jquery-treegrid/css/jquery.treegrid.css');
 app.import('bower_components/jquery-treegrid/js/jquery.treegrid.js');
-app.import('bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js');
 app.import('bower_components/jquery-treegrid/img/collapse.png', {
   destDir: '/img'
 });
