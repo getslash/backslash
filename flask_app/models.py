@@ -42,6 +42,7 @@ class Session(db.Model):
     product_version = db.Column(db.String(256), index=True)
     product_revision = db.Column(db.String(256), index=True)
     user_name = db.Column(db.String(256), index=True)
+    edited_status = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     metadata_objects = db.relationship('SessionMetadata', backref=backref('session'), cascade='all, delete, delete-orphan')
     errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
@@ -54,6 +55,8 @@ class Session(db.Model):
 
     @computed_field
     def status(self):
+        if self.edited_status:
+            return self.edited_status
         if len(self.errors) > 0:
             return 'FAILURE'
         if self.end_time is None:
@@ -85,6 +88,7 @@ class Test(db.Model):
     interrupted = db.Column(db.Boolean, default=False)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
+    edited_status = db.Column(db.String(256), index=True)
     metadata_objects = db.relationship('TestMetadata', backref=backref('test'), cascade='all, delete, delete-orphan')
     test_conclusion = db.Column(db.String(256), index=True)
     errors = db.relationship('Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
@@ -97,6 +101,8 @@ class Test(db.Model):
 
     @computed_field
     def status(self):
+        if self.edited_status:
+            return self.edited_status
         if self.interrupted:
             return 'INTERRUPTED'
         if self.end_time is None:

@@ -17,6 +17,10 @@ export default Ember.ArrayController.extend({
   sortProperties: ['integerId'],
   sortAscending: false,
   resultsPerPage: [10, 20, 50, 100],
+  FilterlogicalID: "",
+  FilterUserName: "",
+  FilterProductName: "",
+  FilterProductVersion: "",
   filteredSessions: function() {
     var sessions = this.get('arrangedContent');
 
@@ -33,17 +37,17 @@ export default Ember.ArrayController.extend({
   actions: {
     querySessions: function () {
       var arr_simple_params = {};
-      if ((typeof FilterlogicalID !== "undefined") && (FilterlogicalID !== "")) {
-        arr_simple_params["logical_id"] = FilterlogicalID;
+      if ((typeof this.FilterlogicalID !== "undefined") && (this.FilterlogicalID !== "")) {
+        arr_simple_params["logical_id"] = this.FilterlogicalID;
       }
-      if ((typeof FilterUserName !== "undefined") && (FilterUserName !== "")) {
-        arr_simple_params["user_name"] = FilterUserName;
+      if ((typeof this.FilterUserName !== "undefined") && (this.FilterUserName !== "")) {
+        arr_simple_params["user_name"] = this.FilterUserName;
       }
-      if ((typeof FilterProductName !== "undefined") && (FilterProductName !== "")) {
-        arr_simple_params["product_name"] = FilterProductName;
+      if ((typeof this.FilterProductName !== "undefined") && (this.FilterProductName !== "")) {
+        arr_simple_params["product_name"] = this.FilterProductName;
       }
-      if ((typeof FilterProductVersion !== "undefined") && (FilterProductVersion !== "")) {
-        arr_simple_params["product_version"] = FilterProductVersion;
+      if ((typeof this.FilterProductVersion !== "undefined") && (this.FilterProductVersion !== "")) {
+        arr_simple_params["product_version"] = this.FilterProductVersion;
       }
 
       var query_params = {};

@@ -40,12 +40,49 @@ def test_search_by_bad_filter_name(client):
             nonexistant_name='dontcare')
 
 
+@pytest.mark.parametrize('new_status', ['SUCCESS', 'FAILURE'])
+def test_search_by_status_running_modified(client, sessions, session_to_find_status_running, new_status):
+    session_to_find_status_running.edit_status(new_status)
+    session_to_find_status_running.refresh()
+
+    running_query = client.query_sessions().filter(status='RUNNING')
+    assert len(running_query) == 0
+    [session] = client.query_sessions().filter(status=new_status)
+    assert session == session_to_find_status_running
+
+
+@pytest.mark.parametrize('new_status', ['RUNNING', 'FAILURE'])
+def test_search_by_status_success_modified(client, sessions, session_to_find_status_success, new_status):
+    session_to_find_status_success.edit_status(new_status)
+    session_to_find_status_success.refresh()
+
+    running_query = client.query_sessions().filter(status='SUCCESS')
+    assert len(running_query) == 0
+    [session] = client.query_sessions().filter(status=new_status)
+    assert session == session_to_find_status_success
+
+
+@pytest.mark.parametrize('new_status', ['RUNNING', 'SUCCESS'])
+def test_search_by_status_failure_modified(client, sessions, session_to_find_status_failed_test, new_status):
+    session_to_find_status_failed_test.edit_status(new_status)
+    session_to_find_status_failed_test.refresh()
+
+    running_query = client.query_sessions().filter(status='FAILURE')
+    assert len(running_query) == 0
+    [session] = client.query_sessions().filter(status=new_status)
+    assert session == session_to_find_status_failed_test
+
+
+def test_edit_bad_status(client, sessions, session_to_find_status_success):
+    with raises_bad_request():
+        session_to_find_status_success.edit_status('BAD_STATUS')
+
+
 def test_search_by_status_running(client, sessions, session_to_find_status_running):
     [session] = client.query_sessions().filter(status='RUNNING')
     assert session == session_to_find_status_running
-#   empty result is not supported yet
-#   [success_session] = client.query_sessions().filter(status='SUCCESS')
-#    assert len(success_session) == 0
+    success_query = client.query_sessions().filter(status='SUCCESS')
+    assert len(success_query) == 0
 
 
 def test_search_by_status_success(client, sessions, session_to_find_status_success):

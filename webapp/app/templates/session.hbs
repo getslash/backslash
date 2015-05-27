@@ -1,14 +1,14 @@
 <div class="main-container">
     <a class="back" {{action 'goBack'}}>back</a>
-    <h1>session {{id}}</h1>
+    <h1>session {{model.id}}</h1>
 
-    <p>Logical ID: {{logicalId}}</p>
-    <p>Status: {{status}}</p>
-    <p>Start time: {{properStartTime}}</p>
-    <p>End time: {{properEndTime}}</p>
-    <p>Product: {{productName}};{{productVersion}};{{productRevision}}</p>
-    <p>Hostname: {{hostname}}</p>
-    <p>Username: {{userName}}</p>
+    <p>Logical ID: {{model.logicalId}}</p>
+    <p>Status: {{model.status}}</p>
+    <p>Start time: {{model.properStartTime}}</p>
+    <p>End time: {{model.properEndTime}}</p>
+    <p>Product: {{model.productName}};{{model.productVersion}};{{model.productRevision}}</p>
+    <p>Hostname: {{model.hostname}}</p>
+    <p>Username: {{model.userName}}</p>
     <h4 {{bind-attr class="view.metaDataVisible:headerSortUp:headerSortDown"}} {{action 'toggleMetadata' this target='view'}}>Session MetaData:</h4>
     {{metadata-table-tree metadata=sessionMetadata isVisible=view.metaDataVisible}}
     {{#if model.hasSessionErrors}}

@@ -5,13 +5,13 @@
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">logical ID:</label>
               <div class="col-xs-4 col-xl-4">
-                {{input classBinding=":tests-query" valueBinding="FilterlogicalID"}}
+                {{input classBinding=":tests-query" value=controller.FilterlogicalID}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Name:</label>
               <div class="col-xs-4 col-xl-4">
-                {{input classBinding=":tests-query" valueBinding="FilterTestName"}}
+                {{input classBinding=":tests-query" value=controller.FilterTestName}}
               </div>
           </div>
           <div class="form-group">
@@ -23,13 +23,13 @@
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Errors number (>=):</label>
               <div class="col-xs-4 col-xl-4">
-                {{input classBinding=":tests-query" valueBinding="FilterErrorNum"}}
+                {{input classBinding=":tests-query" value=controller.FilterErrorNum}}
               </div>
           </div>
           <div class="form-group">
               <label class="control-label col-xs-2 col-xl-2">Failures number (>=):</label>
               <div class="col-xs-4 col-xl-4">
-                {{input classBinding=":tests-query" valueBinding="FilterFailureNum"}}
+                {{input classBinding=":tests-query" value=controller.FilterFailureNum}}
               </div>
           </div>
         {{#each query in view.metadata_queries}}
@@ -88,7 +88,7 @@
                 <td>{{#link-to 'test' test.id}}{{test.id}}{{/link-to}}</td>
                 <td>{{test.logicalId}}</td>
                 <td>{{test.name}}</td>
-                <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped"}}>{{test.status}}</td>
+                <td {{bind-attr class="test.isSuccess test.isError test.isFailure test.isRunning test.isInterrupted test.isSkipped test.isEditedStatus"}} {{action 'showModal' 'edit-test-modal' test}}>{{test.status}}</td>
                 <td>{{test.properStartTime}}</td>
                 <td>{{test.duration}}</td>
                 <td>{{test.testConclusion}}</td>

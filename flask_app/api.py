@@ -214,3 +214,25 @@ def set_test_conclusion(id, conclusion):
     update = {'test_conclusion': conclusion}
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int,
+                   status=str)
+def edit_session_status(id, status):
+    if status not in ['', 'RUNNING', 'FAILURE', 'SUCCESS']:
+        abort(requests.codes.bad_request)
+    update = {'edited_status': status}
+    if not Session.query.filter(Session.id == id).update(update):
+        abort(requests.codes.not_found)
+
+@api_func
+@auto_commit
+@takes_schema_args(id=int,
+                   status=str)
+def edit_test_status(id, status):
+    if status not in ['', 'RUNNING', 'SUCCESS', 'SKIPPED', 'FAILURE', 'ERROR', 'INTERRUPTED']:
+        abort(requests.codes.bad_request)
+    update = {'edited_status': status}
+    if not Test.query.filter(Test.id == id).update(update):
+        abort(requests.codes.not_found)

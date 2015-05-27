@@ -33,6 +33,11 @@ table.table.table-striped tr.failed-item td {
   background-color: #f2ffa6
 }
 
+.is-edited-status:after {
+  content: "(*)";
+  font-family: Arial, sans-serif;
+}
+
 table.table.table-striped tr.success-item td {
   background-color: #56ff71;
 }
@@ -74,6 +79,27 @@ table.table.table-striped tr.success-item td {
   cursor: pointer;
 }
 
-@import "bootstrap";
+.my-modal {
+  position: relative;
+  margin: 10px auto;
+  width: 300px;
+  background-color: #fff;
+  padding: 1em;
+}
+
+.overlay {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.flush--top {
+  margin-top: 0;
+}
+
+@import 'bootstrap';
 @import 'test.scss';
 

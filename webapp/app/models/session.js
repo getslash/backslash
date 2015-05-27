@@ -10,6 +10,7 @@ export default DS.Model.extend({
   endTime: DS.attr('date'),
   status: DS.attr('string'),
   hostname: DS.attr('string'),
+  editedStatus: DS.attr('string'),
   productName: DS.attr('string'),
   productRevision: DS.attr('string'),
   productVersion: DS.attr('string'),
@@ -52,6 +53,14 @@ export default DS.Model.extend({
   isRunning: function() {
     return (this.get('status') === 'RUNNING');
   }.property('status'),
+
+  isEditedStatus: function() {
+    if(this.get('editedStatus'))
+    {
+      return true;
+    }
+    return false;
+  }.property('editedStatus'),
 
   hasSessionErrors: function() {
     return (this.get('sessionErrors.length') > 0);

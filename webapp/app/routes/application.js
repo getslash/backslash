@@ -11,8 +11,22 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
   actions: {
-    goBack: function() {
+    goBack: function () {
       window.history.go(-1);
+    },
+    showModal: function(name, model) {
+      this.render(name, {
+        into: 'application',
+        outlet: 'modal',
+        model: model
+      });
+    },
+
+    closeModal: function () {
+      return this.disconnectOutlet({
+        outlet: 'modal',
+        parentView: 'application'
+      });
     }
   }
 });
