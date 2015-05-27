@@ -43,7 +43,6 @@ def create_app(config=None):
     Mail(app)
 
     from . import models
-    from . import api
     from .blueprints import rest, api, views
 
     models.db.init_app(app)
