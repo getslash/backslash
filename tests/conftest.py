@@ -41,7 +41,7 @@ def webapp(request):
     request.addfinalizer(returned.deactivate)
     return returned
 
-@pytest.fixture
+@pytest.fixture(scope='function', autouse=True)
 def db(request, webapp):
     with webapp.app.app_context():
         models.db.session.close()
