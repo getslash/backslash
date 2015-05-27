@@ -13,9 +13,5 @@ export default Ember.Component.extend({
     this.$('.modal').modal().on('hidden.bs.modal', function() {
       this.sendAction('close');
     }.bind(this));
-  }.on('didInsertElement'),
-
-  initDialog:function() {
-    this.sendAction('initDialog');
-  }.on('afterRenderEvent')
+  }.on('didInsertElement')
 });
