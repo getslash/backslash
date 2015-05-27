@@ -20,14 +20,19 @@ export default Ember.ArrayController.extend({
   testStatuses: ['', 'SUCCESS', 'FAILURE', 'ERROR', 'INTERRUPTED', 'RUNNING'],
   metadataQueries: [],
 
+  FilterlogicalID: "",
+  FilterTestName: "",
+  FilterErrorNum: "",
+  FilterFailureNum: "",
+
   actions: {
     queryTests: function () {
       var arr_simple_params = {};
-      if ((typeof FilterlogicalID !== "undefined") && (FilterlogicalID !== "")) {
-        arr_simple_params["logical_id"] = FilterlogicalID;
+      if ((typeof this.FilterlogicalID !== "undefined") && (this.FilterlogicalID !== "")) {
+        arr_simple_params["logical_id"] = this.FilterlogicalID;
       }
-      if ((typeof FilterTestName !== "undefined") && (FilterTestName !== "")) {
-        arr_simple_params["name"] = FilterTestName;
+      if ((typeof this.FilterTestName !== "undefined") && (this.FilterTestName !== "")) {
+        arr_simple_params["name"] = this.FilterTestName;
       }
 
       var query_params = {};
@@ -43,12 +48,12 @@ export default Ember.ArrayController.extend({
         query_params['status'] = this.selectedStatus;
       }
 
-      if ((typeof FilterErrorNum !== "undefined") && (FilterErrorNum !== "")) {
-        query_params["num_errors"] = 'ge:' + FilterErrorNum;
+      if ((typeof this.FilterErrorNum !== "undefined") && (this.FilterErrorNum !== "")) {
+        query_params["num_errors"] = 'ge:' + this.FilterErrorNum;
       }
 
-      if ((typeof FilterFailureNum !== "undefined") && (FilterFailureNum !== "")) {
-        query_params["num_failures"] = 'ge:' + FilterFailureNum;
+      if ((typeof this.FilterFailureNum !== "undefined") && (this.FilterFailureNum !== "")) {
+        query_params["num_failures"] = 'ge:' + this.FilterFailureNum;
       }
 
       //work on metadata
