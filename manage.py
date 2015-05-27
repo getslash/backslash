@@ -182,7 +182,7 @@ def travis_test():
     subprocess.check_call('dropdb {0}'.format(APP_NAME), shell=True)
     _run_deploy('localhost')
     _wait_for_travis_availability()
-    _run_fulltest(["--www-port=80"])
+    _run_fulltest(["--url=http://127.0.0.1:80"])
 
 
 def _wait_for_travis_availability():
