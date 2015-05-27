@@ -14,7 +14,7 @@ from backslash import Backslash as BackslashClient
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 def pytest_addoption(parser):
-    parser.addoption("--www-port", action="store", default=8000, type=int)
+    parser.addoption("--url", action="store", default="http://127.0.0.1:8000")
 
 
 @pytest.fixture
@@ -22,9 +22,8 @@ def client(webapp):
     return BackslashClient('http://{0}'.format(webapp.hostname))
 
 @pytest.fixture
-def deployment_webapp_url(request):
-    port = request.config.getoption("--www-port")
-    return URL("http://127.0.0.1").with_port(port)
+def backslash_url(request):
+    return URL(request.config.getoption("--url"))
 
 @pytest.fixture(autouse=True)
 def app_security_settings(webapp):
