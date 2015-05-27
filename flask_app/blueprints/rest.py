@@ -1,11 +1,11 @@
 from flask import Blueprint, request
 
-from .models import Session, Test, Error
+from ..models import Session, Test, Error
 from weber_utils import paginated_view
-from .filtering import filterable_view, Filter
-from .rendering import auto_render, render_api_object
-from .statuses import filter_query_by_session_status, filter_query_by_test_status
-from .metadata import filter_test_metadata
+from ..filtering import filterable_view, Filter
+from ..rendering import auto_render, render_api_object
+from ..statuses import filter_query_by_session_status, filter_query_by_test_status
+from ..metadata import filter_test_metadata
 
 import re
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')

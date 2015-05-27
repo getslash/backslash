@@ -44,9 +44,7 @@ def create_app(config=None):
 
     from . import models
     from . import api
-    from . import rest
-    from . import errors
-    from . import views
+    from .blueprints import rest, api, views
 
     models.db.init_app(app)
 
@@ -54,9 +52,8 @@ def create_app(config=None):
     Security(app, auth.user_datastore)
 
     from .auth import auth
-    from .views import views
     from .setup import setup
-    blueprints = [auth, views, setup, api.blueprint, rest.blueprint]
+    blueprints = [auth, views.blueprint, setup, api.blueprint, rest.blueprint]
 
     from .errors import errors
 
