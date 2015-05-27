@@ -1,64 +1,24 @@
 from flask import Blueprint, request
+from flask_restful import Api
 
 from ..models import Session, Test, Error
-from weber_utils import paginated_view
-from ..filtering import filterable_view, Filter
-from ..rendering import auto_render, render_api_object
-from ..statuses import filter_query_by_session_status, filter_query_by_test_status
-from ..metadata import filter_test_metadata
+from ..utils.rest import ModelResource
 
-import re
-first_cap_re = re.compile('(.)([A-Z][a-z]+)')
-all_cap_re = re.compile('([a-z0-9])([A-Z])')
-
-
-def convert_typename(name):
-    s1 = first_cap_re.sub(r'\1_\2', name)
-    return all_cap_re.sub(r'\1_\2', s1).lower()
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
+rest = Api(blueprint)
 
-def _register_rest_getters(objtype, filters=()):
-    typename = convert_typename(objtype.__name__)
-    @blueprint.route('/{0}s/<int:object_id>'.format(typename), endpoint='get_single_{0}'.format(typename))
-    @auto_render
-    def get_single_object(object_id):
-        return objtype.query.get(object_id)
-
-    @blueprint.route('/{0}s'.format(typename), endpoint='query_{0}s'.format(typename))
-    @paginated_view(renderer=render_api_object)
-    @filterable_view(filters, typename)
-    def query_objects():
-        return objtype.query
-
+def _resource(*args, **kwargs):
+    def decorator(resource):
+        rest.add_resource(resource, *args, **kwargs)
+        return resource
+    return decorator
 
 ################################################################################
 
-_register_rest_getters(Session, filters=[
-    'product_name', 'product_version', 'user_name', 'logical_id', 'id',
-    Filter('start_time', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
-    Filter('status', filter_func=filter_query_by_session_status)])
+@_resource('/sessions', '/sessions/<int:id>')
+class SessionResource(ModelResource):
 
-_register_rest_getters(Test, filters=[
-    'name', 'logical_id', 'session_id', 'id',
-    Filter('num_errors', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
-    Filter('num_failures', allowed_operators=('eq', 'ne', 'gt', 'lt', 'ge', 'le')),
-    Filter('status', filter_func=filter_query_by_test_status),
-    Filter('metadata', filter_func=filter_test_metadata, allowed_operators=('eq', 'exists'))])
+    MODEL = Session
 
-## more specific views
-@blueprint.route('/errors', endpoint='get_errors')
-@paginated_view(renderer=render_api_object)
-def get_session_errors():
-    if request.args.get('session_id'):
-        return Error.query.join((Session, Error.session)).filter(Session.id == request.args.get('session_id'))
-    elif request.args.get('test_id'):
-        return Error.query.join((Test, Error.test)).filter(Test.id == request.args.get('test_id'))
-    else:
-        return None
-
-@blueprint.route('/sessions/<int:object_id>/tests', endpoint='get_tests_of_session')
-@paginated_view(renderer=render_api_object)
-def view_tests_of_session(object_id):
-    return Test.query.filter(Test.session_id == object_id)

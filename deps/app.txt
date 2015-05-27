@@ -1,8 +1,10 @@
 alembic>=0.7.3
+inflect
 psycopg2
 flux>=1.3.0
 Flask>=0.10.1
 Flask-Mail
+Flask-Restful
 Flask-Security
 Flask-Migrate>=1.3.0
 Flask-SQLAlchemy

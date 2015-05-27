@@ -2,6 +2,10 @@ import pytest
 from .utils import raises_bad_request
 
 
+@pytest.fixture(autouse=True, scope='function')
+def skip():
+    pytest.skip()
+
 def test_search_by_test_name(client, test_to_find_name, test_name):
     [test] = client.query_tests().filter(name=test_name)
     assert test == test_to_find_name

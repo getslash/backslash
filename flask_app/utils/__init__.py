@@ -8,3 +8,4 @@ def get_current_datetime():
 
 def get_current_time():
     return flux.current_timeline.time()
+
