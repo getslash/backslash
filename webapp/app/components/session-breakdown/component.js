@@ -37,7 +37,7 @@ export default Ember.Component.extend({
         if (finished === 0) {
             return "width: 0%".htmlSafe();
         }
-        var percentage = Math.floor(parseInt(num) / finished * (this.get('is_running')?90:100));
+        var percentage = Math.floor(parseInt(num) / finished * (this.get('is_running')?70:100));
 
 
         return ('width: ' + percentage + '%').htmlSafe();
