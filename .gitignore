@@ -57,3 +57,4 @@ htmlcov
 static
 *.log
 *.map
+webapp/tmp

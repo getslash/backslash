@@ -1,0 +1,12 @@
+{{ page-heading title="Sessions" }}
+
+
+<div class="container">
+  <table class="table table-striped">
+    <tbody>
+      {{#each model as |session|}}
+        {{ session-row session=session }}
+      {{/each}}
+    </tbody>
+  </table>
+</div>

@@ -66,6 +66,11 @@ class ModelResource(RestResource):
     def _get_collection_key_for_object(self, obj):
         return plural_noun(get_model_typename(type(obj)))
 
+    def _format_result(self, result):
+        if not result:
+            result[plural_noun(get_model_typename(self.MODEL))] = []
+        return super(ModelResource, self)._format_result(result)
+
 
 pagination_parser = reqparse.RequestParser()
 pagination_parser.add_argument(
