@@ -150,7 +150,7 @@ def populate():
     _populate_db()
 
 
-def _populate_db(num_sessions=50, delay_between_sessions=(5, 60), tests_per_session=(1, 50), test_duration=(10, 60), fail_percent=(0, 20)):
+def _populate_db(num_sessions=10, delay_between_sessions=(5, 60), tests_per_session=(1, 20), test_duration=(10, 60), fail_percent=(0, 20)):
     import flux
 
     flux.current_timeline.set_time(
@@ -185,17 +185,17 @@ def _pick(number_or_range):
 
 @contextmanager
 def _get_client_context():
-    from flask_app.app import app
+    from flask_app.app import create_app
 
     from flask.ext.loopback import FlaskLoopback
     from backslash import Backslash as BackslashClient
 
-    app.config['PROPAGATE_EXCEPTIONS'] = True
-
-    address = str(uuid4())
-    loopback = FlaskLoopback(app)
-    loopback.activate_address((address, 80))
-    try:
-        yield BackslashClient('http://{0}'.format(address))
-    finally:
-        loopback.deactivate_address((address, 80))
+    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
+    with app.app_context():
+        address = str(uuid4())
+        loopback = FlaskLoopback(app)
+        loopback.activate_address((address, 80))
+        try:
+            yield BackslashClient('http://{0}'.format(address))
+        finally:
+            loopback.deactivate_address((address, 80))
