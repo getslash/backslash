@@ -16,6 +16,7 @@ Router.map(function() {
   this.route('search-tests', { path: '/tests/search/:filters' });
   this.resource('setup', function() {});
   this.resource('login', function() {});
+  this.route('debug');
 });
 
 export default Router;
