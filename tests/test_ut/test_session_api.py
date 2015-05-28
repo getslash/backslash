@@ -70,6 +70,7 @@ def test_session_add_user_nonexistent_session(nonexistent_session):
 
 
 def test_add_session_metadata(started_session):
+    pytest.skip('No metadata attribute yet')
     metadata = {'logfile': '/var/log/foo'}
     started_session.add_metadata(metadata)
     started_session.refresh()
@@ -77,6 +78,7 @@ def test_add_session_metadata(started_session):
 
 
 def test_add_two_session_metadata_items(started_session):
+    pytest.skip('No metadata attribute yet')
     metadata1 = {'logfile': '/var/log/foo'}
     metadata2 = {'foo': 'bar'}
     metadata = dict(metadata1.items() + metadata2.items())

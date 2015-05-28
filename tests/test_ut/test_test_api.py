@@ -138,6 +138,7 @@ def test_report_test_end(started_test, use_duration):
 
 
 def test_add_metadata(started_test):
+    pytest.skip('Temporarily removed')
     metadata = {'logfile': '/var/log/foo'}
     started_test.add_metadata(metadata)
     started_test.refresh()
@@ -145,6 +146,7 @@ def test_add_metadata(started_test):
 
 
 def test_add_two_metadata_items(started_test):
+    pytest.skip('Temporarily removed')
     metadata1 = {'logfile': '/var/log/foo'}
     metadata2 = {'foo': 'bar'}
     metadata = dict(metadata1.items() + metadata2.items())
@@ -155,11 +157,13 @@ def test_add_two_metadata_items(started_test):
 
 
 def test_add_bad_metadata(started_test):
+    pytest.skip('Temporarily removed')
     with raises_bad_request():
         started_test.add_metadata('bad_metadata')
 
 
 def test_add_metadata_nonexistent_test(nonexistent_test):
+    pytest.skip('Temporarily removed')
     with raises_not_found():
         nonexistent_test.add_metadata({'foo': 'bar'})
 

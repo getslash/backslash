@@ -5,9 +5,9 @@ from flask import abort, Blueprint, request
 
 from weber_utils import Optional, takes_schema_args
 
-from ..api_utils import auto_commit, get_api_decorator, API_SUCCESS
-from ..utils import get_current_time
 from ..models import Session, Test, TestMetadata, SessionMetadata, Error, db
+from ..utils import get_current_time
+from ..utils.api_utils import auto_commit, get_api_decorator, API_SUCCESS
 from sqlalchemy.orm.exc import NoResultFound
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')

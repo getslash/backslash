@@ -2,7 +2,7 @@ import functools
 
 from flask import Response
 
-from .models import db
+from ..models import db
 from .rendering import render_api_object
 from .responses import API_SUCCESS, API_RESPONSE
 

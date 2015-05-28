@@ -1,16 +1,10 @@
 import datetime
 import functools
 
+import inflect
+
 from .responses import API_SUCCESS
-
-import re
-first_cap_re = re.compile('(.)([A-Z][a-z]+)')
-all_cap_re = re.compile('([a-z0-9])([A-Z])')
-
-
-def convert_typename(name):
-    s1 = first_cap_re.sub(r'\1_\2', name)
-    return all_cap_re.sub(r'\1_\2', s1).lower()
+from .english import plural_noun
 
 
 def auto_render(func):
@@ -33,8 +27,8 @@ def render_api_object(obj):
         if is_computed_field(method):
             returned[method_name] = method()
 
-    returned['type'] = typename = convert_typename(type(obj).__name__)
-    returned['api_path'] = '/rest/{0}s/{1}'.format(typename, obj.id)
+    returned['type'] = typename = obj.get_typename()
+    returned['api_path'] = '/rest/{}/{}'.format(plural_noun(typename), obj.id)
     return returned
 
 
