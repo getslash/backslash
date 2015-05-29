@@ -1,2 +1,11 @@
 <td class="breakdown">{{session-breakdown session=session}}</td>
-<td>Hello</td>
+<td>
+  {{#if session.end_time}}<i class="fa fa-clock-o"></i>
+  <span class="time-overview">
+  {{session.humanizedDuration}}, {{session.humanizedEndTime}}
+  </span>
+  <span class="time-detail">
+    {{session.startTimeString}} &rarr; {{session.endTimeString}}
+  </span>
+  {{/if}}
+</td>
