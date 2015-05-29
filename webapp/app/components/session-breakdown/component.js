@@ -1,7 +1,5 @@
 import Ember from 'ember';
 
-/* global escapeCSS */
-
 var everything = ['num_failed_tests', 'num_error_tests', 'num_skipped_tests', 'num_finished_tests', 'is_running'];
 
 export default Ember.Component.extend({
@@ -15,8 +13,6 @@ export default Ember.Component.extend({
     is_running: Ember.computed.alias('session.is_running'),
 
     failedPercent: Ember.computed(function() {
-
-        console.log('failedPercent of ' + this.get('session.num_finished_tests'));
 
         return this._percentOfTotal(parseInt(this.get('num_failed_tests')) + parseInt(this.get('num_error_tests')));
     }).property(...everything),
