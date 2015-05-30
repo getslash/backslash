@@ -16,6 +16,19 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+
+    torii: {
+        sessionServiceName: 'session',
+        providers: {
+            'google-oauth2': {
+                // redirectUri is assigned in app.js...
+                apiKey: '705802534104-f01f9db07j8dvl4l9tp6nhc7keciamer.apps.googleusercontent.com',
+                scope: 'email profile'
+
+
+            }
+        }
     }
   };
 

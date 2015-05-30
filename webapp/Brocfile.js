@@ -23,6 +23,8 @@ var app = new EmberApp({
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 
+app.import('bower_components/js-md5/js/md5.min.js');
+
 var mergeTrees = require('broccoli-merge-trees');
 var pickFiles = require('broccoli-static-compiler');
 
@@ -38,14 +40,6 @@ var cssTree = pickFiles('bower_components/fontawesome/css', {
   destDir: '/assets/css'
 });
 
-app.import('bower_components/jquery-treegrid/css/jquery.treegrid.css');
-app.import('bower_components/jquery-treegrid/js/jquery.treegrid.js');
-app.import('bower_components/jquery-treegrid/img/collapse.png', {
-  destDir: '/img'
-});
-app.import('bower_components/jquery-treegrid/img/expand.png', {
-  destDir: '/img'
-});
 
 var images = pickFiles('public/assets/img', {
   srcDir: '/',

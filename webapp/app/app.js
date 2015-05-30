@@ -13,5 +13,5 @@ App = Ember.Application.extend({
 });
 
 loadInitializers(App, config.modulePrefix);
-
+config.torii.providers['google-oauth2'].redirectUri = window.location.origin;
 export default App;
