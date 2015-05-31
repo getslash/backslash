@@ -1,0 +1,8 @@
+# -*- mode: python -*-
+import slash
+
+from backslash.contrib.slash_plugin import BackslashPlugin
+
+
+
+slash.plugins.manager.install(BackslashPlugin('http://127.0.0.1:8000'), activate=True)
