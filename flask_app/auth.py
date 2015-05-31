@@ -25,7 +25,11 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 @auth.route("/login", methods=['POST'])
 def login():
 
-    user_info = get_oauth2_identity(request.json['authorizationCode'])
+    auth_code = (request.json or {}).get('authorizationCode')
+    if auth_code is None:
+        abort(requests.codes.unauthorized)
+
+    user_info = get_oauth2_identity(auth_code)
     if not user_info:
         abort(requests.codes.unauthorized)
 
@@ -47,7 +51,9 @@ def login():
 
 @auth.route("/reauth", methods=['POST'])
 def reauth():
-    token = request.json['auth_token']
+    token = (request.json or {}).get('auth_token')
+    if token is None:
+        abort(requests.codes.unauthorized)
     try:
         token_data = _get_token_serializer().loads(
             token, max_age=_MAX_TOKEN_AGE)
