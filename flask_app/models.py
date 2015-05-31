@@ -147,7 +147,7 @@ class Role(db.Model, RoleMixin):
     description = db.Column(db.String(255))
 
 
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))

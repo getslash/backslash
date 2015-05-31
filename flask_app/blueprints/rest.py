@@ -1,13 +1,15 @@
-from flask import Blueprint, request
+import requests
+from flask import abort, Blueprint, request, session
+
 from flask_restful import Api, reqparse
 
-from ..models import Session, Test, Error
+from ..models import Error, Session, Test, User
 from ..utils.rest import ModelResource
-
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
 rest = Api(blueprint)
+
 
 def _resource(*args, **kwargs):
     def decorator(resource):
@@ -15,7 +17,8 @@ def _resource(*args, **kwargs):
         return resource
     return decorator
 
-################################################################################
+##########################################################################
+
 
 @_resource('/sessions', '/sessions/<int:object_id>')
 class SessionResource(ModelResource):
@@ -31,7 +34,7 @@ class TestResource(ModelResource):
     def _get_iterator(self):
         session_id = request.view_args.get('session_id')
         if session_id is not None:
-            return Test.query.filter(Test.session_id==session_id)
+            return Test.query.filter(Test.session_id == session_id)
         return super(TestResource, self)._get_iterator()
 
 
@@ -47,6 +50,21 @@ class ErrorResource(ModelResource):
         elif args.test_id is not None:
             return Error.query.join((Test, Error.test)).filter(Test.id == args.test_id)
         abort(requests.codes.bad_request)
+
+
+@_resource('/users', '/users/<int:object_id>')
+class UserResource(ModelResource):
+
+    ONLY_FIELDS = ['id', 'email']
+    MODEL = User
+
+    def _get_iterator(self):
+        abort(requests.codes.unauthorized)
+
+    def _get_object_by_id(self, object_id):
+        if object_id != session.get('user_id'):
+            abort(requests.codes.unauthorized)
+        return User.query.get_or_404(int(object_id))
 
 
 error_query_parser = reqparse.RequestParser()

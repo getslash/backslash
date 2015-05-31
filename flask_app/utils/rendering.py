@@ -18,9 +18,11 @@ def auto_render(func):
     return new_func
 
 
-def render_api_object(obj):
-    returned = {c.name: render_api_value(obj.__getattribute__(c.name))
-                for c in obj.__table__.columns}
+def render_api_object(obj, only_fields=None):
+    if only_fields is None:
+        only_fields = [c.name for c in obj.__table__.columns]
+    returned = {field_name: render_api_value(obj.__getattribute__(field_name))
+                for field_name in only_fields}
 
     for method_name in dir(obj):
         method = getattr(obj, method_name)

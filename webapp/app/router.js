@@ -17,6 +17,8 @@ Router.map(function() {
   this.resource('setup', function() {});
   this.resource('login', function() {});
   this.route('debug');
+  this.route('profile');
+  this.route('user', { path: '/users/:user_id' });
 });
 
 export default Router;

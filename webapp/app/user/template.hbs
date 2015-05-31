@@ -1,0 +1,35 @@
+<div class="container">
+
+  <div class="row row-fluid">
+    <div class="col-md-2 col-md-offset-2">
+      <img src="{{gravatarURL}}" class="img-circle"/>
+    </div>
+    <div class="col-md-2">
+      {{#with session.content.user_info as |user_info|}}
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>Name:</td>
+            <td>{{user_info.name}}</td>
+          </tr>
+          <tr>
+            <td>Email:</td>
+            <td>{{user_info.email}}</td>
+          </tr>
+          <tr>
+            <td>Roles:</td>
+            <td>
+              <ul>
+              {{#each session.content.user_info.roles as |role|}}
+                <li>{{role}}</li>
+              {{/each}}
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {{/with}}
+    </div>
+  </div>
+
+</div>

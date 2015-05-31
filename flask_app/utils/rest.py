@@ -1,3 +1,4 @@
+import logbook
 from flask import jsonify, request
 
 from flask_restful import reqparse, Resource
@@ -6,14 +7,17 @@ from sqlalchemy.orm import class_mapper
 from .rendering import render_api_object
 from .english import plural_noun
 
+_logger = logbook.Logger(__name__)
+
 
 class RestResource(Resource):
 
     def get(self, **kw):
         object_id = request.view_args.get('object_id')
         if object_id is not None:
+            _logger.debug('Looking for object id {}', object_id)
             obj = self._get_object_by_id(object_id)
-            return self._format_result(self._render_single(obj))
+            return self._format_result({self._get_single_object_key(): self._render_single(obj)})
         else:
             returned = self._paginate(self._get_iterator())
             result = {}
@@ -34,8 +38,11 @@ class RestResource(Resource):
     def _paginate(self, iterator):
         raise NotImplementedError()  # pragma: no cover
 
-    def _get_key(self, objtype):
+    def _get_collection_key_for_object(self, obj):
         raise NotImplementedError()  # pragma: no cover
+
+    def _get_single_object_key(self):
+        raise NotImplementedError() # pragma: no cover
 
     def _render_single(self, obj):
         raise NotImplementedError()  # pragma: no cover
@@ -47,6 +54,7 @@ class RestResource(Resource):
 class ModelResource(RestResource):
 
     MODEL = None
+    ONLY_FIELDS = None
 
     def _get_iterator(self):
         assert self.MODEL is not None
@@ -57,7 +65,7 @@ class ModelResource(RestResource):
         return self.MODEL.query.get(object_id)
 
     def _render_single(self, obj):
-        return render_api_object(obj)
+        return render_api_object(obj, only_fields=self.ONLY_FIELDS)
 
     def _paginate(self, query):
         args = pagination_parser.parse_args()
@@ -65,6 +73,9 @@ class ModelResource(RestResource):
 
     def _get_collection_key_for_object(self, obj):
         return plural_noun(get_model_typename(type(obj)))
+
+    def _get_single_object_key(self):
+        return get_model_typename(self.MODEL)
 
     def _format_result(self, result):
         if not result:

@@ -1,6 +1,6 @@
 import logbook
 import requests
-from flask import abort, Blueprint, current_app, jsonify, request
+from flask import abort, Blueprint, current_app, jsonify, request, session
 from flask.ext.security import SQLAlchemyUserDatastore
 from itsdangerous import TimedSerializer, BadSignature
 
@@ -32,6 +32,8 @@ def login():
     _fix_first_user_role(user)
     token = _generate_token(user, user_info)
 
+    session['user_id'] = user.id
+
     _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
 
     return jsonify({
@@ -48,6 +50,7 @@ def reauth():
     except BadSignature:
         abort(requests.codes.unauthorized)
     user = User.query.get_or_404(token_data['user_id'])
+    session['user_id'] = user.id
     return jsonify({
         'auth_token': token,
         'user_info': token_data['user_info'],
@@ -57,8 +60,7 @@ def reauth():
 def _generate_token(user, user_info):
     return _get_token_serializer().dumps({
         'user_id': user.id,
-        'user_info': user_info,
-        'roles': [role.name for role in user.roles]})
+        'user_info': user_info})
 
 def _get_token_serializer():
     return TimedSerializer(current_app.config['SECRET_KEY'])
@@ -71,6 +73,11 @@ def _get_or_create_user(user_info):
         user = user_datastore.create_user(
             email=email)
         user_datastore.db.session.commit()
+
+    user_info['user_id'] = user.id
+    user_info['roles'] = [role.name for role in user.roles]
+
+    _logger.debug('User info: {}', user_info)
 
     return user
 
