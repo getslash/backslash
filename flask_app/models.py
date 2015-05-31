@@ -153,5 +153,5 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users,
+    roles = db.relationship('Role', secondary=roles_users, lazy='joined',
                             backref=db.backref('users', lazy='dynamic'))

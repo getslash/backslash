@@ -28,9 +28,9 @@ def login():
 
     _check_alowed_email_domain(user_info)
 
-    user = get_or_create_user(user_info)
-
-    token = generate_token(user, user_info)
+    user = _get_or_create_user(user_info)
+    _fix_first_user_role(user)
+    token = _generate_token(user, user_info)
 
     _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
 
@@ -54,14 +54,14 @@ def reauth():
     })
 
 
-def generate_token(user, user_info):
+def _generate_token(user, user_info):
     return _get_token_serializer().dumps({'user_id': user.id, 'user_info': user_info})
 
 def _get_token_serializer():
     return TimedSerializer(current_app.config['SECRET_KEY'])
 
 
-def get_or_create_user(user_info):
+def _get_or_create_user(user_info):
     email = user_info['email']
     user = user_datastore.get_user(email)
     if not user:
@@ -70,6 +70,11 @@ def get_or_create_user(user_info):
         user_datastore.db.session.commit()
 
     return user
+
+def _fix_first_user_role(user):
+    if User.query.count() == 1:
+        user_datastore.add_role_to_user(user, 'admin')
+        user_datastore.db.session.commit()
 
 
 def _check_alowed_email_domain(user_info):
