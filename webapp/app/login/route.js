@@ -9,13 +9,12 @@ export default Ember.Route.extend({
 
             self.get('torii').open('google-oauth2').then(function(auth) {
                 return self.get('session').authenticate('authenticator:token', auth).then(
-                    function() {},
+                    function(data) {return data;},
                     function(error) {
                         self.controllerFor('application').send('login_error', error);
                     });
             });
 
-            // this.get('session').authenticate('simple-auth-authenticator:torii', 'google-oauth2');
             return;
         }
     }

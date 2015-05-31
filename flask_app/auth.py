@@ -55,7 +55,10 @@ def reauth():
 
 
 def _generate_token(user, user_info):
-    return _get_token_serializer().dumps({'user_id': user.id, 'user_info': user_info})
+    return _get_token_serializer().dumps({
+        'user_id': user.id,
+        'user_info': user_info,
+        'roles': [role.name for role in user.roles]})
 
 def _get_token_serializer():
     return TimedSerializer(current_app.config['SECRET_KEY'])
