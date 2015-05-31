@@ -19,6 +19,7 @@ Router.map(function() {
   this.route('debug');
   this.route('profile');
   this.route('user', { path: '/users/:user_id' });
+  this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
 });
 
 export default Router;

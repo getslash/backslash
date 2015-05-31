@@ -2,6 +2,7 @@ import requests
 from flask import abort, Blueprint, request, session
 
 from flask_restful import Api, reqparse
+from flask.ext.security.core import current_user
 
 from ..models import Error, Session, Test, User
 from ..utils.rest import ModelResource
@@ -62,7 +63,8 @@ class UserResource(ModelResource):
         abort(requests.codes.unauthorized)
 
     def _get_object_by_id(self, object_id):
-        if object_id != session.get('user_id'):
+        user = current_user
+        if not user.is_authenticated() or user.id != object_id:
             abort(requests.codes.unauthorized)
         return User.query.get_or_404(int(object_id))
 

@@ -1,8 +1,10 @@
+
 import logbook
 import requests
-from flask import abort, Blueprint, current_app, jsonify, request, session
+from flask import (abort, Blueprint, current_app, jsonify, request,
+                   session)
 from flask.ext.security import SQLAlchemyUserDatastore
-from itsdangerous import TimedSerializer, BadSignature
+from itsdangerous import BadSignature, TimedSerializer
 
 from flask_security.utils import login_user, verify_and_update_password
 
@@ -11,12 +13,13 @@ from .utils.oauth2 import get_oauth2_identity
 
 _logger = logbook.Logger(__name__)
 
-_MAX_TOKEN_AGE = 60 * 60 * 24 * 7 # one week
+_MAX_TOKEN_AGE = 60 * 60 * 24 * 7  # one week
 
 auth = Blueprint("auth", __name__, template_folder="templates")
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+
 
 
 @auth.route("/login", methods=['POST'])
@@ -32,7 +35,7 @@ def login():
     _fix_first_user_role(user)
     token = _generate_token(user, user_info)
 
-    session['user_id'] = user.id
+    login_user(user)
 
     _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
 
@@ -46,11 +49,14 @@ def login():
 def reauth():
     token = request.json['auth_token']
     try:
-        token_data = _get_token_serializer().loads(token, max_age=_MAX_TOKEN_AGE)
+        token_data = _get_token_serializer().loads(
+            token, max_age=_MAX_TOKEN_AGE)
     except BadSignature:
         abort(requests.codes.unauthorized)
     user = User.query.get_or_404(token_data['user_id'])
-    session['user_id'] = user.id
+
+    login_user(user)
+
     return jsonify({
         'auth_token': token,
         'user_info': token_data['user_info'],
@@ -61,6 +67,7 @@ def _generate_token(user, user_info):
     return _get_token_serializer().dumps({
         'user_id': user.id,
         'user_info': user_info})
+
 
 def _get_token_serializer():
     return TimedSerializer(current_app.config['SECRET_KEY'])
@@ -80,6 +87,7 @@ def _get_or_create_user(user_info):
     _logger.debug('User info: {}', user_info)
 
     return user
+
 
 def _fix_first_user_role(user):
     if User.query.count() == 1:

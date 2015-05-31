@@ -43,16 +43,15 @@ def create_app(config=None):
     Mail(app)
 
     from . import models
-    from .blueprints import rest, api, views
+    from .blueprints import rest, api, views, runtoken
 
     models.db.init_app(app)
 
     from . import auth
     Security(app, auth.user_datastore, register_blueprint=False)
 
-    from .auth import auth
     from .setup import setup
-    blueprints = [auth, views.blueprint, setup, api.blueprint, rest.blueprint]
+    blueprints = [auth.auth, views.blueprint, setup, api.blueprint, rest.blueprint, runtoken.blueprint]
 
     from .errors import errors
 

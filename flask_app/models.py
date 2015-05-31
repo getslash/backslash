@@ -155,3 +155,10 @@ class User(db.Model, UserMixin, TypenameMixin):
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, lazy='joined',
                             backref=db.backref('users', lazy='dynamic'))
+
+
+class RunToken(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    token = db.Column(db.String(255), unique=True, index=True)
