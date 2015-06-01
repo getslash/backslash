@@ -55,10 +55,14 @@ class ModelResource(RestResource):
 
     MODEL = None
     ONLY_FIELDS = None
+    DEFAULT_SORT = None
 
     def _get_iterator(self):
         assert self.MODEL is not None
-        return self.MODEL.query
+        returned = self.MODEL.query
+        if self.DEFAULT_SORT is not None:
+            returned = returned.order_by(self.DEFAULT_SORT)
+        return returned
 
     def _get_object_by_id(self, object_id):
         assert self.MODEL is not None

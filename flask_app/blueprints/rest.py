@@ -20,17 +20,20 @@ def _resource(*args, **kwargs):
 
 ##########################################################################
 
+_DEFAULT_SORT = '(CASE WHEN end_time IS NULL THEN 1 ELSE 0 END) DESC,  end_time DESC'
 
 @_resource('/sessions', '/sessions/<int:object_id>')
 class SessionResource(ModelResource):
 
     MODEL = Session
+    DEFAULT_SORT = _DEFAULT_SORT
 
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
+    DEFAULT_SORT = _DEFAULT_SORT
 
     def _get_iterator(self):
         session_id = request.view_args.get('session_id')
