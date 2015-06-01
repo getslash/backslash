@@ -25,6 +25,8 @@ var app = new EmberApp({
 
 app.import('bower_components/js-md5/js/md5.min.js');
 app.import('bower_components/moment/moment.js');
+app.import('bower_components/hint.css/hint.css');
+app.import('bower_components/fontawesome/css/font-awesome.min.css');
 
 var mergeTrees = require('broccoli-merge-trees');
 var pickFiles = require('broccoli-static-compiler');
@@ -32,13 +34,7 @@ var pickFiles = require('broccoli-static-compiler');
 var fontTree = pickFiles('bower_components/fontawesome/fonts', {
   srcDir: '/',
   files: ['fontawesome-webfont.eot','fontawesome-webfont.ttf','fontawesome-webfont.svg','fontawesome-webfont.woff'],
-  destDir: '/assets/fonts'
-});
-
-var cssTree = pickFiles('bower_components/fontawesome/css', {
-  srcDir: '/',
-  files: ['font-awesome.min.css'],
-  destDir: '/assets/css'
+  destDir: '/fonts'
 });
 
 
@@ -47,4 +43,4 @@ var images = pickFiles('public/assets/img', {
   files: ['*'],
   destDir: '/img'
 });
-module.exports = mergeTrees([app.toTree(), fontTree, cssTree, images]);
+module.exports = mergeTrees([app.toTree(), fontTree, images]);
