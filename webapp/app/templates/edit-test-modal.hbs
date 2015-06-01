@@ -1,8 +1,0 @@
-{{#modal-dialog title='Change status (select empty to return to original status)' ok='save' close='close'}}
-    <form {{action 'ok' on='submit' target=view}}>
-        <div class="form-group">
-            <label>Status</label>
-          {{view "select" content=testStatuses selection=selectedStatus}}
-        </div>
-    </form>
-{{/modal-dialog}}
