@@ -1,61 +1,21 @@
-.flipping {
-    -webkit-perspective: 600px;
-    -moz-perspective: 600px;
-    -ms-perspective: 600px;
-    perspective: 600px;
 
-    -webkit-animation-name: flipping;
-    -webkit-animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-duration: 5s;
+.progress.running {
 
-    animation-name: flipping;
+    animation-name: pulsating;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    animation-duration: 5s;
+    animation-duration: 2s;
 
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    -ms-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-
-    border-radius: 0 5px 5px 0;
 }
 
-@keyframes flipping {
-
+@keyframes pulsating {
     0%, 100% {
-      -moz-transform: rotateX(0deg);
-      -ms-transform: rotateX(0deg);
-      transform: rotateX(0deg);
-      background-color: silver;
-
-    }
-
-    25% {
-      background-color: $brand_danger;
-      -moz-transform: rotateX(180deg);
-      -ms-transform: rotateX(180deg);
-      transform: rotateX(180deg);
+	box-shadow: 0px 0px 10px grey inset;
     }
 
     50% {
-      background-color: $brand_success;
-      -moz-transform: rotateX(360deg);
-      -ms-transform: rotateX(360deg);
-      transform: rotateX(360deg);
+	box-shadow: 0px 0px 20px grey inset;
     }
-
-    75% {
-      background-color: $brand_warning;
-      -moz-transform: rotateX(180deg);
-      -ms-transform: rotateX(180deg);
-      transform: rotateX(180deg);
-    }
-
-    12.5%, 37.5%, 62.5%, 87.5% {
-      background-color: #222;
-
-    }
-
 }
+
+
