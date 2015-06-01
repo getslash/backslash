@@ -1,0 +1,17 @@
+<div class="container">
+
+  <h1>Session {{model.id}}</h1>
+
+  <ul class="list-inline">
+    <li><strong>Started</strong>: {{moment-time unix=model.start_time}}</li>
+    <li><strong>Ended</strong>: {{moment-time unix=model.end_time}}</li>
+
+  </ul>
+
+  {{session-breakdown session=model}}
+
+
+
+</div>
+
+{{outlet}}

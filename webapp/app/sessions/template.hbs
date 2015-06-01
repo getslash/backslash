@@ -2,11 +2,7 @@
 
 
 <div class="container">
-  <table class="table table-striped sessions-table">
-    <tbody>
-      {{#each model as |session|}}
-        {{ session-row session=session }}
-      {{/each}}
-    </tbody>
-  </table>
+  {{#each model as |session|}}
+    {{ session-row session=session gotoSession="gotoSession"}}
+  {{/each}}
 </div>

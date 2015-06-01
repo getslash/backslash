@@ -1,3 +1,9 @@
-.sessions-table td.breakdown {
-    width: 5em;
+.session-row:hover {
+
+    background: $gray-lighter;
+}
+
+.session-row {
+    padding: 1em;
+    cursor: pointer;
 }

@@ -9,19 +9,6 @@ export default Ember.Mixin.create({
         return moment.unix(this.get('end_time')).diff(moment.unix(this.get('start_time')));
     }.property('start_time', 'end_time'),
 
-    startTimeString: function() {
-        return this._formatUnixTime(this.get('start_time'));
-    }.property('start_time'),
-
-    endTimeString: function() {
-        return this._formatUnixTime(this.get('end_time'));
-    }.property('end_time'),
-
-
-    _formatUnixTime: function(m) {
-        return moment.unix(m).format('YYYY/MM/DD hh:mm:ss');
-    },
-
     durationSeconds: function() {
 
         var d = this.get('durationMilliseconds');
