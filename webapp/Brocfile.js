@@ -24,6 +24,7 @@ var app = new EmberApp({
 // along with the exports of each module as its value.
 
 app.import('bower_components/js-md5/js/md5.min.js');
+app.import('bower_components/moment/moment.js');
 
 var mergeTrees = require('broccoli-merge-trees');
 var pickFiles = require('broccoli-static-compiler');
