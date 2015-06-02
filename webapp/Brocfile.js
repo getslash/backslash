@@ -22,6 +22,7 @@ var app = new EmberApp({
 // modules that you would like to import into your application
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
+app.import('bower_components/fontawesome/css/font-awesome.min.css');
 
 app.import('bower_components/js-md5/js/md5.min.js');
 app.import('bower_components/moment/moment.js');
@@ -44,3 +45,4 @@ var images = pickFiles('public/assets/img', {
   destDir: '/img'
 });
 module.exports = mergeTrees([app.toTree(), fontTree, images]);
+
