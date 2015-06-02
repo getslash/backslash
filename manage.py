@@ -20,6 +20,7 @@ from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 from _lib.db import db
 from _lib.celery import celery
+from _lib.slash_running import suite
 from _lib.utils import interact
 import click
 import requests
@@ -39,7 +40,7 @@ cli.add_command(db)
 cli.add_command(frontend)
 cli.add_command(ember)
 cli.add_command(celery)
-
+cli.add_command(suite)
 
 @cli.command('ensure-secret')
 @click.argument("conf_file")
