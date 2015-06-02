@@ -18,8 +18,8 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
-def client(webapp):
-    return BackslashClient('http://{0}'.format(webapp.hostname))
+def client(webapp, runtoken):
+    return BackslashClient('http://{0}'.format(webapp.hostname), runtoken=runtoken)
 
 @pytest.fixture
 def backslash_url(request):
@@ -48,7 +48,18 @@ def db(request, webapp):
         models.db.session.close()
         models.db.drop_all()
         models.db.create_all()
+    return models.db
 
+@pytest.fixture
+def runtoken(db, webapp):
+    with webapp.app.app_context():
+        user = models.User(email='testing@localhost')
+        db.session.add(user)
+        token_string = 'some-token'
+        token = models.RunToken(user_id=user.id, token=token_string)
+        db.session.add(token)
+        db.session.commit()
+    return token_string
 
 class Webapp(object):
 
