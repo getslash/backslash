@@ -33,9 +33,11 @@ def app_security_settings(webapp):
 
 @pytest.fixture
 def webapp(request):
-    returned = Webapp(app.create_app())
-    returned.app.config["SECRET_KEY"] = "testing_key"
-    returned.app.config["TESTING"] = True
+    returned = Webapp(app.create_app({
+        'SQLALCHEMY_DATABASE_URI': 'postgresql://localhost/backslash-ut',
+        'SECRET_KEY': 'testing-key',
+        'TESTING': True,
+    }))
     returned.activate()
     request.addfinalizer(returned.deactivate)
     return returned
