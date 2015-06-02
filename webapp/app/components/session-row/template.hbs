@@ -1,14 +1,5 @@
 <div class="breakdown col-md-2">{{session-breakdown session=session}}</div>
 <div class="col-md-10">
 
-  <i class="fa fa-clock-o"></i>
-  {{#if session.is_running }}
-    <span class="hint--bottom" data-hint="{{moment-time unix=session.start_time}}">
-      Started {{moment-time ago=session.start_time}}
-    </span>
-  {{else}}
-    <span class="hint--bottom" data-hint="{{moment-time unix=session.start_time}} &rarr; {{moment-time unix=session.end_time}}">
-      {{session.humanizedDuration}}, {{session.humanizedEndTime}}
-    </span>
-  {{/if}}
+  {{start-end-times start_time=session.start_time end_time=session.end_time is_running=session.is_running}}
 </div>

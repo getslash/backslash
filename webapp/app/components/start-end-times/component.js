@@ -2,7 +2,11 @@ import Ember from 'ember';
 
 /* global moment */
 
-export default Ember.Mixin.create({
+export default Ember.Component.extend({
+
+    start_time: null,
+    end_time: null,
+    is_running: false,
 
     durationMilliseconds: function() {
 
@@ -32,4 +36,5 @@ export default Ember.Mixin.create({
         return moment.unix(this.get('end_time')).fromNow();
 
     }.property('end_time')
+
 });

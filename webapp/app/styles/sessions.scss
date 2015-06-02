@@ -1,9 +1,13 @@
-.session-row:hover {
+.session-row:hover, .test-row:hover {
 
-    background: $gray-lighter;
+    background-color: $gray-lighter;
 }
 
-.session-row {
+.session-row, .test-row {
     padding: 1em;
     cursor: pointer;
+}
+
+i.fa.success {
+    color: $brand-success;
 }

@@ -1,7 +1,6 @@
 import DS from 'ember-data';
-import DurationMixin from '../mixins/duration-mixin';
 
-export default DS.Model.extend(DurationMixin, {
+export default DS.Model.extend({
 
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),

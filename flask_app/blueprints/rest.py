@@ -4,10 +4,13 @@ from flask import abort, Blueprint, request, session
 from flask_restful import Api, reqparse
 from flask.ext.security.core import current_user
 
+from sqlalchemy import text
+
 from ..models import Error, Session, Test, User
 from ..utils.rest import ModelResource
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
+
 
 rest = Api(blueprint)
 
@@ -38,7 +41,7 @@ class TestResource(ModelResource):
     def _get_iterator(self):
         session_id = request.view_args.get('session_id')
         if session_id is not None:
-            return Test.query.filter(Test.session_id == session_id)
+            return Test.query.filter(Test.session_id == session_id).order_by(text(self._DEFAULT_SORT))
         return super(TestResource, self)._get_iterator()
 
 

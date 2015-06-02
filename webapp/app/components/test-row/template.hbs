@@ -1,0 +1,9 @@
+<div class="col-md-2">
+  {{#if test.is_success }}
+    <i class="fa fa-check-circle success"></i> 
+  {{/if}}
+  {{test.name}}
+</div>
+<div class="col-md-2">
+  {{start-end-times start_time=test.start_time end_time=test.end_time is_running=test.is_running}}
+</div>

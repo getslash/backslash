@@ -1,0 +1,10 @@
+<i class="fa fa-clock-o"></i>
+{{#if is_running }}
+  <span class="hint--bottom" data-hint="{{moment-time unix=start_time}}">
+    Started {{moment-time ago=start_time}}
+  </span>
+{{else}}
+  <span class="hint--bottom" data-hint="{{moment-time unix=start_time}} &rarr; {{moment-time unix=end_time}}">
+    {{humanizedDuration}}, {{humanizedEndTime}}
+  </span>
+{{/if}}
