@@ -3,6 +3,7 @@ from flask import jsonify, request
 
 from flask_restful import reqparse, Resource
 from sqlalchemy.orm import class_mapper
+from sqlalchemy import text
 
 from .rendering import render_api_object
 from .english import plural_noun
@@ -61,7 +62,7 @@ class ModelResource(RestResource):
         assert self.MODEL is not None
         returned = self.MODEL.query
         if self.DEFAULT_SORT is not None:
-            returned = returned.order_by(self.DEFAULT_SORT)
+            returned = returned.order_by(text(self.DEFAULT_SORT))
         return returned
 
     def _get_object_by_id(self, object_id):
