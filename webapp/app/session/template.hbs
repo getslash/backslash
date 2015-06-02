@@ -8,10 +8,6 @@
 
 
 <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active">{{#link-to 'session.index'}}Home{{/link-to}}</li><
-    <li role="presentation" class="active">{{#link-to 'session.tests'}}Tests{{/link-to}}</li>
-  </ul>
-
+{{session-tabs route=controllers.application.currentPath}}
 {{outlet}}
 </div>
