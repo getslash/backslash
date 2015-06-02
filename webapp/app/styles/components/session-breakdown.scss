@@ -1,25 +1,4 @@
-
 .progress {
     margin-bottom: 0px;
 }
-
-.progress.running {
-
-    animation-name: pulsating;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-duration: 2s;
-
-}
-
-@keyframes pulsating {
-    0%, 100% {
-	box-shadow: 0px 0px 10px grey inset;
-    }
-
-    50% {
-	box-shadow: 0px 0px 20px grey inset;
-    }
-}
-
 
