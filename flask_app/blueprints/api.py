@@ -175,7 +175,7 @@ def add_session_metadata(id, metadata):
 
 @api_func
 @auto_commit
-@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int, long)))
+@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int)))
 def add_test_error_data(id, exception, exception_type, traceback, timestamp=None):
     if timestamp is None:
         timestamp = get_current_time()
@@ -192,7 +192,7 @@ def add_test_error_data(id, exception, exception_type, traceback, timestamp=None
 
 @api_func
 @auto_commit
-@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int, long)))
+@takes_schema_args(id=int, exception=str, exception_type=str, traceback=list, timestamp=Optional((float, int)))
 def add_session_error_data(id, exception, exception_type, traceback, timestamp=None):
     if timestamp is None:
         timestamp = get_current_time()

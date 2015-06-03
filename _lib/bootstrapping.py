@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-PYTHON_INTERPRETER = "python2.7"
+PYTHON_INTERPRETER = "python3.4"
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 _ENV_DIR = os.environ.get("VIRTUALENV_PATH", os.path.join(_PROJECT_ROOT, ".env"))
