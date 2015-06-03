@@ -11,8 +11,7 @@ required_packages:
     - libxslt1-dev
     - git
     - supervisor
-    - python3-setuptools
-    - python3-virtualenv
+    - python3-pip
     - python3-pycurl
     - python3-dev
     - libevent-dev
