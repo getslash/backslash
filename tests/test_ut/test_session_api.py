@@ -202,7 +202,6 @@ def test_add_error_data_no_timestamp(started_session, error_data):
                                    error_data['traceback'])
     started_session.refresh()
     [first_error] = started_session.query_errors()
-    print first_error
     assert first_error.exception == error_data['exception']
     assert first_error.exception_type == error_data['exception_type']
     assert first_error.timestamp == flux.current_timeline.time()
