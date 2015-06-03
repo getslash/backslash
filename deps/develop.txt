@@ -4,3 +4,4 @@ Flask-Loopback
 -e git://github.com/vmalloc/backslash-python.git@develop#egg=backslash-python
 tmuxp
 livereload
+ipython
