@@ -8,11 +8,6 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     model: function() {
 
         return this.store.find('session');
-    },
-
-    actions: {
-        gotoSession: function (session) {
-            this.transitionTo('session', session);
-        }
     }
+
 });

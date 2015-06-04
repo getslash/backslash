@@ -6,22 +6,17 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-    this.route("sessions", { path: "/sessions" });
-    this.route("session", { path: "/sessions/:id" }, function() {
-      this.route('tests');
-    });
+  this.route("sessions", { path: "/sessions" });
+  this.route("session", { path: "/sessions/:id" }, function() {
+    this.route('tests');
+  });
 
-    this.route("tests", { path: "/tests" });
-    this.resource("test", { path: "/tests/:test_id" });
+  this.route("test", { path: "/tests/:test_id" });
 
-    this.route('search-sessions', { path: '/sessions/search/:filters' });
-    this.route('search-tests', { path: '/tests/search/:filters' });
-    this.resource('setup', function() {});
-    this.resource('login', function() {});
-    this.route('debug');
-    this.route('profile');
-    this.route('user', { path: '/users/:user_id' });
-    this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
+  this.resource('login', function() {});
+  this.route('profile');
+  this.route('user', { path: '/users/:user_id' });
+  this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
 
 
 });
