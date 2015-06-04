@@ -8,16 +8,18 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata
 from ..utils import get_current_time
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render
+from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_runtoken
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = SimpleAPI(blueprint)
 
+def API(func):
+    return api.include(requires_runtoken(auto_render(auto_commit(func))))
+
 ##########################################################################
 
-@api.include
-@auto_commit
+@API
 def set_product(id: int,
                 name: str=None,
                 version: str=None,
@@ -26,16 +28,13 @@ def set_product(id: int,
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def set_session_user(id: int, user_name: str):
     update = {'user_name': user_name}
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
-@api.include
-@auto_render
-@auto_commit
+@API
 def report_session_start(logical_id: str=None,
                          hostname: str=None,
                          product_name: str=None,
@@ -47,8 +46,7 @@ def report_session_start(logical_id: str=None,
                    product_name=product_name, product_version=product_version, product_revision=product_revision)
 
 
-@api.include
-@auto_commit
+@API
 def report_session_end(id: int, duration: int=None):
     update = {'end_time': get_current_time() if duration is None else Session.start_time + duration}
     if not Session.query.filter(Session.id == id, Session.end_time == None).update(update):
@@ -59,9 +57,7 @@ def report_session_end(id: int, duration: int=None):
             abort(requests.codes.not_found)
 
 
-@api.include
-@auto_render
-@auto_commit
+@API
 def report_test_start(session_id: int, name:str=None, test_logical_id: str=None):
     try:
         session = Session.query.filter(Session.id == session_id).one()
@@ -72,8 +68,7 @@ def report_test_start(session_id: int, name:str=None, test_logical_id: str=None)
     return Test(session_id=session.id, logical_id=test_logical_id, name=name)
 
 
-@api.include
-@auto_commit
+@API
 def report_test_end(id: int, duration: (float, int)=None):
     update = {'end_time': get_current_time() if duration is None else Test.start_time + duration}
     test = Test.query.get(id)
@@ -96,8 +91,7 @@ def report_test_end(id: int, duration: (float, int)=None):
     Session.query.filter(Session.id == test.session_id).update(session_update)
 
 
-@api.include
-@auto_commit
+@API
 def report_test_skipped(id: int):
     update = {'skipped': True}
     if not Test.query.filter(Test.id == id).update(update):
@@ -107,8 +101,7 @@ def report_test_skipped(id: int):
         else:
             abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def report_test_interrupted(id: int):
     update = {'interrupted': True}
     if not Test.query.filter(Test.id == id).update(update):
@@ -118,8 +111,7 @@ def report_test_interrupted(id: int):
         else:
             abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def add_test_error(id: int):
     try:
         test = Test.query.filter(Test.id == id).one()
@@ -128,8 +120,7 @@ def add_test_error(id: int):
         abort(requests.codes.not_found)
 
 
-@api.include
-@auto_commit
+@API
 def add_test_failure(id: int):
 
     try:
@@ -139,8 +130,7 @@ def add_test_failure(id: int):
         abort(requests.codes.not_found)
 
 
-@api.include
-@auto_commit
+@API
 def add_test_metadata(id: int, metadata: dict):
     try:
         test = Test.query.filter(Test.id == id).one()
@@ -148,8 +138,7 @@ def add_test_metadata(id: int, metadata: dict):
     except NoResultFound:
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def add_session_metadata(id: int, metadata: dict):
 
     try:
@@ -158,8 +147,7 @@ def add_session_metadata(id: int, metadata: dict):
     except NoResultFound:
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def add_test_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
     if timestamp is None:
         timestamp = get_current_time()
@@ -174,8 +162,7 @@ def add_test_error_data(id: int, exception: str, exception_type: str, traceback:
     except NoResultFound:
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def add_session_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
     if timestamp is None:
         timestamp = get_current_time()
@@ -189,15 +176,13 @@ def add_session_error_data(id: int, exception: str, exception_type: str, traceba
     except NoResultFound:
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def set_test_conclusion(id: int, conclusion: str):
     update = {'test_conclusion': conclusion}
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def edit_session_status(id: int, status: str):
     if status not in ['', 'RUNNING', 'FAILURE', 'SUCCESS']:
         abort(requests.codes.bad_request)
@@ -205,8 +190,7 @@ def edit_session_status(id: int, status: str):
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
-@api.include
-@auto_commit
+@API
 def edit_test_status(id: int, status: str):
     if status not in ['', 'RUNNING', 'SUCCESS', 'SKIPPED', 'FAILURE', 'ERROR', 'INTERRUPTED']:
         abort(requests.codes.bad_request)

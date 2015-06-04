@@ -1,20 +1,20 @@
 import os
 import sys
 import uuid
+from uuid import uuid4
 
 import requests
 from flask.ext.loopback import FlaskLoopback
 from urlobject import URLObject as URL
 
 import pytest
-from flask_app import app, models
-
 from backslash import Backslash as BackslashClient
+from flask_app import app, models
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default="http://127.0.0.1:8000")
+    parser.addoption("--url", action="store", default=None)
 
 
 @pytest.fixture
@@ -23,7 +23,10 @@ def client(webapp, runtoken):
 
 @pytest.fixture
 def backslash_url(request):
-    return URL(request.config.getoption("--url"))
+    url = request.config.getoption("--url")
+    if url is None:
+        pytest.skip()
+    return URL(url)
 
 @pytest.fixture(autouse=True)
 def app_security_settings(webapp):
@@ -55,8 +58,8 @@ def runtoken(db, webapp):
     with webapp.app.app_context():
         user = models.User(email='testing@localhost')
         db.session.add(user)
-        token_string = 'some-token'
-        token = models.RunToken(user_id=user.id, token=token_string)
+        token_string = str(uuid4())
+        token = models.RunToken(user=user, token=token_string)
         db.session.add(token)
         db.session.commit()
     return token_string

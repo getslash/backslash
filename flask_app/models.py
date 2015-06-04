@@ -160,5 +160,6 @@ class User(db.Model, UserMixin, TypenameMixin):
 class RunToken(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User')
     token = db.Column(db.String(255), unique=True, index=True)
