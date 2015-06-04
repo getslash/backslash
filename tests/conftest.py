@@ -34,7 +34,7 @@ def app_security_settings(webapp):
 @pytest.fixture
 def webapp(request):
     returned = Webapp(app.create_app({
-        'SQLALCHEMY_DATABASE_URI': 'postgresql://localhost/backslash-ut',
+        'SQLALCHEMY_DATABASE_URI': 'postgresql://127.0.0.1/backslash-ut',
         'SECRET_KEY': 'testing-key',
         'TESTING': True,
     }))
