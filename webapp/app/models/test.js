@@ -7,6 +7,7 @@ export default DS.Model.extend({
     duration: DS.attr('number'),
     status: DS.attr('string'),
     name: DS.attr('string'),
+    num_errors: DS.attr('number'),
 
     is_success: function() {
         return (this.get('status') === 'SUCCESS');

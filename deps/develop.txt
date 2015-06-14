@@ -5,3 +5,4 @@ Flask-Loopback
 tmuxp
 livereload
 ipython
+slash

@@ -25,8 +25,6 @@ module.exports = function(environment) {
                 // redirectUri is assigned in app.js...
                 apiKey: '705802534104-f01f9db07j8dvl4l9tp6nhc7keciamer.apps.googleusercontent.com',
                 scope: 'email profile'
-
-
             }
         }
     }

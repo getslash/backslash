@@ -11,7 +11,9 @@ Router.map(function() {
     this.route('tests');
   });
 
-  this.route("test", { path: "/tests/:test_id" });
+  this.route("test", { path: "/tests/:test_id" }, function() {
+    this.route('errors');
+  });
 
   this.resource('login', function() {});
   this.route('profile');
