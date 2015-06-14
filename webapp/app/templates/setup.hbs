@@ -22,7 +22,7 @@
           <label for="confirm_password">Confirm Password</label>
           {{input id="confirm_password" type="password" value=confirm_password class="form-control"}}
         </div>
-      <button {{bind-attr class=":btn :btn-default canSubmit::disabled" }} {{action "submit"}}>Submit</button>
+        <button class="btn btn-default {{if canSubmit '' 'disabled'}}" {{action "submit"}}>Submit</button>
       </form>
     </div>
   </div>
