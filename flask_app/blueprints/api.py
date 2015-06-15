@@ -39,11 +39,14 @@ def report_session_start(logical_id: str=None,
                          hostname: str=None,
                          product_name: str=None,
                          product_version: str=None,
-                         product_revision: str=None):
+                         product_revision: str=None,
+                         total_num_tests: int=None,
+                     ):
     if hostname is None:
         hostname = request.remote_addr
-    return Session(logical_id=logical_id, hostname=hostname,
+    returned = Session(logical_id=logical_id, hostname=hostname, total_num_tests=total_num_tests,
                    product_name=product_name, product_version=product_version, product_revision=product_revision)
+    return returned
 
 
 @API

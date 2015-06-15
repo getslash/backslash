@@ -6,6 +6,7 @@ export default DS.Model.extend({
     end_time: DS.attr('number'),
     status: DS.attr('string'),
 
+    num_total_tests: DS.attr('number'),
     num_failed_tests: DS.attr('number'),
     num_error_tests: DS.attr('number'),
     num_skipped_tests: DS.attr('number'),

@@ -54,6 +54,7 @@ class Session(db.Model, TypenameMixin):
     errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
 
     # test counts
+    total_num_tests = db.Column(db.Integer, default=None)
     num_failed_tests = db.Column(db.Integer, default=0)
     num_error_tests = db.Column(db.Integer, default=0)
     num_skipped_tests = db.Column(db.Integer, default=0)
