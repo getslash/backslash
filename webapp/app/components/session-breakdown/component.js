@@ -6,6 +6,7 @@ export default Ember.Component.extend({
 
     session: null,
 
+    total_num_tests: Ember.computed.alias('session.total_num_tests'),
     num_failed_tests: Ember.computed.alias('session.num_failed_tests'),
     num_skipped_tests: Ember.computed.alias('session.num_skipped_tests'),
     num_error_tests: Ember.computed.alias('session.num_error_tests'),
@@ -26,15 +27,16 @@ export default Ember.Component.extend({
         return this._percentOfTotal(this.get('num_skipped_tests'));
     }.property(...everything),
 
+    runningPercent: function() {
+        return this._percentOfTotal(1);
+    }.property(...everything),
 
     _percentOfTotal: function(num) {
-
-        var finished = parseInt(this.get('num_finished_tests'));
-        if (finished === 0) {
-            return "width: 0%".htmlSafe();
+        let total = this.get('total_num_tests');
+        var percentage = 0;
+        if (total !== 0) {
+            percentage = Math.floor((parseInt(num) / total) * 100);
         }
-        var percentage = Math.floor(parseInt(num) / finished * (this.get('is_running')?70:100));
-
 
         return ('width: ' + percentage + '%').htmlSafe();
     }
