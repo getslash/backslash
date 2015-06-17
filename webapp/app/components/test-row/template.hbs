@@ -2,6 +2,9 @@
   {{#if test.is_success }}
     <i class="fa fa-check-circle success"></i> 
   {{/if}}
+  {{# if test.is_running }}
+    <i class="fa fa-cog fa-spin"></i>
+  {{/if}}
   {{test.name}}
 </div>
 <div class="col-md-2">
