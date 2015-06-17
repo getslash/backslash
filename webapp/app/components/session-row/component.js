@@ -6,7 +6,7 @@ export default Ember.Component.extend({
     session: null,
 
     click: function() {
-        this.sendAction('gotoSession', this.session);
+        this.sendAction('action', this.get('session'));
     }
 
 });
