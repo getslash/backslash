@@ -4,6 +4,7 @@ import requests
 from flask import abort, Blueprint, request
 from flask.ext.simple_api import SimpleAPI
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata
@@ -132,6 +133,29 @@ def add_test_failure(id: int):
     except NoResultFound:
         abort(requests.codes.not_found)
 
+@API
+def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
+    model, kwargs = _get_metadata_model(entity_type, entity_id)
+    db.session.add(model(key=key, metadata_item=value, **kwargs))
+    try:
+        db.session.commit()
+    except IntegrityError:
+        abort(requests.codes.not_found)
+
+@API
+def get_metadata(entity_type: str, entity_id: int):
+    model, kwargs = _get_metadata_model(entity_type, entity_id)
+    return {obj.key: obj.metadata_item
+            for obj in model.query.filter_by(**kwargs)}
+
+def _get_metadata_model(entity_type, entity_id):
+    if entity_type == 'session':
+        return SessionMetadata, {'session_id': entity_id}
+
+    if entity_type == 'test':
+        return TestMetadata, {'test_id': entity_id}
+
+    abort(requests.codes.bad_request)
 
 @API
 def add_test_metadata(id: int, metadata: dict):

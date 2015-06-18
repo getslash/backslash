@@ -6,6 +6,7 @@ import flux
 import pytest
 
 
+
 @pytest.fixture(autouse=True, scope='session')
 def freeze_timeline(request):
 
@@ -43,7 +44,7 @@ def ended_session(client):
 @pytest.fixture
 def nonexistent_session(client):
     from backslash.session import Session
-    return Session(client, {'id': 238723287})
+    return Session(client, {'id': 238723287, 'type': 'session'})
 
 
 @pytest.fixture
@@ -90,6 +91,23 @@ def error_data():
                           'code_line': 'line of code', 'code_string': 'lots of lines of code'}]
     }
     return data
+
+@pytest.fixture
+def metadata_key():
+    return 'metadata_key'
+
+@pytest.fixture(params=[1, 'hey', 2.0, True, None])
+def metadata_value(request):
+    return request.param
+
+
+@pytest.fixture(params=['session', 'test'])
+def metadata_holder(request, client):
+    session = client.report_session_start()
+    if request.param == 'session':
+        return session
+    test = session.report_test_start()
+    return test
 
 
 

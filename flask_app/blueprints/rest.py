@@ -32,7 +32,7 @@ class SessionResource(ModelResource):
     DEFAULT_SORT = _DEFAULT_SORT
 
 
-@_resource('/tests', '/tests/<int:object_id>')
+@_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
@@ -40,6 +40,8 @@ class TestResource(ModelResource):
 
     def _get_iterator(self):
         session_id = request.args.get('session_id')
+        if session_id is None:
+            session_id = request.view_args.get('session_id')
         if session_id is not None:
             return Test.query.filter(Test.session_id == session_id).order_by(text(self.DEFAULT_SORT))
         return super(TestResource, self)._get_iterator()

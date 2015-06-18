@@ -28,7 +28,7 @@ def auto_commit(func):
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         returned = func(*args, **kwargs)
-        if returned is not None:
+        if isinstance(returned, db.Model):
             db.session.add(returned)
         db.session.commit()
         return returned

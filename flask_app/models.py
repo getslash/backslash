@@ -114,11 +114,13 @@ class Test(db.Model, TypenameMixin):
                 return 'ERROR'
         return 'SUCCESS'
 
+_METADATA_KEY_TYPE = db.String(1024)
 
 class TestMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
+    key = db.Column(_METADATA_KEY_TYPE, nullable=False)
     metadata_item = db.Column(JSONB)
 
 
@@ -126,6 +128,7 @@ class SessionMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+    key = db.Column(_METADATA_KEY_TYPE, nullable=False)
     metadata_item = db.Column(JSONB)
 
 

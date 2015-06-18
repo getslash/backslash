@@ -69,35 +69,6 @@ def test_session_add_user_nonexistent_session(nonexistent_session):
         nonexistent_session.set_user(user_name)
 
 
-def test_add_session_metadata(started_session):
-    pytest.skip('No metadata attribute yet')
-    metadata = {'logfile': '/var/log/foo'}
-    started_session.add_metadata(metadata)
-    started_session.refresh()
-    assert started_session.session_metadata == metadata
-
-
-def test_add_two_session_metadata_items(started_session):
-    pytest.skip('No metadata attribute yet')
-    metadata1 = {'logfile': '/var/log/foo'}
-    metadata2 = {'foo': 'bar'}
-    metadata = dict(metadata1.items() + metadata2.items())
-    started_session.add_metadata(metadata1)
-    started_session.add_metadata(metadata2)
-    started_session.refresh()
-    assert started_session.session_metadata == metadata
-
-
-def test_add_bad_session_metadata(started_session):
-    with raises_bad_request():
-        started_session.add_metadata('bad_metadata')
-
-
-def test_add_metadata_nonexistent_session(nonexistent_session):
-    with raises_not_found():
-        nonexistent_session.add_metadata({'foo': 'bar'})
-
-
 def test_started_session_times(started_session):
     assert started_session.start_time is not None
     assert started_session.end_time is None
