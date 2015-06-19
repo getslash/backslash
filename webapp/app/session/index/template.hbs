@@ -1,6 +1,12 @@
 <p>
-    {{session-breakdown session=model}}
+    {{session-breakdown session=session}}
 </p>
 
-<p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=model.start_time}}</p>
-<p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=model.end_time}}</p>
+<p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=session.start_time}}</p>
+<p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=session.end_time}}</p>
+
+<p>
+  {{#if metadata.slash }}
+    <p><i class="fa fa-chevron-right"></i> <strong>Command line:</strong> <code>{{metadata.slash.commandline}}</code></p>
+  {{/if}}
+</p>

@@ -9,14 +9,14 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata
 from ..utils import get_current_time
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_runtoken
+from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = SimpleAPI(blueprint)
 
 def API(func):
-    return api.include(requires_runtoken(auto_render(auto_commit(func))))
+    return api.include(requires_login_or_runtoken(auto_render(auto_commit(func))))
 
 ##########################################################################
 

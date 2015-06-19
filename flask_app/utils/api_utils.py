@@ -2,7 +2,7 @@ import functools
 
 import requests
 from flask import request, abort
-from flask.ext.security import login_user
+from flask.ext.security import login_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -36,15 +36,16 @@ def auto_commit(func):
     return new_func
 
 
-def requires_runtoken(func):
-    """Logs a user in based on his/her run token
+def requires_login_or_runtoken(func):
+    """Logs a user in based on his/her run token, assuming the user isn't already logged in.
     Fails the request if a run token wasn't specified or is invalid
     """
 
     @functools.wraps(func)
     def new_func(*args, **kwargs):
-        user = _get_user_from_run_token()
-        login_user(user)
+        if not current_user.is_authenticated():
+            user = _get_user_from_run_token()
+            login_user(user)
         return func(*args, **kwargs)
     return new_func
 
