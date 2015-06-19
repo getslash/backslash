@@ -100,6 +100,14 @@ def metadata_key():
 def metadata_value(request):
     return request.param
 
+@pytest.fixture
+def metadata():
+    return {
+        'key1': 'value1',
+        'subobject': {
+            'c': 20,
+        }}
+
 
 @pytest.fixture(params=['session', 'test'])
 def metadata_holder(request, client):

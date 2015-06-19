@@ -48,10 +48,12 @@ class Session(db.Model, TypenameMixin):
     product_name = db.Column(db.String(256), index=True)
     product_version = db.Column(db.String(256), index=True)
     product_revision = db.Column(db.String(256), index=True)
-    user_name = db.Column(db.String(256), index=True)
+
     edited_status = db.Column(db.String(256), index=True)
     tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
+    metadata_items = db.relationship('SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
+
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
@@ -59,6 +61,9 @@ class Session(db.Model, TypenameMixin):
     num_error_tests = db.Column(db.Integer, default=0)
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
+
+    user_name = db.Column(db.String(256), index=True)
+
 
     @computed_field
     def status(self):

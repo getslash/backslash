@@ -42,11 +42,15 @@ def report_session_start(logical_id: str=None,
                          product_version: str=None,
                          product_revision: str=None,
                          total_num_tests: int=None,
+                         metadata: dict=None,
                      ):
     if hostname is None:
         hostname = request.remote_addr
     returned = Session(logical_id=logical_id, hostname=hostname, total_num_tests=total_num_tests,
                    product_name=product_name, product_version=product_version, product_revision=product_revision)
+    if metadata is not None:
+        for key, value in metadata.items():
+            db.session.add(SessionMetadata(session=returned, key=key, metadata_item=value))
     return returned
 
 

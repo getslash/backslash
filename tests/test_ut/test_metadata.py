@@ -14,6 +14,11 @@ def test_add_metadata(metadata_holder, metadata_key, metadata_value):
     }
 
 
+def test_create_session_with_metadata(client, metadata):
+    session = client.report_session_start(metadata=metadata)
+    assert session.get_metadata() == metadata
+
+
 def test_add_metadata_nonexistent_session(nonexistent_session):
     with raises_not_found():
         nonexistent_session.set_metadata('foo', 'bar')
