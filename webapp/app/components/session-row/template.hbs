@@ -1,5 +1,13 @@
-<div class="breakdown col-md-2">{{session-breakdown session=session}}</div>
+<div class="breakdown col-md-2">
+  <div class="row">
+    <div class="col-md-2">
+      <img src="{{gravatar-url session.user_email}}" class="img-circle avatar">
+    </div>
+    <div class="col-md-10">
+      {{session-breakdown session=session}}
+    </div>
+  </div>
+</div>
 <div class="col-md-10">
-
   {{start-end-times start_time=session.start_time end_time=session.end_time is_running=session.is_running}}
 </div>

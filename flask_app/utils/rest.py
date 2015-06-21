@@ -56,13 +56,14 @@ class ModelResource(RestResource):
 
     MODEL = None
     ONLY_FIELDS = None
+    EXTRA_FIELDS = None
     DEFAULT_SORT = None
 
     def _get_iterator(self):
         assert self.MODEL is not None
         returned = self.MODEL.query
         if self.DEFAULT_SORT is not None:
-            returned = returned.order_by(text(self.DEFAULT_SORT))
+            returned = returned.order_by(*self.DEFAULT_SORT)
         return returned
 
     def _get_object_by_id(self, object_id):
@@ -70,7 +71,7 @@ class ModelResource(RestResource):
         return self.MODEL.query.get(object_id)
 
     def _render_single(self, obj):
-        return render_api_object(obj, only_fields=self.ONLY_FIELDS)
+        return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS)
 
     def _paginate(self, query):
         args = pagination_parser.parse_args()

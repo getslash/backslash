@@ -18,11 +18,18 @@ def auto_render(func):
     return new_func
 
 
-def render_api_object(obj, only_fields=None):
+def render_api_object(obj, only_fields=None, extra_fields=None):
     if only_fields is None:
         only_fields = [c.name for c in obj.__table__.columns]
     returned = {field_name: render_api_value(obj.__getattribute__(field_name))
                 for field_name in only_fields}
+
+    if extra_fields is not None:
+        for field_name, attr in extra_fields.items():
+            value = obj
+            for p in attr.split('.'):
+                value = getattr(value, p)
+            returned[field_name] = value
 
     for method_name in dir(obj):
         method = getattr(obj, method_name)

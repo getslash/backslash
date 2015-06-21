@@ -23,27 +23,29 @@ def _resource(*args, **kwargs):
 
 ##########################################################################
 
-_DEFAULT_SORT = '(CASE WHEN end_time IS NULL THEN 1 ELSE 0 END) DESC,  end_time DESC'
-
 @_resource('/sessions', '/sessions/<int:object_id>')
 class SessionResource(ModelResource):
 
     MODEL = Session
-    DEFAULT_SORT = _DEFAULT_SORT
+    EXTRA_FIELDS = {
+        'user_email': 'user.email',
+    }
+
+    DEFAULT_SORT = ((Session.end_time == None).desc(), Session.end_time.desc())
 
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
-    DEFAULT_SORT = _DEFAULT_SORT
+    DEFAULT_SORT = ((Test.end_time == None).desc(), Test.end_time.desc())
 
     def _get_iterator(self):
         session_id = request.args.get('session_id')
         if session_id is None:
             session_id = request.view_args.get('session_id')
         if session_id is not None:
-            return Test.query.filter(Test.session_id == session_id).order_by(text(self.DEFAULT_SORT))
+            return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
         return super(TestResource, self)._get_iterator()
 
 

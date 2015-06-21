@@ -63,6 +63,7 @@ class Session(db.Model, TypenameMixin):
     num_finished_tests = db.Column(db.Integer, default=0)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    user = db.relationship('User', lazy='joined')
 
     @computed_field
     def status(self):

@@ -15,7 +15,7 @@
 
 
     <p class="navbar-text navbar-right">
-      {{#link-to "profile" tagName="span" class="clickable"}}<img class="img-circle" src="{{gravatarURL}}?s=20"> {{session.content.user_info.name}} {{/link-to}}
+      {{#link-to "profile" tagName="span" class="clickable"}}<img class="img-circle" src="{{gravatar-url session.content.user_info.email}}?s=20"> {{session.content.user_info.name}} {{/link-to}}
     </p>
     {{/if}}
   </div>
