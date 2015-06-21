@@ -3,6 +3,7 @@ import datetime
 import requests
 from flask import abort, Blueprint, request
 from flask.ext.simple_api import SimpleAPI
+from flask.ext.security import current_user
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
@@ -29,11 +30,6 @@ def set_product(id: int,
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
-@API
-def set_session_user(id: int, user_name: str):
-    update = {'user_name': user_name}
-    if not Session.query.filter(Session.id == id).update(update):
-        abort(requests.codes.not_found)
 
 @API
 def report_session_start(logical_id: str=None,
@@ -46,8 +42,15 @@ def report_session_start(logical_id: str=None,
                      ):
     if hostname is None:
         hostname = request.remote_addr
-    returned = Session(logical_id=logical_id, hostname=hostname, total_num_tests=total_num_tests,
-                   product_name=product_name, product_version=product_version, product_revision=product_revision)
+    returned = Session(
+        hostname=hostname,
+        product_name=product_name,
+        product_revision=product_revision,
+        product_version=product_version,
+        total_num_tests=total_num_tests,
+        user_id=current_user.id,
+logical_id=logical_id,
+    )
     if metadata is not None:
         for key, value in metadata.items():
             db.session.add(SessionMetadata(session=returned, key=key, metadata_item=value))

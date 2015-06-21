@@ -62,8 +62,7 @@ class Session(db.Model, TypenameMixin):
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
 
-    user_name = db.Column(db.String(256), index=True)
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
 
     @computed_field
     def status(self):
