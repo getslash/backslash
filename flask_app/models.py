@@ -14,6 +14,13 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB
 db = SQLAlchemy()
 
 
+class TypenameMixin(object):
+
+    @classmethod
+    def get_typename(cls):
+        return cls.__name__.lower()
+
+
 test_error = db.Table('test_error',
                       db.Column('test_id',
                                 db.Integer,
@@ -30,12 +37,21 @@ session_error = db.Table('session_error',
                                    db.Integer,
                                    db.ForeignKey('error.id')))
 
+test_comment = db.Table('test_comment',
+                        db.Column('test_id',
+                                  db.Integer,
+                                  db.ForeignKey('test.id')),
+                        db.Column('comment_id',
+                                  db.Integer,
+                                  db.ForeignKey('comment.id')))
 
-class TypenameMixin(object):
-
-    @classmethod
-    def get_typename(cls):
-        return cls.__name__.lower()
+session_comment = db.Table('session_comment',
+                           db.Column('session_id',
+                                     db.Integer,
+                                     db.ForeignKey('session.id')),
+                           db.Column('comment_id',
+                                     db.Integer,
+                                     db.ForeignKey('comment.id')))
 
 
 class Session(db.Model, TypenameMixin):
@@ -50,10 +66,14 @@ class Session(db.Model, TypenameMixin):
     product_revision = db.Column(db.String(256), index=True)
 
     edited_status = db.Column(db.String(256), index=True)
-    tests = db.relationship('Test', backref=backref('session'), cascade='all, delete, delete-orphan')
-    errors = db.relationship('Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
-    metadata_items = db.relationship('SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
-
+    tests = db.relationship(
+        'Test', backref=backref('session'), cascade='all, delete, delete-orphan')
+    errors = db.relationship(
+        'Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
+    comments = db.relationship(
+        'Comment', secondary=session_comment, backref=backref('session', lazy='dynamic'))
+    metadata_items = db.relationship(
+        'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
@@ -62,7 +82,8 @@ class Session(db.Model, TypenameMixin):
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
     user = db.relationship('User', lazy='joined')
 
     @computed_field
@@ -83,7 +104,8 @@ class Session(db.Model, TypenameMixin):
 class Test(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+    session_id = db.Column(
+        db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
@@ -94,7 +116,10 @@ class Test(db.Model, TypenameMixin):
     num_failures = db.Column(db.Integer, default=0)
     edited_status = db.Column(db.String(256), index=True)
     test_conclusion = db.Column(db.String(256), index=True)
-    errors = db.relationship('Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
+    errors = db.relationship(
+        'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
+    comments = db.relationship(
+        'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
 
     @computed_field
     def duration(self):
@@ -121,10 +146,12 @@ class Test(db.Model, TypenameMixin):
 
 _METADATA_KEY_TYPE = db.String(1024)
 
+
 class TestMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
+    test_id = db.Column(
+        db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), index=True)
     key = db.Column(_METADATA_KEY_TYPE, nullable=False)
     metadata_item = db.Column(JSONB)
 
@@ -132,7 +159,8 @@ class TestMetadata(db.Model):
 class SessionMetadata(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+    session_id = db.Column(
+        db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
     key = db.Column(_METADATA_KEY_TYPE, nullable=False)
     metadata_item = db.Column(JSONB)
 
@@ -145,9 +173,11 @@ class Error(db.Model, TypenameMixin):
     exception = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
 
+
 roles_users = db.Table('roles_users',
-    db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-    db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+                       db.Column(
+                           'user_id', db.Integer(), db.ForeignKey('user.id')),
+                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
 class Role(db.Model, RoleMixin):
@@ -169,6 +199,18 @@ class User(db.Model, UserMixin, TypenameMixin):
 class RunToken(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User')
     token = db.Column(db.String(255), unique=True, index=True)
+
+
+class Comment(db.Model, TypenameMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), nullable=False, index=True)
+    user = db.relationship('User')
+    comment = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.Float, default=get_current_time)

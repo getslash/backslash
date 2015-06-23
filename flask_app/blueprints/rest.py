@@ -6,7 +6,7 @@ from flask.ext.security.core import current_user
 
 from sqlalchemy import text
 
-from ..models import Error, Session, Test, User
+from ..models import Error, Session, Test, User, Comment
 from ..utils.rest import ModelResource
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
@@ -49,13 +49,17 @@ class TestResource(ModelResource):
         return super(TestResource, self)._get_iterator()
 
 
+session_test_query_parser = reqparse.RequestParser()
+session_test_query_parser.add_argument('session_id', type=int, default=None)
+session_test_query_parser.add_argument('test_id', type=int, default=None)
+
 @_resource('/errors')
 class ErrorResource(ModelResource):
 
     MODEL = Error
 
     def _get_iterator(self):
-        args = error_query_parser.parse_args()
+        args = session_test_query_parser.parse_args()
         if args.session_id is not None:
             return Error.query.join((Session, Error.session)).filter(Session.id == args.session_id)
         elif args.test_id is not None:
@@ -79,6 +83,24 @@ class UserResource(ModelResource):
         return User.query.get_or_404(int(object_id))
 
 
-error_query_parser = reqparse.RequestParser()
-error_query_parser.add_argument('session_id', type=int, default=None)
-error_query_parser.add_argument('test_id', type=int, default=None)
+
+
+@_resource('/comments', '/comments/<int:object_id>')
+class CommentsResource(ModelResource):
+
+    MODEL = Comment
+    DEFAULT_SORT = (Comment.timestamp.asc(),)
+    EXTRA_FIELDS = {
+        'user_email': 'user.email',
+    }
+
+
+    def _get_iterator(self):
+        args = session_test_query_parser.parse_args()
+        if args.session_id is not None:
+            returned = Comment.query.join((Session, Comment.session)).filter(Session.id == args.session_id)
+        elif args.test_id is not None:
+            returned = Comment.query.join((Test, Comment.test)).filter(Test.id == args.test_id)
+        else:
+            abort(requests.codes.bad_request)
+        return returned.join(User)

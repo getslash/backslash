@@ -9,10 +9,12 @@ Router.map(function() {
   this.route("sessions", { path: "/sessions" });
   this.route("session", { path: "/sessions/:id" }, function() {
     this.route('tests');
+    this.route('comments');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
     this.route('errors');
+    this.route('comments');
   });
 
   this.resource('login', function() {});

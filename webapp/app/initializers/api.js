@@ -1,10 +1,10 @@
 import Ember from 'ember';
 
 var api = {
-    call: function(params) {
+    call: function(name, params) {
         return Ember.$.ajax({
             type: 'POST',
-            url: '/api/get_metadata',
+            url: '/api/' + name,
             contentType: 'application/json',
             data: JSON.stringify(params)
         });

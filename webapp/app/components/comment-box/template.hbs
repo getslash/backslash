@@ -1,0 +1,30 @@
+  <div class="comment-container">
+    <div class="row">
+      <div class="col-sm-1">
+        <img class="avatar img-circle img-thumbnail" alt=""
+                src="{{gravatar-url email}}"/>
+      </div>
+      <div class="col-sm-11">
+        <div class="well">
+          {{#if comment.edited}}
+            <p>
+          {{textarea value=comment.comment class="form-control"}}
+            </p>
+            <p>
+            {{#if canComment }}
+            <button class="btn btn-success" {{action "save"}}>Save</button>
+            {{/if}}
+            </p>
+          {{else}}
+
+            <p>
+              {{comment.comment}}
+            </p>
+
+          {{/if}}
+
+
+        </div>
+      </div>
+    </div>
+  </div>

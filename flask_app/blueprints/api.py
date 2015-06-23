@@ -8,7 +8,7 @@ from flask.ext.security import current_user
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata
+from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
 from ..utils import get_current_time
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken
 
@@ -231,3 +231,15 @@ def edit_test_status(id: int, status: str):
     update = {'edited_status': status}
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
+
+@API
+def post_comment(comment: str, session_id: int=None, test_id: int=None):
+    if not (session_id is not None) ^ (test_id is not None):
+        abort(requests.codes.bad_request)
+
+    if session_id is not None:
+        obj = db.session.query(Session).get(session_id)
+    else:
+        obj = db.session.query(Test).get(test_id)
+
+    obj.comments.append(Comment(user_id=current_user.id, comment=comment))

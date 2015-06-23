@@ -15,3 +15,7 @@ body {
     user-select: none;
 }
 
+.clickable.danger:hover {
+    color: $brand-danger;
+}
+
