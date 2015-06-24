@@ -1,8 +1,8 @@
 import functools
 
 import requests
-from flask import request, abort
-from flask.ext.security import login_user, current_user
+from flask import request, abort, g
+from flask.ext.login import login_user, logout_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -44,9 +44,12 @@ def requires_login_or_runtoken(func):
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         if not current_user.is_authenticated():
-            user = _get_user_from_run_token()
-            login_user(user)
-        return func(*args, **kwargs)
+            g.token_user = _get_user_from_run_token()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            if hasattr(g, 'token_user'):
+                del g.token_user
     return new_func
 
 def _get_user_from_run_token():

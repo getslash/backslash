@@ -21,6 +21,18 @@ auth = Blueprint("auth", __name__, template_folder="templates")
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
 
+@auth.route('/testing_login', methods=['POST'])
+def testing_login():
+    if not current_app.config.get('TESTING'):
+        abort(requests.codes.not_found)
+
+    testing_email = 'testing@localhost'
+
+    user = user_datastore.get_user(testing_email)
+    assert user
+    login_user(user)
+    user_info = {}
+    return _make_success_login_response(user, user_info)
 
 @auth.route("/login", methods=['POST'])
 def login():
@@ -37,12 +49,15 @@ def login():
 
     user = _get_or_create_user(user_info)
     _fix_first_user_role(user)
-    token = _generate_token(user, user_info)
 
     login_user(user)
 
     _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
 
+    return _make_success_login_response(user, user_info)
+
+def _make_success_login_response(user, user_info):
+    token = _generate_token(user, user_info)
     return jsonify({
         'auth_token': token,
         'user_info': user_info,
@@ -84,6 +99,7 @@ def _get_or_create_user(user_info):
     user = user_datastore.get_user(email)
     if not user:
         user = user_datastore.create_user(
+            active=True,
             email=email)
         user_datastore.db.session.commit()
 

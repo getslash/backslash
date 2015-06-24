@@ -1,7 +1,7 @@
 import datetime
 
 import requests
-from flask import abort, Blueprint, request
+from flask import abort, Blueprint, request, g
 from flask.ext.simple_api import SimpleAPI
 from flask.ext.security import current_user
 
@@ -48,7 +48,7 @@ def report_session_start(logical_id: str=None,
         product_revision=product_revision,
         product_version=product_version,
         total_num_tests=total_num_tests,
-        user_id=current_user.id,
+        user_id=g.token_user.id,
 logical_id=logical_id,
     )
     if metadata is not None:

@@ -14,7 +14,7 @@ def test_verify_password_independent_of_salt(webapp):
         assert verify_password(password, encrypted)
 
 @pytest.mark.parametrize('path', ['/login', '/reauth'])
-def test_unauthorized_post_to_login(webapp, path):
-    resp = webapp.post(path, data={}, raw_response=True)
+def test_unauthorized_post_to_login(webapp_without_login, path):
+    resp = webapp_without_login.post(path, data={}, raw_response=True)
 
     assert resp.status_code == requests.codes.unauthorized

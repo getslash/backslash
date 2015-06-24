@@ -18,8 +18,8 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
-def client(webapp, runtoken):
-    return BackslashClient('http://{0}'.format(webapp.hostname), runtoken=runtoken)
+def client(webapp_without_login, runtoken):
+    return BackslashClient('http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
 
 @pytest.fixture
 def backslash_url(request):
@@ -28,41 +28,57 @@ def backslash_url(request):
         pytest.skip()
     return URL(url)
 
-@pytest.fixture(autouse=True)
-def app_security_settings(webapp):
-    webapp.app.config["SECRET_KEY"] = "testing_key"
-    webapp.app.config["SECURITY_PASSWORD_SALT"] = webapp.app.extensions['security'].password_salt = "testing_salt"
-
+@pytest.fixture
+def webapp(testuser, request):
+    returned = _create_webapp(request)
+    returned.post('/testing_login')
+    return returned
 
 @pytest.fixture
-def webapp(request):
+def webapp_without_login(request):
+    return _create_webapp(request)
+
+def _create_webapp(request):
     returned = Webapp(app.create_app({
         'SQLALCHEMY_DATABASE_URI': 'postgresql://127.0.0.1/backslash-ut',
         'SECRET_KEY': 'testing-key',
         'TESTING': True,
+        'SECURITY_PASSWORD_SALT': 'testing_salt',
     }))
     returned.activate()
     request.addfinalizer(returned.deactivate)
+    returned.app.extensions['security'].password_salt = returned.app.config['SECURITY_PASSWORD_SALT']
     return returned
 
 @pytest.fixture(scope='function', autouse=True)
-def db(request, webapp):
-    with webapp.app.app_context():
+def db(request, webapp_without_login):
+    with webapp_without_login.app.app_context():
         models.db.session.close()
         models.db.drop_all()
         models.db.create_all()
     return models.db
 
 @pytest.fixture
-def runtoken(db, webapp):
-    with webapp.app.app_context():
-        user = models.User(email='testing@localhost')
-        db.session.add(user)
+def runtoken(db, webapp_without_login, testuser):
+    with webapp_without_login.app.app_context():
         token_string = str(uuid4())
-        token = models.RunToken(user=user, token=token_string)
+        token = models.RunToken(user=testuser, token=token_string)
         db.session.add(token)
         db.session.commit()
     return token_string
+
+@pytest.fixture
+def testuser(db, webapp_without_login, testuser_email):
+    with webapp_without_login.app.app_context():
+        user = models.User(email=testuser_email, active=True)
+        db.session.add(user)
+        db.session.commit()
+    return user
+
+@pytest.fixture
+def testuser_email():
+    return 'testing@localhost'
+
 
 class Webapp(object):
 
