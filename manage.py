@@ -14,7 +14,7 @@ bootstrap_env(["base"])
 
 
 from _lib.params import APP_NAME
-from _lib.frontend import frontend, ember
+from _lib.frontend import frontend, ember, build_frontend
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
 from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
@@ -178,6 +178,7 @@ def _run_fulltest(extra_args=()):
 
 @cli.command('travis-test')
 def travis_test():
+    build_frontend(watch=False, production=False)
     subprocess.check_call('createdb {0}-ut'.format(APP_NAME), shell=True)
     _run_unittest()
     subprocess.check_call('dropdb {0}-ut'.format(APP_NAME), shell=True)
