@@ -52,12 +52,12 @@ def login():
 
     login_user(user)
 
-    _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
-
     return _make_success_login_response(user, user_info)
 
 def _make_success_login_response(user, user_info):
     token = _generate_token(user, user_info)
+    _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
+
     return jsonify({
         'auth_token': token,
         'user_info': user_info,
