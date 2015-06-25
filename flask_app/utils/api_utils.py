@@ -36,7 +36,11 @@ def auto_commit(func):
     return new_func
 
 
-def requires_login_or_runtoken(func):
+def requires_login(func):
+    return requires_login_or_runtoken(func, allow_runtoken=False)
+
+
+def requires_login_or_runtoken(func, allow_runtoken=True):
     """Logs a user in based on his/her run token, assuming the user isn't already logged in.
     Fails the request if a run token wasn't specified or is invalid
     """
@@ -44,6 +48,8 @@ def requires_login_or_runtoken(func):
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         if not current_user.is_authenticated():
+            if not allow_runtoken:
+                abort(requests.codes.unauthorized)
             g.token_user = _get_user_from_run_token()
         try:
             return func(*args, **kwargs)

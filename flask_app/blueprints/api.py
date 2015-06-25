@@ -1,4 +1,5 @@
 import datetime
+import functools
 
 import requests
 from flask import abort, Blueprint, request, g
@@ -10,14 +11,22 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
 from ..utils import get_current_time
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken
+from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = SimpleAPI(blueprint)
 
-def API(func):
-    return api.include(requires_login_or_runtoken(auto_render(auto_commit(func))))
+def API(func=None, require_real_login=False):
+    if func is None:
+        return functools.partial(API, require_real_login=require_real_login)
+
+    returned = auto_render(auto_commit(func))
+    if require_real_login:
+        returned = requires_login(returned)
+    else:
+        returned = requires_login_or_runtoken(returned)
+    return api.include(returned)
 
 ##########################################################################
 
@@ -216,7 +225,7 @@ def set_test_conclusion(id: int, conclusion: str):
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
 
-@API
+@API(require_real_login=True)
 def edit_session_status(id: int, status: str):
     if status not in ['', 'RUNNING', 'FAILURE', 'SUCCESS']:
         abort(requests.codes.bad_request)
@@ -224,7 +233,7 @@ def edit_session_status(id: int, status: str):
     if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
-@API
+@API(require_real_login=True)
 def edit_test_status(id: int, status: str):
     if status not in ['', 'RUNNING', 'SUCCESS', 'SKIPPED', 'FAILURE', 'ERROR', 'INTERRUPTED']:
         abort(requests.codes.bad_request)
@@ -232,7 +241,7 @@ def edit_test_status(id: int, status: str):
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
 
-@API
+@API(require_real_login=True)
 def post_comment(comment: str, session_id: int=None, test_id: int=None):
     if not (session_id is not None) ^ (test_id is not None):
         abort(requests.codes.bad_request)
