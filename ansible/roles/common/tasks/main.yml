@@ -5,5 +5,8 @@
 - name: set up packages
   action: apt pkg={{item}} state=latest update_cache=yes
   with_items: required_packages
-- name: install virtualenv
-  pip: name=virtualenv executable=pip3
+- easy_install: name=pip executable=easy_install3
+- name: install additional needed packages via pip
+  pip: name={{item}} executable=pip3
+  with_items: required_pip_packages
+

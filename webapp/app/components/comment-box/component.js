@@ -7,10 +7,12 @@ export default Ember.Component.extend({
         return Ember.$.trim(this.get('commentText')) !== '';
     }.property('commentText'),
 
+
     defineProperties: function() {
         Ember.defineProperty(this, 'commentText', Ember.computed.alias('comment.comment'));
         Ember.defineProperty(this, 'commentEdited', Ember.computed.alias('comment.edited'));
   }.on('init'),
+
 
     email: function() {
         if (this.get('commentEdited')) {

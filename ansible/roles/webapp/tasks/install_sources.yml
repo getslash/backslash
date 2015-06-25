@@ -3,15 +3,15 @@
 - name: untar sources
   shell: cd {{deploy_root}} && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
 - name: bootstrap
-  shell: python {{deploy_root}}/manage.py bootstrap --app
+  shell: python3 {{deploy_root}}/manage.py bootstrap --app
 - name: ensure private config
-  shell: python {{deploy_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
+  shell: python3 {{deploy_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
 - name: migrate db
-  shell: cd {{deploy_root}} && python manage.py db upgrade
+  shell: cd {{deploy_root}} && python3 manage.py db upgrade
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure nginx configuration
-  shell: python {{deploy_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
+  shell: python3 {{deploy_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
   notify: reload nginx config
 - name: reload supervisor
   shell: supervisorctl reload

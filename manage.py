@@ -6,6 +6,7 @@ import time
 import random
 import string
 import subprocess
+from contextlib import contextmanager
 
 
 from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
@@ -179,12 +180,19 @@ def _run_fulltest(extra_args=()):
 @cli.command('travis-test')
 def travis_test():
     build_frontend(watch=False, production=False)
-    subprocess.check_call('createdb {0}-ut'.format(APP_NAME), shell=True)
-    _run_unittest()
-    subprocess.check_call('dropdb {0}-ut'.format(APP_NAME), shell=True)
+    with _ut_database():
+        _run_unittest()
+
     _run_deploy('localhost')
     _wait_for_travis_availability()
-    _run_fulltest(["--url=http://127.0.0.1:80"])
+    with _ut_database():
+        _run_fulltest(["--url=http://127.0.0.1:80"])
+
+@contextmanager
+def _ut_database():
+    subprocess.check_call('createdb {0}-ut'.format(APP_NAME), shell=True)
+    yield
+    subprocess.check_call('dropdb {0}-ut'.format(APP_NAME), shell=True)
 
 
 def _wait_for_travis_availability():

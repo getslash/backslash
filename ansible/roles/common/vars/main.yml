@@ -11,9 +11,11 @@ required_packages:
     - libxslt1-dev
     - git
     - supervisor
-    - python3-pip
-    - python3-pycurl
+    - python3-setuptools
     - python3-dev
     - libevent-dev
     - libpq-dev
     - redis-server
+required_pip_packages:
+    - virtualenv
+    - pycurl

@@ -3,6 +3,11 @@ python:
   - 3.4 
 addons:
   postgresql: "9.4"
+install:
+  # needed to add Python 3.4 to the system path, to make ansible work
+  - sudo ln -sf ~/virtualenv/python3.4/bin/python /usr/bin/python3
+  - sudo ln -sf ~/virtualenv/python3.4/bin/python /usr/bin/python3.4
+  - sudo ln -sf ~/virtualenv/python3.4/bin/pip /usr/bin/pip3
 script: python manage.py travis-test
 after_failure:
   - sudo supervisorctl status
