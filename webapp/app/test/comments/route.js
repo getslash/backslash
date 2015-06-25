@@ -6,7 +6,7 @@ export default Ember.Route.extend(RefreshableRoute, {
     needs: ['test'],
 
     model: function() {
-        return this.store.find('comment', {test_id: this.modelFor('test').id});
+        return this.store.query('comment', {test_id: this.modelFor('test').id});
     },
 
     setupController: function(controller, model) {

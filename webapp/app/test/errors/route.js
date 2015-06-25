@@ -6,6 +6,6 @@ export default Ember.Route.extend({
 
     model: function() {
 
-        return this.store.find('error', {test_id: this.modelFor('test').id});
+        return this.store.query('error', {test_id: this.modelFor('test').id});
     }
 });
