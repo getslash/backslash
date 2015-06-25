@@ -120,11 +120,19 @@ def test_get_status_failure(started_test):
 
 
 def test_get_status_skipped(started_test):
-    started_test.add_failure()
     started_test.mark_skipped()
     started_test.report_end()
     started_test.refresh()
     assert started_test.status == 'SKIPPED'
+
+
+def test_get_status_skipped_and_failure(started_test):
+    started_test.add_failure()
+    started_test.mark_skipped()
+    started_test.report_end()
+    started_test.refresh()
+    assert started_test.status == 'FAILURE'
+
 
 
 @pytest.mark.parametrize('use_duration', [True, False])

@@ -5,6 +5,8 @@ from flask.ext.security import UserMixin, RoleMixin
 
 from sqlalchemy.orm import backref
 
+from .utils import statuses
+
 from .utils import get_current_time
 from .utils.rendering import computed_field
 
@@ -19,6 +21,28 @@ class TypenameMixin(object):
     @classmethod
     def get_typename(cls):
         return cls.__name__.lower()
+
+
+class StatusPredicatesMixin(object):
+
+    @property
+    def skipped(self):
+        return self.status == statuses.SKIPPED
+
+    @property
+    def interrupted(self):
+        return self.status == statuses.INTERRUPTED
+
+    @property
+    def failed(self):
+        return self.status == statuses.FAILURE
+
+    @property
+    def errored(self):
+        return self.status == statuses.ERROR
+
+
+
 
 
 test_error = db.Table('test_error',
@@ -54,7 +78,7 @@ session_comment = db.Table('session_comment',
                                      db.ForeignKey('comment.id')))
 
 
-class Session(db.Model, TypenameMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
@@ -86,22 +110,12 @@ class Session(db.Model, TypenameMixin):
         db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
     user = db.relationship('User', lazy='joined')
 
-    @computed_field
-    def status(self):
-        if self.edited_status:
-            return self.edited_status
-        if len(self.errors) > 0:
-            return 'FAILURE'
-        if self.end_time is None:
-            return 'RUNNING'
-        else:
-            for test in self.tests:
-                if test.status() == 'FAILURE' or test.status() == 'ERROR':
-                    return 'FAILURE'
-            return 'SUCCESS'
+    # status
+    num_errors = db.Column(db.Integer, default=0)
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
 
-class Test(db.Model, TypenameMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(
@@ -110,8 +124,6 @@ class Test(db.Model, TypenameMixin):
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     name = db.Column(db.String(256), index=True)
-    skipped = db.Column(db.Boolean, default=False)
-    interrupted = db.Column(db.Boolean, default=False)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     edited_status = db.Column(db.String(256), index=True)
@@ -127,22 +139,8 @@ class Test(db.Model, TypenameMixin):
             return None
         return self.end_time - self.start_time
 
-    @computed_field
-    def status(self):
-        if self.edited_status:
-            return self.edited_status
-        if self.interrupted:
-            return 'INTERRUPTED'
-        if self.end_time is None:
-            return 'RUNNING'
-        else:
-            if self.skipped:
-                return 'SKIPPED'
-            if self.num_failures > 0:
-                return 'FAILURE'
-            elif self.num_errors > 0:
-                return 'ERROR'
-        return 'SUCCESS'
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+
 
 _METADATA_KEY_TYPE = db.String(1024)
 
