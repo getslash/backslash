@@ -1,3 +1,6 @@
 app_name: backslash
 
 SECURITY_PASSWORD_HASH: sha512_crypt
+# Change these settings to your own app credentials
+OAUTH2_CLIENT_SECRET: IWta2yHqPR_4TPTOiUV9ppnD
+OAUTH2_CLIENT_ID: 705802534104-f01f9db07j8dvl4l9tp6nhc7keciamer.apps.googleusercontent.com
