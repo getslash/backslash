@@ -85,9 +85,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     hostname = db.Column(db.String(100))
-    product_name = db.Column(db.String(256), index=True)
-    product_version = db.Column(db.String(256), index=True)
-    product_revision = db.Column(db.String(256), index=True)
 
     edited_status = db.Column(db.String(256), index=True)
     tests = db.relationship(

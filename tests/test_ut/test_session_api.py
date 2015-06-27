@@ -33,23 +33,6 @@ def test_started_session_hostname_specify_explicitly(client):
     assert session.hostname == hostname
 
 
-def test_start_session_with_product(client, product_info):
-    session = client.report_session_start(
-        **dict(('product_{0}'.format(k), v) for k, v in product_info.items()))
-    assert session.product_name == product_info.get('name')
-    assert session.product_version == product_info.get('version')
-    assert session.product_revision == product_info.get('revision')
-
-
-def test_session_set_product(started_session, product_info):
-    assert started_session.product_name is None
-    started_session.set_product(**product_info)
-    started_session.refresh()
-    assert started_session.product_name == product_info.get('name')
-    assert started_session.product_version == product_info.get('version')
-    assert started_session.product_revision == product_info.get('revision')
-
-
 def test_session_user(started_session):
     assert started_session.user_id == 1
 
