@@ -245,7 +245,7 @@ def shell():
     from flask_app.app import create_app
     from flask_app import models
 
-    app = create_app()
+    app = create_app({'SQLALCHEMY_ECHO': True})
 
     with app.app_context():
         interact({
