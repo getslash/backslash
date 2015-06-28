@@ -3,6 +3,8 @@ python:
   - 3.4 
 addons:
   postgresql: "9.4"
+services:
+  - redis-server
 install:
   # needed to add Python 3.4 to the system path, to make ansible work
   - sudo ln -sf ~/virtualenv/python3.4/bin/python /usr/bin/python3

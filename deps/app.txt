@@ -1,4 +1,5 @@
 alembic>=0.7.3
+dogpile.cache
 inflect
 psycopg2
 flux>=1.3.0
@@ -9,6 +10,7 @@ Flask-Security
 Flask-Simple-API
 Flask-Migrate>=1.3.0
 Flask-SQLAlchemy
+munch
 PyYAML
 URLObject
 uwsgi

@@ -14,10 +14,13 @@ from sqlalchemy.orm.exc import NoResultFound
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login
+from ..utils.subjects import get_or_create_subject_instance
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = SimpleAPI(blueprint)
+
+NoneType = type(None)
 
 def API(func=None, require_real_login=False):
     if func is None:
@@ -32,22 +35,10 @@ def API(func=None, require_real_login=False):
 
 ##########################################################################
 
-@API
-def set_product(id: int,
-                name: str=None,
-                version: str=None,
-                revision: str=None):
-    update = {'product_name': name, 'product_version': version, 'product_revision': revision}
-    if not Session.query.filter(Session.id == id).update(update):
-        abort(requests.codes.not_found)
-
 
 @API
 def report_session_start(logical_id: str=None,
                          hostname: str=None,
-                         product_name: str=None,
-                         product_version: str=None,
-                         product_revision: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
                      ):
@@ -55,9 +46,6 @@ def report_session_start(logical_id: str=None,
         hostname = request.remote_addr
     returned = Session(
         hostname=hostname,
-        product_name=product_name,
-        product_revision=product_revision,
-        product_version=product_version,
         total_num_tests=total_num_tests,
         user_id=g.token_user.id,
         status=statuses.RUNNING,
@@ -67,6 +55,16 @@ logical_id=logical_id,
         for key, value in metadata.items():
             db.session.add(SessionMetadata(session=returned, key=key, metadata_item=value))
     return returned
+
+
+@API
+def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
+    session = Session.query.get_or_404(session_id)
+    session.subjects.append(get_or_create_subject_instance(
+        name=name,
+        product=product,
+        version=version,
+        revision=revision))
 
 
 @API
@@ -183,7 +181,7 @@ def add_test_failure(id: int):
     test = Test.query.get(id)
     if test is None:
         abort(requests.codes.not_found)
-    
+
     with updating_session_counters(test):
         test.num_failures = Test.num_failures + 1
         if not test.errored:

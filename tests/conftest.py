@@ -9,13 +9,19 @@ from urlobject import URLObject as URL
 
 import pytest
 from backslash import Backslash as BackslashClient
+import logbook.compat
 from flask_app import app, models
+from flask_app.utils.caching import cache
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 def pytest_addoption(parser):
     parser.addoption("--url", action="store", default=None)
 
+
+@pytest.fixture(scope='session', autouse=True)
+def redirect_logging():
+    logbook.compat.redirect_logging()
 
 @pytest.fixture
 def client(webapp_without_login, runtoken):
@@ -57,6 +63,10 @@ def db(request, webapp_without_login):
         models.db.drop_all()
         models.db.create_all()
     return models.db
+
+@pytest.fixture(scope='function', autouse=True)
+def invalidate_cache():
+    cache.invalidate()
 
 @pytest.fixture
 def runtoken(db, webapp_without_login, testuser):

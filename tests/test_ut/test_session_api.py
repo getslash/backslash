@@ -37,10 +37,6 @@ def test_session_user(started_session):
     assert started_session.user_id == 1
 
 
-def test_session_set_product_nonexistent_session(nonexistent_session, product_info):
-    with raises_not_found():
-        nonexistent_session.set_product(**product_info)
-
 
 def test_started_session_times(started_session):
     assert started_session.start_time is not None

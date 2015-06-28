@@ -4,6 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import UserMixin, RoleMixin
 
 from sqlalchemy.orm import backref
+from sqlalchemy import UniqueConstraint
 
 from .utils import statuses
 
@@ -77,6 +78,15 @@ session_comment = db.Table('session_comment',
                                      db.Integer,
                                      db.ForeignKey('comment.id')))
 
+session_subject = db.Table('session_subject',
+                           db.Column('session_id',
+                                     db.Integer,
+                                     db.ForeignKey('session.id')),
+                           db.Column('subject_id',
+                                     db.Integer,
+                                     db.ForeignKey('subject_instance.id')))
+
+
 
 class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
 
@@ -96,6 +106,9 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     metadata_items = db.relationship(
         'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
+    subjects = db.relationship(
+        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'))
+
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
     num_failed_tests = db.Column(db.Integer, default=0)
@@ -110,6 +123,54 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     # status
     num_errors = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+
+
+class SubjectInstance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), index=True, nullable=False)
+    subject = db.relationship('Subject', lazy='joined')
+    revision_id = db.Column(db.Integer, db.ForeignKey('product_revision.id'), index=True)
+    revision = db.relationship('ProductRevision', lazy='joined')
+
+
+class Subject(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), nullable=False)
+
+
+class Product(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), nullable=False)
+
+    versions = db.relationship(
+        'ProductVersion', backref=backref('product'), cascade='all, delete, delete-orphan')
+
+
+class ProductVersion(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    version = db.Column(db.String(256))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, index=True)
+
+    __table_args__ = (
+        UniqueConstraint('product_id', 'version'),
+    )
+
+    revisions = db.relationship(
+        'ProductRevision', backref=backref('product_version'), cascade='all, delete, delete-orphan')
+
+
+class ProductRevision(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_version_id = db.Column(db.Integer, db.ForeignKey('product_version.id'), nullable=False, index=True)
+    revision = db.Column(db.String(256))
+
+    __table_args__ = (
+        UniqueConstraint('product_version_id', 'revision'),
+    )
 
 
 class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
