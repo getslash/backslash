@@ -185,15 +185,26 @@ class ProductRevision(db.Model):
     )
 
 
+class TestInformation(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    file_name = db.Column(db.String(1024), nullable=True, index=True)
+    class_name = db.Column(db.String(256), nullable=True, index=True)
+    name = db.Column(db.String(256), nullable=False, index=True)
+
+
 class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     id = db.Column(db.Integer, primary_key=True)
+
+    test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
+    test_info = db.relationship('TestInformation', lazy='joined')
+
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
-    name = db.Column(db.String(256), index=True)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     edited_status = db.Column(db.String(256), index=True)
@@ -203,13 +214,17 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     comments = db.relationship(
         'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
 
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
     @rendered_field
     def duration(self):
         if self.end_time is None or self.start_time is None:
             return None
         return self.end_time - self.start_time
 
-    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+    @rendered_field
+    def info(self):
+        return {attr: getattr(self.test_info, attr)
+                for attr in ('file_name', 'class_name', 'name')}
 
 
 _METADATA_KEY_TYPE = db.String(1024)
@@ -286,4 +301,3 @@ class Comment(db.Model, TypenameMixin):
     @rendered_field
     def user_email(self):
         return self.user.email
-

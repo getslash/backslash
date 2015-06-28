@@ -6,7 +6,7 @@ def test_session_counts_initial(started_session):
     assert started_session.num_finished_tests == 0
 
 
-def test_session_counts(started_session):
+def test_session_counts(started_session, test_info):
 
     counts = {
         'num_failed_tests': 3,
@@ -19,7 +19,7 @@ def test_session_counts(started_session):
     while remaining['num_finished_tests']:
         remaining['num_finished_tests'] -= 1
 
-        test = started_session.report_test_start(name='test')
+        test = started_session.report_test_start(**test_info)
 
         if remaining['num_failed_tests']:
             test.add_failure()

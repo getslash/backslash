@@ -15,6 +15,7 @@ from flask_app.utils.caching import cache
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+
 def pytest_addoption(parser):
     parser.addoption("--url", action="store", default=None)
 
@@ -23,9 +24,11 @@ def pytest_addoption(parser):
 def redirect_logging():
     logbook.compat.redirect_logging()
 
+
 @pytest.fixture
 def client(webapp_without_login, runtoken):
     return BackslashClient('http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
+
 
 @pytest.fixture
 def backslash_url(request):
@@ -34,15 +37,18 @@ def backslash_url(request):
         pytest.skip()
     return URL(url)
 
+
 @pytest.fixture
 def webapp(testuser, request):
     returned = _create_webapp(request)
     returned.post('/testing_login')
     return returned
 
+
 @pytest.fixture
 def webapp_without_login(request):
     return _create_webapp(request)
+
 
 def _create_webapp(request):
     returned = Webapp(app.create_app({
@@ -53,20 +59,25 @@ def _create_webapp(request):
     }))
     returned.activate()
     request.addfinalizer(returned.deactivate)
-    returned.app.extensions['security'].password_salt = returned.app.config['SECURITY_PASSWORD_SALT']
+    returned.app.extensions['security'].password_salt = returned.app.config[
+        'SECURITY_PASSWORD_SALT']
     return returned
+
 
 @pytest.fixture(scope='function', autouse=True)
 def db(request, webapp_without_login):
+    global _test_index
     with webapp_without_login.app.app_context():
         models.db.session.close()
         models.db.drop_all()
         models.db.create_all()
     return models.db
 
+
 @pytest.fixture(scope='function', autouse=True)
 def invalidate_cache():
     cache.invalidate()
+
 
 @pytest.fixture
 def runtoken(db, webapp_without_login, testuser):
@@ -77,6 +88,7 @@ def runtoken(db, webapp_without_login, testuser):
         db.session.commit()
     return token_string
 
+
 @pytest.fixture
 def testuser(db, webapp_without_login, testuser_email):
     with webapp_without_login.app.app_context():
@@ -85,9 +97,30 @@ def testuser(db, webapp_without_login, testuser_email):
         db.session.commit()
     return user
 
+
 @pytest.fixture
 def testuser_email():
     return 'testing@localhost'
+
+
+@pytest.fixture
+def file_name():
+    return 'path/to/test/file.py'
+
+
+@pytest.fixture(params=['SomeClass', None])
+def class_name(request):
+    return request.param
+
+
+@pytest.fixture
+def test_name():
+    return 'test_something'
+
+
+@pytest.fixture
+def test_info(file_name, test_name, class_name):
+    return {'file_name': file_name, 'name': test_name, 'class_name': class_name}
 
 
 class Webapp(object):
@@ -109,12 +142,14 @@ class Webapp(object):
         if path.startswith("/"):
             path = path[1:]
             assert not path.startswith("/")
-        returned = requests.request(method, "http://{0}/{1}".format(self.hostname, path), *args, **kwargs)
+        returned = requests.request(
+            method, "http://{0}/{1}".format(self.hostname, path), *args, **kwargs)
         if raw_response:
             return returned
 
         returned.raise_for_status()
         return returned.json()
+
 
 def _make_request_shortcut(method_name):
     def json_method(self, *args, **kwargs):

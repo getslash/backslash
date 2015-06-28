@@ -56,27 +56,22 @@ def nonexistent_session(client):
 
 
 @pytest.fixture
-def test_name():
-    return 'test_{0}'.format(uuid1())
+def started_test(started_session, file_name, class_name, test_name):
+    return started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name, test_logical_id='11')
 
 
 @pytest.fixture
-def started_test(started_session, test_name):
-    return started_session.report_test_start(name=test_name, test_logical_id='11')
-
-
-@pytest.fixture
-def started_session_with_ended_test(started_session, test_name):
+def started_session_with_ended_test(started_session, test_info):
     test = started_session.report_test_start(
-        name=test_name, test_logical_id='11')
+        test_logical_id='11', **test_info)
     test.report_end()
     return (started_session, test)
 
 
 @pytest.fixture
-def ended_test(started_session, test_name):
+def ended_test(started_session, test_info):
     returned = started_session.report_test_start(
-        name=test_name, test_logical_id='11')
+        test_logical_id='11', **test_info)
     returned.report_end()
     return returned
 
@@ -125,11 +120,11 @@ def metadata():
 
 
 @pytest.fixture(params=['session', 'test'])
-def metadata_holder(request, client):
+def metadata_holder(request, client, test_info):
     session = client.report_session_start()
     if request.param == 'session':
         return session
-    test = session.report_test_start()
+    test = session.report_test_start(**test_info)
     return test
 
 

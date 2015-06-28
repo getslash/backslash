@@ -5,13 +5,21 @@ import datetime
 from .utils import raises_not_found, raises_conflict, raises_bad_request
 
 
-def test_report_test_start(started_session, test_name):
-    test = started_session.report_test_start(name=test_name)
-    assert test is not None
+def test_test_information_filename(started_test, file_name):
+    assert started_test.info['file_name'] == file_name
+
+
+def test_test_information_classname(started_test, class_name):
+    assert started_test.info['class_name'] == class_name
+
+
+def test_test_information_name(started_test, test_name):
+    assert started_test.info['name'] == test_name
 
 
 def test_report_test_start_logical_id(started_session, test_name):
-    test = started_session.report_test_start(name=test_name, test_logical_id='11')
+    test = started_session.report_test_start(
+        name=test_name, test_logical_id='11')
     assert test is not None
 
 
@@ -101,7 +109,7 @@ def test_test_add_failure(started_test):
 
 
 def test_get_status_running(started_test):
-    started_test.refresh() #probably not needed
+    started_test.refresh()  # probably not needed
     assert started_test.status == 'RUNNING'
 
 
@@ -132,7 +140,6 @@ def test_get_status_skipped_and_failure(started_test):
     started_test.report_end()
     started_test.refresh()
     assert started_test.status == 'FAILURE'
-
 
 
 @pytest.mark.parametrize('use_duration', [True, False])

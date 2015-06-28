@@ -167,7 +167,7 @@ def _populate_db(num_sessions=10, delay_between_sessions=(5, 60), tests_per_sess
 
             for test_index in range(_pick(tests_per_session)):
                 logbook.info('Populating test #{}:#{}', session_index + 1, test_index + 1)
-                test = session.report_test_start()
+                test = session.report_test_start(file_name='filename.py', function_name='func_name')
                 flux.current_timeline.sleep(_pick(test_duration))
                 if session_fail_percent == 100 or random.randint(0, 100) < session_fail_percent:
                     test.add_error()

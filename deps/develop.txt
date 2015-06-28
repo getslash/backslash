@@ -1,3 +1,4 @@
+gossip
 pytest
 pytest-cov
 Flask-Loopback

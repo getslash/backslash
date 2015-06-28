@@ -15,6 +15,7 @@ from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Co
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login
 from ..utils.subjects import get_or_create_subject_instance
+from ..utils.test_information import get_or_create_test_information_id
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
@@ -95,13 +96,15 @@ def report_session_end(id: int, duration: int=None):
 
 
 @API
-def report_test_start(session_id: int, name: str=None, test_logical_id: str=None):
+def report_test_start(session_id: int, name: str, file_name: (str, NoneType)=None, class_name: (str, NoneType)=None, test_logical_id: str=None):
     session = Session.query.get(session_id)
     if session is None:
         abort(requests.codes.not_found)
     if session.end_time is not None:
         abort(requests.codes.conflict)
-    return Test(session_id=session.id, logical_id=test_logical_id, name=name, status=statuses.RUNNING)
+    test_info_id = get_or_create_test_information_id(
+        file_name=file_name, name=name, class_name=class_name)
+    return Test(session_id=session.id, logical_id=test_logical_id, test_info_id=test_info_id, status=statuses.RUNNING)
 
 
 @API
