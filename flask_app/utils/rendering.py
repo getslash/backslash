@@ -33,7 +33,7 @@ def render_api_object(obj, only_fields=None, extra_fields=None):
 
     for method_name in dir(obj):
         method = getattr(obj, method_name)
-        if is_computed_field(method):
+        if is_rendered_field(method):
             returned[method_name] = method()
 
     returned['type'] = typename = obj.get_typename()
@@ -41,12 +41,12 @@ def render_api_object(obj, only_fields=None, extra_fields=None):
     return returned
 
 
-def computed_field(func):
-    func.__computed__ = True
+def rendered_field(func):
+    func.__rendered__ = True
     return func
 
-def is_computed_field(method):
-    return hasattr(method, '__computed__')
+def is_rendered_field(method):
+    return hasattr(method, '__rendered__')
 
 
 def render_api_value(value):

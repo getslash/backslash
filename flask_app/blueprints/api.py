@@ -60,11 +60,15 @@ logical_id=logical_id,
 @API
 def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
     session = Session.query.get_or_404(session_id)
-    session.subjects.append(get_or_create_subject_instance(
+    subject = get_or_create_subject_instance(
         name=name,
         product=product,
         version=version,
-        revision=revision))
+        revision=revision)
+    db.session.add(subject)
+    session.subject_instances.append(subject)
+    db.session.add(session)
+
 
 
 @API

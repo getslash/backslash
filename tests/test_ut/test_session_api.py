@@ -12,6 +12,10 @@ def test_start_session(client):
     assert session
 
 
+def test_session_user_email(client, started_session, testuser_email):
+    assert started_session.user_email == testuser_email
+
+
 def test_start_session_logical_id(client):
     logical_id = '1'
     session = client.report_session_start(logical_id=logical_id)

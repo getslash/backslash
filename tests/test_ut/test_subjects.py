@@ -7,9 +7,14 @@ def test_add_subject(started_session, subjects, flask_app):
 
     with flask_app.app_context():
         session = model_for(started_session)
-        assert len(session.subjects) == 1
-        assert session.subjects[0].subject.name == subjects[0]['name']
-        assert session.subjects[0].revision.product_version.product.name == subjects[0]['product']
+        assert len(session.subject_instances) == 1
+        assert session.subject_instances[0].subject.name == subjects[0]['name']
+        assert session.subject_instances[0].revision.product_version.product.name == subjects[0]['product']
+
+def test_product_rendered_field(started_session, subjects):
+    started_session.add_subject(**subjects[0])
+    started_session.refresh()
+    assert started_session.subjects == [subjects[0]]
 
 @pytest.mark.parametrize('field_name', ['product', 'version', 'revision'])
 def test_add_subject_deduplication(started_session, flask_app, field_name):
@@ -21,11 +26,11 @@ def test_add_subject_deduplication(started_session, flask_app, field_name):
 
     with flask_app.app_context():
         session = model_for(started_session)
-        assert len(session.subjects) == 2
-        s1, s2 = session.subjects
-        prod1, prod2 = map(lambda x: x.revision.product_version.product.id, session.subjects)
-        ver1, ver2 = map(lambda x: x.revision.product_version.id, session.subjects)
-        rev1, rev2 = map(lambda x: x.revision.id, session.subjects)
+        assert len(session.subject_instances) == 2
+        s1, s2 = session.subject_instances
+        prod1, prod2 = map(lambda x: x.revision.product_version.product.id, session.subject_instances)
+        ver1, ver2 = map(lambda x: x.revision.product_version.id, session.subject_instances)
+        rev1, rev2 = map(lambda x: x.revision.id, session.subject_instances)
 
         if field_name == 'product':
             assert prod1 != prod2

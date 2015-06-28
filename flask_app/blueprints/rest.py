@@ -27,10 +27,6 @@ def _resource(*args, **kwargs):
 class SessionResource(ModelResource):
 
     MODEL = Session
-    EXTRA_FIELDS = {
-        'user_email': 'user.email',
-    }
-
     DEFAULT_SORT = ((Session.end_time == None).desc(), Session.end_time.desc())
 
 
@@ -90,10 +86,6 @@ class CommentsResource(ModelResource):
 
     MODEL = Comment
     DEFAULT_SORT = (Comment.timestamp.asc(),)
-    EXTRA_FIELDS = {
-        'user_email': 'user.email',
-    }
-
 
     def _get_iterator(self):
         args = session_test_query_parser.parse_args()

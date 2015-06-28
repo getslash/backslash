@@ -9,7 +9,7 @@ from sqlalchemy import UniqueConstraint
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import computed_field
+from .utils.rendering import rendered_field
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
@@ -106,7 +106,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     metadata_items = db.relationship(
         'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
-    subjects = db.relationship(
+    subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='joined'), lazy=False)
 
     # test counts
@@ -123,6 +123,18 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     # status
     num_errors = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+
+    # rendered extras
+    @rendered_field
+    def user_email(self):
+        return self.user.email
+
+    @rendered_field
+    def subjects(self):
+        return [
+            {'name': s.subject.name, 'product': s.revision.product_version.product.name,
+             'version': s.revision.product_version.version, 'revision': s.revision.revision}
+            for s in self.subject_instances]
 
 
 class SubjectInstance(db.Model):
@@ -191,7 +203,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     comments = db.relationship(
         'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
 
-    @computed_field
+    @rendered_field
     def duration(self):
         if self.end_time is None or self.start_time is None:
             return None
@@ -270,3 +282,8 @@ class Comment(db.Model, TypenameMixin):
     user = db.relationship('User')
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.Float, default=get_current_time)
+
+    @rendered_field
+    def user_email(self):
+        return self.user.email
+
