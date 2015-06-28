@@ -22,6 +22,7 @@ api = SimpleAPI(blueprint)
 
 NoneType = type(None)
 
+
 def API(func=None, require_real_login=False):
     if func is None:
         return functools.partial(API, require_real_login=require_real_login)
@@ -41,7 +42,7 @@ def report_session_start(logical_id: str=None,
                          hostname: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
-                     ):
+                         ):
     if hostname is None:
         hostname = request.remote_addr
     returned = Session(
@@ -49,11 +50,12 @@ def report_session_start(logical_id: str=None,
         total_num_tests=total_num_tests,
         user_id=g.token_user.id,
         status=statuses.RUNNING,
-logical_id=logical_id,
+        logical_id=logical_id,
     )
     if metadata is not None:
         for key, value in metadata.items():
-            db.session.add(SessionMetadata(session=returned, key=key, metadata_item=value))
+            db.session.add(
+                SessionMetadata(session=returned, key=key, metadata_item=value))
     return returned
 
 
@@ -70,7 +72,6 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
     db.session.add(session)
 
 
-
 @API
 def report_session_end(id: int, duration: int=None):
     try:
@@ -81,7 +82,8 @@ def report_session_end(id: int, duration: int=None):
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
         abort(requests.codes.conflict)
 
-    session.end_time = get_current_time() if duration is None else session.start_time + duration
+    session.end_time = get_current_time(
+    ) if duration is None else session.start_time + duration
     # TODO: handle interrupted sessions
     if session.num_error_tests or session.num_errors:
         session.status = statuses.ERROR
@@ -92,9 +94,8 @@ def report_session_end(id: int, duration: int=None):
     db.session.add(session)
 
 
-
 @API
-def report_test_start(session_id: int, name:str=None, test_logical_id: str=None):
+def report_test_start(session_id: int, name: str=None, test_logical_id: str=None):
     session = Session.query.get(session_id)
     if session is None:
         abort(requests.codes.not_found)
@@ -114,7 +115,8 @@ def report_test_end(id: int, duration: (float, int)=None):
         abort(requests.codes.conflict)
 
     with updating_session_counters(test):
-        test.end_time = get_current_time() if duration is None else Test.start_time + duration
+        test.end_time = get_current_time() if duration is None else Test.start_time + \
+            duration
         if test.num_errors:
             test.status = statuses.ERROR
         elif test.num_failures:
@@ -123,6 +125,7 @@ def report_test_end(id: int, duration: (float, int)=None):
             test.status = statuses.SUCCESS
 
     db.session.add(test)
+
 
 @contextmanager
 def updating_session_counters(test):
@@ -133,7 +136,8 @@ def updating_session_counters(test):
     is_ended = test.end_time is not None
     if is_ended:
         if was_running:
-            session_update['num_finished_tests'] = Session.num_finished_tests + 1
+            session_update[
+                'num_finished_tests'] = Session.num_finished_tests + 1
 
         if test.errored and (was_running or was_success):
             session_update['num_error_tests'] = Session.num_error_tests + 1
@@ -145,12 +149,14 @@ def updating_session_counters(test):
             session_update['num_skipped_tests'] = Session.num_skipped_tests + 1
 
     if session_update:
-        Session.query.filter(Session.id == test.session_id).update(session_update)
+        Session.query.filter(
+            Session.id == test.session_id).update(session_update)
 
 
 @API
 def report_test_skipped(id: int):
     _update_running_test_status(id, statuses.SKIPPED, ignore_conflict=True)
+
 
 @API
 def report_test_interrupted(id: int):
@@ -192,6 +198,7 @@ def add_test_failure(id: int):
             test.status = statuses.FAILURE
     db.session.add(test)
 
+
 @API
 def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
     model, kwargs = _get_metadata_model(entity_type, entity_id)
@@ -201,11 +208,13 @@ def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
     except IntegrityError:
         abort(requests.codes.not_found)
 
+
 @API
 def get_metadata(entity_type: str, entity_id: int):
     model, kwargs = _get_metadata_model(entity_type, entity_id)
     return {obj.key: obj.metadata_item
             for obj in model.query.filter_by(**kwargs)}
+
 
 def _get_metadata_model(entity_type, entity_id):
     if entity_type == 'session':
@@ -216,6 +225,7 @@ def _get_metadata_model(entity_type, entity_id):
 
     abort(requests.codes.bad_request)
 
+
 @API
 def add_test_metadata(id: int, metadata: dict):
     try:
@@ -224,13 +234,16 @@ def add_test_metadata(id: int, metadata: dict):
     except NoResultFound:
         abort(requests.codes.not_found)
 
+
 @API
 def add_session_metadata(id: int, metadata: dict):
     try:
         session = Session.query.filter(Session.id == id).one()
-        session.metadata_objects.append(SessionMetadata(metadata_item=metadata))
+        session.metadata_objects.append(
+            SessionMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)
+
 
 @API
 def add_test_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
@@ -238,34 +251,39 @@ def add_test_error_data(id: int, exception: str, exception_type: str, traceback:
         timestamp = get_current_time()
     try:
         test = Test.query.filter(Test.id == id).one()
-        Test.query.filter(Test.id == id).update({Test.num_errors: Test.num_errors + 1})
+        Test.query.filter(Test.id == id).update(
+            {Test.num_errors: Test.num_errors + 1})
         test.errors.append(Error(exception=exception,
-                      exception_type=exception_type,
-                      traceback=traceback,
-                      timestamp=timestamp))
+                                 exception_type=exception_type,
+                                 traceback=traceback,
+                                 timestamp=timestamp))
     except NoResultFound:
         abort(requests.codes.not_found)
+
 
 @API
 def add_session_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
     if timestamp is None:
         timestamp = get_current_time()
     try:
-        Session.query.filter(Session.id == id).update({Session.num_errors: Session.num_errors + 1})
+        Session.query.filter(Session.id == id).update(
+            {Session.num_errors: Session.num_errors + 1})
         session = Session.query.filter(Session.id == id).one()
         session.errors.append(Error(exception=exception,
-                      exception_type=exception_type,
-                      traceback=traceback,
-                      timestamp=timestamp))
+                                    exception_type=exception_type,
+                                    traceback=traceback,
+                                    timestamp=timestamp))
 
     except NoResultFound:
         abort(requests.codes.not_found)
+
 
 @API
 def set_test_conclusion(id: int, conclusion: str):
     update = {'test_conclusion': conclusion}
     if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
+
 
 @API(require_real_login=True)
 def edit_session_status(id: int, status: str):
