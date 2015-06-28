@@ -1,6 +1,5 @@
 import click
 
-import gossip
 import logbook
 
 from .bootstrapping import requires_env, from_project_root
@@ -13,6 +12,8 @@ _logger = logbook.Logger(__name__)
 @requires_env('app', 'develop')
 def suite(name, args):
     import slash
+    import gossip
+
     from slash.frontend.slash_run import slash_run
     from backslash.contrib.slash_plugin import BackslashPlugin
 
