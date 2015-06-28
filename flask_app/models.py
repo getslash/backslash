@@ -107,7 +107,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
         'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     subjects = db.relationship(
-        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'))
+        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='joined'), lazy=False)
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
