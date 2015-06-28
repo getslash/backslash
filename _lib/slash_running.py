@@ -1,5 +1,6 @@
 import click
 
+import gossip
 import logbook
 
 from .bootstrapping import requires_env, from_project_root
@@ -15,7 +16,12 @@ def suite(name, args):
     from slash.frontend.slash_run import slash_run
     from backslash.contrib.slash_plugin import BackslashPlugin
 
-    slash.plugins.manager.install(BackslashPlugin('http://127.0.0.1:8000'), activate=True)
+    plugin = BackslashPlugin('http://127.0.0.1:8000')
+
+    @gossip.register('backslash.session_start')
+    def configure(session):
+        session.add_subject('system1', product='Microwave', version='1.0', revision='100')
+
+    slash.plugins.manager.install(plugin, activate=True)
+
     slash_run([from_project_root('_sample_suites', name)] + list(args))
-
-
