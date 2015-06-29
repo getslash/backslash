@@ -11,6 +11,8 @@
   notify: reload nginx config
 - include: install_sources.yml
   when: sources.changed or configuration.changed
+- name: fix supervisor locale to UTF-8
+  lineinfile: dest=/etc/default/supervisor regexp=^LC_ALL= line=LC_ALL=en_US.UTF-8
 - name: configure supervisor
   action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/{{app_name}}-wsgi.conf
   register: supervisor_conf
