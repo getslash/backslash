@@ -9,6 +9,8 @@ export default DS.Model.extend({
     name: DS.attr('string'),
     num_errors: DS.attr('number'),
 
+    info: DS.attr(),
+
     is_success: function() {
         return (this.get('status') === 'SUCCESS');
     }.property('status'),

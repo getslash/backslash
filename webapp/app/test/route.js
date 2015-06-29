@@ -6,6 +6,6 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     title: 'Test Details',
 
     model: function(params) {
-        return this.store.query('test', params.test_id);
+        return this.store.find('test', params.test_id);
     }
 });

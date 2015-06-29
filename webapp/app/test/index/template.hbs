@@ -1,2 +1,18 @@
+<div>
+  <p>
+    <strong>File name:</strong> <code>{{model.info.file_name}}</code>
+  </p>
+  {{#if model.info.class_name}}
+  <p>
+    <strong>Class name:</strong> <code>{{model.info.class_name}}</code>
+  </p>
+  {{/if}}
+  <p>
+    <strong>{{#if model.info.class_name}}Method{{else}}Function{{/if}} name:</strong> <code>{{model.info.name}}</code>
+  </p>
+  
+</div>
+
+
 <p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=model.start_time}}</p>
 <p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=model.end_time}}</p>
