@@ -58,3 +58,4 @@ static
 *.log
 *.map
 webapp/tmp
+.devconfig.yml

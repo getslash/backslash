@@ -27,6 +27,8 @@ def create_app(config=None):
     if os.path.isdir(_CONF_D_PATH):
         configs.extend(sorted(os.path.join(_CONF_D_PATH, x) for x in os.listdir(_CONF_D_PATH) if x.endswith(".yml")))
 
+    configs.append(os.path.join(ROOT_DIR, '..', '.devconfig.yml'))
+
     for yaml_path in configs:
         if os.path.isfile(yaml_path):
             with open(yaml_path) as yaml_file:
