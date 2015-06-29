@@ -1,5 +1,8 @@
 <div>
   <p>
+    {{#link-to 'session.index' model.session_id}}Session {{model.session_id}}{{/link-to}}
+  </p>
+  <p>
     <strong>File name:</strong> <code>{{model.info.file_name}}</code>
   </p>
   {{#if model.info.class_name}}
@@ -10,7 +13,7 @@
   <p>
     <strong>{{#if model.info.class_name}}Method{{else}}Function{{/if}} name:</strong> <code>{{model.info.name}}</code>
   </p>
-  
+
 </div>
 
 

@@ -219,7 +219,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     def duration(self):
         if self.end_time is None or self.start_time is None:
             return None
-        return self.end_time - self.start_time
+            return self.end_time - self.start_time
 
     @rendered_field
     def info(self):
@@ -252,9 +252,9 @@ class Error(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
-    exception_type = db.Column(db.String(256), index=True)
-    exception = db.Column(db.String(256), index=True)
-    timestamp = db.Column(db.Float, default=get_current_time)
+exception_type = db.Column(db.String(256), index=True)
+exception = db.Column(db.String(256), index=True)
+timestamp = db.Column(db.Float, default=get_current_time)
 
 
 roles_users = db.Table('roles_users',

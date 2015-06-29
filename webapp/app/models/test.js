@@ -10,6 +10,7 @@ export default DS.Model.extend({
     num_errors: DS.attr('number'),
 
     info: DS.attr(),
+    session_id: DS.attr('number'),
 
     is_success: function() {
         return (this.get('status') === 'SUCCESS');

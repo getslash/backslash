@@ -14,6 +14,8 @@ export default DS.Model.extend({
 
     user_email: DS.attr(),
 
+    subjects: DS.attr(),
+
     is_running: function() {
         return this.get('status') === 'RUNNING';
     }.property('status')
