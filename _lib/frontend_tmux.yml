@@ -8,3 +8,6 @@ windows:
   - window_name: celery worker
     panes:
       - .env/bin/celery -A flask_app.tasks worker --loglevel=info
+  - window_name: redis server
+    panes:
+      - cd /tmp/ && redis-server
