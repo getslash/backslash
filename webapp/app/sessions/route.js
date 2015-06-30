@@ -7,7 +7,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
     model: function() {
 
-        return this.store.findAll('session');
+        return this.store.query('session', {page: 1});
     }
 
 });
