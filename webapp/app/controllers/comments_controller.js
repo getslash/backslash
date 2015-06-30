@@ -13,6 +13,15 @@ export default Ember.Controller.extend({
                 .then(function() {
                     self.send('refreshRoute');
                 });
+        },
+
+        deleteComment: function(comment) {
+            let self = this;
+
+            self.api.call('delete_comment', {comment_id: parseInt(comment.id)}).then(
+                function() {
+                    self.send('refreshRoute');
+                });
         }
     }
 

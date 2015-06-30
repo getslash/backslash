@@ -8,7 +8,7 @@
         <div class="well">
           {{#if comment.edited}}
             <p>
-          {{textarea value=comment.comment class="form-control"}}
+          {{textarea value=comment.comment class="form-control" placeholder="Say something"}}
             </p>
             <p>
             {{#if comment.has_text }}
@@ -18,6 +18,11 @@
           {{else}}
 
             <p>
+              {{#if comment.can.delete}}
+                <div class="pull-right">
+                  <i class="fa fa-close clickable danger" {{action "delete"}}></i>
+                </div>
+              {{/if}}
               {{comment.comment}}
             </p>
 

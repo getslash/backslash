@@ -308,3 +308,14 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
         obj = db.session.query(Test).get(test_id)
 
     obj.comments.append(Comment(user_id=current_user.id, comment=comment))
+
+
+@API(require_real_login=True)
+def delete_comment(comment_id: int):
+
+    comment = Comment.query.get_or_404(comment_id)
+
+    if not comment.can()['delete']:
+        abort(requests.codes.forbidden)
+
+    db.session.delete(comment)

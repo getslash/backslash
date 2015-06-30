@@ -22,6 +22,14 @@ export default Ember.Component.extend({
     }.property(),
 
     actions: {
+
+        delete: function() {
+            let self = this;
+            if (window.confirm('Are you sure?')) {
+                self.sendAction('deleteComment', this.get('comment'));
+            }
+        },
+
         save: function() {
             this.sendAction('saveComment', this.get('comment'));
         }
