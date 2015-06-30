@@ -8,6 +8,12 @@
     </div>
   </div>
 </div>
-<div class="col-md-10">
+<div class="col-md-2">
+  {{#each session.subjects as |subject index|}}
+    {{if index ", "}}<strong>{{subject.name}}</strong>
+  {{/each}}
+  {{session.products_string}}
+</div>
+<div class="col-md-8">
   {{start-end-times start_time=session.start_time end_time=session.end_time is_running=session.is_running}}
 </div>
