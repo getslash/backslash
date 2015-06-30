@@ -11,7 +11,7 @@
           {{textarea value=comment.comment class="form-control"}}
             </p>
             <p>
-            {{#if canComment }}
+            {{#if comment.has_text }}
             <button class="btn btn-success" {{action "save"}}>Save</button>
             {{/if}}
             </p>

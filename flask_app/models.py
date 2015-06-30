@@ -1,7 +1,7 @@
 import datetime
 
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.security import UserMixin, RoleMixin
+from flask.ext.security import UserMixin, RoleMixin, current_user
 
 from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
@@ -301,3 +301,11 @@ class Comment(db.Model, TypenameMixin):
     @rendered_field
     def user_email(self):
         return self.user.email
+
+    @rendered_field
+    def can(self):
+        is_mine = self.user_id == current_user.id
+        return {
+            'delete': is_mine,
+            'edit': is_mine,
+        }

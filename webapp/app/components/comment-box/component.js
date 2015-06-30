@@ -3,13 +3,9 @@ import Ember from 'ember';
 export default Ember.Component.extend({
     comment: null,
 
-    canComment: function() {
-        return Ember.$.trim(this.get('commentText')) !== '';
-    }.property('commentText'),
 
 
     defineProperties: function() {
-        Ember.defineProperty(this, 'commentText', Ember.computed.alias('comment.comment'));
         Ember.defineProperty(this, 'commentEdited', Ember.computed.alias('comment.edited'));
   }.on('init'),
 
