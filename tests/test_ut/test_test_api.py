@@ -184,16 +184,3 @@ def test_add_error_data_nonexistent_test(nonexistent_test, error_data):
                                         error_data['exception_type'],
                                         error_data['traceback'])
 
-
-def test_set_conclusion(started_test):
-    assert started_test.test_conclusion is None
-    test_conclusion = 'Not interesting'
-    started_test.set_conclusion(test_conclusion)
-    started_test.refresh()
-    assert started_test.test_conclusion == test_conclusion
-
-
-def test_set_conclusion_nonexistent_test(nonexistent_test):
-    with raises_not_found():
-        conclusion = 'Not interesting'
-        nonexistent_test.set_conclusion(conclusion)

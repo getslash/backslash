@@ -208,7 +208,6 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     edited_status = db.Column(db.String(256), index=True)
-    test_conclusion = db.Column(db.String(256), index=True)
     errors = db.relationship(
         'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
     comments = db.relationship(
