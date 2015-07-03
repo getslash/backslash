@@ -177,31 +177,6 @@ def _update_running_test_status(test_id, status, ignore_conflict=False):
         else:
             abort(requests.codes.not_found)
 
-
-@API
-def add_test_error(id: int):
-    test = Test.query.get(id)
-    if test is None:
-        abort(requests.codes.not_found)
-    with updating_session_counters(test):
-        test.num_errors = Test.num_errors + 1
-        test.status = statuses.ERROR
-    db.session.add(test)
-
-
-@API
-def add_test_failure(id: int):
-    test = Test.query.get(id)
-    if test is None:
-        abort(requests.codes.not_found)
-
-    with updating_session_counters(test):
-        test.num_failures = Test.num_failures + 1
-        if not test.errored:
-            test.status = statuses.FAILURE
-    db.session.add(test)
-
-
 @API
 def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
     model, kwargs = _get_metadata_model(entity_type, entity_id)
@@ -249,7 +224,7 @@ def add_session_metadata(id: int, metadata: dict):
 
 
 @API
-def add_test_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
+def add_test_error_data(id: int, exception: str, exception_type: str, traceback: list=None, timestamp: (float, int)=None):
     if timestamp is None:
         timestamp = get_current_time()
     try:
@@ -278,13 +253,6 @@ def add_session_error_data(id: int, exception: str, exception_type: str, traceba
                                     timestamp=timestamp))
 
     except NoResultFound:
-        abort(requests.codes.not_found)
-
-
-@API
-def set_test_conclusion(id: int, conclusion: str):
-    update = {'test_conclusion': conclusion}
-    if not Test.query.filter(Test.id == id).update(update):
         abort(requests.codes.not_found)
 
 
