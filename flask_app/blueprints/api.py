@@ -88,7 +88,7 @@ def report_session_end(id: int, duration: int=None):
     # TODO: handle interrupted sessions
     if session.num_error_tests or session.num_errors:
         session.status = statuses.ERROR
-    elif session.num_failed_tests:
+    elif session.num_failed_tests or session.num_failures:
         session.status = statuses.FAILURE
     else:
         session.status = statuses.SUCCESS
@@ -224,33 +224,40 @@ def add_session_metadata(id: int, metadata: dict):
 
 
 @API
-def add_test_error_data(id: int, exception: str, exception_type: str, traceback: list=None, timestamp: (float, int)=None):
+def add_error(message: str, exception_type: str=None, traceback: list=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
+    if not ((test_id is not None) ^ (session_id is not None)):
+        abort(requests.codes.bad_request)
+
     if timestamp is None:
         timestamp = get_current_time()
-    try:
-        test = Test.query.filter(Test.id == id).one()
-        Test.query.filter(Test.id == id).update(
-            {Test.num_errors: Test.num_errors + 1})
-        test.errors.append(Error(exception=exception,
-                                 exception_type=exception_type,
-                                 traceback=traceback,
-                                 timestamp=timestamp))
-    except NoResultFound:
-        abort(requests.codes.not_found)
+    if test_id is not None:
+        cls = Test
+        object_id = test_id
+    else:
+        cls = Session
+        object_id = session_id
 
-
-@API
-def add_session_error_data(id: int, exception: str, exception_type: str, traceback: list, timestamp: (float, int)=None):
-    if timestamp is None:
-        timestamp = get_current_time()
     try:
-        Session.query.filter(Session.id == id).update(
-            {Session.num_errors: Session.num_errors + 1})
-        session = Session.query.filter(Session.id == id).one()
-        session.errors.append(Error(exception=exception,
-                                    exception_type=exception_type,
-                                    traceback=traceback,
-                                    timestamp=timestamp))
+        obj = cls.query.filter(cls.id == object_id).one()
+        increment_field = cls.num_failures if is_failure else cls.num_errors
+        cls.query.filter(cls.id == object_id).update(
+            {increment_field: increment_field + 1})
+        obj.errors.append(Error(message=message,
+                                exception_type=exception_type,
+                                traceback=traceback,
+                                is_failure=is_failure,
+                                timestamp=timestamp))
+        if obj.end_time is not None:
+            if cls is Test:
+                if is_failure and obj.status not in (statuses.FAILURE, statuses.ERROR):
+                    obj.status = statuses.FAILURE
+                    obj.session.num_failed_tests = Session.num_failed_tests + 1
+                elif not is_failure and obj.status != statuses.ERROR:
+                    if obj.status == statuses.FAILURE:
+                        db.session.num_failed_tests = Session.num_failed_tests - 1
+                    obj.status = statuses.ERROR
+                    obj.session.num_error_tests = Session.num_error_tests + 1
+        db.session.add(obj)
 
     except NoResultFound:
         abort(requests.codes.not_found)

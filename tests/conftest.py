@@ -122,6 +122,22 @@ def test_name():
 def test_info(file_name, test_name, class_name):
     return {'file_name': file_name, 'name': test_name, 'class_name': class_name}
 
+@pytest.fixture(params=['session', 'test'])
+def error_container(request, client):
+    session = client.report_session_start()
+    if request.param == 'session':
+        return session
+    elif request.param == 'test':
+        test = session.report_test_start('name')
+        return test
+    raise NotImplementedError() # pragma: no cover
+
+@pytest.fixture
+def nonexistent_error_container(error_container):
+    new_data = error_container._data.copy()
+    new_data['id'] *= 2
+    returned = type(error_container)(error_container.client, new_data)
+    return returned
 
 class Webapp(object):
 

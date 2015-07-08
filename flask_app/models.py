@@ -122,6 +122,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     # status
     num_errors = db.Column(db.Integer, default=0)
+    num_failures = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
     # rendered extras
@@ -214,6 +215,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
         'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+
     @rendered_field
     def duration(self):
         if self.end_time is None or self.start_time is None:
@@ -252,8 +254,9 @@ class Error(db.Model, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
     exception_type = db.Column(db.String(256), index=True)
-    exception = db.Column(db.String(256), index=True)
+    message = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
+    is_failure = db.Column(db.Boolean, default=False)
 
 
 roles_users = db.Table('roles_users',

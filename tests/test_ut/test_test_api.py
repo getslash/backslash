@@ -81,31 +81,15 @@ def test_end_test_doesnt_exist(nonexistent_test):
         nonexistent_test.report_end()
 
 
-def test_add_error_nonexistent_test(nonexistent_test):
-    with raises_not_found():
-        nonexistent_test.add_error()
-
-
-def test_add_failure_nonexistent_test(nonexistent_test):
-    with raises_not_found():
-        nonexistent_test.add_failure()
-
-
 def test_end_test_twice(ended_test):
     with raises_conflict():
         ended_test.report_end()
 
 
 def test_test_add_error(started_test):
-    started_test.add_error()
+    started_test.add_error('E')
     started_test.refresh()
     assert started_test.num_errors == 1
-
-
-def test_test_add_failure(started_test):
-    started_test.add_failure()
-    started_test.refresh()
-    assert started_test.num_failures == 1
 
 
 def test_get_status_running(started_test):
@@ -114,14 +98,14 @@ def test_get_status_running(started_test):
 
 
 def test_get_status_error(started_test):
-    started_test.add_error()
+    started_test.add_error('E')
     started_test.report_end()
     started_test.refresh()
     assert started_test.status == 'ERROR'
 
 
 def test_get_status_failure(started_test):
-    started_test.add_failure()
+    started_test.add_failure('F')
     started_test.report_end()
     started_test.refresh()
     assert started_test.status == 'FAILURE'
@@ -135,7 +119,7 @@ def test_get_status_skipped(started_test):
 
 
 def test_get_status_skipped_and_failure(started_test):
-    started_test.add_failure()
+    started_test.add_failure('F')
     started_test.mark_skipped()
     started_test.report_end()
     started_test.refresh()
@@ -152,35 +136,5 @@ def test_report_test_end(started_test, use_duration):
     assert started_test.status == 'SUCCESS'
 
 
-def test_add_error_data(started_test, error_data):
-    timestamp = flux.current_timeline.time()
-    started_test.add_error_data(error_data['exception'],
-                                error_data['exception_type'],
-                                error_data['traceback'],
-                                timestamp=timestamp)
-    started_test.refresh()
-    [first_error] = started_test.query_errors()
-    assert first_error.exception == error_data['exception']
-    assert first_error.exception_type == error_data['exception_type']
-    assert first_error.timestamp == timestamp
-    assert first_error.traceback == error_data['traceback']
 
-
-def test_add_error_data_no_timestamp(started_test, error_data):
-    started_test.add_error_data(error_data['exception'],
-                                error_data['exception_type'],
-                                error_data['traceback'])
-    started_test.refresh()
-    [first_error] = started_test.query_errors()
-    assert first_error.exception == error_data['exception']
-    assert first_error.exception_type == error_data['exception_type']
-    assert first_error.timestamp == flux.current_timeline.time()
-    assert first_error.traceback == error_data['traceback']
-
-
-def test_add_error_data_nonexistent_test(nonexistent_test, error_data):
-    with raises_not_found():
-        nonexistent_test.add_error_data(error_data['exception'],
-                                        error_data['exception_type'],
-                                        error_data['traceback'])
 

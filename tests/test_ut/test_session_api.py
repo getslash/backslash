@@ -92,7 +92,7 @@ def test_session_status_finished(ended_session):
 
 def test_session_status_failure_after_test_end(started_session_with_ended_test):
     (started_session, test) = started_session_with_ended_test
-    test.add_failure()
+    test.add_failure('failure')
     test.refresh()
     assert test.status == 'FAILURE'
     started_session.report_end()
@@ -102,7 +102,7 @@ def test_session_status_failure_after_test_end(started_session_with_ended_test):
 
 def test_session_status_error_after_test_end(started_session_with_ended_test):
     (started_session, test) = started_session_with_ended_test
-    test.add_error()
+    test.add_error('error')
     started_session.report_end()
     started_session.refresh()
     assert started_session.status == 'ERROR'
@@ -110,8 +110,8 @@ def test_session_status_error_after_test_end(started_session_with_ended_test):
 
 def test_session_status_error_and_failure(started_session_with_ended_test):
     (started_session, test) = started_session_with_ended_test
-    test.add_error()
-    test.add_failure()
+    test.add_error('error')
+    test.add_failure('failure')
     started_session.report_end()
     started_session.refresh()
     assert started_session.status == 'ERROR'
@@ -124,39 +124,3 @@ def test_session_query_tests(started_session_with_ended_test):
     test.refresh()  # need to update end_time
     assert queried_test == test
 
-
-def test_add_error_data(started_session, error_data):
-    timestamp = flux.current_timeline.time()
-    started_session.add_error_data(error_data['exception'],
-                                   error_data['exception_type'],
-                                   error_data['traceback'],
-                                   timestamp=timestamp)
-    started_session.refresh()
-    [first_error] = started_session.query_errors()
-    assert first_error.exception == error_data['exception']
-    assert first_error.exception_type == error_data['exception_type']
-    assert first_error.timestamp == timestamp
-    assert first_error.traceback == error_data['traceback']
-    assert started_session.status == 'RUNNING'
-    started_session.report_end()
-    started_session.refresh()
-    assert started_session.status == 'ERROR'
-
-
-def test_add_error_data_no_timestamp(started_session, error_data):
-    started_session.add_error_data(error_data['exception'],
-                                   error_data['exception_type'],
-                                   error_data['traceback'])
-    started_session.refresh()
-    [first_error] = started_session.query_errors()
-    assert first_error.exception == error_data['exception']
-    assert first_error.exception_type == error_data['exception_type']
-    assert first_error.timestamp == flux.current_timeline.time()
-    assert first_error.traceback == error_data['traceback']
-
-
-def test_add_error_data_nonexistent_test(nonexistent_session, error_data):
-    with raises_not_found():
-        nonexistent_session.add_error_data(error_data['exception'],
-                                           error_data['exception_type'],
-                                           error_data['traceback'])

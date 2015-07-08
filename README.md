@@ -1,7 +1,7 @@
 Backslash
 =========
 
-![Build Status](https://secure.travis-ci.org/vmalloc/backslash.png?branch=master ) 
+![Build Status](https://secure.travis-ci.org/slash-testing/backslash.png?branch=master ) 
 
 Backslash is a centralized service for tracking execution of automated tests.
 

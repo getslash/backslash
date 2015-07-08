@@ -22,10 +22,10 @@ def test_session_counts(started_session, test_info):
         test = started_session.report_test_start(**test_info)
 
         if remaining['num_failed_tests']:
-            test.add_failure()
+            test.add_failure('F')
             remaining['num_failed_tests'] -= 1
         elif remaining['num_error_tests']:
-            test.add_error()
+            test.add_error('E')
             remaining['num_error_tests'] -= 1
         elif remaining['num_skipped_tests']:
             test.mark_skipped()
