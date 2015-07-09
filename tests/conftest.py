@@ -16,6 +16,18 @@ from flask_app.utils.caching import cache
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
+@pytest.fixture(scope='session', autouse=True)
+def patch_proxy_bypass():
+    """Work around a bug causing should_bypass_proxies to take forever when VPN is active
+    """
+    import requests
+    requests.utils.should_bypass_proxies = lambda url: True
+
+@pytest.fixture(scope='session', autouse=True)
+def invalidate_cache():
+    cache.invalidate()
+
+
 def pytest_addoption(parser):
     parser.addoption("--url", action="store", default=None)
 
@@ -50,34 +62,42 @@ def webapp_without_login(request):
     return _create_webapp(request)
 
 
-def _create_webapp(request):
-    returned = Webapp(app.create_app({
-        'SQLALCHEMY_DATABASE_URI': 'postgresql://127.0.0.1/backslash-ut',
-        'SECRET_KEY': 'testing-key',
-        'TESTING': True,
-        'SECURITY_PASSWORD_SALT': 'testing_salt',
-    }))
-    returned.activate()
-    request.addfinalizer(returned.deactivate)
-    returned.app.extensions['security'].password_salt = returned.app.config[
-        'SECURITY_PASSWORD_SALT']
+_cached_app = None
+_cached_config = None
+
+def _create_flask_app():
+    global _cached_app
+    global _cached_config
+
+    if _cached_app is None:
+
+        returned = _cached_app = app.create_app({
+            #'SQLALCHEMY_DATABASE_URI': 'postgresql://127.0.0.1/backslash-ut',
+            'SECRET_KEY': 'testing-key',
+            'TESTING': True,
+            'SECURITY_PASSWORD_SALT': 'testing_salt',
+            'JSONIFY_PRETTYPRINT_REGULAR': False,
+            'JSON_SORT_KEYS': False,
+        })
+        _cached_config = returned.config.copy()
+        returned.extensions['security'].password_salt = returned.config[
+            'SECURITY_PASSWORD_SALT']
+
+    else:
+        returned = _cached_app
+        returned.config.update(_cached_config.copy())
     return returned
 
 
-@pytest.fixture(scope='function', autouse=True)
-def db(request, webapp_without_login):
-    global _test_index
-    with webapp_without_login.app.app_context():
-        models.db.session.close()
-        models.db.drop_all()
-        models.db.create_all()
+def _create_webapp(request):
+    returned = Webapp(_create_flask_app())
+    returned.activate()
+    request.addfinalizer(returned.deactivate)
+    return returned
+
+@pytest.fixture
+def db():
     return models.db
-
-
-@pytest.fixture(scope='function', autouse=True)
-def invalidate_cache():
-    cache.invalidate()
-
 
 @pytest.fixture
 def runtoken(db, webapp_without_login, testuser):
@@ -88,19 +108,27 @@ def runtoken(db, webapp_without_login, testuser):
         db.session.commit()
     return token_string
 
+@pytest.fixture
+def testuser(testuser_and_id):
+    return testuser_and_id[0]
 
 @pytest.fixture
-def testuser(db, webapp_without_login, testuser_email):
+def testuser_id(testuser_and_id):
+    return testuser_and_id[1]
+
+@pytest.fixture
+def testuser_and_id(db, webapp_without_login, testuser_email):
     with webapp_without_login.app.app_context():
         user = models.User(email=testuser_email, active=True)
         db.session.add(user)
         db.session.commit()
-    return user
+        user_id = user.id
+    return user, user_id
 
 
 @pytest.fixture
 def testuser_email():
-    return 'testing@localhost'
+    return 'testing{}@localhost'.format(uuid4())
 
 
 @pytest.fixture
@@ -182,3 +210,8 @@ def _make_request_shortcut(method_name):
 
 for _method in ("get", "put", "post", "delete"):
     _make_request_shortcut(_method)
+
+
+@pytest.fixture
+def flask_app(webapp):
+    return webapp.app

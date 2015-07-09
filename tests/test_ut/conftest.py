@@ -1,5 +1,5 @@
 import math
-from uuid import uuid1
+from uuid import uuid4
 
 import flux
 from munch import Munch
@@ -9,7 +9,7 @@ import pytest
 
 @pytest.fixture
 def subjects():
-    return [
+    returned = [
         Munch(name='prod1', product='Car',
               version=None, revision='120'),
         Munch(name='prod2', product='Car',
@@ -19,6 +19,12 @@ def subjects():
         Munch(name='prod4', product='Car',
               version=None, revision='120'),
     ]
+    salt = '_{}'.format(uuid4())
+
+    for subj in returned:
+        subj.name += salt
+        subj.product += salt
+    return returned
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -34,6 +40,10 @@ def freeze_timeline(request):
     current_time = flux.current_timeline.time()
     next_round_time = math.ceil(current_time * 10000) / 10000.0
     flux.current_timeline.sleep(next_round_time - current_time)
+
+@pytest.fixture(autouse=True, scope='function')
+def advance_timeline():
+    flux.current_timeline.sleep(10)
 
 
 @pytest.fixture
@@ -127,7 +137,3 @@ def metadata_holder(request, client, test_info):
     test = session.report_test_start(**test_info)
     return test
 
-
-@pytest.fixture
-def flask_app(webapp):
-    return webapp.app

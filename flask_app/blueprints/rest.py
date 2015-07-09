@@ -27,14 +27,14 @@ def _resource(*args, **kwargs):
 class SessionResource(ModelResource):
 
     MODEL = Session
-    DEFAULT_SORT = ((Session.end_time == None).desc(), Session.end_time.desc())
+    DEFAULT_SORT = (Session.start_time.desc(),)
 
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
-    DEFAULT_SORT = ((Test.end_time == None).desc(), Test.end_time.desc())
+    DEFAULT_SORT = (Test.start_time.desc(),)
 
     def _get_iterator(self):
         session_id = request.args.get('session_id')

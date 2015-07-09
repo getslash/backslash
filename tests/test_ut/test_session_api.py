@@ -1,10 +1,11 @@
+import itertools
 import socket
 
 import flux
-
 import pytest
+from flask_app.models import User
 
-from .utils import raises_not_found, raises_conflict, raises_bad_request
+from .utils import raises_bad_request, raises_conflict, raises_not_found
 
 
 def test_start_session(client):
@@ -37,24 +38,14 @@ def test_started_session_hostname_specify_explicitly(client):
     assert session.hostname == hostname
 
 
-def test_session_user(started_session):
-    assert started_session.user_id == 1
-
+def test_session_user(started_session, testuser_id):
+    assert started_session.user_id == testuser_id
 
 
 def test_started_session_times(started_session):
     assert started_session.start_time is not None
     assert started_session.end_time is None
 
-
-def test_query_all_sessions(client, started_session):
-    [session] = client.query_sessions()
-    assert session.id == started_session.id
-
-def test_query_all_tests(client, started_test):
-    [test] = client.query_tests()
-    assert test.id == started_test.id
-    assert test == started_test
 
 
 @pytest.mark.parametrize('use_duration', [True, False])
@@ -123,4 +114,3 @@ def test_session_query_tests(started_session_with_ended_test):
     assert queried_test.id == test.id
     test.refresh()  # need to update end_time
     assert queried_test == test
-

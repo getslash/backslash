@@ -28,7 +28,7 @@ def testing_login():
 
     testing_email = 'testing@localhost'
 
-    user = user_datastore.get_user(testing_email)
+    user = _get_or_create_user({'email': testing_email})
     assert user
     login_user(user)
     user_info = {}
