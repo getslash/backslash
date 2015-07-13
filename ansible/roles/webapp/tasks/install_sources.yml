@@ -1,7 +1,7 @@
 - name: temporarily move source tar
   shell: mv -f {{webapp_archive_location}} {{webapp_archive_location}}.untarred
 - name: untar sources
-  shell: cd {{deploy_root}} && rm -rf flask_app src && tar xf {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
+  shell: cd {{deploy_root}} && rm -rf flask_app src && tar xfz {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
 - name: bootstrap
   shell: python {{deploy_root}}/manage.py bootstrap --app
 - name: ensure private config

@@ -7,7 +7,7 @@
 - include: nginx.yml
 - include: configuration.yml
 - name: copy source
-  copy: src=../src_pkg.tar dest={{webapp_archive_location}}
+  copy: src=../src_pkg.tar.gz dest={{webapp_archive_location}}
   register: sources
   notify: reload nginx config
 - include: install_sources.yml
