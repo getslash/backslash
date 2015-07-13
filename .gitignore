@@ -30,7 +30,7 @@ node_modules
 celerybeat-schedule
 dump.rdb
 .vagrant
-src_pkg.tar
+src_pkg.tar.gz
 .inventory
 src/static/font
 ./src/static/vendor/font-awesome/src/assets/img/icon-flag.pdf
