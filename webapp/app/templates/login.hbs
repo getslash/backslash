@@ -18,7 +18,7 @@
           <label for="password">Password</label>
           {{input id="password" type="password" value=password class="form-control"}}
         </div>
-      <button {{bind-attr class=":btn :btn-default canSubmit::disabled" }} {{action "login"}}>Login</button>
+      <button class="btn btn-default {{unless canSubmit disabled}}" {{action "login"}}>Login</button>
       </form>
     </div>
   </div>
