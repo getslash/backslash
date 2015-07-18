@@ -116,15 +116,25 @@ def testuser(testuser_and_id):
 def testuser_id(testuser_and_id):
     return testuser_and_id[1]
 
+@pytest.fixture(scope='session')
+def users_to_delete(request):
+    returned = set()
+    @request.addfinalizer
+    def cleanup():
+        with _create_flask_app().app_context():
+            models.User.query.filter(models.User.id.in_(list(returned))).delete(synchronize_session=False)
+            models.db.session.commit()
+    return returned
+
 @pytest.fixture
-def testuser_and_id(db, webapp_without_login, testuser_email):
+def testuser_and_id(request, db, webapp_without_login, testuser_email, users_to_delete):
     with webapp_without_login.app.app_context():
         user = models.User(email=testuser_email, active=True)
         db.session.add(user)
         db.session.commit()
         user_id = user.id
+        users_to_delete.add(user_id)
     return user, user_id
-
 
 @pytest.fixture
 def testuser_email():
