@@ -57,8 +57,8 @@ def upgrade():
     op.create_table('session_subject',
     sa.Column('session_id', sa.Integer(), nullable=True),
     sa.Column('subject_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['session_id'], ['session.id'], ),
-    sa.ForeignKeyConstraint(['subject_id'], ['subject_instance.id'], )
+    sa.ForeignKeyConstraint(['session_id'], ['session.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['subject_id'], ['subject_instance.id'], ondelete='CASCADE')
     )
     ### end Alembic commands ###
 

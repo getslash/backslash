@@ -19,7 +19,7 @@ def upgrade():
     op.add_column('session', sa.Column('user_id', sa.Integer(), nullable=False))
     op.create_index(op.f('ix_session_user_id'), 'session', ['user_id'], unique=False)
     op.drop_index('ix_session_user_name', table_name='session')
-    op.create_foreign_key(None, 'session', 'user', ['user_id'], ['id'])
+    op.create_foreign_key(None, 'session', 'user', ['user_id'], ['id'], ondelete='CASCADE')
     op.drop_column('session', 'user_name')
     ### end Alembic commands ###
 

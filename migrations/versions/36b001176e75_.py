@@ -19,14 +19,14 @@ def upgrade():
     op.create_table('session_error',
     sa.Column('session_id', sa.Integer(), nullable=True),
     sa.Column('error_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['error_id'], ['error.id'], ),
-    sa.ForeignKeyConstraint(['session_id'], ['session.id'], )
+    sa.ForeignKeyConstraint(['error_id'], ['error.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['session_id'], ['session.id'], ondelete='CASCADE')
     )
     op.create_table('test_error',
     sa.Column('test_id', sa.Integer(), nullable=True),
     sa.Column('error_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['error_id'], ['error.id'], ),
-    sa.ForeignKeyConstraint(['test_id'], ['test.id'], )
+    sa.ForeignKeyConstraint(['error_id'], ['error.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['test_id'], ['test.id'], ondelete='CASCADE')
     )
     op.drop_index('ix_error_test_id', table_name='error')
     op.drop_constraint(u'error_test_id_fkey', 'error', type_='foreignkey')

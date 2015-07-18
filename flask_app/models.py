@@ -57,34 +57,34 @@ test_error = db.Table('test_error',
 session_error = db.Table('session_error',
                          db.Column('session_id',
                                    db.Integer,
-                                   db.ForeignKey('session.id')),
+                                   db.ForeignKey('session.id', ondelete='CASCADE')),
                          db.Column('error_id',
                                    db.Integer,
-                                   db.ForeignKey('error.id')))
+                                   db.ForeignKey('error.id', ondelete='CASCADE')))
 
 test_comment = db.Table('test_comment',
                         db.Column('test_id',
                                   db.Integer,
-                                  db.ForeignKey('test.id')),
+                                  db.ForeignKey('test.id', ondelete='CASCADE')),
                         db.Column('comment_id',
                                   db.Integer,
-                                  db.ForeignKey('comment.id')))
+                                  db.ForeignKey('comment.id', ondelete='CASCADE')))
 
 session_comment = db.Table('session_comment',
                            db.Column('session_id',
                                      db.Integer,
-                                     db.ForeignKey('session.id')),
+                                     db.ForeignKey('session.id', ondelete='CASCADE')),
                            db.Column('comment_id',
                                      db.Integer,
-                                     db.ForeignKey('comment.id')))
+                                     db.ForeignKey('comment.id', ondelete='CASCADE')))
 
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
-                                     db.ForeignKey('session.id')),
+                                     db.ForeignKey('session.id', ondelete='CASCADE')),
                            db.Column('subject_id',
                                      db.Integer,
-                                     db.ForeignKey('subject_instance.id')))
+                                     db.ForeignKey('subject_instance.id', ondelete='CASCADE')))
 
 
 
@@ -117,7 +117,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_finished_tests = db.Column(db.Integer, default=0)
 
     user_id = db.Column(
-        db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+        db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
     user = db.relationship('User', lazy='joined')
 
     # status
