@@ -49,10 +49,10 @@ class StatusPredicatesMixin(object):
 test_error = db.Table('test_error',
                       db.Column('test_id',
                                 db.Integer,
-                                db.ForeignKey('test.id')),
+                                db.ForeignKey('test.id', ondelete='CASCADE')),
                       db.Column('error_id',
                                 db.Integer,
-                                db.ForeignKey('error.id')))
+                                db.ForeignKey('error.id', ondelete='CASCADE')))
 
 session_error = db.Table('session_error',
                          db.Column('session_id',
