@@ -181,16 +181,15 @@ def _run_fulltest(extra_args=()):
 @requires_env('app')
 def travis_test():
     build_frontend(watch=False, production=False)
-    with _rebuild_database():
+    with _temporary_db():
         _run_unittest()
 
     _run_deploy('localhost')
     _wait_for_travis_availability()
-    with _rebuild_database():
-        _run_fulltest(["--url=http://127.0.0.1:80"])
+    _run_fulltest(["--url=http://127.0.0.1:80"])
 
 @contextmanager
-def _rebuild_database():
+def _temporary_db():
     from flask_app.app import create_app
     from flask_app import models
 
@@ -202,7 +201,8 @@ def _rebuild_database():
         models.db.create_all()
 
     yield
-    subprocess.check_call('dropdb {0}'.format(APP_NAME), shell=True)
+    with app.app_context():
+        models.db.drop_all()
 
 
 def _wait_for_travis_availability():
