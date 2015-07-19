@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 
-moduleForComponent('session-tabs', 'Unit | Component | session tabs', {
+moduleForComponent('details-tabs', 'Unit | Component | details tabs', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true

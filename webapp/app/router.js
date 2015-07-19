@@ -10,6 +10,7 @@ Router.map(function() {
   this.route("session", { path: "/sessions/:id" }, function() {
     this.route('tests');
     this.route('comments');
+    this.route('errors');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {

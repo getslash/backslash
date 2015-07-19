@@ -12,6 +12,8 @@ export default DS.Model.extend({
     num_skipped_tests: DS.attr('number'),
     num_finished_tests: DS.attr('number'),
 
+    num_errors: DS.attr('number'),
+
     user_email: DS.attr(),
 
     subjects: DS.attr(),
