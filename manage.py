@@ -180,19 +180,28 @@ def _run_fulltest(extra_args=()):
 @cli.command('travis-test')
 def travis_test():
     build_frontend(watch=False, production=False)
-    with _ut_database():
+    with _rebuild_database():
         _run_unittest()
 
     _run_deploy('localhost')
     _wait_for_travis_availability()
-    with _ut_database():
+    with _rebuild_database():
         _run_fulltest(["--url=http://127.0.0.1:80"])
 
 @contextmanager
-def _ut_database():
-    subprocess.check_call('createdb {0}-ut'.format(APP_NAME), shell=True)
+def _rebuild_database():
+    from flask_app.app import create_app
+    from flask_app import models
+
+    subprocess.check_call('createdb {0}'.format(APP_NAME), shell=True)
+
+    app = create_app()
+
+    with app.app_context():
+        models.db.create_all()
+
     yield
-    subprocess.check_call('dropdb {0}-ut'.format(APP_NAME), shell=True)
+    subprocess.check_call('dropdb {0}'.format(APP_NAME), shell=True)
 
 
 def _wait_for_travis_availability():
