@@ -178,6 +178,7 @@ def _run_fulltest(extra_args=()):
 
 
 @cli.command('travis-test')
+@requires_env('app')
 def travis_test():
     build_frontend(watch=False, production=False)
     with _rebuild_database():
