@@ -20,7 +20,9 @@ export default DS.Model.extend({
 
     is_running: function() {
         return this.get('status') === 'RUNNING';
-    }.property('status')
+    }.property('status'),
 
+
+    typename: 'session'
 
 });

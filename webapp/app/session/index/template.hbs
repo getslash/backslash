@@ -1,7 +1,6 @@
-<p>
-  {{session-breakdown session=session}}
-</p>
-
+{{#with session as |obj|}}
+  {{partial "errors-failures-notice"}}
+{{/with}}
 
 <div class="row">
 

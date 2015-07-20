@@ -1,4 +1,4 @@
-<div class="progress {{if is_running 'running'}}">
+<div class="progress {{if is_running 'running'}} {{if has_errors_or_failures 'error'}}">
   <div class="progress-bar progress-bar-success" style={{successPercent}}>
   </div>
   <div class="progress-bar progress-bar-warning" style={{skipPercent}}>

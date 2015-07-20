@@ -2,3 +2,7 @@
     margin-bottom: 0px;
 }
 
+.progress.error {
+    background: lighten($brand-danger, 30%);
+}
+
