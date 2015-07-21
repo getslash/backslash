@@ -17,4 +17,3 @@ required_packages:
     - python-dev
     - libevent-dev
     - libpq-dev
-    - redis-server
