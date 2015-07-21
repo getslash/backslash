@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import PaginatedRoute from '../../routes/paginated_route';
 
-export default Ember.Route.extend({
+export default PaginatedRoute.extend({
 
     needs: ['session'],
 
-    model: function() {
-        return this.store.query('test', {session_id: this.modelFor('session').id});
+    model: function(params) {
+        this.parsePage(params);
+        return this.store.query('test', {session_id: this.modelFor('session').id, page: this.get('page')});
     }
+
 });
