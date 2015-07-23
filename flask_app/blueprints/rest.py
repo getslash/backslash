@@ -29,6 +29,10 @@ class SessionResource(ModelResource):
     MODEL = Session
     DEFAULT_SORT = (Session.start_time.desc(),)
 
+    def _get_iterator(self):
+        return super(SessionResource, self)._get_iterator()\
+            .filter(Session.archived != True)
+
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):

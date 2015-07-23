@@ -96,6 +96,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     end_time = db.Column(db.Float, default=None)
     hostname = db.Column(db.String(100))
 
+    archived = db.Column(db.Boolean(), server_default="false", nullable=False) # no sense of indexing this since it's usually False
+
     edited_status = db.Column(db.String(256), index=True)
     tests = db.relationship(
         'Test', backref=backref('session'), cascade='all, delete, delete-orphan')

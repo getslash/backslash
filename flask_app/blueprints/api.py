@@ -165,6 +165,12 @@ def report_test_skipped(id: int):
 def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
 
+@API
+def archive(session_id: int):
+    result = Session.query.filter(Session.id == session_id).update({'archived': True})
+    if not result:
+        abort(requests.codes.not_found)
+
 
 def _update_running_test_status(test_id, status, ignore_conflict=False):
     logbook.debug('marking test {} as {}', test_id, status)
