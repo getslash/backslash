@@ -1,3 +1,4 @@
+import math
 import logbook
 from flask import jsonify, request
 
@@ -15,12 +16,13 @@ class RestResource(Resource):
 
     def get(self, **kw):
         object_id = request.view_args.get('object_id')
+        metadata = {}
         if object_id is not None:
             _logger.debug('Looking for object id {}', object_id)
             obj = self._get_object_by_id(object_id)
-            return self._format_result({self._get_single_object_key(): self._render_single(obj)})
+            return self._format_result({self._get_single_object_key(): self._render_single(obj)}, metadata=metadata)
         else:
-            returned = self._paginate(self._get_iterator())
+            returned = self._paginate(self._get_iterator(), metadata)
             result = {}
             for obj in returned:
                 key = self._get_collection_key_for_object(obj)
@@ -28,7 +30,7 @@ class RestResource(Resource):
                 if collection is None:
                     collection = result[key] = []
                 collection.append(self._render_single(obj))
-            return self._format_result(result)
+            return self._format_result(result, metadata=metadata)
 
     def _get_object_by_id(self, object_id):
         raise NotImplementedError()  # pragma: no cover
@@ -36,7 +38,7 @@ class RestResource(Resource):
     def _get_iterator(self):
         raise NotImplementedError()  # pragma: no cover
 
-    def _paginate(self, iterator):
+    def _paginate(self, iterator, metadata):
         raise NotImplementedError()  # pragma: no cover
 
     def _get_collection_key_for_object(self, obj):
@@ -48,7 +50,8 @@ class RestResource(Resource):
     def _render_single(self, obj):
         raise NotImplementedError()  # pragma: no cover
 
-    def _format_result(self, result):
+    def _format_result(self, result, metadata=None):
+        result['meta'] = metadata or {}
         return jsonify(result)
 
 
@@ -73,8 +76,11 @@ class ModelResource(RestResource):
     def _render_single(self, obj):
         return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS)
 
-    def _paginate(self, query):
+    def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
+        metadata['total'] = query.count()
+        metadata['pages_total'] = int(math.ceil(metadata['total'] / args.page_size)) or 1
+        metadata['page'] = args.page
         return query.offset((args.page - 1) * args.page_size).limit(args.page_size)
 
     def _get_collection_key_for_object(self, obj):
@@ -83,15 +89,15 @@ class ModelResource(RestResource):
     def _get_single_object_key(self):
         return get_model_typename(self.MODEL)
 
-    def _format_result(self, result):
+    def _format_result(self, result, metadata):
         if not result:
             result[plural_noun(get_model_typename(self.MODEL))] = []
-        return super(ModelResource, self)._format_result(result)
+        return super(ModelResource, self)._format_result(result, metadata)
 
 
 pagination_parser = reqparse.RequestParser()
 pagination_parser.add_argument(
-    'page_size', type=int, location='args', default=30)
+    'page_size', type=int, location='args', default=10)
 pagination_parser.add_argument('page', type=int, location='args', default=1)
 
 
