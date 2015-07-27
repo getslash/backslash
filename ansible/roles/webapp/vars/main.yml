@@ -3,6 +3,7 @@ user_name: "{{app_name}}"
 group_name: "{{app_name}}"
 # paths
 deploy_root: "/opt/{{app_name}}"
+src_root: "{{deploy_root}}/src"
 unix_socket_name: "/tmp/{{app_name}}-wsgi.sock"
 # nginx
 http_port: 80
