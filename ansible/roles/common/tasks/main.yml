@@ -1,7 +1,0 @@
-- name: setup group
-  action: group name={{group_name}} state=present
-- name: setup user
-  action: user name={{user_name}} state=present group={{group_name}}
-- name: set up packages
-  action: apt pkg={{item}} state=latest update_cache=yes
-  with_items: required_packages
