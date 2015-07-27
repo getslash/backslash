@@ -6,3 +6,4 @@ windows:
   - window_name: celery worker
     panes:
       - .env/bin/celery -A flask_app.tasks worker --loglevel=info
+      - .env/bin/celery -A flask_app.tasks shell
