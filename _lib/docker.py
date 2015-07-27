@@ -58,7 +58,7 @@ def _generate_dockerfile(path):
 
 
 def _get_apt_packages_from_ansible():
-    vars_file = from_project_root('ansible', 'roles', 'common', 'vars', 'main.yml')
+    vars_file = from_project_root('ansible', 'roles', 'webapp', 'vars', 'main.yml')
     with open(vars_file) as f:
         config = yaml.load(f)
     return config['required_packages']
