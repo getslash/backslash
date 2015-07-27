@@ -1,3 +1,10 @@
+- name: setup group
+  action: group name={{group_name}} state=present
+- name: setup user
+  action: user name={{user_name}} state=present group={{group_name}}
+- name: set up packages
+  action: apt pkg={{item}} state=latest update_cache=yes
+  with_items: required_packages
 - name: ensure directories
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
@@ -12,8 +19,10 @@
   notify: reload nginx config
 - include: install_sources.yml
   when: sources.changed or configuration.changed
-- name: fix supervisor locale to UTF-8
+- name: fix supervisor locale to UTF-8 (LC_ALL)
   lineinfile: dest=/etc/default/supervisor regexp=^LC_ALL= line=LC_ALL=en_US.UTF-8
+- name: fix supervisor locale to UTF-8 (LANG)
+  lineinfile: dest=/etc/default/supervisor regexp=^LANG= line=LANG=en_US.UTF-8
 - name: configure supervisor
   action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/{{app_name}}-wsgi.conf
   register: supervisor_conf
