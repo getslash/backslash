@@ -6,9 +6,6 @@ RUN apt-add-repository ppa:chris-lea/node.js
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install -y nodejs
-RUN wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python
-RUN easy_install pip
-RUN pip install virtualenv
 
 # configure virtualenv and install dependencies so that it will get cached by docker
 RUN virtualenv /env

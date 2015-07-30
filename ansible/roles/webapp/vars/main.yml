@@ -1,3 +1,6 @@
+# accounts
+user_name: "{{app_name}}"
+group_name: "{{app_name}}"
 # paths
 deploy_root: "/opt/{{app_name}}"
 celery_bin: "{{deploy_root}}/.env/bin/celery"
@@ -6,3 +9,13 @@ unix_socket_name: "/tmp/{{app_name}}-wsgi.sock"
 http_port: 80
 # misc
 webapp_archive_location: /tmp/src.tar.gz
+# required packages
+required_packages:
+    - python3-setuptools
+    - python3-dev
+    - supervisor
+    - software-properties-common
+    - libpq-dev
+required_pip_packages: 
+    - virtualenv
+    - pycurl
