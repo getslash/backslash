@@ -166,8 +166,8 @@ def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
 
 @API
-def archive(session_id: int):
-    result = Session.query.filter(Session.id == session_id).update({'archived': True})
+def toggle_archived(session_id: int):
+    result = Session.query.filter(Session.id == session_id).update({'archived': ~Session.archived}, synchronize_session=False)
     if not result:
         abort(requests.codes.not_found)
 

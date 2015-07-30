@@ -2,6 +2,8 @@ import DS from 'ember-data';
 
 export default DS.Model.extend({
 
+    archived: DS.attr('boolean'),
+
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
     status: DS.attr('string'),

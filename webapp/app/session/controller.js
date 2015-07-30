@@ -7,5 +7,15 @@ export default Ember.Controller.extend({
     currentPath: function() {
 
         return this.controllerFor('application').get('currentPath');
-    }.property()
+    }.property(),
+
+    actions: {
+
+        toggle_archive: function() {
+            var self = this;
+            self.api.call('toggle_archived', {session_id: parseInt(self.get('model.id'))}).then(function() {
+                self.set('model.archived', !self.get('model.archived'));
+            });
+        }
+    }
 });
