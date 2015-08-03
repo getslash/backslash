@@ -14,6 +14,8 @@ _logger = logbook.Logger(__name__)
 
 class RestResource(Resource):
 
+    FILTER_CONFIG = None
+
     def get(self, **kw):
         object_id = request.view_args.get('object_id')
         metadata = {}
@@ -22,7 +24,9 @@ class RestResource(Resource):
             obj = self._get_object_by_id(object_id)
             return self._format_result({self._get_single_object_key(): self._render_single(obj)}, metadata=metadata)
         else:
-            returned = self._paginate(self._get_iterator(), metadata)
+            iterator = self._get_iterator()
+            iterator = self._filter(iterator, metadata)
+            returned = self._paginate(iterator, metadata)
             result = {}
             for obj in returned:
                 key = self._get_collection_key_for_object(obj)
@@ -31,6 +35,11 @@ class RestResource(Resource):
                     collection = result[key] = []
                 collection.append(self._render_single(obj))
             return self._format_result(result, metadata=metadata)
+
+    def _filter(self, iterator, metadata):
+        if self.FILTER_CONFIG is None:
+            return iterator
+        return self.FILTER_CONFIG.filter(iterator, metadata)
 
     def _get_object_by_id(self, object_id):
         raise NotImplementedError()  # pragma: no cover

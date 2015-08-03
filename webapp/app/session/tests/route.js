@@ -1,12 +1,11 @@
-import PaginatedRoute from '../../routes/paginated_route';
+import PaginatedFilteredRoute from '../../routes/paginated_filtered_route';
 
-export default PaginatedRoute.extend({
+export default PaginatedFilteredRoute.extend({
 
     needs: ['session'],
 
     model: function(params) {
-        this.parsePage(params);
-        return this.store.query('test', {session_id: this.modelFor('session').id, page: this.get('page')});
+        return this.store.query('test', {session_id: this.modelFor('session').id, page: params.page || 1});
     }
 
 });

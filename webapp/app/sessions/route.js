@@ -1,13 +1,10 @@
-import PaginatedRoute from '../routes/paginated_route';
+import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
 
-export default PaginatedRoute.extend(AuthenticatedRouteMixin, {
-
-    title: 'Sessions',
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
-        this.parsePage(params);
-        return this.store.query('session', {page: this.get('page')});
+        return this.store.query('session', {page: params.page, filter: params.filter});
     }
 
 });

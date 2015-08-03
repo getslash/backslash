@@ -1,13 +1,15 @@
+import operator
+
 import requests
-from flask import abort, Blueprint, request, session
 
-from flask_restful import Api, reqparse
+from flask import Blueprint, abort, request, session
 from flask.ext.security.core import current_user
-
+from flask_restful import Api, reqparse
 from sqlalchemy import text
 
-from ..models import Error, Session, Test, User, Comment
+from ..models import Comment, Error, Session, Test, User
 from ..utils.rest import ModelResource
+from ..utils import statuses
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
@@ -28,11 +30,10 @@ class SessionResource(ModelResource):
 
     MODEL = Session
     DEFAULT_SORT = (Session.start_time.desc(),)
+    from .filter_configs import SESSION_FILTERS as FILTER_CONFIG
 
     def _get_iterator(self):
-        return super(SessionResource, self)._get_iterator()\
-            .filter(Session.archived != True)
-
+        return super(SessionResource, self)._get_iterator()
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):

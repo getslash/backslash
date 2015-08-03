@@ -1,3 +1,3 @@
-import PaginatedController from '../../controllers/paginated_controller';
+import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
 
-export default PaginatedController.extend();
+export default PaginatedFilteredController.extend();
