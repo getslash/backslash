@@ -1,11 +1,7 @@
-<div class="container">
-  <div class="row-fluid">
-    <div class="col-xs-4 col-xs-offset-8">
-      <button class="btn {{if model.archived '' 'btn-danger'}}" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}} this session</button>
-    </div>
-  </div>
-</div>
+{{#tool-bar back_button=true}}
+  <button class="btn navbar-right navbar-btn {{if model.archived '' 'btn-danger'}}" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
 
+{{/tool-bar}}
 <div class="container">
 
   {{details-tabs route=controllers.application.currentPath obj=model}}

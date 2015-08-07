@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default tool-bar-nav">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+  {{#if back_button}}
+  <form class="navbar-form navbar-left" role="search">
+    <div class="form-group">
+      <button type="button" class="btn btn-default" {{action "back"}}> <i class="fa fa-arrow-left"></i> Back</button>
+    </div>
+  </form>
+  {{/if}}
+
+  {{#if title}}
+  <p class="navbar-text">{{title}}</p>
+  {{/if}}
+
+{{yield}}
+  </div>
+</nav>

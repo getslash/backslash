@@ -1,0 +1,22 @@
+
+<ul class="nav navbar-nav navbar-right">
+  {{#each filter_config as |f|}}
+    <li class="dropdown">
+      <a class="dropdown-toggle {{if f.selected 'selected'}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="dropdown-{{f.name}}">
+        {{#if f.selected}}
+          {{title-case f.name}}: {{f.value}}
+            {{else}}
+          Filter by {{f.name}}
+        {{/if}}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="dropdown-{{f.name}}">
+        {{#each f.options as |option|}}
+          <li><a class="clickable" {{action "filter" f.name option.name}}>
+            <i class="fa fa-fw {{if option.selected 'fa-check'}}"></i>{{option.name}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>
