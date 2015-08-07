@@ -4,9 +4,9 @@
     <li class="dropdown">
       <a class="dropdown-toggle {{if f.selected 'selected'}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="dropdown-{{f.name}}">
         {{#if f.selected}}
-          {{title-case f.name}}: {{f.value}}
-            {{else}}
-          Filter by {{f.name}}
+          {{f.value}}
+        {{else}}
+          {{f.name}}
         {{/if}}
         <span class="caret"></span>
       </a>
