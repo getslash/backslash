@@ -3,8 +3,14 @@ import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixi
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
 
+    queryParams: {
+        show_archived: {
+            refreshModel: true
+        }
+    },
+
     model: function(params) {
-        return this.store.query('session', {page: params.page, filter: params.filter});
+        return this.store.query('session', {page: params.page, filter: params.filter, show_archived: (params.show_archived)});
     }
 
 });

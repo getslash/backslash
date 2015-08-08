@@ -1,6 +1,9 @@
 
 {{#tool-bar}}
   {{filter-control filter_config=filter_config filter_action="filter"}}
+  <form class="navbar-form navbar-right">
+    <button type="button" class="btn {{if show_archived 'btn-success'}}" {{action "toggle_show_archived"}}>Show Archived</button>
+  </form>
 {{/tool-bar}}
 
 

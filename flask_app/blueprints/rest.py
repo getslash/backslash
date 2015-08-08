@@ -33,7 +33,10 @@ class SessionResource(ModelResource):
     from .filter_configs import SESSION_FILTERS as FILTER_CONFIG
 
     def _get_iterator(self):
-        return super(SessionResource, self)._get_iterator()
+        returned = super(SessionResource, self)._get_iterator()
+        if request.args.get('show_archived').lower() != 'true':
+            returned = returned.filter(Session.archived == False)
+        return returned
 
 @_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):

@@ -9,8 +9,4 @@ SESSION_FILTERS = FilterConfig({
         'unsuccessful': (operator.ne, statuses.SUCCESS),
         'successful': statuses.SUCCESS,
     }),
-    'archived': ConstFilter(models.Session.archived, {
-        'archived': True,
-        'unarchived': False,
-    }, default='unarchived')
 })
