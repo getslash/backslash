@@ -34,7 +34,7 @@ class SessionResource(ModelResource):
 
     def _get_iterator(self):
         returned = super(SessionResource, self)._get_iterator()
-        if request.args.get('show_archived').lower() != 'true':
+        if request.args.get('show_archived') != 'true':
             returned = returned.filter(Session.archived == False)
         return returned
 
