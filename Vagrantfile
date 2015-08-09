@@ -3,8 +3,7 @@
 
 Vagrant::Config.run do |config|
   config.vm.define :server do |config|
-    config.vm.box = "trusty64"
-    config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+    config.vm.box = "debian/jessie64"
     config.vm.host_name = "server"
     config.vm.forward_port 80, 8000
     config.vm.provision "ansible" do |ansible|
