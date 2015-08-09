@@ -13,9 +13,3 @@
 - name: ensure nginx configuration
   shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
   notify: reload nginx config
-- name: reload supervisor
-  shell: supervisorctl reload
-- name: ensure supervisor service
-  action: service name=supervisor state=started
-- name: try to get local page
-  shell: curl http://localhost/

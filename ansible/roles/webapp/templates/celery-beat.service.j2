@@ -1,0 +1,10 @@
+[Unit]
+Description={{app_name}} Celery beat
+
+[Service]
+User={{user_name or app_name}}
+WorkingDirectory={{deploy_root}}
+ExecStart={{celery_bin}} -A flask_app.tasks beat --loglevel=info
+
+[Install]
+WantedBy=multi-user.target
