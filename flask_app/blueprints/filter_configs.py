@@ -10,3 +10,10 @@ SESSION_FILTERS = FilterConfig({
         'successful': statuses.SUCCESS,
     }),
 })
+
+TEST_FILTERS = FilterConfig({
+    'status': ConstFilter(models.Test.status, {
+        'unsuccessful': (operator.ne, statuses.SUCCESS),
+        'successful': statuses.SUCCESS,
+    }),
+})

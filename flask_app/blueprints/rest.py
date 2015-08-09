@@ -43,6 +43,7 @@ class TestResource(ModelResource):
 
     MODEL = Test
     DEFAULT_SORT = (Test.start_time.desc(),)
+    from .filter_configs import TEST_FILTERS as FILTER_CONFIG
 
     def _get_iterator(self):
         session_id = request.args.get('session_id')

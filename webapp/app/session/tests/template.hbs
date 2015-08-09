@@ -1,4 +1,9 @@
 
+{{#tool-bar}}
+  {{filter-control filter_config=filter_config filter_action="filter"}}
+{{/tool-bar}}
+
+
 {{#each model as |test|}}
   {{test-row test=test action="gotoTest"}}
 {{/each}}
