@@ -3,7 +3,9 @@ Description={{app_name}} Celery beat
 
 [Service]
 User={{user_name or app_name}}
-WorkingDirectory={{deploy_root}}
+WorkingDirectory={{src_root}}
+StandardOutput=null
+StandardError=null
 ExecStart={{celery_bin}} -A flask_app.tasks beat --loglevel=info
 
 [Install]
