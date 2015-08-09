@@ -13,9 +13,7 @@
   notify: reload nginx config
 - name: reload supervisor
   shell: supervisorctl reload
-  when: in_docker is not defined
 - name: ensure supervisor service
   action: service name=supervisor state=started
-  when: in_docker is not defined
 - name: try to get local page
   shell: curl http://localhost/
