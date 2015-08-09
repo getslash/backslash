@@ -12,5 +12,10 @@ export default DS.Model.extend({
 
     has_text: function() {
         return Ember.$.trim(this.get('comment')) !== '';
-    }.property('comment')
+    }.property('comment'),
+
+    is_committed: function() {
+        return !this.get('edited');
+    }.property('edited')
+
 });

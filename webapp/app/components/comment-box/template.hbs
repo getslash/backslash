@@ -5,6 +5,7 @@
                 src="{{gravatar-url email}}"/>
       </div>
       <div class="col-sm-11">
+        {{#if comment.is_committed}}
         <div class="comment-metadata">
           {{#if comment.can.delete}}
             <div class="pull-right">
@@ -12,11 +13,9 @@
             </div>
           {{/if}}
 
-        {{# if comment.edited}}
-        {{else}}
-          Posted by {{comment.user_email}}, {{moment-time ago=comment.timestamp}}
-        {{/if}}
+            Posted by {{comment.user_email}}, {{moment-time ago=comment.timestamp}}
         </div>
+        {{/if}}
         <div class="comment-body">
           {{#if comment.edited}}
             <p>
