@@ -17,7 +17,6 @@ from _lib.params import APP_NAME
 from _lib.frontend import frontend, ember
 from _lib.source_package import prepare_source_package
 from _lib.deployment import generate_nginx_config, run_uwsgi
-from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 from _lib.db import db
 from _lib.celery import celery
 from _lib.utils import interact
@@ -197,29 +196,6 @@ def _wait_for_travis_availability():
         raise RuntimeError("Web service did not become responsive")
     click.echo(click.style("Service is up", fg='green'))
 
-
-@cli.group()
-def docker():
-    pass
-
-@docker.command()
-def build():
-    build_docker_image(tag=APP_NAME, root=from_project_root())
-
-@docker.command()
-@click.option("-p", "--port", default=80, type=int)
-def start(port):
-    _run_docker_start(port)
-
-def _run_docker_start(port):
-    persistent_dir = from_project_root('persistent')
-    if not os.path.isdir(persistent_dir):
-        os.makedirs(persistent_dir)
-    start_docker_container(persistent_dir=persistent_dir, port_bindings={80: port})
-
-@docker.command()
-def stop():
-    stop_docker_container()
 
 @cli.command()
 @requires_env("app", "develop")
