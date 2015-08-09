@@ -26,4 +26,4 @@
   action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/{{app_name}}-wsgi.conf
   register: supervisor_conf
 - shell: supervisorctl reload
-  when: supervisor_conf.changed and in_docker is not defined
+  when: supervisor_conf.changed
