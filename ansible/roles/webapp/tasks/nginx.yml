@@ -2,5 +2,5 @@
 - name: nginx running
   action: service name=nginx state=started
 - name: ensure no nginx default conf
-  action: copy dest=/etc/nginx/nginx.conf src=../files/nginx.conf
+  action: file path=/etc/nginx/sites-enabled/default state=absent
   notify: reload nginx config
