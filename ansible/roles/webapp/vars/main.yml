@@ -4,6 +4,7 @@ group_name: "{{app_name}}"
 # paths
 deploy_root: "/opt/{{app_name}}"
 celery_bin: "{{deploy_root}}/.env/bin/celery"
+src_root: "{{deploy_root}}/src"
 unix_socket_name: "/tmp/{{app_name}}-wsgi.sock"
 # nginx
 http_port: 80
