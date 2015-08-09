@@ -17,7 +17,7 @@ def run_uwsgi(catch_exceptions):
     uwsgi_bin = from_env_bin("uwsgi")
     cmd = [uwsgi_bin, "-b", "16384", "--chmod-socket=666",
            "--home", from_env(), "--pythonpath", from_project_root(), "--module=flask_app.wsgi", "--callable=app",
-           "-s", _UNIX_SOCKET_NAME, "-p", str(cpu_count()), "--master"]
+           "-s", _UNIX_SOCKET_NAME, "-p", str(cpu_count()), "--master", "--logger=syslog:" + APP_NAME]
     if catch_exceptions:
         cmd.append("--catch-exceptions")
     os.execv(uwsgi_bin, cmd)
@@ -29,6 +29,7 @@ def generate_nginx_config(path):
         os.makedirs(os.path.dirname(path))
     with open(path, "w") as f:
         f.write("""server {{
+    listen 80;
     location /static {{
        alias {static_root};
     }}

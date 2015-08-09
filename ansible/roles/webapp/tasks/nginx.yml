@@ -1,9 +1,6 @@
-- apt_repository: repo='ppa:nginx/stable'
-- apt: pkg=nginx state=latest update_cache=yes
+- apt: pkg=nginx state=latest
 - name: nginx running
   action: service name=nginx state=started
 - name: ensure no nginx default conf
-  action: file path=/etc/nginx/sites-enabled/default state=absent
+  action: copy dest=/etc/nginx/nginx.conf src=../files/nginx.conf
   notify: reload nginx config
-  
-
