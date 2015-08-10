@@ -1,0 +1,33 @@
+.activity-timeline {
+    margin-left: 50px;
+    border-left: 1px solid gray;
+    list-style-type: none;
+}
+.activity-timeline > li > .activity-icon {
+    background: CornflowerBlue;
+    border-radius: 50%;
+    border: 2px solid white;
+    color: white;
+    display: block;
+    float: left;
+    font: 15px Arial, sans-serif;
+    height: 37px;
+    left: -59px;
+    margin-right: -1em;
+    padding: 7px;
+    position: relative;
+    text-align: center;
+    top: -10px;
+    width: 37px;
+}
+
+.activity-timeline > li {
+  background: $gray-lighter;
+  border-radius: 0 10px 0 10px;
+  border: 1px solid silver;
+  margin: 1em 0 3em;
+  max-width: 40em;
+  padding: 1em 0 1em 0;
+  position: relative;
+  
+}

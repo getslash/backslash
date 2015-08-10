@@ -29,6 +29,11 @@ export default Ember.Component.extend({
         return this.get('objtype') + '.comments';
     }.property('objtype'),
 
+    activity_route: function() {
+        return this.get('objtype') + '.activity';
+    }.property('objtype'),
+
+
     errors_caption: function() {
         let num_errors = this.get('obj.num_errors');
         return 'Errors (' + num_errors + ')';

@@ -26,9 +26,12 @@ def testing_login():
     if not current_app.config.get('TESTING'):
         abort(requests.codes.not_found)
 
-    testing_email = 'testing@localhost'
-
-    user = _get_or_create_user({'email': testing_email})
+    user_id = request.args.get('user_id')
+    if user_id is not None:
+        user = User.query.get_or_404(int(user_id))
+    else:
+        testing_email = 'testing@localhost'
+        user = _get_or_create_user({'email': testing_email})
     assert user
     login_user(user)
     user_info = {}

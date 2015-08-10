@@ -11,6 +11,7 @@ Router.map(function() {
     this.route('tests');
     this.route('comments');
     this.route('errors');
+    this.route('activity');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {

@@ -20,3 +20,4 @@ def _memoized(func):
     return new_func
 
 plural_noun = _memoized(_english.plural_noun)
+

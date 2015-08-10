@@ -11,6 +11,7 @@ from flask.ext.security import current_user
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
+from .. import activity
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login
@@ -165,11 +166,12 @@ def report_test_skipped(id: int):
 def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
 
-@API
+@API(require_real_login=True)
 def toggle_archived(session_id: int):
-    result = Session.query.filter(Session.id == session_id).update({'archived': ~Session.archived}, synchronize_session=False)
-    if not result:
-        abort(requests.codes.not_found)
+    session = Session.query.get_or_404(session_id)
+    session.archived = not session.archived
+    db.session.add(session)
+    activity.register_user_activity(activity.ACTION_ARCHIVED if session.archived else activity.ACTION_UNARCHIVED, session_id=session_id)
 
 
 def _update_running_test_status(test_id, status, ignore_conflict=False):
@@ -266,15 +268,6 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
         db.session.add(obj)
 
     except NoResultFound:
-        abort(requests.codes.not_found)
-
-
-@API(require_real_login=True)
-def edit_session_status(id: int, status: str):
-    if status not in ['', 'RUNNING', 'FAILURE', 'SUCCESS']:
-        abort(requests.codes.bad_request)
-    update = {'edited_status': status}
-    if not Session.query.filter(Session.id == id).update(update):
         abort(requests.codes.not_found)
 
 

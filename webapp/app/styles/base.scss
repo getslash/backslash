@@ -24,3 +24,11 @@ body {
 .clickable.danger:hover {
     color: $brand-danger;
 }
+
+.avatar {
+    height: 4em;
+}
+
+.avatar.small {
+    height: 1.5em;
+}

@@ -10,6 +10,7 @@ from .utils import statuses
 
 from .utils import get_current_time
 from .utils.rendering import rendered_field
+from . import activity
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
@@ -313,3 +314,25 @@ class Comment(db.Model, TypenameMixin):
             'delete': is_mine,
             'edit': is_mine,
         }
+
+
+class Activity(db.Model, TypenameMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    action = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.Float, default=get_current_time)
+
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=True, index=True)
+    user = db.relationship('User', lazy='joined')
+
+    @rendered_field
+    def user_email(self):
+        return self.user.email
+
+    @rendered_field
+    def message(self):
+        return activity.get_action_string(self.action)

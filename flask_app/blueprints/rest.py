@@ -7,7 +7,7 @@ from flask.ext.security.core import current_user
 from flask_restful import Api, reqparse
 from sqlalchemy import text
 
-from ..models import Comment, Error, Session, Test, User
+from ..models import Comment, Error, Session, Test, User, Activity
 from ..utils.rest import ModelResource
 from ..utils import statuses
 
@@ -54,9 +54,10 @@ class TestResource(ModelResource):
         return super(TestResource, self)._get_iterator()
 
 
-session_test_query_parser = reqparse.RequestParser()
-session_test_query_parser.add_argument('session_id', type=int, default=None)
-session_test_query_parser.add_argument('test_id', type=int, default=None)
+session_test_user_query_parser = reqparse.RequestParser()
+session_test_user_query_parser.add_argument('session_id', type=int, default=None)
+session_test_user_query_parser.add_argument('test_id', type=int, default=None)
+session_test_user_query_parser.add_argument('user_id', type=int, default=None)
 
 @_resource('/errors')
 class ErrorResource(ModelResource):
@@ -64,7 +65,7 @@ class ErrorResource(ModelResource):
     MODEL = Error
 
     def _get_iterator(self):
-        args = session_test_query_parser.parse_args()
+        args = session_test_user_query_parser.parse_args()
         if args.session_id is not None:
             return Error.query.join((Session, Error.session)).filter(Session.id == args.session_id)
         elif args.test_id is not None:
@@ -88,8 +89,6 @@ class UserResource(ModelResource):
         return User.query.get_or_404(int(object_id))
 
 
-
-
 @_resource('/comments', '/comments/<int:object_id>')
 class CommentsResource(ModelResource):
 
@@ -97,7 +96,7 @@ class CommentsResource(ModelResource):
     DEFAULT_SORT = (Comment.timestamp.asc(),)
 
     def _get_iterator(self):
-        args = session_test_query_parser.parse_args()
+        args = session_test_user_query_parser.parse_args()
         if args.session_id is not None:
             returned = Comment.query.join((Session, Comment.session)).filter(Session.id == args.session_id)
         elif args.test_id is not None:
@@ -105,3 +104,21 @@ class CommentsResource(ModelResource):
         else:
             abort(requests.codes.bad_request)
         return returned.join(User)
+
+
+@_resource('/activities', '/activities/<int:object_id>')
+class ActivityResource(ModelResource):
+
+    MODEL = Activity
+    DEFAULT_SORT = (Activity.timestamp.asc(),)
+
+    def _get_iterator(self):
+        returned = super(ActivityResource, self)._get_iterator()
+        args = session_test_user_query_parser.parse_args()
+        if args.session_id is not None:
+            returned = returned.filter(Activity.session_id == args.session_id)
+        if args.test_id is not None:
+            returned = returned.filter(Activity.test_id == args.test_id)
+        if args.user_id is not None:
+            returned = returned.filter(Activity.user_id == args.user_id)
+        return returned

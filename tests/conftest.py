@@ -38,8 +38,13 @@ def redirect_logging():
 
 
 @pytest.fixture
-def client(webapp_without_login, runtoken):
-    return BackslashClient('http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
+def client(webapp_without_login, runtoken, testuser_id):
+    returned = BackslashClient('http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
+    def _do_real_login():
+        returned.api.session.post(
+            returned.api.url.add_path('testing_login').add_query_param('user_id', str(testuser_id))).raise_for_status(),
+    returned.do_real_login = _do_real_login
+    return returned
 
 
 @pytest.fixture
