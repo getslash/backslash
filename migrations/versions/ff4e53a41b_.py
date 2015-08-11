@@ -34,8 +34,8 @@ def upgrade():
     op.create_table('test_comment',
     sa.Column('test_id', sa.Integer(), nullable=True),
     sa.Column('comment_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['comment_id'], ['comment.id'], ),
-    sa.ForeignKeyConstraint(['test_id'], ['test.id'], )
+    sa.ForeignKeyConstraint(['comment_id'], ['comment.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['test_id'], ['test.id'], ondelete='CASCADE')
     )
     ### end Alembic commands ###
 
