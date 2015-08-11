@@ -281,7 +281,11 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
     else:
         obj = db.session.query(Test).get(test_id)
 
-    obj.comments.append(Comment(user_id=current_user.id, comment=comment))
+    returned = Comment(user_id=current_user.id, comment=comment)
+    obj.comments.append(returned)
+    db.session.commit()
+    return {'id': returned.id}
+
 
 
 @API(require_real_login=True)
@@ -292,4 +296,7 @@ def delete_comment(comment_id: int):
     if not comment.can()['delete']:
         abort(requests.codes.forbidden)
 
-    db.session.delete(comment)
+    comment.deleted = True
+    comment.comment = ''
+
+    db.session.add(comment)

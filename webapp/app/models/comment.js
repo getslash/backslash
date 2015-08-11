@@ -10,6 +10,8 @@ export default DS.Model.extend({
 
     can: DS.attr(),
 
+    deleted: DS.attr('boolean'),
+
     has_text: function() {
         return Ember.$.trim(this.get('comment')) !== '';
     }.property('comment'),

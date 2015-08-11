@@ -302,6 +302,7 @@ class Comment(db.Model, TypenameMixin):
     user = db.relationship('User')
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.Float, default=get_current_time)
+    deleted = db.Column(db.Boolean, server_default="false")
 
     @rendered_field
     def user_email(self):

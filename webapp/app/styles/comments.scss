@@ -19,3 +19,11 @@
     border-radius: 0 0 4px 4px;
 	
 }
+
+$deleted-comment-color: #ccc;
+
+.comment-deleted {
+    color: $deleted-comment-color;
+    padding: 0.5em;
+    border: 1px solid $deleted-comment-color;
+}

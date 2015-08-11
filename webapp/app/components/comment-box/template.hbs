@@ -1,41 +1,49 @@
   <div class="comment-container">
     <div class="row">
       <div class="col-sm-1">
+        {{# if (not comment.deleted)}}
         <img class="avatar img-circle img-thumbnail" alt=""
                 src="{{gravatar-url email}}"/>
+        {{/if}}
       </div>
       <div class="col-sm-11">
-        {{#if comment.is_committed}}
-        <div class="comment-metadata">
-          {{#if comment.can.delete}}
-            <div class="pull-right">
-              <i class="fa fa-close clickable danger" {{action "delete"}}></i>
+
+        {{#if comment.deleted}}
+
+          <div class="comment-deleted">
+            Deleted comment by {{comment.user_email}} ({{moment-time ago=comment.timestamp}})
+          </div>
+        {{else}}
+          {{#if comment.is_committed}}
+            <div class="comment-metadata">
+              {{#if comment.can.delete}}
+                <div class="pull-right">
+                  <i class="fa fa-close clickable danger" {{action "delete"}}></i>
+                </div>
+              {{/if}}
+
+              Posted by {{comment.user_email}}, {{moment-time ago=comment.timestamp}}
             </div>
           {{/if}}
+          <div class="comment-body">
+            {{#if comment.edited}}
+              <p>
+                {{textarea value=comment.comment class="form-control" placeholder="Say something"}}
+              </p>
+              <p>
+                {{#if comment.has_text }}
+                  <button class="btn btn-success" {{action "save"}}>Post</button>
+                {{/if}}
+              </p>
+            {{else}}
 
-            Posted by {{comment.user_email}}, {{moment-time ago=comment.timestamp}}
-        </div>
-        {{/if}}
-        <div class="comment-body">
-          {{#if comment.edited}}
-            <p>
-          {{textarea value=comment.comment class="form-control" placeholder="Say something"}}
-            </p>
-            <p>
-            {{#if comment.has_text }}
-            <button class="btn btn-success" {{action "save"}}>Post</button>
+              <p>
+                {{comment.comment}}
+              </p>
+
             {{/if}}
-            </p>
-          {{else}}
-
-            <p>
-              {{comment.comment}}
-            </p>
-
-          {{/if}}
-
-
-        </div>
+          </div>
+        {{/if}}
       </div>
     </div>
   </div>
