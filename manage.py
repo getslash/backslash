@@ -14,7 +14,7 @@ bootstrap_env(["base"])
 
 from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
-from _lib.deployment import generate_nginx_config, run_uwsgi
+from _lib.deployment import generate_nginx_config, run_gunicorn
 import click
 import requests
 
@@ -27,7 +27,7 @@ def cli():
     pass
 
 
-cli.add_command(run_uwsgi)
+cli.add_command(run_gunicorn)
 cli.add_command(generate_nginx_config)
 
 @cli.command('ensure-secret')

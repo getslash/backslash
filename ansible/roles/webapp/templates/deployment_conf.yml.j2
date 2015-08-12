@@ -1,1 +1,6 @@
-DEBUG: {% if install_with_debug is defined and install_with_debug %}true{% else %}false{% endif %}
+DEBUG: {% if install_with_debug is defined and install_with_debug -%}
+true
+{%- else -%}
+false
+{%- endif %}
+

@@ -19,14 +19,14 @@
 - include: install_sources.yml
   when: sources.changed or configuration.changed
 - name: install systemd service
-  action: template src=../templates/uwsgi.service.j2 dest=/lib/systemd/system/{{app_name}}-uwsgi.service
+  action: template src=../templates/gunicorn.service.j2 dest=/lib/systemd/system/{{app_name}}-wsgi.service
   when: sources.changed or configuration.changed
   register: systemd_change
 - name: reload systemd daemon
   action: shell systemctl daemon-reload
   when: systemd_change
 - name: enable the services
-  action: service name={{app_name}}-uwsgi enabled=true state=restarted
+  action: service name={{app_name}}-wsgi enabled=true state=restarted
   when: systemd_change
 - name: try to get local page
   shell: curl http://localhost/
