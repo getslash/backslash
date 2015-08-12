@@ -153,9 +153,6 @@ def _run_fulltest(extra_args=()):
 @cli.command('travis-test')
 def travis_test():
     _run_unittest()
-    _run_deploy('localhost')
-    _wait_for_travis_availability()
-    _run_fulltest(["--www-port=80"])
 
 
 def _wait_for_travis_availability():
