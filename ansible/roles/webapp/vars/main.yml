@@ -17,3 +17,4 @@ required_packages:
     - python-dev
     - software-properties-common
     - libpq-dev
+install_with_debug: false
