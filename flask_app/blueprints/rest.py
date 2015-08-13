@@ -105,6 +105,9 @@ class CommentsResource(ModelResource):
             abort(requests.codes.bad_request)
         return returned.join(User)
 
+    def _paginate(self, iterator, metadata):
+        return iterator
+
 
 @_resource('/activities', '/activities/<int:object_id>')
 class ActivityResource(ModelResource):
