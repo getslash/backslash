@@ -19,7 +19,7 @@ export default Ember.Controller.extend({
     actions: {
 
         toggle_archive: function() {
-            this.toggle('archive');
+            this.toggle('archived');
         },
 
         toggle_investigated: function() {

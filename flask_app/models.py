@@ -333,9 +333,20 @@ class Activity(db.Model, TypenameMixin):
     user = db.relationship('User', lazy='joined')
 
     @rendered_field
+    def what(self):
+        if self.test_id is not None:
+            return 'test'
+        if self.session_id is not None:
+            return 'session'
+        return None
+
+    @rendered_field
     def user_email(self):
         return self.user.email
 
     @rendered_field
-    def message(self):
+    def action_string(self):
         return activity.get_action_string(self.action)
+
+    def __repr__(self):
+        return '<{} {} {}>'.format(self.user_id, self.action_string(), self.what())

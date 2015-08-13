@@ -110,7 +110,7 @@ class CommentsResource(ModelResource):
 class ActivityResource(ModelResource):
 
     MODEL = Activity
-    DEFAULT_SORT = (Activity.timestamp.asc(),)
+    DEFAULT_SORT = (Activity.timestamp.desc(),)
 
     def _get_iterator(self):
         returned = super(ActivityResource, self)._get_iterator()
