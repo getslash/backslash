@@ -19,10 +19,18 @@
     top: -10px;
     width: 37px;
 
-    background: CornflowerBlue;
+    background: $gray-light;
 
-    &.danger {
+    &.uninvestigated {
 	background: $brand-danger;
+    }
+
+    &.investigated {
+	background: MediumSeaGreen;
+    }
+
+    &.unarchived {
+	background: CornflowerBlue;
     }
 }
 

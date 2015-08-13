@@ -34,10 +34,7 @@ export default DS.Model.extend({
     }.property('action_string'),
 
     activity_icon_class: function() {
-        switch (this.get('action_string')) {
-            case 'uninvestigated': return 'danger';
-        }
-        return '';
+        return this.get('action_string');
     }.property('action_string')
 
 });
