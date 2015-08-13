@@ -8,7 +8,6 @@ from sqlalchemy import text
 
 from .rendering import render_api_object
 from .english import plural_noun
-
 _logger = logbook.Logger(__name__)
 
 
