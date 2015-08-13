@@ -5,5 +5,11 @@ export default Ember.Route.extend({
 
     model: function() {
         return this.store.query('activity', {session_id: this.modelFor('session').id});
+    },
+
+    actions: {
+        refresh: function() {
+            this.refresh();
+        }
     }
 });
