@@ -13,7 +13,7 @@ Vagrant::Config.run do |config|
       }
       ansible.playbook = "ansible/site.yml"
       ansible.extra_vars = {
-        install_with_debug: true
+        "install_with_debug" => true
       }
       ansible.sudo = true
     end

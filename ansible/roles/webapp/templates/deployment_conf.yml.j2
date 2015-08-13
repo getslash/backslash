@@ -1,2 +1,6 @@
 SQLALCHEMY_DATABASE_URI: "postgresql://{{app_name}}:{{app_name}}@localhost/{{app_name}}"
-DEBUG: {% if install_with_debug is defined and install_with_debug %}true{% else %}false{% endif %}
+DEBUG: {% if install_with_debug -%}
+true
+{%- else -%}
+false
+{%- endif %}

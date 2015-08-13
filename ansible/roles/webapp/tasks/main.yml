@@ -19,8 +19,8 @@
   notify: reload nginx config
 - include: install_sources.yml
   when: sources.changed or configuration.changed
-- name: install systemd service (uWSGI)
-  action: template src=../templates/uwsgi.service.j2 dest=/lib/systemd/system/{{app_name}}-uwsgi.service
+- name: install systemd service
+  action: template src=../templates/gunicorn.service.j2 dest=/lib/systemd/system/{{app_name}}-wsgi.service
   when: sources.changed or configuration.changed
   register: systemd_change
 - name: install systemd service (Celery worker)
@@ -37,7 +37,7 @@
 - name: enable the services
   action: service name={{item}} enabled=true state=restarted
   with_items:
-    - "{{app_name}}-uwsgi"
+    - "{{app_name}}-wsgi"
     - "{{app_name}}-celery-worker"
     - "{{app_name}}-celery-beat"
   when: systemd_change
