@@ -26,11 +26,11 @@
     }
 
     &.investigated {
-	background: MediumSeaGreen;
+	background: $mild-green;
     }
 
     &.unarchived {
-	background: CornflowerBlue;
+	background: $mild-blue;
     }
 }
 
