@@ -26,6 +26,7 @@ from _lib.utils import interact
 import click
 import requests
 import logbook
+import logbook.compat
 
 ##### ACTUAL CODE ONLY BENEATH THIS POINT ######
 
@@ -86,7 +87,7 @@ def testserver(tmux, livereload, port=8000):
         from_project_root("flask_app", "app.yml")
     ]
 
-    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy'})
+    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SQLALCHEMY_ECHO': True})
     if livereload:
         from livereload import Server
         s = Server(app)
@@ -96,6 +97,7 @@ def testserver(tmux, livereload, port=8000):
         for filename in ['webapp.js', 'vendor.js', 'webapp.css']:
             s.watch(os.path.join('static', 'assets', filename), delay=1)
         logbook.StreamHandler(sys.stderr, level='DEBUG').push_application()
+        logbook.compat.redirect_logging()
         s.serve(port=port, liveport=35729)
     else:
         app.run(port=port, extra_files=extra_files)
