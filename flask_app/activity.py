@@ -1,11 +1,13 @@
 from flask.ext.security import current_user
 
 
-ACTION_ARCHIVED, ACTION_UNARCHIVED, MAX_ACTIVITY = range(3)
+ACTION_ARCHIVED, ACTION_UNARCHIVED, ACTION_INVESTIGATED, ACTION_UNINVESTIGATED, MAX_ACTIVITY = range(5)
 
 _ACTION_STRINGS = {
     ACTION_ARCHIVED: 'archived',
     ACTION_UNARCHIVED: 'unarchived',
+    ACTION_INVESTIGATED: 'investigated',
+    ACTION_UNINVESTIGATED: 'uninvestigated',
 }
 
 def register_user_activity(action, **kw):

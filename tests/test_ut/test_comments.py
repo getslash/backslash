@@ -12,10 +12,6 @@ def test_delete_comment(commentable, real_login, client):
     assert comments[0].deleted
     assert not comments[0].comment
 
-@pytest.fixture
-def real_login(client):
-    client.do_real_login()
-
 @pytest.fixture(params=['session', 'test'])
 def commentable(request, ended_session, ended_test):
     if request.param == 'session':

@@ -168,10 +168,19 @@ def report_test_interrupted(id: int):
 
 @API(require_real_login=True)
 def toggle_archived(session_id: int):
+        return _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
+
+@API(require_real_login=True)
+def toggle_investigated(session_id: int):
+    return _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+
+def _toggle_session_attribute(session_id, attr, on_action, off_action):
     session = Session.query.get_or_404(session_id)
-    session.archived = not session.archived
+    new_value = not getattr(session, attr)
+    setattr(session, attr, new_value)
     db.session.add(session)
-    activity.register_user_activity(activity.ACTION_ARCHIVED if session.archived else activity.ACTION_UNARCHIVED, session_id=session_id)
+    activity.register_user_activity(on_action if new_value else off_action, session_id=session_id)
+
 
 
 def _update_running_test_status(test_id, status, ignore_conflict=False):

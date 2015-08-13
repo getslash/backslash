@@ -1,0 +1,15 @@
+<div class="row-fluid">
+
+  <div class="col-sm-12">
+    Investigation Summary:
+    {{textarea value=conclusion cols="80" rows="6" class="form-control"}}
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="col-sm-12">
+    {{#if conclusion }}
+
+      <button class="btn btn-default pull-right" {{action "submit"}}> <i class="fa fa-check"></i> Submit</button>
+    {{/if}}
+  </div>
+</div>

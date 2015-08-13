@@ -1,5 +1,19 @@
 {{#tool-bar back_button=true}}
-  <button class="btn navbar-right navbar-btn {{if model.archived '' 'btn-danger'}}" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
+  <form class="navbar-form navbar-right">
+    <button class="btn  {{if model.archived '' 'btn-danger'}}" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
+
+    {{# if model.needs_investigation }}
+      {{#link-to "session.investigate" tagName="button" classNames="btn btn-success"}}
+        <i class="fa fa-check"></i> Mark Investigated
+      {{/link-to}}
+
+    {{else}}
+      {{# if model.investigated }}
+        <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
+      {{/if}}
+    {{/if}}
+
+  </form>
 
 {{/tool-bar}}
 <div class="container">

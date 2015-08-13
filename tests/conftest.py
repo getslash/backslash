@@ -46,6 +46,16 @@ def client(webapp_without_login, runtoken, testuser_id):
     returned.do_real_login = _do_real_login
     return returned
 
+@pytest.fixture
+def real_login(client):
+    client.do_real_login()
+
+@pytest.fixture
+def get_activities(webapp, testuser_id):
+    def returned():
+        with webapp.app.app_context():
+            return models.Activity.query.filter(models.Activity.user_id==testuser_id).all()
+    return returned
 
 @pytest.fixture
 def backslash_url(request):

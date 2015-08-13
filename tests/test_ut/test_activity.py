@@ -16,10 +16,3 @@ def test_user_activity_archiving(testuser_id, ended_session, client, get_activit
     _, a = get_activities()
     assert a.action == activity.ACTION_UNARCHIVED
 
-
-@pytest.fixture
-def get_activities(webapp, testuser_id):
-    def returned():
-        with webapp.app.app_context():
-            return Activity.query.filter(Activity.user_id==testuser_id).all()
-    return returned
