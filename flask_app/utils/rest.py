@@ -26,6 +26,7 @@ class RestResource(Resource):
         else:
             iterator = self._get_iterator()
             iterator = self._filter(iterator, metadata)
+            iterator = self._sort(iterator, metadata)
             returned = self._paginate(iterator, metadata)
             result = {}
             for obj in returned:
@@ -40,6 +41,9 @@ class RestResource(Resource):
         if self.FILTER_CONFIG is None:
             return iterator
         return self.FILTER_CONFIG.filter(iterator, metadata)
+
+    def _sort(self, iterator, metadata):
+        return iterator
 
     def _get_object_by_id(self, object_id):
         raise NotImplementedError()  # pragma: no cover
@@ -74,8 +78,6 @@ class ModelResource(RestResource):
     def _get_iterator(self):
         assert self.MODEL is not None
         returned = self.MODEL.query
-        if self.DEFAULT_SORT is not None:
-            returned = returned.order_by(*self.DEFAULT_SORT)
         return returned
 
     def _get_object_by_id(self, object_id):
@@ -84,6 +86,12 @@ class ModelResource(RestResource):
 
     def _render_single(self, obj):
         return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS)
+
+    def _sort(self, iterator, metadata):
+        if self.DEFAULT_SORT is not None:
+            iterator = iterator.order_by(*self.DEFAULT_SORT)
+        return iterator
+
 
     def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
