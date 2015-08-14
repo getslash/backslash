@@ -158,8 +158,10 @@ def updating_session_counters(test):
 
 
 @API
-def report_test_skipped(id: int):
-    _update_running_test_status(id, statuses.SKIPPED, ignore_conflict=True)
+def report_test_skipped(id: int, reason: (str, NoneType)=None):
+    _update_running_test_status(
+        id, statuses.SKIPPED, ignore_conflict=True,
+        additional_updates={'skip_reason': reason})
 
 
 @API
@@ -183,10 +185,13 @@ def _toggle_session_attribute(session_id, attr, on_action, off_action):
 
 
 
-def _update_running_test_status(test_id, status, ignore_conflict=False):
+def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None):
     logbook.debug('marking test {} as {}', test_id, status)
+    updates = {'status': status}
+    if additional_updates:
+        updates.update(additional_updates)
 
-    if not Test.query.filter(Test.id == test_id, Test.status == statuses.RUNNING).update({'status': status}):
+    if not Test.query.filter(Test.id == test_id, Test.status == statuses.RUNNING).update(updates):
         if Test.query.filter(Test.id == test_id).count():
             # we have a test, but it already ended
             if not ignore_conflict:

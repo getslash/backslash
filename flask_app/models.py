@@ -221,6 +221,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
+    skip_reason = db.Column(db.Text(), nullable=True)
+
     @rendered_field
     def duration(self):
         if self.end_time is None or self.start_time is None:

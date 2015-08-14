@@ -136,5 +136,9 @@ def test_report_test_end(started_test, use_duration):
     assert started_test.status == 'SUCCESS'
 
 
-
-
+@pytest.mark.parametrize('reason', [None, 'some reason here'])
+def test_skip_reason(started_test, reason):
+    started_test.mark_skipped(reason=reason)
+    started_test.report_end()
+    assert started_test.refresh().status == 'SKIPPED'
+    assert started_test.skip_reason == reason
