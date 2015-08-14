@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+.session-row.investigated {
+    opacity: 0.5;
+}
+
 i.fa.success {
     color: $brand-success;
 }
