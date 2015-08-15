@@ -49,3 +49,15 @@ pre span{
   border-top: 1px dotted rgb(71, 71, 71);
 }
 
+.skip-reason {
+    display: inline-block;
+    max-width: 30em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: $brand-warning;
+    border-radius: 3px;
+    padding: 0.2em;
+    font-size: small;
+    color: white;
+}
