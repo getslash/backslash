@@ -5,10 +5,10 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
 
 
     actions: {
-        gotoSession: function (session) {
+        goto_session: function (session) {
             this.transitionTo('session', session);
         },
-        gotoTest: function(test) {
+        goto_test: function(test) {
             this.transitionTo('test', test);
         }
     }
