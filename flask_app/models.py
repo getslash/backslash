@@ -101,7 +101,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     archived = db.Column(db.Boolean(), server_default="false", nullable=False) # no sense of indexing this since it's usually False
     investigated = db.Column(db.Boolean(), server_default='false')
 
-    edited_status = db.Column(db.String(256), index=True)
     tests = db.relationship(
         'Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     errors = db.relationship(
@@ -213,7 +212,6 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     end_time = db.Column(db.Float, default=None)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
-    edited_status = db.Column(db.String(256), index=True)
     errors = db.relationship(
         'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
     comments = db.relationship(
