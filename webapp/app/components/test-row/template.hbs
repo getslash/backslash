@@ -5,3 +5,8 @@
 <div class="col-md-3">
   {{start-end-times start_time=test.start_time end_time=test.end_time is_running=test.is_running}}
 </div>
+<div class="col-md-4">
+  {{# if test.is_skipped}}
+    <span class="label label-warning"><strong>Skipped</strong> ({{test.skip_reason}})</span>
+  {{/if}}
+</div>

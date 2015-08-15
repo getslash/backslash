@@ -14,6 +14,12 @@
     <strong>{{#if model.info.class_name}}Method{{else}}Function{{/if}} name:</strong> <code>{{model.info.name}}</code>
   </p>
 
+  {{# if model.is_skipped }}
+    <p>
+      <strong>Skip reason</strong>: {{model.skip_reason}}
+    </p>
+  {{/if}}
+
 </div>
 
 

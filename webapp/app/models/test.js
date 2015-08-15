@@ -9,6 +9,8 @@ export default DS.Model.extend({
     name: DS.attr('string'),
     num_errors: DS.attr('number'),
 
+    skip_reason: DS.attr(),
+
     info: DS.attr(),
     session_id: DS.attr('number'),
 
