@@ -16,6 +16,11 @@ export default DS.Model.extend({
         return (this.get('status') === 'SUCCESS');
     }.property('status'),
 
+    is_skipped: function() {
+        return (this.get('status') === 'SKIPPED');
+    }.property('status'),
+
+
     is_running: function() {
         return this.get('status') === 'RUNNING';
     }.property('status')

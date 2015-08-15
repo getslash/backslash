@@ -14,7 +14,7 @@ export default Ember.Controller.extend({
         self.api.call('toggle_' + attr, {session_id: parseInt(self.get('model.id'))}).then(function() {
             self.set('model.' + attr, !self.get('model.' + attr));
         }).then(function() {
-            self.send('refresh');
+            self.send('refreshRoute');
         });
     },
 
