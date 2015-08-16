@@ -57,8 +57,9 @@ def bootstrap(develop, app):
 
 @cli.command()
 @click.option('--livereload/--no-livereload', is_flag=True, default=True)
+@click.option('-p', '--port', default=8000)
 @requires_env("app", "develop")
-def testserver(livereload, port=8000):
+def testserver(livereload, port):
     from flask_app.app import create_app
 
     extra_files=[
