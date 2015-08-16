@@ -5,16 +5,33 @@ group_name: "{{app_name}}"
 deploy_root: "/opt/{{app_name}}"
 src_root: "{{deploy_root}}/src"
 celery_bin: "{{src_root}}/.env/bin/celery"
-unix_socket_name: "/tmp/{{app_name}}-wsgi.sock"
 # nginx
 http_port: 80
 # misc
 webapp_archive_location: /tmp/src.tar.gz
 # required packages
-required_packages:
+required_apt_packages:
     - rsync
     - python-virtualenv
     - python-dev
     - software-properties-common
     - libpq-dev
-install_with_debug: false
+    - nginx
+    - curl
+    - redis-server
+    - gcc
+required_yum_packages:
+    - rsync
+    - python-virtualenv
+    - python-devel
+    - nginx
+    - curl
+    - redis
+    - gcc
+required_pacman_packages:
+    - rsync
+    - python-virtualenv
+    - nginx
+    - curl
+    - redis
+    - gcc
