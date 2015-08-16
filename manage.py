@@ -69,11 +69,12 @@ def bootstrap(develop, app):
 
 @cli.command()
 @click.option('--livereload/--no-livereload', is_flag=True, default=True)
-@requires_env("app", "develop")
+@click.option('-p', '--port', default=8000, envvar='TESTSERVER_PORT')
 @click.option('--tmux/--no-tmux', is_flag=True, default=True)
-def testserver(tmux, livereload, port=8000):
+@requires_env("app", "develop")
+def testserver(tmux, livereload, port):
     if tmux:
-        return _run_tmux_frontend()
+        return _run_tmux_frontend(port=port)
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
 
@@ -95,9 +96,9 @@ def testserver(tmux, livereload, port=8000):
     else:
         app.run(port=port, extra_files=extra_files)
 
-def _run_tmux_frontend():
+def _run_tmux_frontend(port):
     tmuxp = from_env_bin('tmuxp')
-    os.execv(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')])
+    os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port)))
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
