@@ -1,15 +1,48 @@
-- apt: pkg={{item}} state=latest update_cache=yes
+- name: set up apt packages
+  action: apt pkg={{item}} state=latest update_cache=yes
   with_items:
     - postgresql-client-9.4
     - postgresql-9.4
     - postgresql-server-dev-9.4
     - python-dev
-- name: install db prerequisites
-  apt: pkg={{item}} state=latest update_cache=yes
+    - python-psycopg2
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: install EPEL
+  action: yum pkg=epel-release state=latest
+  when: ansible_distribution == 'CentOS'
+- name: set up yum packages
+  action: yum pkg={{item}} state=latest update_cache=yes
   with_items:
-    - python-psycopg2 # needed for the postgresql ansible tasks
-  tags: db
-- service: name=postgresql state=started
+    - gcc
+    - python-devel
+    - postgresql
+    - postgresql-server
+    - postgresql-devel
+    - python-psycopg2
+  when: ansible_distribution == 'CentOS'
+- name: set up pacman packages
+  action: pacman pkg={{item}} state=latest update_cache=yes
+  with_items:
+    - postgresql
+    - python2-psycopg2
+  when: ansible_distribution == 'Archlinux'
+- name: initialize postgresql
+  shell: postgresql-setup initdb
+  args:
+    creates: /var/lib/pgsql/data/base
+  when: ansible_distribution == 'CentOS'
+- name: initialize postgresql
+  shell: su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"
+  args:
+    creates: /var/lib/pgsql/data/base
+  when: ansible_distribution == 'Archlinux'
+- name: enable local authentication in postresql
+  lineinfile: dest=/var/lib/pgsql/data/pg_hba.conf regexp="^host.*127\.0\.0\.1" line="host all all 127.0.0.1/32 md5" state=present
+  when: ansible_distribution == 'CentOS'
+- name: enable local authentication in postresql
+  lineinfile: dest=/var/lib/pgsql/data/pg_hba.conf regexp="^host.*::1/128" line="host all all ::1/128 md5" state=present
+  when: ansible_distribution == 'CentOS'
+- service: name=postgresql state=started enabled=True
 - name: setup db
   action: postgresql_db name={{app_name}} encoding=utf8
   sudo_user: postgres
