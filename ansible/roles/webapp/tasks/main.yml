@@ -2,15 +2,33 @@
   action: group name={{group_name}} state=present
 - name: setup user
   action: user name={{user_name}} state=present group={{group_name}}
-- name: set up packages
+- name: setup directory for the unix socket
+  action: file path=/var/run/{{app_name}} owner={{user_name}} group={{group_name}} state=directory
+- name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
-  with_items: required_packages
+  with_items: required_apt_packages
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: install EPEL
+  action: yum pkg=epel-release state=latest
+  when: ansible_distribution == 'CentOS'
+- name: set up yum packages
+  action: yum pkg={{item}} state=latest update_cache=yes
+  with_items: required_yum_packages
+  when: ansible_distribution == 'CentOS'
+- name: set up pacman packages
+  action: pacman pkg={{item}} state=latest update_cache=yes
+  with_items: required_pacman_packages
+  when: ansible_distribution == 'Archlinux'
 - name: ensure directories
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
     - "{{deploy_root}}"
     - "{{deploy_root}}/conf.d"
-- include: nginx.yml
+- name: nginx running
+  action: service name=nginx state=started
+- name: ensure no nginx default conf
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+  notify: reload nginx config
 - include: configuration.yml
 - name: copy source
   copy: src=../src_pkg.tar.gz dest={{webapp_archive_location}}

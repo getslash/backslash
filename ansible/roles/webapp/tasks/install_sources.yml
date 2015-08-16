@@ -10,4 +10,12 @@
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure nginx configuration
   shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify: reload nginx config
+- name: ensure that the conf.d directory exists
+  file: dest=/etc/nginx/conf.d state=directory
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
+- name: ensure nginx configuration
+  shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/conf.d/{{app_name}}.conf
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
   notify: reload nginx config
