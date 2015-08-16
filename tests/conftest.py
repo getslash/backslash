@@ -11,6 +11,7 @@ import pytest
 from backslash import Backslash as BackslashClient
 import logbook.compat
 from flask_app import app, models
+from flask_app import auth
 from flask_app.utils.caching import cache
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -126,6 +127,14 @@ def runtoken(db, webapp_without_login, testuser):
 @pytest.fixture
 def testuser(testuser_and_id):
     return testuser_and_id[0]
+
+@pytest.fixture
+def moderator_role(testuser_id, webapp_without_login):
+    with webapp_without_login.app.app_context():
+        user = models.User.query.get(testuser_id)
+        user.roles.append(
+            models.Role.query.filter_by(name='admin').one())
+        models.db.session.commit()
 
 @pytest.fixture
 def testuser_id(testuser_and_id):

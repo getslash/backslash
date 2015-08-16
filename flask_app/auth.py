@@ -129,3 +129,10 @@ def _check_alowed_email_domain(user_info):
     if domain not in allowed:
         _logger.error('User {} has a disallowed email domain!', email)
         abort(requests.codes.unauthorized)
+
+
+def has_role(user, role):
+    user_roles = {r.name for r in user.roles}
+    if 'admin' in user_roles:
+        return True
+    return role in user_roles

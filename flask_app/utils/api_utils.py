@@ -6,6 +6,7 @@ from flask.ext.login import login_user, logout_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
 
+from ..auth import has_role
 from ..models import db, User, RunToken
 from .rendering import render_api_object
 from .responses import API_RESPONSE, API_SUCCESS
@@ -38,6 +39,19 @@ def auto_commit(func):
 
 def requires_login(func):
     return requires_login_or_runtoken(func, allow_runtoken=False)
+
+
+def requires_role(role):
+    needed = {role}
+    def decorator(func):
+        @functools.wraps(func)
+        def new_func(*args, **kwargs):
+            if not has_role(current_user, role):
+                abort(requests.codes.forbidden)
+            return func(*args, **kwargs)
+        return new_func
+    return decorator
+
 
 
 def requires_login_or_runtoken(func, allow_runtoken=True):

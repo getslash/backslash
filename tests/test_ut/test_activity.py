@@ -7,7 +7,7 @@ def test_no_user_activity_by_default(testuser_id, webapp):
     with webapp.app.app_context():
         assert Activity.query.filter(Activity.user_id==testuser_id).all() == []
 
-def test_user_activity_archiving(testuser_id, ended_session, client, get_activities):
+def test_user_activity_archiving(testuser_id, ended_session, client, get_activities, moderator_role):
     client.do_real_login()
     ended_session.toggle_archived()
     [a] = get_activities()

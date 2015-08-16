@@ -14,7 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from .. import activity
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
 from ..utils import get_current_time, statuses
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login
+from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 
@@ -169,6 +169,7 @@ def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
 
 @API(require_real_login=True)
+@requires_role('moderator')
 def toggle_archived(session_id: int):
         return _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
 
@@ -314,3 +315,4 @@ def delete_comment(comment_id: int):
     comment.comment = ''
 
     db.session.add(comment)
+
