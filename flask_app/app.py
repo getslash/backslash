@@ -20,7 +20,7 @@ def create_app(config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.path.expandvars(
     os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://localhost/testing_weber'))
 
-    _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "conf.d"))
+    _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "..", "conf.d"))
 
     configs = [os.path.join(ROOT_DIR, "app.yml")]
 
