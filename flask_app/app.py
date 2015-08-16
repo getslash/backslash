@@ -15,10 +15,6 @@ def create_app(config=None):
 
     app = flask.Flask(__name__, static_folder=os.path.join(ROOT_DIR, "..", "static"))
 
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.path.expandvars(
-    os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://localhost/testing_weber'))
-
     _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "..", "conf.d"))
 
     configs = [os.path.join(ROOT_DIR, "app.yml")]
@@ -32,6 +28,11 @@ def create_app(config=None):
                 app.config.update(yaml.load(yaml_file))
 
     app.config.update(config)
+
+    if 'SQLALCHEMY_DATABASE_URI' not in app.config:
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.path.expandvars(
+            os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://localhost/{0}'.format(app.config['app_name'])))
+
 
     if os.path.exists("/dev/log"):
         syslog_handler = logbook.SyslogHandler(app.config['app_name'], "/dev/log")
