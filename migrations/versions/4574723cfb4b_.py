@@ -35,8 +35,8 @@ def upgrade():
     op.create_table('roles_users',
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('role_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], )
+    sa.ForeignKeyConstraint(['role_id'], ['role.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE')
     )
     ### end Alembic commands ###
 
