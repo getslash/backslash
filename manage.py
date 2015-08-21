@@ -82,7 +82,7 @@ def testserver(tmux, livereload, port):
         from_project_root("flask_app", "app.yml")
     ]
 
-    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy'})
+    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
     if livereload:
         from livereload import Server
         s = Server(app)
