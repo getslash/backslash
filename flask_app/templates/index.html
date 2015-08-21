@@ -1,22 +1,22 @@
 {% extends "layout.html" %}
 
-{% block head %}
-{{super()}}
-
-<style>
- .center {
-   text-align: center;
- }
-</style>
-
-{% endblock %}
-
 {% block body %}
-<div class="center">
+<div class="text-center">
   <h1>Success!</h1>
   <img src="http://rack.1.mshcdn.com/media/ZgkyMDEzLzA4LzA1Lzk3LzMwcm9jay40ZDgyNC5naWYKcAl0aHVtYgk4NTB4NTkwPgplCWpwZw/f1b84963/086/30-rock.jpg">
   <div>Go <a href={{ url_for('setup.setup_app') }}>here</a> to set up the default user</div><br/>
   <div>Now all you have to do is write some code...</div><br/>
-  <div>Python {{ version }}</div>
+  <pre>Python {{ version }}</pre>
 </div>
+
+<footer class="footer">
+  <div class="container text-center">
+    <p class="text-muted">
+      <a href="http://vmalloc.github.io/weber/" target="_blank">
+      <img src="http://vmalloc.github.io/weber/img/hatched-from-weber-badge-light-small.png" style="height: 2em">
+      </a>
+    </p>
+  </div>
+</footer>
+
 {% endblock %}
