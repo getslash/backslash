@@ -44,7 +44,9 @@
   action: shell systemctl daemon-reload
   when: systemd_change.changed
 - name: enable the services
-  action: service name={{app_name}}-wsgi enabled=true state=restarted
+  action: service name={{app_name}}-wsgi enabled=true state=started
+- name: restart the service if code changes
+  shell: systemctl restart {{app_name}}-wsgi
   when: systemd_change.changed or sources.changed or configuration.changed
 - name: try to get local page
   shell: curl http://localhost/
