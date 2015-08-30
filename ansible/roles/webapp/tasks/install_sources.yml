@@ -10,6 +10,8 @@
   shell: cd {{src_root}} && python manage.py db upgrade
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
+- name: fix permissions of static folder
+  file: path={{src_root}}/static owner=www-data group=www-data recurse=true state=directory
 - name: ensure nginx configuration
   shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
