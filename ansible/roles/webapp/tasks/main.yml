@@ -56,11 +56,17 @@
   action: shell systemctl daemon-reload
   when: systemd_change.changed
 - name: enable the services
-  action: service name={{item}} enabled=true state=restarted
+  action: service name={{item}} enabled=true state=started
   with_items:
     - "{{app_name}}-wsgi"
     - "{{app_name}}-celery-worker"
     - "{{app_name}}-celery-beat"
-  when: systemd_change.changed
+- name: restart the service if code changes
+  shell: systemctl restart {{item}}
+  with_items:
+    - "{{app_name}}-wsgi"
+    - "{{app_name}}-celery-worker"
+    - "{{app_name}}-celery-beat"
+  when: systemd_change.changed or sources.changed or configuration.changed
 - name: try to get local page
   shell: curl http://localhost/
