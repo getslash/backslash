@@ -11,6 +11,7 @@ http_port: 80
 webapp_archive_location: /tmp/src.tar.gz
 # required packages
 required_apt_packages:
+    - build-essential
     - rsync
     - python-virtualenv
     - python-dev
