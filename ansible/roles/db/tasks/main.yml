@@ -1,6 +1,7 @@
 - name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
   with_items:
+    - sudo
     - postgresql-client-9.4
     - postgresql-9.4
     - postgresql-server-dev-9.4
@@ -23,6 +24,7 @@
 - name: set up pacman packages
   action: pacman pkg={{item}} state=latest update_cache=yes
   with_items:
+    - sudo
     - postgresql
     - python2-psycopg2
   when: ansible_distribution == 'Archlinux'
