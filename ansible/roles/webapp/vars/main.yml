@@ -17,6 +17,7 @@ required_apt_packages:
     - software-properties-common
     - nginx
     - curl
+    - sudo
 required_yum_packages:
     - rsync
     - python-virtualenv
@@ -28,3 +29,4 @@ required_pacman_packages:
     - python-virtualenv
     - nginx
     - curl
+    - sudo
