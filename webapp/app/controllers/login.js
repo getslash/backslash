@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import AuthenticationControllerMixin from 'simple-auth/mixins/authentication-controller-mixin';
+import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-route-mixin';
 
-export default Ember.Controller.extend(AuthenticationControllerMixin, {
+export default Ember.Controller.extend(UnauthenticatedRouteMixin, {
   canSubmit: true,
   emailValid: function() {
     var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -38,8 +38,8 @@ export default Ember.Controller.extend(AuthenticationControllerMixin, {
         self.set("canSubmit", true);
       })
       .then(
-        function() {
-
+        function(data) {
+            return data;
         },
         function(reason) {
           var error = reason.statusText;
