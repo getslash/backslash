@@ -21,6 +21,7 @@ required_apt_packages:
     - curl
     - redis-server
     - gcc
+    - sudo
 required_yum_packages:
     - rsync
     - python-virtualenv
@@ -36,3 +37,4 @@ required_pacman_packages:
     - curl
     - redis
     - gcc
+    - sudo
