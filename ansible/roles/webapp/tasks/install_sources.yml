@@ -11,16 +11,12 @@
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: ensure nginx configuration
-  shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
+  shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf && nginx -s reload
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  register: nginx
 - name: ensure that the conf.d directory exists
   file: dest=/etc/nginx/conf.d state=directory
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
 - name: ensure nginx configuration
-  shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/conf.d/{{app_name}}.conf
+  shell: python {{src_root}}/manage.py generate_nginx_config /etc/nginx/conf.d/{{app_name}}.conf && nginx -s reload
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
-  register: nginx
-- shell: nginx -s reload
-  when: nginx.changed
 
