@@ -1,2 +1,2 @@
-nginx_user: nginx
-nginx_group: nginx
+nginx_user: http
+nginx_group: http
