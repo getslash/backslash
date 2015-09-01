@@ -1,2 +1,0 @@
-- name: reload nginx config
-  service: name=nginx enabled=true state=reloaded
