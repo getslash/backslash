@@ -1,3 +1,9 @@
+- include_vars: "../../../platform_vars/default.yml"
+- include_vars: "{{ item }}"
+  with_first_found:
+   - "../../../platform_vars/{{ ansible_distribution }}.yml"
+   - "../../../platform_vars/{{ ansible_os_family }}.yml"
+   - "/dev/null"
 - name: setup group
   action: group name={{group_name}} state=present
 - name: setup user
