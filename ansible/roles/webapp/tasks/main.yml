@@ -7,9 +7,7 @@
 - name: setup group
   action: group name={{group_name}} state=present
 - name: setup user
-  action: user name={{user_name}} state=present group={{group_name}}
-- name: setup directory for the unix socket
-  action: file path=/var/run/{{app_name}} owner={{user_name}} group={{group_name}} state=directory
+  action: user name={{user_name}} state=present group={{group_name}}  
 - name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
   with_items: required_apt_packages
@@ -40,6 +38,9 @@
   register: sources
 - include: install_sources.yml
   when: sources.changed or configuration.changed
+- name: ensure /var/run/{{app_name}} directory on boot
+  template: src=../templates/tmpfiles.d.conf.j2 dest=/etc/tmpfiles.d/{{app_name}}.conf
+- file: path=/var/run/{{app_name}} state=directory mode=0770 owner={{app_name}} group={{nginx_group}}
 - name: install systemd service
   action: template src=../templates/gunicorn.service.j2 dest=/lib/systemd/system/{{app_name}}-wsgi.service
   when: sources.changed or configuration.changed
