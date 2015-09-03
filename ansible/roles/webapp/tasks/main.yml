@@ -28,14 +28,16 @@
   with_items:
     - "{{deploy_root}}"
     - "{{deploy_root}}/conf.d"
-- service: name=redis-server state=started
+- service: name=redis-server state=started enabled=yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-- service: name=redis state=started
+- service: name=redis state=started enabled=yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
+- name: ensure no nginx default conf
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+- template: src=../templates/nginx_global_conf.conf.j2 dest=/etc/nginx/nginx.conf
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
 - name: nginx running
   action: service name=nginx state=started enabled=yes
-- name: ensure no nginx default conf
-  action: file path=/etc/nginx/sites-enabled/default state=absent
 - include: configuration.yml
 - name: copy source
   copy: src=../src_pkg.tar.gz dest={{webapp_archive_location}}
