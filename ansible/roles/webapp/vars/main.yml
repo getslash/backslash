@@ -12,21 +12,23 @@ webapp_archive_location: /tmp/src.tar.gz
 required_apt_packages:
     - build-essential
     - rsync
-    - python-virtualenv
-    - python-dev
+    - python3
+    - python3-pip
+    - python3-dev
     - software-properties-common
     - nginx
     - curl
     - sudo
 required_yum_packages:
     - rsync
-    - python-virtualenv
-    - python-devel
+    - python34u
+    - python34u-devel
+    - python34u-pip
     - nginx
     - curl
 required_pacman_packages:
     - rsync
-    - python-virtualenv
+    - python-pip
     - nginx
     - curl
     - sudo

@@ -7,7 +7,10 @@
 - name: setup group
   action: group name={{group_name}} state=present
 - name: setup user
-  action: user name={{user_name}} state=present group={{group_name}}  
+  action: user name={{user_name}} state=present group={{group_name}}
+- name: Add IUS repository (CentOS 7)
+  yum: name=https://dl.iuscommunity.org/pub/ius/stable/CentOS/7/x86_64/ius-release-1.0-14.ius.centos7.noarch.rpm state=present
+  when: ansible_distribution == 'CentOS'
 - name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
   with_items: required_apt_packages
@@ -23,6 +26,8 @@
   action: pacman pkg={{item}} state=latest update_cache=yes
   with_items: required_pacman_packages
   when: ansible_distribution == 'Archlinux'
+- name: set up virtualenv
+  pip: name=virtualenv state=latest executable={{pip_executable}}
 - name: ensure directories
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
