@@ -1,2 +1,3 @@
 nginx_user: www-data
 nginx_group: www-data
+pip_executable: /usr/bin/pip3
