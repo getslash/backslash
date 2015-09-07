@@ -9,3 +9,6 @@ windows:
     panes:
       - .env/bin/celery -A flask_app.tasks worker --loglevel=info
       - .env/bin/celery -A flask_app.tasks shell
+  - window_name: redis
+    panes:
+      - cd /tmp/ && rm -rf dump.rdb && redis-server

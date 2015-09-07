@@ -24,6 +24,6 @@ http {
     keepalive_timeout  65;
 
 
-    include /etc/nginx/conf.d/*.conf;
+    include {{nginx_sites_dir}}/*.conf;
     
 }
