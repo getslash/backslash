@@ -18,7 +18,7 @@ from _lib.source_package import prepare_source_package
 from _lib.db import db
 from _lib.celery import celery
 from _lib.utils import interact
-from _lib.deployment import generate_nginx_config, run_gunicorn
+from _lib.deployment import run_gunicorn
 import click
 import requests
 import logbook
@@ -32,7 +32,6 @@ def cli():
 
 
 cli.add_command(run_gunicorn)
-cli.add_command(generate_nginx_config)
 cli.add_command(db)
 cli.add_command(celery)
 
