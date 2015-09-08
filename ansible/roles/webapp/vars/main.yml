@@ -5,6 +5,7 @@ group_name: "{{app_name}}"
 deploy_root: "/opt/{{app_name}}"
 src_root: "{{deploy_root}}/src"
 celery_bin: "{{src_root}}/.env/bin/celery"
+static_root: "{{src_root}}/static"
 # nginx
 http_port: 80
 # misc

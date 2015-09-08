@@ -17,27 +17,3 @@ def run_gunicorn():
     cmd = [gunicorn_bin, '--log-syslog', '-b', 'unix://{}'.format(_UNIX_SOCKET_NAME), 'flask_app.wsgi:app', '--chdir', from_project_root('.')]
     os.execv(gunicorn_bin, cmd)
 
-@click.command()
-@click.argument('path')
-def generate_nginx_config(path):
-    if not os.path.isdir(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-    with open(path, "w") as f:
-        f.write("""server {{
-    listen 80;
-    location /static {{
-       alias {static_root};
-    }}
-
-    location = / {{
-       rewrite ^/$ /static/index.html;
-    }}
-
-    location / {{
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://unix:{sock_name};
-    }}
-}}""".format(static_root=from_project_root("static"), sock_name=_UNIX_SOCKET_NAME))
