@@ -1,0 +1,25 @@
+{% if hostname_redirect_aliases %}
+server {
+    listen 80;
+    server_name {{hostname_redirect_aliases|join(',')}};
+    rewrite ^ http://{{inventory_hostname}}$request_uri? permanent;
+}
+{% endif %}
+
+
+server {
+    listen 80;
+    server_name {{inventory_hostname}};
+    
+    location /static {
+       alias {{static_root}};
+    }
+    
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/var/run/{{app_name}}/wsgi.sock;
+    }
+}

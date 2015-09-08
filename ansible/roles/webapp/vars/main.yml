@@ -4,6 +4,7 @@ group_name: "{{app_name}}"
 # paths
 deploy_root: "/opt/{{app_name}}"
 src_root: "{{deploy_root}}/src"
+static_root: "{{src_root}}/static"
 # nginx
 http_port: 80
 # misc

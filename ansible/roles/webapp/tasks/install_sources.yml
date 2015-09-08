@@ -11,5 +11,8 @@
 - name: ensure that nginx sites directory exists
   file: dest={{nginx_sites_dir}} state=directory
 - name: ensure nginx configuration
-  shell: python {{src_root}}/manage.py generate_nginx_config {{nginx_sites_dir}}/{{app_name}}.conf && nginx -s reload
+  template: src=../templates/nginx_site_conf.conf.j2 dest={{nginx_sites_dir}}/{{app_name}}.conf
+  register: nginx_conf
+- shell: nginx -s reload
+  when: nginx_conf.changed
 
