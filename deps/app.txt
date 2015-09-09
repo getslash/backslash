@@ -1,7 +1,6 @@
 Flask-Mail
 Flask-Script
 Flask>=0.10.1
-PyYAML
 URLObject
 gunicorn
 weber-utils
