@@ -17,12 +17,11 @@ bootstrap_env(["base"])
 from _lib.params import APP_NAME
 from _lib.frontend import frontend, ember, build_frontend
 from _lib.source_package import prepare_source_package
-from _lib.deployment import generate_nginx_config, run_uwsgi
-from _lib.docker import build_docker_image, start_docker_container, stop_docker_container
 from _lib.db import db
 from _lib.celery import celery
 from _lib.slash_running import suite
 from _lib.utils import interact
+from _lib.deployment import run_gunicorn
 import click
 import requests
 import logbook
@@ -36,8 +35,7 @@ def cli():
     pass
 
 
-cli.add_command(run_uwsgi)
-cli.add_command(generate_nginx_config)
+cli.add_command(run_gunicorn)
 cli.add_command(db)
 cli.add_command(frontend)
 cli.add_command(ember)
@@ -75,11 +73,12 @@ def bootstrap(develop, app):
 
 @cli.command()
 @click.option('--livereload/--no-livereload', is_flag=True, default=True)
-@requires_env("app", "develop")
+@click.option('-p', '--port', default=8000, envvar='TESTSERVER_PORT')
 @click.option('--tmux/--no-tmux', is_flag=True, default=True)
-def testserver(tmux, livereload, port=8000):
+@requires_env("app", "develop")
+def testserver(tmux, livereload, port):
     if tmux:
-        return _run_tmux_frontend()
+        return _run_tmux_frontend(port=port)
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
 
@@ -87,7 +86,7 @@ def testserver(tmux, livereload, port=8000):
         from_project_root("flask_app", "app.yml")
     ]
 
-    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SQLALCHEMY_ECHO': True})
+    app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
     if livereload:
         from livereload import Server
         s = Server(app)
@@ -102,9 +101,9 @@ def testserver(tmux, livereload, port=8000):
     else:
         app.run(port=port, extra_files=extra_files)
 
-def _run_tmux_frontend():
+def _run_tmux_frontend(port):
     tmuxp = from_env_bin('tmuxp')
-    os.execv(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')])
+    os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port)))
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
@@ -221,34 +220,6 @@ def _wait_for_travis_availability():
     else:
         raise RuntimeError("Web service did not become responsive")
     click.echo(click.style("Service is up", fg='green'))
-
-
-@cli.group()
-def docker():
-    pass
-
-
-@docker.command()
-def build():
-    build_docker_image(tag=APP_NAME, root=from_project_root())
-
-
-@docker.command()
-@click.option("-p", "--port", default=80, type=int)
-def start(port):
-    _run_docker_start(port)
-
-
-def _run_docker_start(port):
-    persistent_dir = from_project_root('persistent')
-    if not os.path.isdir(persistent_dir):
-        os.makedirs(persistent_dir)
-    start_docker_container(persistent_dir=persistent_dir, port_bindings={80: port})
-
-
-@docker.command()
-def stop():
-    stop_docker_container()
 
 
 @cli.command()

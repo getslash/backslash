@@ -1,0 +1,3 @@
+nginx_user: http
+nginx_group: http
+nginx_sites_dir: /etc/nginx/conf.d

@@ -1,7 +1,7 @@
-- name: temporarily move source tar
-  shell: mv -f {{webapp_archive_location}} {{webapp_archive_location}}.untarred
-- name: untar sources
-  shell: cd {{deploy_root}} && rm -rf flask_app src && tar xfz {{webapp_archive_location}}.untarred 2>&1 > /tmp/untar.log
+- name: untar to temporary location
+  shell: cd /tmp/ && rm -rf {{webapp_archive_location}}.untarred && mkdir {{webapp_archive_location}}.untarred && cd {{webapp_archive_location}}.untarred && tar xzf {{webapp_archive_location}}
+- name: rsync to src dir
+  shell: rsync -avP --delete {{webapp_archive_location}}.untarred/ {{src_root}}/
 - name: bootstrap
   shell: python3 {{deploy_root}}/manage.py bootstrap --app
 - name: ensure private config
@@ -10,16 +10,12 @@
   shell: cd {{deploy_root}} && python3 manage.py db upgrade
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
+- name: fix permissions of static folder
+  file: path={{src_root}}/static owner={{nginx_user}} group={{nginx_group}} recurse=true state=directory
+- name: ensure that nginx sites directory exists
+  file: dest={{nginx_sites_dir}} state=directory
 - name: ensure nginx configuration
-  shell: python3 {{deploy_root}}/manage.py generate_nginx_config /etc/nginx/sites-enabled/{{app_name}}.conf
-  notify: reload nginx config
-- name: reload supervisor
-  shell: supervisorctl reload
-  when: in_docker is not defined
-- name: ensure supervisor service
-  action: service name=supervisor state=started
-  when: in_docker is not defined
-- name: try to get local page
-  shell: curl http://localhost/
-- name: move source tar back to prevent future reinstallations
-  shell: mv -f {{webapp_archive_location}}.untarred {{webapp_archive_location}}
+  template: src=../templates/nginx_site_conf.conf.j2 dest={{nginx_sites_dir}}/{{app_name}}.conf
+  register: nginx_conf
+- shell: nginx -s reload
+  when: nginx_conf.changed

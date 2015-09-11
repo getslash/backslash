@@ -110,10 +110,11 @@ def drop():
 
 @db.command()
 @requires_env("app")
-def revision():
+@click.option('-m', '--message', default=None)
+def revision(message):
     with _migrate_context() as migrate:
         migrate.upgrade()
-        migrate.revision(autogenerate=True)
+        migrate.revision(autogenerate=True, message=message)
 
 
 @db.command()
@@ -121,6 +122,13 @@ def revision():
 def upgrade():
     with _migrate_context() as migrate:
         migrate.upgrade()
+
+@db.command()
+@requires_env("app")
+def downgrade():
+    with _migrate_context() as migrate:
+        migrate.downgrade()
+
 
 @db.command()
 @requires_env("app")

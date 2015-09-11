@@ -1,36 +1,84 @@
+- include_vars: "../../../platform_vars/default.yml"
+- include_vars: "{{ item }}"
+  with_first_found:
+   - "../../../platform_vars/{{ ansible_distribution }}.yml"
+   - "../../../platform_vars/{{ ansible_os_family }}.yml"
+   - "/dev/null"
 - name: setup group
   action: group name={{group_name}} state=present
 - name: setup user
   action: user name={{user_name}} state=present group={{group_name}}
-- name: set up packages
+- name: Add IUS repository (CentOS 7)
+  yum: name=https://dl.iuscommunity.org/pub/ius/stable/CentOS/7/x86_64/ius-release-1.0-14.ius.centos7.noarch.rpm state=present
+  when: ansible_distribution == 'CentOS'
+- name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
-  with_items: required_packages
-
-- easy_install: name=pip executable=easy_install3
-- name: install additional needed packages via pip
-  pip: name={{item}} executable=pip3
-  with_items: required_pip_packages
-
+  with_items: required_apt_packages
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: install EPEL
+  action: yum pkg=epel-release state=latest
+  when: ansible_distribution == 'CentOS'
+- name: set up yum packages
+  action: yum pkg={{item}} state=latest update_cache=yes
+  with_items: required_yum_packages
+  when: ansible_distribution == 'CentOS'
+- name: set up pacman packages
+  action: pacman pkg={{item}} state=latest update_cache=yes
+  with_items: required_pacman_packages
+  when: ansible_distribution == 'Archlinux'
+- name: set up virtualenv
+  pip: name=virtualenv state=latest executable={{pip_executable}}
 - name: ensure directories
   action: file state=directory path={{item}} owner={{user_name}} group={{group_name}}
   with_items:
     - "{{deploy_root}}"
     - "{{deploy_root}}/conf.d"
-- include: redis.yml
-- include: nginx.yml
+- service: name=redis-server state=started enabled=yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- service: name=redis state=started enabled=yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
+- name: ensure no nginx default conf
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+- template: src=../templates/nginx_global_conf.conf.j2 dest=/etc/nginx/nginx.conf
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Archlinux'
+- name: nginx running
+  action: service name=nginx state=started enabled=yes
 - include: configuration.yml
 - name: copy source
   copy: src=../src_pkg.tar.gz dest={{webapp_archive_location}}
   register: sources
-  notify: reload nginx config
 - include: install_sources.yml
   when: sources.changed or configuration.changed
-- name: fix supervisor locale to UTF-8 (LC_ALL)
-  lineinfile: dest=/etc/default/supervisor regexp=^LC_ALL= line=LC_ALL=en_US.UTF-8
-- name: fix supervisor locale to UTF-8 (LANG)
-  lineinfile: dest=/etc/default/supervisor regexp=^LANG= line=LANG=en_US.UTF-8
-- name: configure supervisor
-  action: template src=../templates/supervisor.j2 dest=/etc/supervisor/conf.d/{{app_name}}-wsgi.conf
-  register: supervisor_conf
-- shell: supervisorctl reload
-  when: supervisor_conf.changed and in_docker is not defined
+- name: ensure /var/run/{{app_name}} directory on boot
+  template: src=../templates/tmpfiles.d.conf.j2 dest=/etc/tmpfiles.d/{{app_name}}.conf
+- file: path=/var/run/{{app_name}} state=directory mode=0770 owner={{app_name}} group={{nginx_group}}
+- name: install systemd service
+  action: template src=../templates/gunicorn.service.j2 dest=/lib/systemd/system/{{app_name}}-wsgi.service
+  when: sources.changed or configuration.changed
+  register: systemd_change
+- name: install systemd service (Celery worker)
+  action: template src=../templates/celery-worker.service.j2 dest=/lib/systemd/system/{{app_name}}-celery-worker.service
+  when: sources.changed or configuration.changed
+  register: systemd_change
+- name: install systemd service (Celery beat)
+  action: template src=../templates/celery-beat.service.j2 dest=/lib/systemd/system/{{app_name}}-celery-beat.service
+  when: sources.changed or configuration.changed
+  register: systemd_change
+- name: reload systemd daemon
+  action: shell systemctl daemon-reload
+  when: systemd_change.changed
+- name: enable the services
+  action: service name={{item}} enabled=true state=started
+  with_items:
+    - "{{app_name}}-wsgi"
+    - "{{app_name}}-celery-worker"
+    - "{{app_name}}-celery-beat"
+- name: restart the service if code changes
+  shell: systemctl restart {{item}}
+  with_items:
+    - "{{app_name}}-wsgi"
+    - "{{app_name}}-celery-worker"
+    - "{{app_name}}-celery-beat"
+  when: systemd_change.changed or sources.changed or configuration.changed
+- name: try to get local page
+  shell: curl http://localhost/

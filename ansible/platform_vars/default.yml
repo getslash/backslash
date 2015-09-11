@@ -1,0 +1,4 @@
+nginx_user: www-data
+nginx_group: www-data
+pip_executable: /usr/bin/pip3
+nginx_sites_dir: /etc/nginx/sites-enabled
