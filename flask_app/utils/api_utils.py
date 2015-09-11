@@ -61,10 +61,7 @@ def requires_login_or_runtoken(func, allow_runtoken=True):
 
     @functools.wraps(func)
     def new_func(*args, **kwargs):
-        if isinstance(current_user.is_authenticated, bool):
-            import pudb
-            pudb.set_trace()
-        if not current_user.is_authenticated():
+        if not current_user.is_authenticated:
             if not allow_runtoken:
                 abort(requests.codes.unauthorized)
             g.token_user = _get_user_from_run_token()

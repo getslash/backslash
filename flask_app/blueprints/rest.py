@@ -84,7 +84,7 @@ class UserResource(ModelResource):
 
     def _get_object_by_id(self, object_id):
         user = current_user
-        if not user.is_authenticated() or user.id != object_id:
+        if not user.is_authenticated or user.id != object_id:
             abort(requests.codes.unauthorized)
         return User.query.get_or_404(int(object_id))
 
