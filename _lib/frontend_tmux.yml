@@ -9,4 +9,4 @@ windows:
       - .env/bin/celery -A flask_app.tasks shell
   - window_name: redis
     panes:
-      - cd /tmp/ && rm -rf dump.rdb && redis-server
+      - bash -c "cd /tmp/ && rm -rf dump.rdb && exec redis-server"
