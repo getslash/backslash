@@ -1,8 +1,10 @@
 language: python
 python:
-  - 2.7
+  - 3.4
 addons:
   postgresql: "9.4"
+install:
+  - pip install virtualenv
 script: python manage.py travis-test
 after_failure:
   - sudo supervisorctl status
