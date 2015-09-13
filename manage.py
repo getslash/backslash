@@ -13,6 +13,7 @@ from _lib.ansible import ensure_ansible
 bootstrap_env(["base"])
 
 
+from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
 from _lib.db import db
 from _lib.celery import celery
