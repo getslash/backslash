@@ -1,11 +1,8 @@
 language: python
+sudo: false
 python:
   - 3.4
 # command to run tests, e.g. python setup.py test
 install:
   - pip install virtualenv
 script: python manage.py travis-test
-after_failure:
-  - sudo supervisorctl status
-  - sudo cat /var/log/*-wsgi.log
-  - sudo cat /var/log/nginx/error.log
