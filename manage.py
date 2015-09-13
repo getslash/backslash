@@ -12,7 +12,6 @@ from _lib.ansible import ensure_ansible
 bootstrap_env(["base"])
 
 
-from _lib.params import APP_NAME
 from _lib.source_package import prepare_source_package
 from _lib.deployment import run_gunicorn
 import click
@@ -158,7 +157,7 @@ def travis_test():
 def _wait_for_travis_availability():
     click.echo(click.style("Waiting for service to become available on travis", fg='magenta'))
     time.sleep(10)
-    for retry in range(10):
+    for _ in range(10):
         click.echo("Checking service...")
         resp = requests.get("http://localhost/")
         click.echo("Request returned {0}".format(resp.status_code))
