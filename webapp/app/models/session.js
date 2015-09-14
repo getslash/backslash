@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import Ember from 'ember';
 
 export default DS.Model.extend({
 
@@ -20,6 +21,10 @@ export default DS.Model.extend({
 
     subjects: DS.attr(),
     user_email: DS.attr(),
+
+    real_email: DS.attr(),
+
+    is_delegate: Ember.computed.notEmpty('real_email'),
 
     is_running: function() {
         return this.get('status') === 'RUNNING';

@@ -12,3 +12,9 @@ def test_start_session_delegate(client, testuser_email, otheruser_email, proxy_r
     session.report_end()
     assert session.user_email == otheruser_email
     assert session.real_email == testuser_email
+
+def test_can_delegate_to_self(client, testuser_email):
+    session = client.report_session_start(user_email=testuser_email)
+    session.report_end()
+    assert session.user_email == testuser_email
+    assert session.real_email is None
