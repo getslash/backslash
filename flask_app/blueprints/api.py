@@ -56,7 +56,7 @@ def report_session_start(logical_id: str=None,
         status=statuses.RUNNING,
         logical_id=logical_id,
     )
-    if user_email is not None:
+    if user_email is not None and user_email != g.token_user.email:
         if not has_role(g.token_user.id, 'proxy'):
             abort(requests.codes.forbidden)
         returned.real_user_id = returned.user_id
