@@ -17,6 +17,7 @@ from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
+from ..utils.users import get_user_id_by_email, has_role
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
@@ -44,6 +45,7 @@ def report_session_start(logical_id: str=None,
                          hostname: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
+                         user_email: str=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -54,6 +56,11 @@ def report_session_start(logical_id: str=None,
         status=statuses.RUNNING,
         logical_id=logical_id,
     )
+    if user_email is not None:
+        if not has_role(g.token_user.id, 'proxy'):
+            abort(requests.codes.forbidden)
+        returned.real_user_id = returned.user_id
+        returned.user_id = get_user_id_by_email(user_email)
     if metadata is not None:
         for key, value in metadata.items():
             db.session.add(

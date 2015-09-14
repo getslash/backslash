@@ -128,13 +128,20 @@ def runtoken(db, webapp_without_login, testuser):
 def testuser(testuser_and_id):
     return testuser_and_id[0]
 
-@pytest.fixture
-def moderator_role(testuser_id, webapp_without_login):
-    with webapp_without_login.app.app_context():
-        user = models.User.query.get(testuser_id)
-        user.roles.append(
-            models.Role.query.filter_by(name='admin').one())
-        models.db.session.commit()
+
+def _get_role_fixture(role_name):
+
+    def fixture(testuser_id, webapp_without_login):
+        with webapp_without_login.app.app_context():
+            user = models.User.query.get(testuser_id)
+            user.roles.append(
+                models.Role.query.filter_by(name=role_name).one())
+            models.db.session.commit()
+    fixture.__name__ = '{}_role'.format(role_name)
+    return pytest.fixture(fixture)
+
+moderator_role = _get_role_fixture('moderator')
+proxy_role = _get_role_fixture('proxy')
 
 @pytest.fixture
 def testuser_id(testuser_and_id):
@@ -152,17 +159,28 @@ def users_to_delete(request):
 
 @pytest.fixture
 def testuser_and_id(request, db, webapp_without_login, testuser_email, users_to_delete):
-    with webapp_without_login.app.app_context():
-        user = models.User(email=testuser_email, active=True)
+    user_id, user = _create_user(testuser_email, db, webapp_without_login, users_to_delete)
+    return user, user_id
+
+def _create_user(email, db, webapp, users_to_delete):
+    with webapp.app.app_context():
+        user = models.User(email=email, active=True)
         db.session.add(user)
         db.session.commit()
         user_id = user.id
         users_to_delete.add(user_id)
-    return user, user_id
+    return user_id, user
 
 @pytest.fixture
 def testuser_email():
     return 'testing{}@localhost'.format(uuid4())
+
+
+@pytest.fixture
+def otheruser_email(db, webapp_without_login, users_to_delete):
+    email = 'otheruser{}@localhost'.format(uuid4())
+    _create_user(email, db, webapp_without_login, users_to_delete)
+    return email
 
 
 @pytest.fixture

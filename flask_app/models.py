@@ -122,7 +122,11 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
-    user = db.relationship('User', lazy='joined')
+    user = db.relationship('User', lazy='joined', foreign_keys=user_id)
+    real_user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=True)
+    real_user = db.relationship('User', lazy='joined', foreign_keys=real_user_id)
+
 
     # status
     num_errors = db.Column(db.Integer, default=0)
@@ -133,6 +137,13 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     @rendered_field
     def user_email(self):
         return self.user.email
+
+    @rendered_field
+    def real_email(self):
+        user = self.real_user
+        if user is None:
+            return None
+        return user.email
 
     @rendered_field
     def subjects(self):

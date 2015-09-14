@@ -6,7 +6,7 @@ from flask.ext.login import login_user, logout_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from ..auth import has_role
+from .users import has_role
 from ..models import db, User, RunToken
 from .rendering import render_api_object
 from .responses import API_RESPONSE, API_SUCCESS
