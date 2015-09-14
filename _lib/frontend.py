@@ -51,7 +51,7 @@ def _bootstrap_frontend():
             _logger.info("Bootstrapping frontend environment...")
             _execute("npm install -g ember-cli bower")
             _execute("npm install")
-            _execute("{} install".format(_BOWER_EXECUTABLE))
+            _execute("{} install --allow-root".format(_BOWER_EXECUTABLE))
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
