@@ -189,14 +189,14 @@ def travis_test():
 def _temporary_db():
     from flask_app.app import create_app
     from flask_app import models
+    from _lib.db import _migrate_context
 
     subprocess.check_call('createdb {0}'.format(APP_NAME), shell=True)
 
     app = create_app()
 
-    with app.app_context():
-        models.db.create_all()
-
+    with _migrate_context(app) as migrate:
+        migrate.upgrade()
     yield
     with app.app_context():
         models.db.drop_all()

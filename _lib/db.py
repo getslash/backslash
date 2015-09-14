@@ -138,11 +138,12 @@ def downgrade():
 
 
 @contextmanager
-def _migrate_context():
+def _migrate_context(app):
     from flask_app.app import create_app
     from flask_app.models import db
     from flask.ext import migrate
-    app = create_app()
+    if app is None:
+        app = create_app()
 
     migrate.Migrate(app, db)
 
