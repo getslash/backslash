@@ -311,7 +311,7 @@ class Comment(db.Model, TypenameMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.id', ondelete='CASCADE'), nullable=False, index=True)
-    user = db.relationship('User')
+    user = db.relationship('User', foreign_keys=user_id)
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.Float, default=get_current_time)
     deleted = db.Column(db.Boolean, server_default="false")

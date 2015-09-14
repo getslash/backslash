@@ -103,7 +103,7 @@ class CommentsResource(ModelResource):
             returned = Comment.query.join((Test, Comment.test)).filter(Test.id == args.test_id)
         else:
             abort(requests.codes.bad_request)
-        return returned.join(User)
+        return returned.join(User, Comment.user)
 
     def _paginate(self, iterator, metadata):
         return iterator
