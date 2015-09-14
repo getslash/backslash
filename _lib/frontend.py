@@ -9,15 +9,20 @@ import click
 
 from .bootstrapping import from_env, from_project_root
 
-_logger = logbook.Logger(__name__)
 
+_NPM_PREFIX = from_project_root('.env/npm')
+_EMBER_EXECUTABLE = os.path.join(_NPM_PREFIX, 'bin', 'ember')
+_BOWER_EXECUTABLE = os.path.join(_NPM_PREFIX, 'bin', 'bower')
+
+_logger = logbook.Logger(__name__)
 
 
 @click.command()
 @click.argument('args', nargs=-1)
 def ember(args):
+    args = [_EMBER_EXECUTABLE] + args
     _bootstrap_frontend()
-    _execute('ember {}'.format(' '.join(args)), cwd=from_project_root('webapp'))
+    _execute(' '.join(args), cwd=from_project_root('webapp'))
 
 
 @click.group()
@@ -32,7 +37,7 @@ def build(watch, production):
 
 def build_frontend(watch, production):
     _bootstrap_frontend()
-    cmd = 'ember build --output-path=../static/'
+    cmd = '{} build --output-path=../static/'.format(_EMBER_EXECUTABLE)
     if watch:
         cmd += ' --watch'
     if production:
@@ -46,7 +51,7 @@ def _bootstrap_frontend():
             _logger.info("Bootstrapping frontend environment...")
             _execute("npm install -g ember-cli bower")
             _execute("npm install")
-            _execute("bower install --allow-root")
+            _execute("{} install --allow-root".format(_BOWER_EXECUTABLE))
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):
@@ -61,7 +66,9 @@ def _get_timestamp_update_context(timestamp_path, paths):
 def _execute(cmd, cwd=None):
     if cwd is None:
         cwd = from_project_root('webapp')
-    returncode = subprocess.call(cmd, shell=True, cwd=cwd)
+    env = os.environ.copy()
+    env['NPM_CONFIG_PREFIX'] = _NPM_PREFIX
+    returncode = subprocess.call(cmd, shell=True, cwd=cwd, env=env)
     if returncode != 0:
         sys.exit(returncode)
 

@@ -185,10 +185,6 @@ def travis_test():
     with _temporary_db():
         _run_unittest()
 
-    _run_deploy('localhost')
-    _wait_for_travis_availability()
-    _run_fulltest(["--url=http://127.0.0.1:80"])
-
 @contextmanager
 def _temporary_db():
     from flask_app.app import create_app
@@ -210,7 +206,7 @@ def _wait_for_travis_availability():
     click.echo(
         click.style("Waiting for service to become available on travis", fg='magenta'))
     time.sleep(10)
-    for retry in range(10):
+    for _ in range(10):
         click.echo("Checking service...")
         resp = requests.get("http://localhost/")
         click.echo("Request returned {0}".format(resp.status_code))
