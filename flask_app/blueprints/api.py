@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment
+from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
@@ -323,3 +323,13 @@ def delete_comment(comment_id: int):
 
     db.session.add(comment)
 
+@API(require_real_login=True)
+@requires_role('admin')
+def toggle_user_role(user_id: int, role: str):
+    user = User.query.get_or_404(user_id)
+    role_obj = Role.query.filter_by(name=role).first_or_404()
+
+    if role_obj in user.roles:
+        user.roles.remove(role_obj)
+    else:
+        user.roles.append(role_obj)

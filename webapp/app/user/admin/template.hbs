@@ -1,0 +1,6 @@
+<div class="container">
+  <h4>User Roles</h4>
+  {{#each roles as |role|}}
+    {{boolean-toggle name=role.name value=role.enabled action=(action "toggle" role.name)}}
+  {{/each}}
+</div>

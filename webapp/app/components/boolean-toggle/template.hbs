@@ -1,0 +1,6 @@
+<div class="container-fluid" style="margin: 1em">
+  <div class="col-sm-3"><strong>{{name}}</strong></div>
+  <div class="col-sm-9">
+    <button {{action "toggle"}} class="btn {{if value 'btn-success' 'btn-danger'}}">{{if value 'On' 'Off'}}</button>
+  </div>
+</div>

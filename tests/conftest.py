@@ -116,18 +116,13 @@ def db():
     return models.db
 
 @pytest.fixture
-def runtoken(db, webapp_without_login, testuser):
-    with webapp_without_login.app.app_context():
+def runtoken(db, db_context, testuser):
+    with db_context():
         token_string = str(uuid4())
         token = models.RunToken(user=testuser, token=token_string)
         db.session.add(token)
         db.session.commit()
     return token_string
-
-@pytest.fixture
-def testuser(testuser_and_id):
-    return testuser_and_id[0]
-
 
 def _get_role_fixture(role_name):
 
@@ -142,10 +137,15 @@ def _get_role_fixture(role_name):
 
 moderator_role = _get_role_fixture('moderator')
 proxy_role = _get_role_fixture('proxy')
+admin_role = _get_role_fixture('admin')
 
 @pytest.fixture
-def testuser_id(testuser_and_id):
-    return testuser_and_id[1]
+def testuser(testuser_tuple):
+    return testuser_tuple[-1]
+
+@pytest.fixture
+def testuser_id(testuser_tuple):
+    return testuser_tuple[0]
 
 @pytest.fixture(scope='session')
 def users_to_delete(request):
@@ -157,31 +157,39 @@ def users_to_delete(request):
             models.db.session.commit()
     return returned
 
-@pytest.fixture
-def testuser_and_id(request, db, webapp_without_login, testuser_email, users_to_delete):
-    user_id, user = _create_user(testuser_email, db, webapp_without_login, users_to_delete)
-    return user, user_id
-
-def _create_user(email, db, webapp, users_to_delete):
-    with webapp.app.app_context():
-        user = models.User(email=email, active=True)
-        db.session.add(user)
-        db.session.commit()
-        user_id = user.id
-        users_to_delete.add(user_id)
-    return user_id, user
+def _create_user(users_to_delete):
+    user = models.User(email='user{}@localhost'.format(uuid4()), active=True)
+    models.db.session.add(user)
+    models.db.session.commit()
+    user_id = user.id
+    users_to_delete.add(user_id)
+    return user.id, user.email, user
 
 @pytest.fixture
-def testuser_email():
-    return 'testing{}@localhost'.format(uuid4())
-
+def testuser_email(testuser_tuple):
+    return testuser_tuple[1]
 
 @pytest.fixture
-def otheruser_email(db, webapp_without_login, users_to_delete):
-    email = 'otheruser{}@localhost'.format(uuid4())
-    _create_user(email, db, webapp_without_login, users_to_delete)
-    return email
+def otheruser_email(otheruser_tuple):
+    return otheruser_tuple[1]
 
+@pytest.fixture
+def otheruser_id(otheruser_tuple):
+    return otheruser_tuple[0]
+
+@pytest.fixture
+def testuser_tuple(db_context, users_to_delete):
+    with db_context():
+        return _create_user(users_to_delete)
+
+@pytest.fixture
+def otheruser_tuple(db_context, users_to_delete):
+    with db_context():
+        return _create_user(users_to_delete)
+
+@pytest.fixture
+def db_context(webapp_without_login):
+    return webapp_without_login.app.app_context
 
 @pytest.fixture
 def file_name():
@@ -267,3 +275,7 @@ for _method in ("get", "put", "post", "delete"):
 @pytest.fixture
 def flask_app(webapp):
     return webapp.app
+
+@pytest.fixture(params=['admin', 'proxy', 'moderator'])
+def role(request):
+    return request.param

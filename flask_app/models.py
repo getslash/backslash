@@ -295,6 +295,10 @@ class User(db.Model, UserMixin, TypenameMixin):
     roles = db.relationship('Role', secondary=roles_users, lazy='joined',
                             backref=db.backref('users', lazy='dynamic'))
 
+    @rendered_field
+    def user_roles(self):
+        return [{'name': role.name} for role in self.roles]
+
 
 class RunToken(db.Model):
 
