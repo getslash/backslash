@@ -7,4 +7,4 @@ export function gravatarUrl(params/*, hash*/) {
 
 }
 
-export default Ember.HTMLBars.makeBoundHelper(gravatarUrl);
+export default Ember.Helper.helper(gravatarUrl);

@@ -1,5 +1,5 @@
 import BaseRoute from '../routes/base';
-import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
+import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import RefreshableRouteMixin from '../mixins/refreshable-route';
 
 export default BaseRoute.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, {

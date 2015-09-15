@@ -15,4 +15,4 @@ export function momentTime(params, opts) {
     return moment.unix(opts.unix).format('YYYY/MM/DD hh:mm:ss');
 }
 
-export default Ember.HTMLBars.makeBoundHelper(momentTime);
+export default Ember.Helper.helper(momentTime);

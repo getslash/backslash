@@ -7,4 +7,4 @@ export function not(params/*, hash*/) {
 
 }
 
-export default Ember.HTMLBars.makeBoundHelper(not);
+export default Ember.Helper.helper(not);
