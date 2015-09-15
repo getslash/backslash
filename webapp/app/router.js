@@ -21,7 +21,7 @@ Router.map(function() {
     this.route('activity');
   });
 
-  this.resource('login', function() {});
+  this.route('login', function() {});
   this.route('profile');
   this.route('user', { path: '/users/:user_id' });
   this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
