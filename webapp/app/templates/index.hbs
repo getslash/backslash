@@ -7,7 +7,7 @@
       {{/each}}<br/>
       <p>Go {{#link-to "setup"}}here{{/link-to}} to setup your first user</p><br/>
       {{#if session.isAuthenticated}}
-      <p>Logged in as {{session.email}}. <a {{ action 'invalidateSession' }}>Logout</a></p>
+      <p>Logged in as {{session.data.authenticated.email}}. <a {{ action 'logout' }}>Logout</a></p>
       {{else}}
       <p>{{#link-to "login"}}Login{{/link-to}}</p>
       {{/if}}

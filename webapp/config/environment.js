@@ -19,8 +19,11 @@ module.exports = function(environment) {
     }
   };
 
-  ENV['simple-auth'] = {
-   authorizer: 'authorizer:token'
+  ENV['ember-simple-auth'] = {
+      authorizer: 'authorizer:token',
+      base: {
+          store: 'session-store:local-storage'
+      }
   };
 
   if (environment === 'development') {
