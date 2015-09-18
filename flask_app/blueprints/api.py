@@ -333,3 +333,9 @@ def toggle_user_role(user_id: int, role: str):
         user.roles.remove(role_obj)
     else:
         user.roles.append(role_obj)
+
+@API(require_real_login=True)
+def get_user_run_tokens(user_id: int):
+    if not has_role(current_user, 'admin') and current_user.id != user_id:
+        abort(requests.codes.forbidden)
+    return [t.token for t in User.query.get_or_404(user_id).run_tokens]

@@ -294,6 +294,7 @@ class User(db.Model, UserMixin, TypenameMixin):
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, lazy='joined',
                             backref=db.backref('users', lazy='dynamic'))
+    run_tokens = db.relationship('RunToken', lazy='dynamic')
 
     @rendered_field
     def user_roles(self):

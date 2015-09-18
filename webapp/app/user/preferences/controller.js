@@ -2,9 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
+    user: Ember.computed.oneWay('model.user'),
+    tokens: Ember.computed.oneWay('model.tokens'),
+
     roles: function() {
         let user_roles = [];
-        this.get('model.user_roles').forEach(role => user_roles.push(role.name));
+        this.get('user.user_roles').forEach(role => user_roles.push(role.name));
         let returned = [];
 
         ['admin', 'moderator', 'proxy'].forEach(function (name) {

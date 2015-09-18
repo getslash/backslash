@@ -5,7 +5,7 @@
     {{#with controllers.application.currentPath as |p|}}
       {{#nav-link to="user.sessions" current_path=p}}Sessions{{/nav-link}}
       {{#if session.secure.user_info.can.admin}}
-        {{#nav-link to="user.admin" current_path=p}}Admin{{/nav-link}}
+        {{#nav-link to="user.preferences" current_path=p}}Preferences{{/nav-link}}
       {{/if}}
     {{/with}}
   </ul>
