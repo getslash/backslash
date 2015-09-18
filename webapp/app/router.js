@@ -23,7 +23,10 @@ Router.map(function() {
 
   this.route('login', function() {});
   this.route('profile');
-  this.route('user', { path: '/users/:user_id' });
+  this.route('user', { path: '/users/:email' }, function() {
+    this.route('sessions');
+    this.route('preferences');
+  });
   this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
 });
 

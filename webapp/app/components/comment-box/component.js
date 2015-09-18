@@ -18,7 +18,7 @@ export default Ember.Component.extend({
     }.property('commentEdited'),
 
     mine: function() {
-        return this.get('comment.user_email') === this.get('session.content.user_info.email');
+        return this.get('comment.user_email') === this.get('session.data.authenticated.user_info.email');
     }.property(),
 
     actions: {

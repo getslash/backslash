@@ -20,7 +20,7 @@ _logger = logbook.Logger(__name__)
 @click.command()
 @click.argument('args', nargs=-1)
 def ember(args):
-    args = [_EMBER_EXECUTABLE] + args
+    args = [_EMBER_EXECUTABLE] + list(args)
     _bootstrap_frontend()
     _execute(' '.join(args), cwd=from_project_root('webapp'))
 

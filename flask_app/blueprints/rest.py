@@ -6,6 +6,7 @@ from flask import Blueprint, abort, request, session
 from flask.ext.security.core import current_user
 from flask_restful import Api, reqparse
 from sqlalchemy import text
+from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import Comment, Error, Session, Test, User, Activity
 from ..utils.rest import ModelResource
@@ -73,7 +74,7 @@ class ErrorResource(ModelResource):
         abort(requests.codes.bad_request)
 
 
-@_resource('/users', '/users/<int:object_id>')
+@_resource('/users', '/users/<object_id>')
 class UserResource(ModelResource):
 
     ONLY_FIELDS = ['id', 'email']
@@ -83,9 +84,13 @@ class UserResource(ModelResource):
         abort(requests.codes.unauthorized)
 
     def _get_object_by_id(self, object_id):
-        user = current_user
-        if not user.is_authenticated or user.id != object_id:
-            abort(requests.codes.unauthorized)
+        try:
+            object_id = int(object_id)
+        except ValueError:
+            try:
+                object_id = User.query.filter_by(email=object_id).one().id
+            except NoResultFound:
+                abort(requests.codes.not_found)
         return User.query.get_or_404(int(object_id))
 
 

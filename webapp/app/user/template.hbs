@@ -1,27 +1,11 @@
+<div class="container">
+  <h1><img class="img-circle" src="{{gravatar-url model.email}}?s=40"> {{model.display_name}}</h1>
 
-<div class="row row-fluid user-profile">
-
-  <div class="col-md-6 col-md-offset-3 user-profile-card">
-    <div class="row row-fluid">
-      <div class="col-md-4 col-md-offset-4 text-center">
-        <img src="{{gravatarURL}}" class="img-circle img-thumbnail"/>
-      </div>
-    </div>
-    {{#with session.content.user_info as |user_info|}}
-      <div class="row row-fluid">
-        <div class="col-md-4 col-md-offset-4 text-center">
-          <strong>{{user_info.name}}</strong> ({{user_info.email}})
-        </div>
-      </div>
-      <div class="row row-fluid">
-        <div class="col-md-4 col-md-offset-4 text-center">
-          <ul class="list-inline">
-            {{#each user_info.roles as |role|}}
-              <li>{{role}}</li>
-            {{/each}}
-          </ul>
-        </div>
-      </div>
-    {{/with}}
-  </div>
+  <ul class="nav nav-tabs">
+    {{#nav-link to="user.sessions" current_path=current_path}}Sessions{{/nav-link}}
+    {{#if session.data.authenticated.user_info.can.admin}}
+      {{#nav-link to="user.preferences" current_path=current_path}}Preferences{{/nav-link}}
+    {{/if}}
+  </ul>
 </div>
+{{outlet}}

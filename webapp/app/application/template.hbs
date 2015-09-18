@@ -4,20 +4,21 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="#"><img id="navbar-brand-img" src="/static/assets/img/backslash-logo.png"></a>
     </div>
-    {{#if session.data.authenticated.user_info.email }}
-    <ul class="nav navbar-nav">
-        <li>{{#link-to 'sessions'}}Sessions{{/link-to}}</li>
-    </ul>
+    {{# with session.data.authenticated.user_info as |u|}}
+      {{#if u.email }}
+        <ul class="nav navbar-nav">
+          <li>{{#link-to 'sessions'}}Sessions{{/link-to}}</li>
+        </ul>
 
-    <form class="navbar-form navbar-right">
-      <button type="submit" class="btn btn-default" {{action "invalidateSession"}}>Logout</button>
-    </form>
+        <form class="navbar-form navbar-right">
+          <button type="submit" class="btn btn-default" {{action "invalidateSession"}}>Logout</button>
+        </form>
 
-
-    <p class="navbar-text navbar-right">
-      {{#link-to "profile" tagName="span" class="clickable"}}<img class="img-circle" src="{{gravatar-url session.data.authenticated.user_info.email}}?s=20"> {{session.content.user_info.name}} {{/link-to}}
-    </p>
-    {{/if}}
+        <p class="navbar-text navbar-right">
+          {{#link-to "user.preferences" u.email tagName="span" class="clickable"}}<img class="img-circle" src="{{gravatar-url u.email}}?s=20"> {{u.name}} {{/link-to}}
+        </p>
+      {{/if}}
+    {{/with}}
   </div>
 </nav>
 
