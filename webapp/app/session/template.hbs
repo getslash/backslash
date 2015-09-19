@@ -19,13 +19,13 @@
 <div class="container">
 
   <ul class="nav nav-tabs" role="tablist">
-    {{#nav-link to="session.index" current_path=current_path}}Overview{{/nav-link}}
-    {{#nav-link to="session.tests" current_path=current_path}}Tests{{/nav-link}}
+    {{#nav-link to="session.index"}}Overview{{/nav-link}}
+    {{#nav-link to="session.tests"}}Tests{{/nav-link}}
     {{#if model.num_errors}}
-      {{#nav-link to="session.errors" current_path=current_path}}Errors ({{model.num_errors}}){{/nav-link}}
+      {{#nav-link to="session.errors"}}Errors <span class="label label-danger label-badge">{{model.num_errors}}</span>{{/nav-link}}
     {{/if}}
-    {{#nav-link to="session.comments" current_path=current_path}}Comments{{/nav-link}}
-    {{#nav-link to="session.activity" current_path=current_path}}Activity{{/nav-link}}
+    {{#nav-link to="session.comments"}}Comments{{/nav-link}}
+    {{#nav-link to="session.activity"}}Activity{{/nav-link}}
   </ul>
   <div class="tabs-details">
 {{outlet}}

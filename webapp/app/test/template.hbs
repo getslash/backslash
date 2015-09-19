@@ -3,12 +3,12 @@
 <div class="container">
 
   <ul class="nav nav-tabs" role="tablist">
-    {{#nav-link to="test.index" current_path=current_path}}Overview{{/nav-link}}
+    {{#nav-link to="test.index"}}Overview{{/nav-link}}
     {{#if model.num_errors}}
-      {{#nav-link to="test.errors" current_path=current_path}}Errors ({{model.num_errors}}){{/nav-link}}
+      {{#nav-link to="test.errors"}}Errors ({{model.num_errors}}){{/nav-link}}
     {{/if}}
-    {{#nav-link to="test.comments" current_path=current_path}}Comments{{/nav-link}}
-    {{#nav-link to="test.activity" current_path=current_path}}Activity{{/nav-link}}
+    {{#nav-link to="test.comments"}}Comments{{/nav-link}}
+    {{#nav-link to="test.activity"}}Activity{{/nav-link}}
   </ul>
 
   <div class="tabs-details">

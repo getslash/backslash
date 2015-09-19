@@ -2,9 +2,9 @@
   <h1><img class="img-circle" src="{{gravatar-url model.email}}?s=40"> {{model.display_name}}</h1>
 
   <ul class="nav nav-tabs">
-    {{#nav-link to="user.sessions" current_path=current_path}}Sessions{{/nav-link}}
+    {{#nav-link to="user.sessions"}}Sessions{{/nav-link}}
     {{#if session.data.authenticated.user_info.can.admin}}
-      {{#nav-link to="user.preferences" current_path=current_path}}Preferences{{/nav-link}}
+      {{#nav-link to="user.preferences"}}Preferences{{/nav-link}}
     {{/if}}
   </ul>
 </div>

@@ -3,5 +3,11 @@ import BaseController from '../controllers/base';
 
 export default BaseController.extend({
 
-    session: Ember.inject.service()
+    session: Ember.inject.service(),
+
+    path_tracker: Ember.inject.service(),
+
+    _path_observer: function() {
+        this.get('path_tracker').set('path', this.get('currentPath'));
+    }.observes('currentPath')
 });
