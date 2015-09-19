@@ -1,6 +1,16 @@
+{{#tool-bar}}{{/tool-bar}}
+
 <div class="container">
 
-  {{details-tabs route=controllers.application.currentPath obj=model}}
+  <ul class="nav nav-tabs" role="tablist">
+    {{#nav-link to="test.index" current_path=current_path}}Overview{{/nav-link}}
+    {{#if model.num_errors}}
+      {{#nav-link to="test.errors" current_path=current_path}}Errors ({{model.num_errors}}){{/nav-link}}
+    {{/if}}
+    {{#nav-link to="test.comments" current_path=current_path}}Comments{{/nav-link}}
+    {{#nav-link to="test.activity" current_path=current_path}}Activity{{/nav-link}}
+  </ul>
+
   <div class="tabs-details">
     {{outlet}}
   </div>

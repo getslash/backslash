@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
     comment: null,
 
-
+    session: Ember.inject.service(),
 
     defineProperties: function() {
         Ember.defineProperty(this, 'commentEdited', Ember.computed.alias('comment.edited'));
@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 
     email: function() {
         if (this.get('commentEdited')) {
-            return this.get('session.content.user_info.email');
+            return this.get('session.data.authenticated.user_info.email');
         }
         return this.get('comment').get('user_email');
     }.property('commentEdited'),

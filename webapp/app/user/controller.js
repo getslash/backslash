@@ -1,8 +1,7 @@
-import BaseController from '../controllers/base';
+import Ember from 'ember';
+import PathObserver from '../mixins/path-observer';
 
-export default BaseController.extend({
 
-    app_controller: Ember.inject.controller('application'),
+export default Ember.Controller.extend(PathObserver, {
 
-    current_path: Ember.computed.oneWay('app_controller.currentPath')
 });

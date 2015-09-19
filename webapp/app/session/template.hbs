@@ -18,7 +18,15 @@
 {{/tool-bar}}
 <div class="container">
 
-  {{details-tabs route=controllers.application.currentPath obj=model}}
+  <ul class="nav nav-tabs" role="tablist">
+    {{#nav-link to="session.index" current_path=current_path}}Overview{{/nav-link}}
+    {{#nav-link to="session.tests" current_path=current_path}}Tests{{/nav-link}}
+    {{#if model.num_errors}}
+      {{#nav-link to="session.errors" current_path=current_path}}Errors ({{model.num_errors}}){{/nav-link}}
+    {{/if}}
+    {{#nav-link to="session.comments" current_path=current_path}}Comments{{/nav-link}}
+    {{#nav-link to="session.activity" current_path=current_path}}Activity{{/nav-link}}
+  </ul>
   <div class="tabs-details">
 {{outlet}}
   </div>
