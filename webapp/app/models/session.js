@@ -17,6 +17,8 @@ export default DS.Model.extend({
     num_skipped_tests: DS.attr('number'),
     total_num_tests: DS.attr('number'),
 
+    num_warnings: DS.attr('number'),
+
     status: DS.attr('string'),
 
     subjects: DS.attr(),

@@ -13,12 +13,14 @@ Router.map(function() {
     this.route('errors');
     this.route('activity');
     this.route('investigate');
+    this.route('warnings');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
     this.route('errors');
     this.route('comments');
     this.route('activity');
+    this.route('warnings');
   });
 
   this.route('login', function() {});

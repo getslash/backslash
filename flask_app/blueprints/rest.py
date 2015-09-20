@@ -8,6 +8,7 @@ from flask_restful import Api, reqparse
 from sqlalchemy import text
 from sqlalchemy.orm.exc import NoResultFound
 
+from .. import models
 from ..models import Comment, Error, Session, Test, User, Activity
 from ..utils.rest import ModelResource
 from ..utils import statuses
@@ -53,6 +54,22 @@ class TestResource(ModelResource):
         if session_id is not None:
             return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
         return super(TestResource, self)._get_iterator()
+
+warnings_parser = reqparse.RequestParser()
+warnings_parser.add_argument('session_id', type=int, default=None)
+warnings_parser.add_argument('test_id', type=int, default=None)
+
+
+@_resource('/warnings', '/warnings/<int:object_id>')
+class WarningsResource(ModelResource):
+
+    MODEL = models.Warning
+    DEFAULT_SORT = (models.Warning.timestamp.desc(),)
+
+    def _get_iterator(self):
+        args = warnings_parser.parse_args()
+        returned = self.MODEL.query.filter_by(test_id=args.test_id, session_id=args.session_id)
+        return returned
 
 
 session_test_user_query_parser = reqparse.RequestParser()

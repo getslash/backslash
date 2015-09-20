@@ -21,8 +21,11 @@
   <ul class="nav nav-tabs" role="tablist">
     {{#nav-link to="session.index"}}Overview{{/nav-link}}
     {{#nav-link to="session.tests"}}Tests{{/nav-link}}
-    {{#if model.num_errors}}
+    {{#if (gt model.num_errors 0)}}
       {{#nav-link to="session.errors"}}Errors <span class="label label-danger label-badge">{{model.num_errors}}</span>{{/nav-link}}
+    {{/if}}
+    {{#if (gt model.num_warnings 0)}}
+      {{#nav-link to="session.warnings"}}Warnings <span class="label label-warning label-badge">{{model.num_warnings}}</span>{{/nav-link}}
     {{/if}}
     {{#nav-link to="session.comments"}}Comments{{/nav-link}}
     {{#nav-link to="session.activity"}}Activity{{/nav-link}}

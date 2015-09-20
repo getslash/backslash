@@ -8,6 +8,7 @@ export default DS.Model.extend({
     status: DS.attr('string'),
     name: DS.attr('string'),
     num_errors: DS.attr('number'),
+    num_warnings: DS.attr('number'),
 
     skip_reason: DS.attr(),
 

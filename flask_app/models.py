@@ -120,6 +120,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
 
+    num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
     user = db.relationship('User', lazy='joined', foreign_keys=user_id)
@@ -231,6 +233,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)
+    num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
 
     @rendered_field
     def duration(self):
@@ -273,6 +276,17 @@ class Error(db.Model, TypenameMixin):
     message = db.Column(db.String(256), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
+
+class Warning(db.Model, TypenameMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
+    message = db.Column(db.Text, nullable=False)
+    filename = db.Column(db.String(2048), nullable=True)
+    lineno = db.Column(db.Integer, nullable=True)
+    timestamp = db.Column(db.Float, nullable=False)
+
 
 
 roles_users = db.Table('roles_users',

@@ -349,13 +349,21 @@ def test_info(file_name, test_name, class_name):
 
 @pytest.fixture(params=['session', 'test'])
 def error_container(request, client):
+    return _get_api_object_by_typename(client=client, typename=request.param)
+
+@pytest.fixture(params=['session', 'test'])
+def warning_container(request, client):
+    return _get_api_object_by_typename(typename=request.param, client=client)
+
+def _get_api_object_by_typename(*, typename, client):
     session = client.report_session_start()
-    if request.param == 'session':
+    if typename == 'session':
         return session
-    elif request.param == 'test':
+    elif typename == 'test':
         test = session.report_test_start('name')
         return test
     raise NotImplementedError() # pragma: no cover
+
 
 @pytest.fixture
 def nonexistent_error_container(error_container):

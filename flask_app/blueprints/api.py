@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role
+from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
@@ -76,7 +76,6 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
         product=product,
         version=version,
         revision=revision)
-    db.session.add(subject)
     session.subject_instances.append(subject)
     db.session.add(session)
 
@@ -291,6 +290,26 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
 
     except NoResultFound:
         abort(requests.codes.not_found)
+
+
+@API
+def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
+    if not ((test_id is not None) ^ (session_id is not None)):
+        abort(requests.codes.bad_request)
+    if session_id is not None:
+        obj = Session.query.get_or_404(session_id)
+    else:
+        obj = Test.query.get_or_404(test_id)
+    if timestamp is None:
+        timestamp = get_current_time()
+    db.session.add(
+        Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
+    obj.num_warnings = type(obj).num_warnings + 1
+    if session_id is None:
+        obj.session.num_warnings = Session.num_warnings + 1
+        db.session.add(obj.session)
+    db.session.add(obj)
+
 
 
 @API(require_real_login=True)
