@@ -152,7 +152,7 @@ def unittest():
 @requires_env("app", "develop")
 def _run_unittest():
     subprocess.check_call(
-        [from_env_bin("py.test"), "tests/test_ut", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
+        [from_env_bin("py.test"), "tests/", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
 
 
 @cli.command()
