@@ -9,5 +9,11 @@ export default BaseController.extend({
 
     _path_observer: function() {
         this.get('path_tracker').set('path', this.get('currentPath'));
-    }.observes('currentPath')
+    }.observes('currentPath'),
+
+    actions: {
+        invalidateSession: function() {
+            this.get('session').invalidate();
+        }
+    }
 });
