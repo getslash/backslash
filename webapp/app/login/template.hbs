@@ -1,3 +1,9 @@
+{{#if loading}}
+
+  {{loading-icon}}
+
+{{else}}
+
 <div class="container">
 
   <h1>Sign in Required</h1>
@@ -7,3 +13,4 @@
   <button class="btn btn-danger" {{action "googleLogin"}}><i class="fa fa-google"></i> Sign in with Google</button>
 
 </div>
+{{/if}}
