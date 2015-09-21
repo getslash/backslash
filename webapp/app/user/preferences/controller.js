@@ -26,7 +26,7 @@ export default Ember.Controller.extend({
                 }
             }
             self.api.call('toggle_user_role', {
-                user_id: parseInt(this.get('model.id')),
+                user_id: parseInt(this.get('user.id')),
                 role: role}).then(function() {
                     self.send('refreshRoute');
                 });
