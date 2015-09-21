@@ -4,6 +4,7 @@ export default Ember.Controller.extend({
 
     user: Ember.computed.oneWay('model.user'),
     tokens: Ember.computed.oneWay('model.tokens'),
+    session: Ember.inject.service(),
 
     roles: function() {
         let user_roles = [];

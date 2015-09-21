@@ -4,7 +4,7 @@
       <div class="pref-pane">
         <h4>User Roles</h4>
         {{#each roles as |role|}}
-          {{boolean-toggle name=role.name value=role.enabled action=(action "toggle" role.name)}}
+          {{boolean-toggle name=role.name value=role.enabled enabled=session.data.authenticated.user_info.can.admin action=(action "toggle" role.name)}}
         {{/each}}
       </div>
     </div>
