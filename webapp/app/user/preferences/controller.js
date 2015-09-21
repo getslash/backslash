@@ -20,6 +20,11 @@ export default Ember.Controller.extend({
     actions: {
         toggle: function(role) {
             let self = this;
+            if (role === 'admin' && self.get('user.email') === self.get('session.data.authenticated.user_info.email')) {
+                if (!window.confirm('You are about to drop your own admin privileges. Are you sure?')) {
+                    return;
+                }
+            }
             self.api.call('toggle_user_role', {
                 user_id: parseInt(this.get('model.id')),
                 role: role}).then(function() {
