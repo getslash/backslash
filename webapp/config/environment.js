@@ -21,9 +21,7 @@ module.exports = function(environment) {
 
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
-      base: {
-          store: 'session-store:local-storage'
-      }
+      store: 'session-store:local-storage'
   };
 
   if (environment === 'development') {
