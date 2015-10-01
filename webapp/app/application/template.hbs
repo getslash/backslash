@@ -7,7 +7,7 @@
     {{# with session.data.authenticated.user_info as |u|}}
       {{#if u.email }}
         <ul class="nav navbar-nav">
-          <li>{{#link-to 'sessions'}}Sessions{{/link-to}}</li>
+          {{#nav-link to="sessions"}}Sessions{{/nav-link}}
         </ul>
 
         <form class="navbar-form navbar-right">
