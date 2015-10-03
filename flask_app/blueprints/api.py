@@ -103,7 +103,17 @@ def report_session_end(id: int, duration: int=None):
 
 
 @API
-def report_test_start(session_id: int, name: str, file_name: (str, NoneType)=None, class_name: (str, NoneType)=None, test_logical_id: str=None):
+def report_test_start(
+        session_id: int,
+        name: str,
+        file_name: (str, NoneType)=None,
+        class_name: (str, NoneType)=None,
+        test_logical_id: str=None,
+        scm: (str, NoneType)=None,
+        file_hash: (str, NoneType)=None,
+        scm_revision: (str, NoneType)=None,
+        scm_dirty: bool=False,
+):
     session = Session.query.get(session_id)
     if session is None:
         abort(requests.codes.not_found)
@@ -111,7 +121,16 @@ def report_test_start(session_id: int, name: str, file_name: (str, NoneType)=Non
         abort(requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
-    return Test(session_id=session.id, logical_id=test_logical_id, test_info_id=test_info_id, status=statuses.RUNNING)
+    return Test(
+        session_id=session.id,
+        logical_id=test_logical_id,
+        test_info_id=test_info_id,
+        status=statuses.RUNNING,
+        scm_dirty=scm_dirty,
+        scm_revision=scm_revision,
+        scm=scm,
+        file_hash=file_hash,
+    )
 
 
 @API

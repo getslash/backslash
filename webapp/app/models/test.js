@@ -10,6 +10,11 @@ export default DS.Model.extend({
     num_errors: DS.attr('number'),
     num_warnings: DS.attr('number'),
 
+    scm: DS.attr(),
+    scm_revision: DS.attr(),
+    scm_dirty: DS.attr(),
+    file_hash: DS.attr(),
+
     skip_reason: DS.attr(),
 
     info: DS.attr(),

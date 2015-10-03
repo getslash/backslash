@@ -218,6 +218,11 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
 
+    scm = db.Column(db.String(5), default=None)
+    scm_dirty = db.Column(db.Boolean, server_default='false')
+    scm_revision = db.Column(db.String(40), default=None)
+    file_hash = db.Column(db.String(40), default=None)
+
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
     logical_id = db.Column(db.String(256), index=True)

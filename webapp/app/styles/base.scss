@@ -50,3 +50,11 @@ body {
 span.warning {
     color: $brand-warning;
 }
+
+.details-pane {
+    padding: 1em;
+    border: 1px dashed $gray-lighter;
+    border-sizing: box;
+    margin-right: 1em;
+    margin-top: 0.5em;
+}
