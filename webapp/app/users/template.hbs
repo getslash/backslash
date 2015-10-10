@@ -1,0 +1,29 @@
+{{#tool-bar}}
+{{/tool-bar}}
+
+<div class="container">
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th></th><th>Email</th><th>Last Active</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#each model as |user| }}
+  {{#link-to "user.sessions" user.email tagName="tr" classNames="clickable"}}
+    <td>
+      <img src="{{gravatar-url user.email}}" class="img-circle avatar small">
+    </td>
+    <td>
+      {{user.email}}
+    </td>
+    <td>
+      {{moment-time unix=user.last_active}}
+    </td>
+  {{/link-to}}
+{{/each}}
+  </tbody>
+</table>
+</div>
+
+{{pagination-nav page=page pages_total=pages_total next_page="next_page" prev_page="prev_page" goto_page="goto_page"}}

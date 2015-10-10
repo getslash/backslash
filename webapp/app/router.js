@@ -31,6 +31,7 @@ Router.map(function() {
   });
   this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
   this.route('loading');
+  this.route('users');
 });
 
 export default Router;

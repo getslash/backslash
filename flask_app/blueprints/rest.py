@@ -97,9 +97,6 @@ class UserResource(ModelResource):
     ONLY_FIELDS = ['id', 'email']
     MODEL = User
 
-    def _get_iterator(self):
-        abort(requests.codes.unauthorized)
-
     def _get_object_by_id(self, object_id):
         try:
             object_id = int(object_id)
