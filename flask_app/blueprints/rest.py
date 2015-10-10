@@ -27,6 +27,9 @@ def _resource(*args, **kwargs):
 
 ##########################################################################
 
+session_parser = reqparse.RequestParser()
+session_parser.add_argument('user_id', type=int, default=None)
+
 @_resource('/sessions', '/sessions/<int:object_id>')
 class SessionResource(ModelResource):
 
@@ -36,6 +39,9 @@ class SessionResource(ModelResource):
 
     def _get_iterator(self):
         returned = super(SessionResource, self)._get_iterator()
+        args = session_parser.parse_args()
+        if args.user_id is not None:
+            returned = returned.filter(Session.user_id==args.user_id)
         if request.args.get('show_archived') != 'true':
             returned = returned.filter(Session.archived == False)
         return returned
