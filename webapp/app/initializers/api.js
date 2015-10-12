@@ -12,7 +12,7 @@ var api = {
 };
 
 
-export function initialize(container, application) {
+export function initialize(application) {
     application.register('api:main', api, {instantiate: false});
 
     application.inject('controller', 'api', 'api:main');
