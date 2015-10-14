@@ -1,5 +1,6 @@
 {{#tool-bar back_button=true}}
   <form class="navbar-form navbar-right">
+    {{# if session.data.authenticated.user_info.can.moderate }}
     <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
 
     {{# if model.needs_investigation }}
@@ -11,6 +12,7 @@
       {{# if model.investigated }}
         <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
       {{/if}}
+    {{/if}}
     {{/if}}
 
   </form>

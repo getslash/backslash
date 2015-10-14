@@ -109,6 +109,7 @@ def _get_or_create_user(user_info):
     user_info['user_id'] = user.id
     user_info['roles'] = [role.name for role in user.roles]
     user_info['can'] = {role.name: True for role in user.roles}
+    user_info['can']['moderate'] = user_info['can']['moderator']
 
     _logger.debug('User info: {}', user_info)
 
