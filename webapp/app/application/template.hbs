@@ -1,8 +1,12 @@
 <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+
+
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <a class="navbar-brand" href="#"><img id="navbar-brand-img" src="/static/assets/img/backslash-logo.png"></a>
+      <div class="spinner"></div>
+
     </div>
     {{# with session.data.authenticated.user_info as |u|}}
       {{#if u.email }}
@@ -21,7 +25,13 @@
       {{/if}}
     {{/with}}
   </div>
+
+  {{# if loading}}
+  <div class="loading-indicator"></div>
+  {{/if}}
 </nav>
+
+
 
 
 {{outlet name="main"}}
