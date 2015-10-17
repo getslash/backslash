@@ -4,10 +4,13 @@ import functools
 import os
 import sys
 
+import logging
+import logging.handlers
 import logbook
 
 from celery import Celery
 from celery.signals import after_setup_logger, after_setup_task_logger
+from celery.log import redirect_stdouts_to_logger
 
 from .app import create_app
 
@@ -25,6 +28,15 @@ queue.conf.update(
 def setup_log(**args):
     logbook.SyslogHandler().push_application()
     logbook.StreamHandler(sys.stderr, bubble=True).push_application()
+    redirect_stdouts_to_logger(args['logger']) # logs to local syslog
+    if os.path.exists('/dev/log'):
+        h = logging.handlers.SysLogHandler('/dev/log')
+    else:
+        h = logging.handlers.SysLogHandler()
+    h.setLevel(args['loglevel'])
+    formatter = logging.Formatter(logging.BASIC_FORMAT)
+    h.setFormatter(formatter)
+    args['logger'].addHandler(h)
 
 APP = None
 
