@@ -32,10 +32,6 @@ export default DS.Model.extend({
         return this.get('status') === 'RUNNING';
     }.property('status'),
 
-    needs_investigation: function() {
-        return this.get('investigated') !== true && this.get('status') !== 'SUCCESS';
-    }.property('investigated', 'status'),
-
     typename: 'session'
 
 });

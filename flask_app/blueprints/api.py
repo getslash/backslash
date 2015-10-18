@@ -344,7 +344,7 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
     returned = Comment(user_id=current_user.id, comment=comment)
     obj.comments.append(returned)
     db.session.commit()
-    return {'id': returned.id}
+    return returned
 
 
 

@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
             let self = this;
             let params = this.getSaveCommentParams(comment);
             self.api.call('post_comment', params)
-                .then(function() {
+                .then(function(result) {
                     self.send('refreshRoute');
                 });
         },
@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
 
             self.api.call('delete_comment', {comment_id: parseInt(comment.id)}).then(
                 function() {
-                    self.send('refreshRoute');
+                    comment.set('deleted', true);
                 });
         }
     }

@@ -3,7 +3,7 @@
     {{# if session.data.authenticated.user_info.can.moderate }}
     <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
 
-    {{# if model.needs_investigation }}
+    {{# if needs_investigation }}
       {{#link-to "session.investigate" tagName="button" classNames="btn btn-mild-green"}}
         <i class="fa fa-check"></i> Mark Investigated
       {{/link-to}}

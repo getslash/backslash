@@ -2,6 +2,10 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
+    needs_investigation: function() {
+        return this.get('model.investigated') !== true && this.get('model.status') !== 'SUCCESS';
+    }.property('model.investigated', 'model.status'),
+
     toggle: function(attr) {
         var self = this;
         self.api.call('toggle_' + attr, {session_id: parseInt(self.get('model.id'))}).then(function() {

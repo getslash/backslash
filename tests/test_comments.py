@@ -5,8 +5,8 @@ def test_post_comment(commentable, real_login):
     commentable.post_comment('some_text')
 
 def test_delete_comment(commentable, real_login, client):
-    resp = commentable.post_comment('some_text')
-    client.delete_comment(comment_id=resp['id'])
+    c = commentable.post_comment('some_text')
+    client.delete_comment(comment_id=c.id)
     comments = list(commentable.get_comments())
     assert len(comments) == 1
     assert comments[0].deleted
