@@ -1,7 +1,7 @@
 pytest
 pytest-cov
 Flask-Loopback
--e git://github.com/slash-testing/backslash-python.git@develop#egg=backslash-python
+backslash-python>=2.0.0
 tmuxp
 livereload
 ipython
