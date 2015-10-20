@@ -22,7 +22,7 @@ def create_app(config=None):
     if os.path.isdir(_CONF_D_PATH):
         configs.extend(sorted(os.path.join(_CONF_D_PATH, x) for x in os.listdir(_CONF_D_PATH) if x.endswith(".yml")))
 
-    configs.append(os.path.expanduser('~/.configs/backslash/devconfig.yml'))
+    configs.append(os.path.expanduser('~/.config/backslash/devconfig.yml'))
 
     for yaml_path in configs:
         if os.path.isfile(yaml_path):
