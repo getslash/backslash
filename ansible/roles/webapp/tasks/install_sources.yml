@@ -3,11 +3,11 @@
 - name: rsync to src dir
   shell: rsync -avP --delete {{webapp_archive_location}}.untarred/ {{src_root}}/
 - name: bootstrap
-  shell: python3 {{deploy_root}}/manage.py bootstrap --app
+  shell: python3 {{src_root}}/manage.py bootstrap --app
 - name: ensure private config
-  shell: python3 {{deploy_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
+  shell: python3 {{src_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
 - name: migrate db
-  shell: cd {{deploy_root}} && python3 manage.py db upgrade
+  shell: cd {{src_root}} && python3 manage.py db upgrade
 - name: fix permissions
   shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
 - name: fix permissions of static folder
