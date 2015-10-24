@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
             let self = this;
             let params = this.getSaveCommentParams(comment);
             self.api.call('post_comment', params)
-                .then(function(result) {
+                .then(function() {
                     self.send('refreshRoute');
                 });
         },
