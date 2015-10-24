@@ -62,15 +62,15 @@ module.exports = function(environment) {
 
   }
 
-
-  var result = spawnSync('git', ['describe', '--tags']);
-  if (result.status !== 0) {
-    throw new Error('Git returned with status ' + result.status + ': ' +
-            result.stderr.toString().trim());
+  ENV.app_version = '?';
+  if (spawnSync !== undefined) {
+    var result = spawnSync('git', ['describe', '--tags']);
+    if (result.status !== 0) {
+      throw new Error('Git returned with status ' + result.status + ': ' +
+              result.stderr.toString().trim());
+    }
+    ENV.app_version = result.stdout.toString().trim();
   }
-  var version = result.stdout.toString().trim();
-  ENV.app_version = version;
-
-
+  
   return ENV;
 };
