@@ -1,30 +1,27 @@
 <div class="row-fluid">
   <div class="details-pane col-sm-4">
     <p>
-      <strong>Session:</strong> {{#link-to 'session.index' model.session_id}}{{model.session_id}}{{/link-to}}
+      <strong>File name:</strong> <code>{{test.info.file_name}}</code>
     </p>
-    <p>
-      <strong>File name:</strong> <code>{{model.info.file_name}}</code>
-    </p>
-    {{#if model.info.class_name}}
+    {{#if test.info.class_name}}
       <p>
-        <strong>Class name:</strong> <code>{{model.info.class_name}}</code>
+        <strong>Class name:</strong> <code>{{test.info.class_name}}</code>
       </p>
     {{/if}}
     <p>
-      <strong>{{#if model.info.class_name}}Method{{else}}Function{{/if}} name:</strong> <code>{{model.info.name}}</code>
+      <strong>{{#if test.info.class_name}}Method{{else}}Function{{/if}} name:</strong> <code>{{test.info.name}}</code>
     </p>
 
-    {{# if model.is_skipped }}
+    {{# if test.is_skipped }}
       <p>
-        <strong>Skip reason</strong>: {{model.skip_reason}}
+        <strong>Skip reason</strong>: {{test.skip_reason}}
       </p>
     {{/if}}
 
-    {{# if model.scm }}
-      <p><i class="fa fa-git-square"></i> Revision: <code>{{model.scm_revision}}</code></p>
-      <p>File hash: <code>{{model.file_hash}}</code></p>
-      {{# if model.scm_dirty }}
+    {{# if test.scm }}
+      <p><i class="fa fa-git-square"></i> Revision: <code>{{test.scm_revision}}</code></p>
+      <p>File hash: <code>{{test.file_hash}}</code></p>
+      {{# if test.scm_dirty }}
         <p><i class="fa fa-exclamation-triangle"></i> Working directory contained uncommitted changes</p>
       {{/if}}
     {{/if}}
@@ -32,8 +29,8 @@
   </div>
 
   <div class="details-pane col-sm-4">
-    <p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=model.start_time}}</p>
-    <p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=model.end_time}}</p>
+    <p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=test.start_time}}</p>
+    <p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=test.end_time}}</p>
 
   </div>
 

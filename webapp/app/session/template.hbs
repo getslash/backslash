@@ -1,4 +1,4 @@
-{{#tool-bar back_button=true}}
+{{#tool-bar}}
   <form class="navbar-form navbar-right">
     {{# if session.data.authenticated.user_info.can.moderate }}
     <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
@@ -15,7 +15,9 @@
     {{/if}}
     {{/if}}
 
+
   </form>
+  <p class="navbar-text">Session {{model.display_id}}</p>
 
 {{/tool-bar}}
 <div class="container">

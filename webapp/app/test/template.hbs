@@ -1,14 +1,18 @@
-{{#tool-bar}}{{/tool-bar}}
+{{#tool-bar}}
+
+  <p class="navbar-text">{{#link-to 'session' session.display_id}} Session {{session.display_id}}{{/link-to}} / Test {{test.display_id}}</p>
+
+{{/tool-bar}}
 
 <div class="container">
 
   <ul class="nav nav-tabs" role="tablist">
     {{#nav-link to="test.index"}}Overview{{/nav-link}}
-    {{#if (gt model.num_errors 0)}}
-      {{#nav-link to="test.errors"}}Errors ({{model.num_errors}}){{/nav-link}}
+    {{#if (gt test.num_errors 0)}}
+      {{#nav-link to="test.errors"}}Errors ({{test.num_errors}}){{/nav-link}}
     {{/if}}
-    {{#if (gt model.num_warnings 0)}}
-      {{#nav-link to="test.warnings"}}Warnings <span class="label label-warning label-badge">{{model.num_warnings}}</span>{{/nav-link}}
+    {{#if (gt test.num_warnings 0)}}
+      {{#nav-link to="test.warnings"}}Warnings <span class="label label-warning label-badge">{{test.num_warnings}}</span>{{/nav-link}}
     {{/if}}
     {{#nav-link to="test.comments"}}Comments{{/nav-link}}
     {{#nav-link to="test.activity"}}Activity{{/nav-link}}

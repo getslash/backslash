@@ -30,28 +30,34 @@ def _resource(*args, **kwargs):
 session_parser = reqparse.RequestParser()
 session_parser.add_argument('user_id', type=int, default=None)
 
-@_resource('/sessions', '/sessions/<int:object_id>')
+@_resource('/sessions', '/sessions/<object_id>')
 class SessionResource(ModelResource):
 
     MODEL = Session
     DEFAULT_SORT = (Session.start_time.desc(),)
     from .filter_configs import SESSION_FILTERS as FILTER_CONFIG
 
+    def _get_object_by_id(self, object_id):
+        return _get_object_by_id_or_logical_id(self.MODEL, object_id)
+
     def _get_iterator(self):
         returned = super(SessionResource, self)._get_iterator()
         args = session_parser.parse_args()
         if args.user_id is not None:
-            returned = returned.filter(Session.user_id==args.user_id)
+            returned = returned.filter(Session.user_id == args.user_id)
         if request.args.get('show_archived') != 'true':
             returned = returned.filter(Session.archived == False)
         return returned
 
-@_resource('/tests', '/tests/<int:object_id>', '/sessions/<int:session_id>/tests')
+@_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
     DEFAULT_SORT = (Test.start_time.desc(),)
     from .filter_configs import TEST_FILTERS as FILTER_CONFIG
+
+    def _get_object_by_id(self, object_id):
+        return _get_object_by_id_or_logical_id(self.MODEL, object_id)
 
     def _get_iterator(self):
         session_id = request.args.get('session_id')
@@ -60,6 +66,21 @@ class TestResource(ModelResource):
         if session_id is not None:
             return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
         return super(TestResource, self)._get_iterator()
+
+
+def _get_object_by_id_or_logical_id(model, object_id):
+    query_filter = model.logical_id == object_id
+    try:
+        numeric_object_id = int(object_id)
+    except ValueError:
+        pass
+    else:
+        query_filter = (model.id == numeric_object_id) | query_filter
+    returned = model.query.filter(query_filter).first()
+    if returned is None:
+        abort(requests.codes.not_found) # pylint: disable=no-member
+    return returned
+
 
 warnings_parser = reqparse.RequestParser()
 warnings_parser.add_argument('session_id', type=int, default=None)

@@ -7,5 +7,19 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
         return this.store.find('test', params.test_id);
+
+    },
+
+
+    setupController: function(controller, model) {
+        this._super(controller, model);
+        controller.set('test', model);
+
+        this.store.find('session', model.get('session_id')).then(
+            function(session) {
+                controller.set('session', session);
+            }
+        );
     }
+
 });

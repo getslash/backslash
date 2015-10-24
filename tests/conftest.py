@@ -379,6 +379,7 @@ class Webapp(object):
         self.app = app
         self.loopback = FlaskLoopback(self.app)
         self.hostname = str(uuid.uuid1())
+        self.url = URL('http://{0}'.format(self.hostname))
 
     def activate(self):
         self.loopback.activate_address((self.hostname, 80))

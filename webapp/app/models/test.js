@@ -1,6 +1,7 @@
 import DS from 'ember-data';
+import HasLogicalId from '../mixins/has-logical-id';
 
-export default DS.Model.extend({
+export default DS.Model.extend(HasLogicalId, {
 
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),

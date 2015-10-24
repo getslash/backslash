@@ -1,14 +1,14 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import HasLogicalId from '../mixins/has-logical-id';
 
-export default DS.Model.extend({
+export default DS.Model.extend(HasLogicalId, {
 
     archived: DS.attr('boolean'),
     investigated: DS.attr('boolean'),
 
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
-
 
     num_error_tests: DS.attr('number'),
     num_errors: DS.attr('number'),
