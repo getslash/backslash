@@ -1,5 +1,8 @@
 /* jshint node: true */
 
+var spawnSync = require('child_process').spawnSync;
+
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'webapp',
@@ -58,6 +61,16 @@ module.exports = function(environment) {
   if (environment === 'production') {
 
   }
+
+
+  var result = spawnSync('git', ['describe', '--tags']);
+  if (result.status !== 0) {
+    throw new Error('Git returned with status ' + result.status + ': ' +
+            result.stderr.toString().trim());
+  }
+  var version = result.stdout.toString().trim();
+  ENV.app_version = version;
+
 
   return ENV;
 };
