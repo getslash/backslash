@@ -1,5 +1,3 @@
-import datetime
-
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import UserMixin, RoleMixin, current_user
 
