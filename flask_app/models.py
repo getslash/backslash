@@ -278,7 +278,7 @@ class Error(db.Model, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
     exception_type = db.Column(db.String(256), index=True)
-    message = db.Column(db.String(256), index=True)
+    message = db.Column(db.Text(), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
 
