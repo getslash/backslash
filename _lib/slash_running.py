@@ -7,10 +7,11 @@ from .bootstrapping import requires_env, from_project_root
 _logger = logbook.Logger(__name__)
 
 @click.command()
+@click.option('--interactive', default=False, is_flag=True)
 @click.argument('name')
 @click.argument('args', nargs=-1)
 @requires_env('app', 'develop')
-def suite(name, args):
+def suite(name, args, interactive=False):
     import slash
     import gossip
 
@@ -25,4 +26,7 @@ def suite(name, args):
 
     slash.plugins.manager.install(plugin, activate=True)
 
-    slash_run([from_project_root('_sample_suites', name)] + list(args))
+    args = list(args)
+    if interactive:
+        args.append('-i')
+    slash_run([from_project_root('_sample_suites', name)] + args)

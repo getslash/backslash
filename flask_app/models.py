@@ -233,6 +233,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     comments = db.relationship(
         'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
 
+    is_interactive = db.Column(db.Boolean, server_default='FALSE')
+
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)

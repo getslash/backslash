@@ -113,6 +113,7 @@ def report_test_start(
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
         scm_dirty: bool=False,
+        is_interactive: bool=False,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -121,6 +122,9 @@ def report_test_start(
         abort(requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
+    if is_interactive:
+        session.total_num_tests = Session.total_num_tests + 1
+        db.session.add(session)
     return Test(
         session_id=session.id,
         logical_id=test_logical_id,
@@ -129,6 +133,7 @@ def report_test_start(
         scm_dirty=scm_dirty,
         scm_revision=scm_revision,
         scm=scm,
+        is_interactive=is_interactive,
         file_hash=file_hash,
     )
 
