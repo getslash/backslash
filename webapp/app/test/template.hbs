@@ -9,7 +9,7 @@
   <ul class="nav nav-tabs" role="tablist">
     {{#nav-link to="test.index"}}Overview{{/nav-link}}
     {{#if (gt test.num_errors 0)}}
-      {{#nav-link to="test.errors"}}Errors ({{test.num_errors}}){{/nav-link}}
+      {{#nav-link to="test.errors"}}Errors <span class="label label-danger label-badge">{{test.num_errors}}</span>{{/nav-link}}
     {{/if}}
     {{#if (gt test.num_warnings 0)}}
       {{#nav-link to="test.warnings"}}Warnings <span class="label label-warning label-badge">{{test.num_warnings}}</span>{{/nav-link}}
