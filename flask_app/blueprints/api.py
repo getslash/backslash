@@ -292,7 +292,7 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
             {increment_field: increment_field + 1})
         obj.errors.append(Error(message=message,
                                 exception_type=exception_type,
-                                traceback=traceback,
+                                traceback=_normalize_traceback(traceback),
                                 is_failure=is_failure,
                                 timestamp=timestamp))
         if obj.end_time is not None:
@@ -310,6 +310,11 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
     except NoResultFound:
         abort(requests.codes.not_found)
 
+def _normalize_traceback(traceback_json):
+    if traceback_json:
+        for frame in traceback_json:
+            frame['code_string'] = frame['code_string'].splitlines()[-1]
+    return traceback_json
 
 @API
 def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
