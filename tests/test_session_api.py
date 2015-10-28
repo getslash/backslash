@@ -1,11 +1,10 @@
-import itertools
+# pylint: disable=unused-argument
 import socket
 
 import flux
 import pytest
-from flask_app.models import User
 
-from .utils import raises_bad_request, raises_conflict, raises_not_found
+from .utils import raises_conflict, raises_not_found
 
 
 def test_start_session(client):
