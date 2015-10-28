@@ -10,6 +10,8 @@ export default DS.Model.extend(HasLogicalId, {
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
 
+    is_abandoned: DS.attr('boolean'),
+
     num_error_tests: DS.attr('number'),
     num_errors: DS.attr('number'),
     num_failed_tests: DS.attr('number'),

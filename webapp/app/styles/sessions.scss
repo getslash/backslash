@@ -18,3 +18,9 @@
     top: 0;
     left: 0;
 }
+
+.abandoned {
+    -webkit-filter: grayscale(80%);
+            filter: grayscale(80%);
+    
+}

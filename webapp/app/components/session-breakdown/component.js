@@ -12,6 +12,7 @@ export default Ember.Component.extend({
     num_error_tests: Ember.computed.alias('session.num_error_tests'),
     num_finished_tests: Ember.computed.alias('session.num_finished_tests'),
     is_running: Ember.computed.alias('session.is_running'),
+    is_abandoned: Ember.computed.alias('session.is_abandoned'),
 
     failedPercent: Ember.computed(function() {
 
