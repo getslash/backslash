@@ -133,6 +133,18 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_failures = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
+    # keepalive
+    keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
+    next_keepalive = db.Column(db.Float, nullable=True, default=None)
+
+    @rendered_field
+    def is_abandoned(self):
+        if self.next_keepalive is None:
+            return False
+        if self.next_keepalive > get_current_time():
+            return False
+        return self.end_time is None
+        
     # rendered extras
     @rendered_field
     def user_email(self):

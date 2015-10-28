@@ -46,6 +46,7 @@ def report_session_start(logical_id: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
                          user_email: str=None,
+                         keepalive_interval: int=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -55,6 +56,8 @@ def report_session_start(logical_id: str=None,
         user_id=g.token_user.id,
         status=statuses.RUNNING,
         logical_id=logical_id,
+        keepalive_interval=keepalive_interval,
+        next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
     )
     if user_email is not None and user_email != g.token_user.email:
         if not has_role(g.token_user.id, 'proxy'):
@@ -67,6 +70,11 @@ def report_session_start(logical_id: str=None,
                 SessionMetadata(session=returned, key=key, metadata_item=value))
     return returned
 
+@API
+def send_keepalive(session_id: int):
+    s = Session.query.get_or_404(session_id)
+    s.next_keepalive = get_current_time() + s.keepalive_interval
+    db.session.add(s)
 
 @API
 def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
