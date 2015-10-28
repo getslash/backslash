@@ -15,7 +15,7 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :ubuntu do |config|
-    config.vm.box = "bento/ubuntu-15.04"
+    config.vm.box = "ubuntu/vivid64"
     config.vm.host_name = "ubuntu"
     config.vm.forward_port 80, 8002
   end
