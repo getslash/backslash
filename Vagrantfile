@@ -9,13 +9,13 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :centos do |config|
-    config.vm.box = "chef/centos-7.0"
+    config.vm.box = "bento/centos-7.1"
     config.vm.host_name = "centos"
     config.vm.forward_port 80, 8001
   end
 
   config.vm.define :ubuntu do |config|
-    config.vm.box = "chef/ubuntu-15.04"
+    config.vm.box = "ubuntu/vivid64"
     config.vm.host_name = "ubuntu"
     config.vm.forward_port 80, 8002
   end
