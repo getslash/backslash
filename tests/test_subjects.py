@@ -2,6 +2,14 @@ import pytest
 
 from .utils import model_for
 
+
+def test_start_session_with_subjects(client, subjects):
+    session = client.report_session_start(
+        subjects=subjects
+    )
+    assert session.refresh().subjects == subjects
+
+
 def test_add_subject(started_session, subjects, flask_app):
     started_session.add_subject(**subjects[0])
 

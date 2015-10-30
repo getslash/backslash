@@ -47,6 +47,7 @@ def report_session_start(logical_id: str=None,
                          metadata: dict=None,
                          user_email: str=None,
                          keepalive_interval: int=None,
+                         subjects: list=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -59,6 +60,18 @@ def report_session_start(logical_id: str=None,
         keepalive_interval=keepalive_interval,
         next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
     )
+    if subjects:
+        for subject_data in subjects:
+            subject_name = subject_data.get('name', None)
+            if subject_name is None:
+                abort(requests.codes.bad_request)
+            subject = get_or_create_subject_instance(
+                name=subject_name,
+                product=subject_data.get('product', None),
+                version=subject_data.get('version', None),
+                revision=subject_data.get('revision', None))
+            returned.subject_instances.append(subject)
+
     if user_email is not None and user_email != g.token_user.email:
         if not has_role(g.token_user.id, 'proxy'):
             abort(requests.codes.forbidden)
