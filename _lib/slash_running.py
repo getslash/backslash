@@ -18,7 +18,7 @@ def suite(name, args, interactive=False):
     from slash.frontend.slash_run import slash_run
     from backslash.contrib.slash_plugin import BackslashPlugin
 
-    plugin = BackslashPlugin('http://127.0.0.1:8000')
+    plugin = BackslashPlugin('http://127.0.0.1:8000', keepalive_interval=10)
 
     @gossip.register('backslash.session_start')
     def configure(session):
