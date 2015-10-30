@@ -1,26 +1,39 @@
-.session-row:hover, .test-row:hover {
-
+.session-row:hover,
+.test-row:hover
+{
     background-color: $gray-lighter;
 }
 
-.session-row, .test-row {
+.session-row,
+.test-row
+{
     padding: 1em;
+
     cursor: pointer;
 }
 
-.session-row.investigated {
-    opacity: 0.5;
+.session-row.investigated
+{
+    opacity: .5;
 }
 
-.delegate-info{
-    color: silver;
+.delegate-info
+{
     position: absolute;
     top: 0;
     left: 0;
+
+    color: silver;
 }
 
-.abandoned {
+.abandoned
+{
     -webkit-filter: grayscale(80%);
             filter: grayscale(80%);
-    
+
+    .progress
+    {
+        -webkit-clip-path: polygon(0% 0%, 71% 0%, 75% 7%, 72% 12%, 70% 21%, 75% 26%, 74% 36%, 78% 40%, 76% 51%, 79% 60%, 78% 66%, 84% 79%, 82% 84%, 87% 93%, 85% 97%, 87% 100%, 0% 100%);
+                clip-path: polygon(0% 0%, 71% 0%, 75% 7%, 72% 12%, 70% 21%, 75% 26%, 74% 36%, 78% 40%, 76% 51%, 79% 60%, 78% 66%, 84% 79%, 82% 84%, 87% 93%, 85% 97%, 87% 100%, 0% 100%);
+    }
 }
