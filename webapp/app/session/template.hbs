@@ -1,6 +1,7 @@
 {{#tool-bar}}
   <form class="navbar-form navbar-right">
-    {{# if session.data.authenticated.user_info.can.moderate }}
+    {{# if (or session.data.authenticated.user_info.can.moderate
+               session.data.authenticated.user_info.can.admin) }}
     <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if model.archived 'Unarchive' 'Archive'}}</button>
 
     {{# if needs_investigation }}
