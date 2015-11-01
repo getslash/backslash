@@ -47,8 +47,8 @@ def report_session_start(logical_id: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
                          user_email: str=None,
-                         keepalive_interval: int=None,
-                         subjects: list=None,
+                         keepalive_interval: (NoneType, int)=None,
+                         subjects: (list, NoneType)=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
