@@ -107,7 +107,7 @@ def report_session_end(id: int, duration: int=None):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
-        error_abort('Session not found', codes=requests.codes.not_found)
+        error_abort('Session not found', code=requests.codes.not_found)
 
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
         error_abort('Session is not running', code=requests.codes.conflict)
