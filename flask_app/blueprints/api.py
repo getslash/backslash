@@ -6,6 +6,7 @@ import logbook
 import requests
 from flask import abort, Blueprint, request, g
 from flask.ext.simple_api import SimpleAPI
+from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
 from sqlalchemy.exc import IntegrityError
@@ -64,7 +65,7 @@ def report_session_start(logical_id: str=None,
         for subject_data in subjects:
             subject_name = subject_data.get('name', None)
             if subject_name is None:
-                abort(requests.codes.bad_request)
+                error_abort('Missing subject name')
             subject = get_or_create_subject_instance(
                 name=subject_name,
                 product=subject_data.get('product', None),
@@ -74,7 +75,7 @@ def report_session_start(logical_id: str=None,
 
     if user_email is not None and user_email != g.token_user.email:
         if not has_role(g.token_user.id, 'proxy'):
-            abort(requests.codes.forbidden)
+            error_abort('User is not authorized to run tests on others behalf', code=requests.codes.forbidden)
         returned.real_user_id = returned.user_id
         returned.user_id = get_user_id_by_email(user_email)
     if metadata is not None:
@@ -106,10 +107,10 @@ def report_session_end(id: int, duration: int=None):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
-        abort(requests.codes.not_found)
+        error_abort('Session not found', codes=requests.codes.not_found)
 
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
-        abort(requests.codes.conflict)
+        error_abort('Session is not running', code=requests.codes.conflict)
 
     session.end_time = get_current_time(
     ) if duration is None else session.start_time + duration
@@ -140,7 +141,7 @@ def report_test_start(
     if session is None:
         abort(requests.codes.not_found)
     if session.end_time is not None:
-        abort(requests.codes.conflict)
+        error_abort('Session already ended', code=requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
     if is_interactive:
@@ -167,7 +168,7 @@ def report_test_end(id: int, duration: (float, int)=None):
 
     if test.end_time is not None:
         # we have a test, but it already ended
-        abort(requests.codes.conflict)
+        error_abort('Test already ended', code=requests.codes.conflict)
 
     with updating_session_counters(test):
         test.end_time = get_current_time() if duration is None else Test.start_time + \
@@ -247,7 +248,7 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
         if Test.query.filter(Test.id == test_id).count():
             # we have a test, but it already ended
             if not ignore_conflict:
-                abort(requests.codes.conflict)
+                error_abort('Test already ended', requests.codes.conflict)
         else:
             abort(requests.codes.not_found)
 
@@ -275,7 +276,7 @@ def _get_metadata_model(entity_type, entity_id):
     if entity_type == 'test':
         return TestMetadata, {'test_id': entity_id}
 
-    abort(requests.codes.bad_request)
+    error_abort('Unknown entity type')
 
 
 @API
@@ -300,7 +301,7 @@ def add_session_metadata(id: int, metadata: dict):
 @API
 def add_error(message: str, exception_type: str=None, traceback: list=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
     if not ((test_id is not None) ^ (session_id is not None)):
-        abort(requests.codes.bad_request)
+        error_abort('Either test_id or session_id required')
 
     if timestamp is None:
         timestamp = get_current_time()
@@ -345,7 +346,7 @@ def _normalize_traceback(traceback_json):
 @API
 def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
     if not ((test_id is not None) ^ (session_id is not None)):
-        abort(requests.codes.bad_request)
+        error_abort('Either session_id or test_id required')
     if session_id is not None:
         obj = Session.query.get_or_404(session_id)
     else:
@@ -365,7 +366,7 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
 @API(require_real_login=True)
 def post_comment(comment: str, session_id: int=None, test_id: int=None):
     if not (session_id is not None) ^ (test_id is not None):
-        abort(requests.codes.bad_request)
+        error_abort('Either session_id or test_id required')
 
     if session_id is not None:
         obj = db.session.query(Session).get(session_id)
