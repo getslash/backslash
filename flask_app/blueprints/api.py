@@ -340,7 +340,10 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
 def _normalize_traceback(traceback_json):
     if traceback_json:
         for frame in traceback_json:
-            frame['code_string'] = frame['code_string'].splitlines()[-1]
+            code_string = frame['code_string']
+            if code_string:
+                code_string = code_string.splitlines()[-1]
+            frame['code_string'] = code_string
     return traceback_json
 
 @API
