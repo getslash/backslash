@@ -144,7 +144,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
         if self.next_keepalive > get_current_time():
             return False
         return self.end_time is None
-        
+
     # rendered extras
     @rendered_field
     def user_email(self):
@@ -235,6 +235,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)

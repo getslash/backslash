@@ -64,6 +64,11 @@ class TestResource(ModelResource):
         if session_id is None:
             session_id = request.view_args.get('session_id')
         if session_id is not None:
+            try:
+                session_id = int(session_id)
+            except ValueError:
+                return Test.query.join(Session).filter(Session.logical_id == session_id)
+
             return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
         return super(TestResource, self)._get_iterator()
 
