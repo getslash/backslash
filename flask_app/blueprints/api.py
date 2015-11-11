@@ -52,15 +52,20 @@ def report_session_start(logical_id: str=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
-    returned = Session(
-        hostname=hostname,
-        total_num_tests=total_num_tests,
-        user_id=g.token_user.id,
-        status=statuses.RUNNING,
-        logical_id=logical_id,
-        keepalive_interval=keepalive_interval,
-        next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
-    )
+
+    # fix user identification
+    if user_email is not None and user_email != g.token_user.email:
+        if not has_role(g.token_user.id, 'proxy'):
+            error_abort('User is not authorized to run tests on others behalf', code=requests.codes.forbidden)
+        real_user_id = g.token_user.id
+        user_id = get_user_id_by_email(user_email)
+    else:
+        user_id = g.token_user.id
+        real_user_id = None
+
+
+    # Test subjects
+    subject_instances = []
     if subjects:
         for subject_data in subjects:
             subject_name = subject_data.get('name', None)
@@ -71,17 +76,29 @@ def report_session_start(logical_id: str=None,
                 product=subject_data.get('product', None),
                 version=subject_data.get('version', None),
                 revision=subject_data.get('revision', None))
-            returned.subject_instances.append(subject)
+            subject_instances.append(subject)
 
-    if user_email is not None and user_email != g.token_user.email:
-        if not has_role(g.token_user.id, 'proxy'):
-            error_abort('User is not authorized to run tests on others behalf', code=requests.codes.forbidden)
-        returned.real_user_id = returned.user_id
-        returned.user_id = get_user_id_by_email(user_email)
+
+    returned = Session(
+        hostname=hostname,
+        total_num_tests=total_num_tests,
+        user_id=user_id,
+        real_user_id=real_user_id,
+        status=statuses.RUNNING,
+        logical_id=logical_id,
+        keepalive_interval=keepalive_interval,
+        next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
+    )
+
+    for s in subject_instances:
+        returned.subject_instances.append(s)
+
     if metadata is not None:
         for key, value in metadata.items():
-            db.session.add(
-                SessionMetadata(session=returned, key=key, metadata_item=value))
+            returned.metadata_items.append(SessionMetadata(session=returned, key=key, metadata_item=value))
+
+    db.session.add(returned)
+
     return returned
 
 @API

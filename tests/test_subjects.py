@@ -7,7 +7,7 @@ def test_start_session_with_subjects(client, subjects):
     session = client.report_session_start(
         subjects=subjects
     )
-    assert session.refresh().subjects == subjects
+    assert session.refresh().subjects == [dict(s) for s in subjects]
 
 
 def test_add_subject(started_session, subjects, flask_app):
