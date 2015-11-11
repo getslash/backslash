@@ -254,8 +254,8 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
 
 @API
 def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
-    model, kwargs = _get_metadata_model(entity_type, entity_id)
-    db.session.add(model(key=key, metadata_item=value, **kwargs))
+    model = _get_metadata_model(entity_type)
+    db.session.add(model(key=key, metadata_item=value, **{'{}_id'.format(entity_type): entity_id}))
     try:
         db.session.commit()
     except IntegrityError:
@@ -263,18 +263,30 @@ def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
 
 
 @API
-def get_metadata(entity_type: str, entity_id: int):
-    model, kwargs = _get_metadata_model(entity_type, entity_id)
-    return {obj.key: obj.metadata_item
-            for obj in model.query.filter_by(**kwargs)}
+def get_metadata(entity_type: str, entity_id: (int, str)):
+    query = _get_metadata_query(entity_type=entity_type, entity_id=entity_id)
+    return {obj.key: obj.metadata_item for obj in query}
 
 
-def _get_metadata_model(entity_type, entity_id):
+def _get_metadata_query(*, entity_type, entity_id):
+    model = _get_metadata_model(entity_type)
     if entity_type == 'session':
-        return SessionMetadata, {'session_id': entity_id}
+        related = Session
+    elif entity_type == 'test':
+        related = Test
+    else:
+        error_abort('Invalid entity type', requests.codes.bad_request)
+    if isinstance(entity_id, int):
+        return model.query.filter_by(**{'{}_id'.format(entity_type): entity_id})
+    return model.query.join(related).filter(related.logical_id == entity_id)
+
+
+def _get_metadata_model(entity_type):
+    if entity_type == 'session':
+        return SessionMetadata
 
     if entity_type == 'test':
-        return TestMetadata, {'test_id': entity_id}
+        return TestMetadata
 
     error_abort('Unknown entity type')
 
