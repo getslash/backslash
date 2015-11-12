@@ -15,7 +15,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from .. import activity
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning
 from ..utils import get_current_time, statuses
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 from ..utils.users import get_user_id_by_email, has_role
@@ -31,7 +31,7 @@ def API(func=None, require_real_login=False):
     if func is None:
         return functools.partial(API, require_real_login=require_real_login)
 
-    returned = auto_render(auto_commit(func))
+    returned = auto_render(func)
     if require_real_login:
         returned = requires_login(returned)
     else:
@@ -62,7 +62,6 @@ def report_session_start(logical_id: str=None,
     else:
         user_id = g.token_user.id
         real_user_id = None
-
 
     # Test subjects
     subject_instances = []
@@ -98,7 +97,7 @@ def report_session_start(logical_id: str=None,
             returned.metadata_items.append(SessionMetadata(session=returned, key=key, metadata_item=value))
 
     db.session.add(returned)
-
+    db.session.commit()
     return returned
 
 @API
@@ -106,6 +105,7 @@ def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
     s.next_keepalive = get_current_time() + s.keepalive_interval
     db.session.add(s)
+    db.session.commit()
 
 @API
 def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
@@ -117,10 +117,11 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
         revision=revision)
     session.subject_instances.append(subject)
     db.session.add(session)
+    db.session.commit()
 
 
 @API
-def report_session_end(id: int, duration: int=None):
+def report_session_end(id: int, duration: (int, NoneType)=None):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
@@ -139,6 +140,7 @@ def report_session_end(id: int, duration: int=None):
     else:
         session.status = statuses.SUCCESS
     db.session.add(session)
+    db.session.commit()
 
 
 @API
@@ -164,7 +166,7 @@ def report_test_start(
     if is_interactive:
         session.total_num_tests = Session.total_num_tests + 1
         db.session.add(session)
-    return Test(
+    returned = Test(
         session_id=session.id,
         logical_id=test_logical_id,
         test_info_id=test_info_id,
@@ -175,6 +177,9 @@ def report_test_start(
         is_interactive=is_interactive,
         file_hash=file_hash,
     )
+    db.session.add(returned)
+    db.session.commit()
+    return returned
 
 
 @API
@@ -198,6 +203,7 @@ def report_test_end(id: int, duration: (float, int)=None):
             test.status = statuses.SUCCESS
 
     db.session.add(test)
+    db.session.commit()
 
 
 @contextmanager
@@ -231,20 +237,25 @@ def report_test_skipped(id: int, reason: (str, NoneType)=None):
     _update_running_test_status(
         id, statuses.SKIPPED, ignore_conflict=True,
         additional_updates={'skip_reason': reason})
+    db.session.commit()
 
 
 @API
 def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('moderator')
 def toggle_archived(session_id: int):
-        return _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
+    returned = _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
+    db.session.commit()
+    return returned
 
 @API(require_real_login=True)
 def toggle_investigated(session_id: int):
-    return _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+    returned = _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+    db.session.commit()
 
 def _toggle_session_attribute(session_id, attr, on_action, off_action):
     session = Session.query.get_or_404(session_id)
@@ -315,6 +326,7 @@ def add_test_metadata(id: int, metadata: dict):
         test.metadata_objects.append(TestMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
 
 @API
@@ -325,6 +337,7 @@ def add_session_metadata(id: int, metadata: dict):
             SessionMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
 
 @API
@@ -365,6 +378,7 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
 
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
 def _normalize_traceback(traceback_json):
     if traceback_json:
@@ -392,6 +406,7 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
         obj.session.num_warnings = Session.num_warnings + 1
         db.session.add(obj.session)
     db.session.add(obj)
+    db.session.commit()
 
 
 
@@ -424,6 +439,7 @@ def delete_comment(comment_id: int):
     comment.comment = ''
 
     db.session.add(comment)
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('admin')
@@ -435,6 +451,7 @@ def toggle_user_role(user_id: int, role: str):
         user.roles.remove(role_obj)
     else:
         user.roles.append(role_obj)
+    db.session.commit()
 
 @API(require_real_login=True)
 def get_user_run_tokens(user_id: int):

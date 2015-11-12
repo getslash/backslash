@@ -23,20 +23,6 @@ def auto_render(func):
     return new_func
 
 
-def auto_commit(func):
-    """Automatically commits to the database on success, possibly adding the returned object beforehand
-    """
-    @functools.wraps(func)
-    def new_func(*args, **kwargs):
-        returned = func(*args, **kwargs)
-        if isinstance(returned, db.Model):
-            db.session.add(returned)
-        db.session.commit()
-        return returned
-
-    return new_func
-
-
 def requires_login(func):
     return requires_login_or_runtoken(func, allow_runtoken=False)
 
