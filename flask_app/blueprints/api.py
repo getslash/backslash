@@ -63,21 +63,6 @@ def report_session_start(logical_id: str=None,
         user_id = g.token_user.id
         real_user_id = None
 
-    # Test subjects
-    subject_instances = []
-    if subjects:
-        for subject_data in subjects:
-            subject_name = subject_data.get('name', None)
-            if subject_name is None:
-                error_abort('Missing subject name')
-            subject = get_or_create_subject_instance(
-                name=subject_name,
-                product=subject_data.get('product', None),
-                version=subject_data.get('version', None),
-                revision=subject_data.get('revision', None))
-            subject_instances.append(subject)
-
-
     returned = Session(
         hostname=hostname,
         total_num_tests=total_num_tests,
@@ -89,8 +74,17 @@ def report_session_start(logical_id: str=None,
         next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
     )
 
-    for s in subject_instances:
-        returned.subject_instances.append(s)
+    if subjects:
+        for subject_data in subjects:
+            subject_name = subject_data.get('name', None)
+            if subject_name is None:
+                error_abort('Missing subject name')
+            subject = get_or_create_subject_instance(
+                name=subject_name,
+                product=subject_data.get('product', None),
+                version=subject_data.get('version', None),
+                revision=subject_data.get('revision', None))
+            returned.subject_instances.append(subject)
 
     if metadata is not None:
         for key, value in metadata.items():
