@@ -3,11 +3,12 @@ from .caching import cache
 from .db_utils import get_or_create
 
 def get_or_create_subject_instance(name, product, version, revision):
-    return _get_or_create_subject_instance(name, product, version, revision)
+    return models.SubjectInstance.query.get(
+        _get_or_create_subject_instance_id(name, product, version, revision))
 
 @cache.cache_on_arguments()
-def _get_or_create_subject_instance(name, product, version, revision):
-    return get_or_create(models.SubjectInstance, subject_id=_get_or_create_subject_id(name), revision_id=_get_or_create_revision_id(product, version, revision))
+def _get_or_create_subject_instance_id(name, product, version, revision):
+    return get_or_create(models.SubjectInstance, subject_id=_get_or_create_subject_id(name), revision_id=_get_or_create_revision_id(product, version, revision)).id
 
 @cache.cache_on_arguments()
 def _get_or_create_subject_id(name):
