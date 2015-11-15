@@ -7,9 +7,10 @@ export default DS.Model.extend(HasLogicalId, {
     end_time: DS.attr('number'),
     duration: DS.attr('number'),
     status: DS.attr('string'),
-    name: DS.attr('string'),
     num_errors: DS.attr('number'),
     num_warnings: DS.attr('number'),
+
+    type: DS.attr(),
 
     scm: DS.attr(),
     scm_revision: DS.attr(),

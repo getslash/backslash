@@ -37,25 +37,10 @@ export default Ember.Controller.extend({
         return returned;
     }.property('filter'),
 
-    has_prev_page: function() {
-        return this.get('page') > 1;
-    }.property('page'),
-
-    has_next_page: function() {
-        return this.get('page') < this.get('pages_total');
-    }.property('page'),
 
     actions: {
-        next_page: function() {
-            this.transitionToRoute({queryParams: {page: this.get('page') + 1}});
-        },
-
-        prev_page: function() {
-            this.transitionToRoute({queryParams: {page: this.get('page') - 1}});
-        },
-
         goto_page: function(page) {
-            this.transitionToRoute({queryParams: {page: page, filter: this.get('filters')}});
+            this.set('page', page);
         },
 
         filter: function(name, value) {

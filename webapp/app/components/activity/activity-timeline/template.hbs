@@ -1,0 +1,9 @@
+{{#each items as |item|}}
+
+  <li>
+    {{activity/activity-item-icon item=item}}
+    {{#if (eq item.action "comment")}}
+      {{activity/comment-item item=item}}
+    {{/if}}
+  </li>
+{{/each}}

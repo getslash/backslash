@@ -4,17 +4,17 @@
     <ul class="pagination">
       <li>
         {{# if has_prev }}
-        <a {{action "prev_page"}} aria-label="Previous" class="clickable">
+        <a {{action "goto" "prev"}} aria-label="Previous" class="clickable">
           <span aria-hidden="true"><i class="fa fa-chevron-left"></i></span>
         </a>
         {{/if}}
       </li>
       {{#each pages as |page|}}
-        <li class="{{if page.active 'active'}}"><a class="clickable" {{action "goto_page" page.number}}>{{page.number}}</a></li>
+        <li class="{{if page.active 'active'}}"><a class="clickable" {{action "goto" page.number}}>{{page.number}}</a></li>
       {{/each}}
       <li>
         {{# if has_next }}
-        <a {{action "next_page"}} aria-label="Next" class="clickable">
+        <a {{action "goto" "next"}} aria-label="Next" class="clickable">
           <span aria-hidden="true"><i class="fa fa-chevron-right"></i></span>
         </a>
         {{/if}}

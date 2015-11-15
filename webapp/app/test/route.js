@@ -7,7 +7,6 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
         return this.store.find('test', params.test_id);
-
     },
 
 

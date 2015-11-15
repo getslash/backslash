@@ -4,21 +4,34 @@
 
 {{/tool-bar}}
 
+{{hr-separator title="Test Information"}}
+
 <div class="container">
 
-  <ul class="nav nav-tabs" role="tablist">
-    {{#nav-link to="test.index"}}Overview{{/nav-link}}
-    {{#if (gt test.num_errors 0)}}
-      {{#nav-link to="test.errors"}}Errors <span class="label label-danger label-badge">{{test.num_errors}}</span>{{/nav-link}}
-    {{/if}}
-    {{#if (gt test.num_warnings 0)}}
-      {{#nav-link to="test.warnings"}}Warnings <span class="label label-warning label-badge">{{test.num_warnings}}</span>{{/nav-link}}
-    {{/if}}
-    {{#nav-link to="test.comments"}}Comments{{/nav-link}}
-    {{#nav-link to="test.activity"}}Activity{{/nav-link}}
-  </ul>
+  <table class="table table-hover">
+    <tbody>
+    {{#each-in test_details as |name value|}}
+    <tr>
+      <td>{{name}}</td><td class="test-detail-value">{{value}}</td>
+    </tr>
+    {{/each-in}}
 
-  <div class="tabs-details">
-    {{outlet}}
-  </div>
+    {{#each-in scm_details as |name value|}}
+      <tr>
+        <td><i class="fa fa-git-square"></i> {{name}}</td>
+        <td class="test-detail-value">{{value}}</td>
+      </tr>
+    {{/each-in}}
+
+    {{#if test.scm_dirty }}
+      <tr>
+        <td colspan="2">
+          <i class="fa fa-exclamation-triangle warning"></i> Working directory contained uncommitted changes when this test was run
+        </td>
+      </tr>
+    {{/if}}
+
+    </tbody>
+  </table>
+
 </div>

@@ -113,3 +113,10 @@ def test_session_query_tests(started_session_with_ended_test):
     assert queried_test.id == test.id
     test.refresh()  # need to update end_time
     assert queried_test == test
+
+
+def test_get_session_summary(started_session_with_ended_test, client):
+    (session, _) = started_session_with_ended_test
+    session.refresh()
+    data = client.api.call_function('get_session_summary', {'session_id': session.id})
+    assert data['session'] == session._data # pylint: disable=protected-access

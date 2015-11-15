@@ -7,21 +7,9 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route("sessions", { path: "/sessions" });
-  this.route("session", { path: "/sessions/:id" }, function() {
-    this.route('tests');
-    this.route('comments');
-    this.route('errors');
-    this.route('activity');
-    this.route('investigate');
-    this.route('warnings');
-  });
+  this.route("session", { path: "/sessions/:id" });
 
-  this.route("test", { path: "/tests/:test_id" }, function() {
-    this.route('errors');
-    this.route('comments');
-    this.route('activity');
-    this.route('warnings');
-  });
+  this.route("test", { path: "/tests/:test_id" });
 
   this.route('login', function() {});
   this.route('profile');
@@ -29,7 +17,7 @@ Router.map(function() {
     this.route('sessions');
     this.route('preferences');
   });
-  this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
+  this.route('authorize-pruntoken', { path: '/runtoken/:requestid/authorize' });
   this.route('loading');
   this.route('users');
 });

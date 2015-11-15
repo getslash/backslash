@@ -1,25 +1,25 @@
 .activity-timeline {
-    margin-left: 50px;
-    border-left: 1px solid gray;
+    border-left: 1px solid $gray-lighter;
     list-style-type: none;
+    margin-left: 50px;
 }
+
 .activity-timeline > li > .activity-icon {
-    border-radius: 50%;
+    
+    background: $gray-light;
     border: 2px solid white;
+    border-radius: 50%;
     color: white;
     display: block;
     float: left;
     font: 15px Arial, sans-serif;
     height: 37px;
-    left: -59px;
-    margin-right: -1em;
+    left: -63px;
+    margin-right: -63px;
     padding: 7px;
     position: relative;
     text-align: center;
-    top: -10px;
     width: 37px;
-
-    background: $gray-light;
 
     &.uninvestigated {
 	background: $brand-danger;
@@ -36,11 +36,31 @@
 
 .activity-timeline > li {
   background: $gray-lighter;
-  border-radius: 0 10px 0 10px;
   border: 1px solid silver;
-  margin: 1em 0 3em;
-  max-width: 40em;
-  padding: 1em 0 1em 0;
+  margin: 1em 0 3em 2em;
+  max-width: 50em;
   position: relative;
-  
+}
+
+.activity-heading, .activity-content {
+    padding: 0.5em;
+}
+
+.activity-heading {
+    background: white;
+    font-weight: bold;
+}
+
+.new-comment {
+
+    padding: 1em;
+    padding-left: 3em;
+    max-width: 50em;
+    
+    .avatar {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+    }
 }

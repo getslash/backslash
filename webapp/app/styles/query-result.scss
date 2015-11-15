@@ -1,0 +1,7 @@
+.query-result {
+    padding: 1em;
+
+    &:hover {
+	background-color: $gray-lighter;
+    }
+}

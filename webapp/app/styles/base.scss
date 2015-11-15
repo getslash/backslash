@@ -57,7 +57,7 @@ body
     border-radius: 1em;
 }
 
-span.warning
+span.warning, i.warning
 {
     color: $brand-warning;
 }
@@ -85,4 +85,26 @@ span.warning
     padding-left: 1em;
 
     background: $gray-lighter;
+}
+
+/* Margins shortcut */
+$added-margin-amount: 1em;
+.add-margin-top
+{
+    margin-top: $added-margin-amount;
+}
+
+.add-margin-right
+{
+    margin-right: $added-margin-amount;
+}
+
+.add-margin-left
+{
+    margin-left: $added-margin-amount;
+}
+
+.add-margin-bottom
+{
+    margin-bottom: $added-margin-amount;
 }

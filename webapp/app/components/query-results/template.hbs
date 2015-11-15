@@ -1,0 +1,13 @@
+{{#tool-bar}}
+  {{filter-control filter_config=filter_config filter_action=(action this.attrs.filter_action)}}
+{{/tool-bar}}
+
+
+{{#each results as |result|}}
+  {{#if (eq result.type "test")}}
+    {{query-result-test test=result goto_test=(action this.attrs.goto_test)}}
+  {{/if}}
+
+{{/each}}
+
+{{pagination-nav page=page pages_total=pages_total goto_page=(action this.attrs.goto_page)}}

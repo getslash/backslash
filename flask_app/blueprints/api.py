@@ -16,6 +16,7 @@ from .. import activity
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ..utils.rendering import render_api_object
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 from ..utils.users import get_user_id_by_email, has_role

@@ -1,0 +1,14 @@
+<div class="activity-item">
+  {{#if item.deleted}}
+    Deleted item by {{item.user_email}} ({{moment-time unix=item.timestamp}})
+  {{else}}
+    <div class="activity-heading">
+      {{item.user_email}} commented {{moment-time unix=item.timestamp}}
+    </div>
+    <div class="activity-content">
+      <p>
+        {{item.comment}}
+      </p>
+    </div>
+  {{/if}}
+</div>

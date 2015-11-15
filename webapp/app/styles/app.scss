@@ -2,8 +2,10 @@
 @import 'bootstrap';
 @import 'colors.scss';
 @import 'base.scss';
+@import 'elements.scss';
 
-@import 'statuses.scss';
+@import 'query-result.scss';
+
 @import 'sessions.scss';
 @import 'test.scss';
 @import 'users.scss';
@@ -17,3 +19,7 @@
 @import 'components/filter-control.scss';
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
+
+
+@import "ember-modal-dialog/ember-modal-structure";
+@import "ember-modal-dialog/ember-modal-appearance";

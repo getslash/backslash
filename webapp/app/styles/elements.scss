@@ -1,0 +1,39 @@
+
+/* Test details: Command-line */
+.console {
+    background-color: lighten($navbar-inverse-bg, 15%);
+    border: 2px solid $gray-lighter;
+    color: $gray-lighter;
+    font-family: monospace;
+    overflow: scroll;
+    padding: 1em;
+    white-space: nowrap;
+
+    &:before {
+        color: $gray-light;
+        content: "$";
+        padding-right: 0.5em;
+    }
+}
+
+/* Separators */
+.sub-section-heading
+{
+    height: 2px;
+    background-color: $sub-section-heading-color;
+    background: linear-gradient(135deg, $sub-section-heading-color 0%,rgba(0, 0, 0, 0) 100%);
+    color: $sub-section-heading-color;
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-bottom:2em;
+
+    span
+    {
+      position: relative;
+      top: -0.5em;
+      left: 2em;
+      background-color: white;
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+}

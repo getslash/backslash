@@ -1,9 +1,0 @@
-<ul class="activity-timeline">
-  {{#each model as |activity|}}
-    <li>
-      <div class="activity-icon {{activity.activity_icon_class}}"> <i class="fa fa-{{activity.icon}} fa-fw"></i> </div>
-      <img src="{{gravatar-url activity.user_email}}" class="img-circle avatar small">
-      <strong>{{activity.user_email}}</strong> {{activity.message}} on {{moment-time unix=activity.timestamp}}
-    </li>
-  {{/each}}
-</ul>
