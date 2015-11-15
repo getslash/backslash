@@ -25,6 +25,9 @@ export default DS.Model.extend(HasLogicalId, {
     status: DS.attr('string'),
 
     subjects: DS.attr(),
+
+    type: DS.attr(),
+
     user_email: DS.attr(),
 
     real_email: DS.attr(),
@@ -33,8 +36,7 @@ export default DS.Model.extend(HasLogicalId, {
 
     is_running: function() {
         return this.get('status') === 'RUNNING';
-    }.property('status'),
+    }.property('status')
 
-    typename: 'session'
 
 });

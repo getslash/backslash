@@ -14,7 +14,7 @@ export default PaginatedFilteredController.extend({
         self.api.call('toggle_' + attr, {session_id: parseInt(self.get('session_model.id'))}).then(function() {
             self.set('session_model.' + attr, !self.get('session_model.' + attr));
         }).then(function() {
-            self.get('session_model').reload();
+            self.send('refreshRoute');
         });
     },
 
@@ -39,8 +39,8 @@ export default PaginatedFilteredController.extend({
                 self.api.call('toggle_investigated', {
                     session_id: sid
                 }).then(function() {
-                    self.get('session_model').reload();
                     self.set('investigating', false);
+                    self.send('refreshRoute');
                 });
             });
         },

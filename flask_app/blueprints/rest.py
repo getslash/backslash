@@ -1,17 +1,16 @@
-import operator
-
+# pylint: disable=no-member
 import requests
 
-from flask import Blueprint, abort, request, session
-from flask.ext.security.core import current_user
+from flask import Blueprint, abort, request, jsonify
 from flask_restful import Api, reqparse
-from sqlalchemy import text
 from sqlalchemy.orm.exc import NoResultFound
 
+from flask.ext.simple_api import error_abort
+
 from .. import models
-from ..models import Comment, Error, Session, Test, User, Activity
+from ..models import Error, Session, Test, User
+from .. import activity
 from ..utils.rest import ModelResource
-from ..utils import statuses
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
@@ -87,9 +86,9 @@ def _get_object_by_id_or_logical_id(model, object_id):
     return returned
 
 
-warnings_parser = reqparse.RequestParser()
-warnings_parser.add_argument('session_id', type=int, default=None)
-warnings_parser.add_argument('test_id', type=int, default=None)
+activity_parser = reqparse.RequestParser()
+activity_parser.add_argument('session_id', type=int, default=None)
+activity_parser.add_argument('test_id', type=int, default=None)
 
 
 @_resource('/warnings', '/warnings/<int:object_id>')
@@ -99,7 +98,7 @@ class WarningsResource(ModelResource):
     DEFAULT_SORT = (models.Warning.timestamp.desc(),)
 
     def _get_iterator(self):
-        args = warnings_parser.parse_args()
+        args = activity_parser.parse_args()
         returned = self.MODEL.query.filter_by(test_id=args.test_id, session_id=args.session_id)
         return returned
 
@@ -140,39 +139,25 @@ class UserResource(ModelResource):
         return User.query.get_or_404(int(object_id))
 
 
-@_resource('/comments', '/comments/<int:object_id>')
-class CommentsResource(ModelResource):
+@blueprint.route('/activities')
+def get_activities():
+    args = session_test_user_query_parser.parse_args()
 
-    MODEL = Comment
-    DEFAULT_SORT = (Comment.timestamp.asc(),)
+    if not (
+            (args.session_id is not None) ^
+            (args.test_id is not None) ^
+            (args.user_id is not None)):
+        error_abort('Either test_id, session_id or user_id must be passed to the query')
 
-    def _get_iterator(self):
-        args = session_test_user_query_parser.parse_args()
-        if args.session_id is not None:
-            returned = Comment.query.join((Session, Comment.session)).filter(Session.id == args.session_id)
-        elif args.test_id is not None:
-            returned = Comment.query.join((Test, Comment.test)).filter(Test.id == args.test_id)
-        else:
-            abort(requests.codes.bad_request)
-        return returned.join(User, Comment.user)
+    results = models.db.session.execute(
+        activity.get_activity_query(user_id=args.user_id, test_id=args.test_id, session_id=args.session_id))
 
-    def _paginate(self, iterator, metadata):
-        return iterator
+    return jsonify({
+        'activities': [
+            _fix_action_string(dict(obj.items())) for obj in results
+        ]
+    })
 
-
-@_resource('/activities', '/activities/<int:object_id>')
-class ActivityResource(ModelResource):
-
-    MODEL = Activity
-    DEFAULT_SORT = (Activity.timestamp.desc(),)
-
-    def _get_iterator(self):
-        returned = super(ActivityResource, self)._get_iterator()
-        args = session_test_user_query_parser.parse_args()
-        if args.session_id is not None:
-            returned = returned.filter(Activity.session_id == args.session_id)
-        if args.test_id is not None:
-            returned = returned.filter(Activity.test_id == args.test_id)
-        if args.user_id is not None:
-            returned = returned.filter(Activity.user_id == args.user_id)
-        return returned
+def _fix_action_string(d):
+    d['action'] = activity.get_action_string(d['action'])
+    return d

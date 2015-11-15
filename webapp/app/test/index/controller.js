@@ -40,5 +40,4 @@ export default Ember.Controller.extend({
 
     }.property('test'),
 
-    test: Ember.computed.oneWay('parent_controller.test'),
 });

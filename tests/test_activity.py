@@ -1,18 +1,33 @@
-import pytest
-from flask_app import activity
-from flask_app.models import Activity
+import requests
 
 
-def test_no_user_activity_by_default(testuser_id, webapp):
-    with webapp.app.app_context():
-        assert Activity.query.filter(Activity.user_id==testuser_id).all() == []
+def test_activity_by_user(client, testuser_id, real_login):
+    assert _get_activities(client, {'user_id': testuser_id}) == []
 
-def test_user_activity_archiving(testuser_id, ended_session, client, get_activities, moderator_role):
-    client.do_real_login()
+
+def test_investigate_activity(client, ended_session, real_login):
+    ended_session.toggle_investigated()
+    [a1] = _get_activities(client, {'session_id': ended_session.id})
+    assert a1.action == 'investigated'
+    ended_session.toggle_investigated()
+    [a1, a2] = _get_activities(client, {'session_id': ended_session.id})
+    assert a1.action == 'investigated'
+    assert a2.action == 'uninvestigated'
+    assert a1.timestamp < a2.timestamp
+
+
+def test_archive_activity(client, ended_session, real_login, moderator_role):
     ended_session.toggle_archived()
-    [a] = get_activities()
-    assert a.action == activity.ACTION_ARCHIVED
+    [a1] = _get_activities(client, {'session_id': ended_session.id})
+    assert a1.action == 'archived'
     ended_session.toggle_archived()
-    _, a = get_activities()
-    assert a.action == activity.ACTION_UNARCHIVED
+    [a1, a2] = _get_activities(client, {'session_id': ended_session.id})
+    assert a1.action == 'archived'
+    assert a2.action == 'unarchived'
+    assert a1.timestamp < a2.timestamp
 
+
+def _get_activities(client, params):
+    return client.api.session.get(
+        client.api.url.add_path('rest/activities'),
+        params=params).json()['activities']

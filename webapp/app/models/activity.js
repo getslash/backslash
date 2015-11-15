@@ -1,10 +1,10 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-    action_string: DS.attr(),
+    action: DS.attr(),
     timestamp: DS.attr(),
     user_email: DS.attr(),
-    what: DS.attr(),
+    text: DS.attr(),
 
     message: function() {
 
@@ -29,6 +29,8 @@ export default DS.Model.extend({
                 return 'check';
             case 'uninvestigated':
                 return 'times';
+            case 'commented':
+                return 'comment';
         }
         return 'bullseye';
     }.property('action_string'),

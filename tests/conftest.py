@@ -190,14 +190,6 @@ def real_login(client):
 
 
 @pytest.fixture
-def get_activities(webapp, testuser_id):
-    def returned():
-        with webapp.app.app_context():
-            return models.Activity.query.filter(models.Activity.user_id == testuser_id).all()
-    return returned
-
-
-@pytest.fixture
 def backslash_url(request):
     url = request.config.getoption("--url")
     if url is None:

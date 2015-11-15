@@ -1,13 +1,17 @@
 <div class="activity-item">
+  <div class="activity-icon {{item.action}}">
+    <i class="fa fa-{{action_info.icon}}"></i>
+  </div>
+
   {{#if item.deleted}}
     Deleted item by {{item.user_email}} ({{moment-time unix=item.timestamp}})
   {{else}}
     <div class="activity-heading">
-      {{item.user_email}} commented {{moment-time unix=item.timestamp}}
+      On {{moment-time unix=item.timestamp}}, {{item.user_email}} {{action_message}}
     </div>
     <div class="activity-content">
       <p>
-        {{item.comment}}
+        {{item.text}}
       </p>
     </div>
   {{/if}}
