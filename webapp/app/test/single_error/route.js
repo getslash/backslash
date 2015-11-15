@@ -5,15 +5,18 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
 
-        return this.store.find('error', params.error_id);
-    },
+        let test = this.modelFor('test');
 
+        return Ember.RSVP.hash({
+            'error': this.store.find('error', params.error_id),
+            'test': test,
+            'session': this.store.find('session', test.get('session_id'))
+        });
+    },
 
     setupController: function(controller, model) {
         this._super(controller, model);
-        controller.set('error', model);
-        controller.set('test', this.controllerFor('test').get('test'));
-        controller.set('session', this.controllerFor('test').get('test.session'));
+        controller.setProperties(model);
 
     },
 
