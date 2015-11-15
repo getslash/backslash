@@ -1,9 +1,16 @@
 {{#tool-bar}}
 
   <p class="navbar-text">
-    {{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} /
-    {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} /
-    {{#link-to 'test.errors' test.display_id}} Errors {{/link-to}} / {{error.id}}
+    {{#link-to 'session' session.display_id}} Session {{session.display_id}}{{/link-to}} /
+
+    {{#if test}}
+      {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} /
+      {{#link-to 'test.errors' test.display_id}} Errors {{/link-to}}
+    {{else}}
+      {{#link-to 'session.errors' session.display_id}} Errors {{/link-to}}
+    {{/if}}
+    / {{error.id}}
+
   </p>
 
 {{/tool-bar}}
@@ -22,7 +29,7 @@
       </tr>
       <tr>
         <td><strong>Timestamp</strong></td>
-        <td>{{moment-time unix=error.exception_type}}</td>
+        <td>{{moment-time unix=error.timestamp}}</td>
       </tr>
     </tbody>
   </table>

@@ -1,6 +1,13 @@
 {{#tool-bar}}
 
-  <p class="navbar-text">{{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} / {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} / Errors </p>
+  <p class="navbar-text">{{#link-to 'session' session.display_id}} Session {{session.display_id}}{{/link-to}} /
+
+    {{#if test }}
+      {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} /
+    {{/if}}
+      Errors
+  </p>
+
 
 {{/tool-bar}}
 
@@ -8,7 +15,7 @@
   <table class="table table-hover">
     <tbody>
       {{#each errors as |error|}}
-        {{#link-to 'test.error' test.id error.id tagName="tr" classNames="clickable"}}
+        {{#link-to single_error_route_name parent_id error.id tagName="tr" classNames="clickable"}}
         <td><strong>{{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})</strong></td>
         <td><code>{{error.full_message}}</code></td>
         {{/link-to}}

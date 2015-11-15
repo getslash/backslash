@@ -18,5 +18,5 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
     renderTemplate: function() {
         this.render('errors', {});
-  }
+    }
 });

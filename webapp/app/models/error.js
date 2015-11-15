@@ -8,7 +8,7 @@ export default DS.Model.extend({
       return this.get('exception_type') + ': ' + this.get('message');
   }.property('exception_type', 'message'),
 
-  timestamp: DS.attr('date'),
+  timestamp: DS.attr(),
   traceback: DS.attr(),
   type: DS.attr('string')
 });

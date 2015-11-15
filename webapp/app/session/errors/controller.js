@@ -1,3 +1,9 @@
-import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
+import Ember from 'ember';
 
-export default PaginatedFilteredController.extend();
+
+export default Ember.Controller.extend({
+
+    single_error_route_name: 'session.single_error',
+
+    parent_id: Ember.computed.oneWay('session.id')
+});

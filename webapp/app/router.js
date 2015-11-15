@@ -7,11 +7,14 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route("sessions", { path: "/sessions" });
-  this.route("session", { path: "/sessions/:id" });
+  this.route("session", { path: "/sessions/:id" }, function() {
+    this.route('errors');
+    this.route('single_error', { path: "/sessions/:session_id/errors/:error_id" });
+  });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
     this.route('errors');
-    this.route('error', { path: "/tests/:test_id/errors/:error_id" });
+    this.route('single_error', { path: "/tests/:test_id/errors/:error_id" });
   });
 
   this.route('login', function() {});
