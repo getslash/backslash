@@ -9,7 +9,6 @@
 @import 'sessions.scss';
 @import 'test.scss';
 @import 'users.scss';
-@import 'warning.scss';
 @import 'comments.scss';
 @import 'activity.scss';
 @import 'loading-indicator.scss';
@@ -18,7 +17,10 @@
 @import 'components/filter-control.scss';
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
+
+
 @import 'components/errors/traceback-frame.scss';
+@import 'components/warnings/warnings.scss';
 
 
 @import "ember-modal-dialog/ember-modal-structure";

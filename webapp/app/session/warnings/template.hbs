@@ -1,6 +1,12 @@
-{{#each model as |warning|}}
-  {{warning-box warning=warning}}
-{{/each}}
+{{#tool-bar}}
+<p class="navbar-text">
+  {{#link-to 'session' session.display_id}} Session {{session.display_id}}{{/link-to}} /
 
-{{pagination-nav page=page pages_total=pages_total next_page="next_page" prev_page="prev_page" goto_page="goto_page"}}
+  {{#if test }}
+    {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} /
+  {{/if}}
+  Warnings
+</p>
+{{/tool-bar}}
 
+{{warnings/warnings-list warnings=warnings}}

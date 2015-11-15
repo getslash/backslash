@@ -77,6 +77,19 @@
         </td>
       </tr>
       {{/if}}
+      {{#if session_model.num_warnings}}
+        <tr>
+          <td class="faint" colspan="2">
+            <span class="warning">
+              <i class="fa fa-warning"></i>
+              {{#link-to 'session.warnings'}}
+                {{session_model.num_warnings}} Warnings
+              {{/link-to}}
+            </span>
+          </td>
+        </tr>
+      {{/if}}
+
     </table>
 
   </div>

@@ -42,6 +42,18 @@
         </tr>
       {{/if}}
 
+      {{#if test.num_warnings }}
+        <tr>
+          <td colspan="2">
+            <span class="warning">
+              <i class="fa fa-warning"></i>
+              {{#link-to "test.warnings"}} {{test.num_warnings}} Warnings {{/link-to}}
+            </span>
+          </td>
+        </tr>
+      {{/if}}
+
+
     </tbody>
   </table>
 
