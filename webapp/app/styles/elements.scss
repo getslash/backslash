@@ -1,7 +1,7 @@
 
 /* Test details: Command-line */
 .console {
-    background-color: lighten($navbar-inverse-bg, 15%);
+    background-color: $console-bg;
     border: 2px solid $gray-lighter;
     color: $gray-lighter;
     font-family: monospace;

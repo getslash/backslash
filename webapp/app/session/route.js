@@ -10,10 +10,12 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, Refreshabl
     model: function(params) {
         return Ember.RSVP.hash({
             'session_model': this.store.find('session', params.id),
+
             'metadata': this.api.call('get_metadata', {
                 entity_type: 'session',
                 entity_id: parseInt(params.id)
             }).then(r => r.result),
+
             'tests': this.store.query('test', {session_id: params.id, page: params.page, filter: params.filter}),
             'history': [
             ]

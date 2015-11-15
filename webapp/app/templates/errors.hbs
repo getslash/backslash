@@ -1,0 +1,18 @@
+{{#tool-bar}}
+
+  <p class="navbar-text">{{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} / {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} / Errors </p>
+
+{{/tool-bar}}
+
+<div class="container">
+  <table class="table table-hover">
+    <tbody>
+      {{#each errors as |error|}}
+        {{#link-to 'test.error' test.id error.id tagName="tr" classNames="clickable"}}
+        <td><strong>{{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})</strong></td>
+        <td><code>{{error.full_message}}</code></td>
+        {{/link-to}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>

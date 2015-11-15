@@ -109,7 +109,7 @@ session_test_user_query_parser.add_argument('session_id', type=int, default=None
 session_test_user_query_parser.add_argument('test_id', type=int, default=None)
 session_test_user_query_parser.add_argument('user_id', type=int, default=None)
 
-@_resource('/errors')
+@_resource('/errors', '/errors/<int:object_id>')
 class ErrorResource(ModelResource):
 
     MODEL = Error

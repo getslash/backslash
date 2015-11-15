@@ -1,3 +1,7 @@
-import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
+import Ember from 'ember';
 
-export default PaginatedFilteredController.extend();
+
+export default Ember.Controller.extend({
+
+    test: Ember.computed.alias('parent_controller.test')
+});

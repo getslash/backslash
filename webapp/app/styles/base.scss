@@ -25,6 +25,11 @@ body
      -khtml-user-select: none;
 }
 
+span.danger 
+{
+    color: $brand-danger;
+}
+
 .clickable.danger:hover
 {
     color: $brand-danger;

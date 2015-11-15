@@ -9,7 +9,10 @@ Router.map(function() {
   this.route("sessions", { path: "/sessions" });
   this.route("session", { path: "/sessions/:id" });
 
-  this.route("test", { path: "/tests/:test_id" });
+  this.route("test", { path: "/tests/:test_id" }, function() {
+    this.route('errors');
+    this.route('error', { path: "/tests/:test_id/errors/:error_id" });
+  });
 
   this.route('login', function() {});
   this.route('profile');
