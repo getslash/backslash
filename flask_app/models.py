@@ -61,21 +61,6 @@ session_error = db.Table('session_error',
                                    db.Integer,
                                    db.ForeignKey('error.id', ondelete='CASCADE')))
 
-test_comment = db.Table('test_comment',
-                        db.Column('test_id',
-                                  db.Integer,
-                                  db.ForeignKey('test.id', ondelete='CASCADE')),
-                        db.Column('comment_id',
-                                  db.Integer,
-                                  db.ForeignKey('comment.id', ondelete='CASCADE')))
-
-session_comment = db.Table('session_comment',
-                           db.Column('session_id',
-                                     db.Integer,
-                                     db.ForeignKey('session.id', ondelete='CASCADE')),
-                           db.Column('comment_id',
-                                     db.Integer,
-                                     db.ForeignKey('comment.id', ondelete='CASCADE')))
 
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
@@ -104,7 +89,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     errors = db.relationship(
         'Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
     comments = db.relationship(
-        'Comment', secondary=session_comment, backref=backref('session', lazy='dynamic'))
+        'Comment', primaryjoin='Comment.session_id==Session.id', backref=backref('session'))
     metadata_items = db.relationship(
         'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
@@ -244,7 +229,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     errors = db.relationship(
         'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
     comments = db.relationship(
-        'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
+        'Comment', primaryjoin='Comment.test_id==Test.id', backref=backref('test'))
+
 
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
@@ -352,6 +338,8 @@ class Comment(db.Model, TypenameMixin):
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.Float, default=get_current_time)
     deleted = db.Column(db.Boolean, server_default="false")
+    session_id = db.Column(db.ForeignKey(Session.id, ondelete='CASCADE'), nullable=True, index=True)
+    test_id = db.Column(db.ForeignKey(Test.id, ondelete='CASCADE'), nullable=True, index=True)
 
     @rendered_field
     def user_email(self):
