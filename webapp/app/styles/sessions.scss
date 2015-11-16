@@ -51,3 +51,23 @@
         padding: 0.5em;
     }
 }
+
+.counter {
+
+    display: inline-block;
+
+    &.errors {
+    
+	color: $brand-danger;
+    }
+
+    &.warnings {
+	color: $brand-warning;
+    }
+
+    &.noshow {
+	visibility: hidden;
+    }
+
+    width: 3em;
+}

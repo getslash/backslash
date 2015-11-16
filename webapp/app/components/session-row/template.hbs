@@ -16,7 +16,16 @@
   </div>
 </div>
 <div class="col-md-2">
-  {{warnings/warnings-counter obj=session}}
+  {{#if (gt session.num_warnings 0)}}
+    <div class="counter warnings">
+      <i class="fa fa-warning"></i> {{session.num_warnings}}
+    </div>
+  {{/if}}
+  {{#if (gt session.num_errors 0)}}
+    <div class="counter errors">
+      <i class="fa fa-times-circle"></i> {{session.num_errors}}
+    </div>
+  {{/if}}
 </div>
 <div class="col-md-2">
   {{#each session.subjects as |subject index|}}
