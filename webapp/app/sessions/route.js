@@ -1,5 +1,3 @@
-import Ember from 'ember';
-
 import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import PollingRoute from '../mixins/polling-route';
