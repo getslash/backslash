@@ -25,7 +25,7 @@ Router.map(function() {
     this.route('sessions');
     this.route('preferences');
   });
-  this.route('authorize-pruntoken', { path: '/runtoken/:requestid/authorize' });
+  this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
   this.route('loading');
   this.route('users');
 });
