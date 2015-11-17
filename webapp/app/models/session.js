@@ -23,6 +23,9 @@ export default DS.Model.extend(HasLogicalId, {
     num_warnings: DS.attr('number'),
 
     status: DS.attr('string'),
+    status_lower: function() {
+        return this.get('status').toLowerCase();
+    }.property('status'),
 
     subjects: DS.attr(),
 

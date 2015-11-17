@@ -2,6 +2,14 @@
 .test-row:hover
 {
     background-color: $gray-lighter;
+    
+    &.success {
+	background-color: $mild-green;
+    }
+
+    &.error, &.failure {
+	background-color: $mild-red;
+    }
 }
 
 .session-row,
