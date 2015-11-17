@@ -336,7 +336,7 @@ def add_session_metadata(id: int, metadata: dict):
 
 
 @API
-def add_error(message: str, exception_type: str=None, traceback: list=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
+def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
 
