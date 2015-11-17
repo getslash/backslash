@@ -1,0 +1,19 @@
+.counter {
+
+    display: inline-block;
+
+    &.error {
+    
+	color: $brand-danger;
+    }
+
+    &.warning {
+	color: $brand-warning;
+    }
+
+    &.noshow {
+	visibility: hidden;
+    }
+
+    width: 3em;
+}

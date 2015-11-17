@@ -1,7 +1,5 @@
 <div class="col-md-8">
-  <div class="counter warnings {{if (eq test.num_warnings 0) 'noshow'}}">
-    <i class="fa fa-warning"></i> {{test.num_warnings}}
-  </div>
+  {{artifact-counter warnings=test.num_warnings fixed_width=true}}
   <div class="status-label {{status}}">{{status}}</div>
   {{test.info.name}}
 </div>
