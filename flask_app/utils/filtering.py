@@ -4,6 +4,9 @@ import operator
 from flask import request
 
 
+def in_(field, value):
+    return field.in_(value)
+
 class FilterConfig(object):
 
     def __init__(self, cfg):
