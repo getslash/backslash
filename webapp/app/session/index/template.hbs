@@ -65,31 +65,14 @@
           {{/each}}
         </td>
       </tr>
-      {{#if session_model.num_errors}}
       <tr>
-        <td class="faint" colspan="2">
-          <span class="danger">
-            <i class="fa fa-times-circle"></i>
-            {{#link-to 'session.errors'}}
-              {{session_model.num_errors}} Errors
-            {{/link-to}}
-          </span>
+        <td colspan="2">
+          {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
+          {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
+          {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
         </td>
       </tr>
-      {{/if}}
-      {{#if session_model.num_warnings}}
-        <tr>
-          <td class="faint" colspan="2">
-            <span class="warning">
-              <i class="fa fa-warning"></i>
-              {{#link-to 'session.warnings'}}
-                {{session_model.num_warnings}} Warnings
-              {{/link-to}}
-            </span>
-          </td>
-        </tr>
-      {{/if}}
-
+      
     </table>
 
   </div>

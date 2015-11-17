@@ -17,8 +17,8 @@
 </div>
 <div class="col-md-2">
   {{artifact-counter errors=session.num_errors}}
-  {{artifact-counter warnings=session.num_warnings}}
-  </div>
+  {{artifact-counter warnings=session.total_num_warnings}}
+</div>
 <div class="col-md-2">
   {{#each session.subjects as |subject index|}}
     {{if index ", "}}<strong>{{subject.name}}</strong>

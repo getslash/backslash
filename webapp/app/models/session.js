@@ -21,6 +21,11 @@ export default DS.Model.extend(HasLogicalId, {
     total_num_tests: DS.attr('number'),
 
     num_warnings: DS.attr('number'),
+    num_test_warnings: DS.attr('number'),
+
+    total_num_warnings: function() {
+        return this.get('num_warnings') + this.get('num_test_warnings');
+    }.property('num_warnings', 'num_test_warnings'),
 
     status: DS.attr('string'),
     status_lower: function() {

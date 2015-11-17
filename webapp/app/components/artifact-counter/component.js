@@ -3,12 +3,15 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
     classNames: "counter",
-    classNameBindings: ['class_name', 'visibility_class_name'],
+    classNameBindings: ['class_name', 'visibility_class_name', 'has_caption:varwidth'],
 
     fixed_width: false,
 
     warnings: null,
     errors: null,
+    caption: null,
+
+    has_caption: Ember.computed.notEmpty('caption'),
 
     icon: function() {
         if (this.get('warnings')) {

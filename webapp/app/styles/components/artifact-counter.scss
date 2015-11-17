@@ -15,5 +15,15 @@
 	visibility: hidden;
     }
 
-    width: 3em;
+    &:not(.varwidth) {
+	width: 3em;
+    }
+    
+    &.varwidth {
+	margin-right: 1em;
+    }
+}
+
+a .counter:hover .text {
+    text-decoration: underline;
 }

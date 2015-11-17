@@ -104,6 +104,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_finished_tests = db.Column(db.Integer, default=0)
 
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+    num_test_warnings = db.Column(db.Integer, nullable=False, server_default="0")
 
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)

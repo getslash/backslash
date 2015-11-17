@@ -398,8 +398,9 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
         Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
     obj.num_warnings = type(obj).num_warnings + 1
     if session_id is None:
-        obj.session.num_warnings = Session.num_warnings + 1
+        obj.session.num_test_warnings = Session.num_test_warnings + 1
         db.session.add(obj.session)
+
     db.session.add(obj)
     db.session.commit()
 
