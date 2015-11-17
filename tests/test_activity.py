@@ -1,4 +1,7 @@
+import pytest
+
 import requests
+import flux
 
 
 def test_activity_by_user(client, testuser_id, real_login):
@@ -8,26 +11,51 @@ def test_activity_by_user(client, testuser_id, real_login):
 def test_investigate_activity(client, ended_session, real_login):
     ended_session.toggle_investigated()
     [a1] = _get_activities(client, {'session_id': ended_session.id})
-    assert a1.action == 'investigated'
+    assert a1['action'] == 'investigated'
+    flux.current_timeline.sleep(1)
     ended_session.toggle_investigated()
     [a1, a2] = _get_activities(client, {'session_id': ended_session.id})
-    assert a1.action == 'investigated'
-    assert a2.action == 'uninvestigated'
-    assert a1.timestamp < a2.timestamp
+    assert a1['action'] == 'investigated'
+    assert a2['action'] == 'uninvestigated'
+    assert a1['timestamp'] < a2['timestamp']
 
 
 def test_archive_activity(client, ended_session, real_login, moderator_role):
     ended_session.toggle_archived()
     [a1] = _get_activities(client, {'session_id': ended_session.id})
-    assert a1.action == 'archived'
+    assert a1['action'] == 'archived'
+    flux.current_timeline.sleep(1)
     ended_session.toggle_archived()
     [a1, a2] = _get_activities(client, {'session_id': ended_session.id})
-    assert a1.action == 'archived'
-    assert a2.action == 'unarchived'
-    assert a1.timestamp < a2.timestamp
+    assert a1['action'] == 'archived'
+    assert a2['action'] == 'unarchived'
+    assert a1['timestamp'] < a2['timestamp']
+
+
+def test_comment(client, commentable, real_login):
+    comment = 'comment here'
+    commentable.post_comment(comment)
+    [a1] = _get_activities(client, commentable)
+    assert a1['action'] == 'commented'
+    assert a1['text'] == comment
+
+
+def test_delete_comment(commentable, real_login, client):
+    pytest.skip('')
 
 
 def _get_activities(client, params):
+    if not isinstance(params, dict):
+        params = {'{}_id'.format(params.type): params.id}
+
     return client.api.session.get(
         client.api.url.add_path('rest/activities'),
         params=params).json()['activities']
+
+
+@pytest.fixture(params=['session', 'test'])
+def commentable(request, ended_session, ended_test):
+    if request.param == 'session':
+        return ended_session
+    if request.param == 'test':
+        return ended_test
