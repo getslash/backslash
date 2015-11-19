@@ -79,13 +79,13 @@ def nonexistent_session(client):
 
 @pytest.fixture
 def started_test(started_session, file_name, class_name, test_name):
-    return started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name, test_logical_id='11')
+    return started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name, test_logical_id=str(uuid4()))
 
 
 @pytest.fixture
 def started_session_with_ended_test(started_session, test_info):
     test = started_session.report_test_start(
-        test_logical_id='11', **test_info)
+        test_logical_id=str(uuid4()), **test_info)
     test.report_end()
     return (started_session, test)
 
@@ -93,7 +93,7 @@ def started_session_with_ended_test(started_session, test_info):
 @pytest.fixture
 def ended_test(started_session, test_info):
     returned = started_session.report_test_start(
-        test_logical_id='11', **test_info)
+        test_logical_id=str(uuid4()), **test_info)
     returned.report_end()
     return returned
 
