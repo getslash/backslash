@@ -1,8 +1,14 @@
 import operator
 
 from .. import models
-from ..utils.filtering import ConstFilter, FilterConfig, in_
 from ..utils import statuses
+from ..utils.filtering import ConstFilter, FilterConfig, in_, notin_
+
+_STATUS_FILTERS = {
+        'unsuccessful': (notin_, (statuses.SUCCESS, statuses.SKIPPED)),
+        'successful': (in_, (statuses.SUCCESS, statuses.SKIPPED)),
+        'skipped': (operator.eq, statuses.SKIPPED),
+}
 
 
 SESSION_FILTERS = FilterConfig({
@@ -10,15 +16,9 @@ SESSION_FILTERS = FilterConfig({
         'not investigated': False,
         'investigated': True,
     }),
-    'status': ConstFilter(models.Session.status, {
-        'unsuccessful': (operator.ne, statuses.SUCCESS),
-        'successful': (in_, (statuses.SUCCESS, statuses.SKIPPED)),
-    }),
+    'status': ConstFilter(models.Session.status, _STATUS_FILTERS),
 })
 
 TEST_FILTERS = FilterConfig({
-    'status': ConstFilter(models.Test.status, {
-        'unsuccessful': (operator.ne, statuses.SUCCESS),
-        'successful': (in_, (statuses.SUCCESS, statuses.SKIPPED)),
-    }),
+    'status': ConstFilter(models.Test.status, _STATUS_FILTERS),
 })
