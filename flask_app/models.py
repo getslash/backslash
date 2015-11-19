@@ -43,25 +43,6 @@ class StatusPredicatesMixin(object):
 
 
 
-
-
-test_error = db.Table('test_error',
-                      db.Column('test_id',
-                                db.Integer,
-                                db.ForeignKey('test.id', ondelete='CASCADE')),
-                      db.Column('error_id',
-                                db.Integer,
-                                db.ForeignKey('error.id', ondelete='CASCADE')))
-
-session_error = db.Table('session_error',
-                         db.Column('session_id',
-                                   db.Integer,
-                                   db.ForeignKey('session.id', ondelete='CASCADE')),
-                         db.Column('error_id',
-                                   db.Integer,
-                                   db.ForeignKey('error.id', ondelete='CASCADE')))
-
-
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -87,7 +68,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     tests = db.relationship(
         'Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     errors = db.relationship(
-        'Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
+        'Error', backref=backref('session'))
     comments = db.relationship(
         'Comment', primaryjoin='Comment.session_id==Session.id', backref=backref('session'))
     metadata_items = db.relationship(
@@ -228,7 +209,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     errors = db.relationship(
-        'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
+        'Error', backref=backref('test'))
     comments = db.relationship(
         'Comment', primaryjoin='Comment.test_id==Test.id', backref=backref('test'))
 
@@ -281,6 +262,9 @@ class Error(db.Model, TypenameMixin):
     message = db.Column(db.Text(), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
+
 
 class Warning(db.Model, TypenameMixin):
 
