@@ -113,3 +113,22 @@ $added-margin-amount: 1em;
 {
     margin-bottom: $added-margin-amount;
 }
+
+span {
+    &.skip, &.warning {
+	color: $brand-warning;
+    }
+
+    &.error {
+	color: $brand-danger;
+    }
+
+    &.success {
+	color: $brand-success;
+    }
+}
+
+.faint
+{
+    color: $gray-light;
+}
