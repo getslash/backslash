@@ -1,6 +1,6 @@
 <div class="col-md-8">
   {{artifact-counter warnings=test.num_warnings fixed_width=true}}
-  <div class="status-label {{status}}">{{status}}</div>
+  {{tests/status-label test=test}}
   {{test.info.name}}
 </div>
 <div class="col-md-4">

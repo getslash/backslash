@@ -7,10 +7,6 @@ export default Ember.Component.extend({
 
     click: function() {
         this.sendAction('goto_test', this.get('test'));
-    },
-
-    status: function() {
-        return this.get('test.status').toLowerCase();
-    }.property('test.status')
-
+    }
 });
+ 

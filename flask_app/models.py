@@ -3,11 +3,12 @@ from flask.ext.security import UserMixin, RoleMixin, current_user
 
 from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.sql import and_, select, func
 
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import rendered_field
+from .utils.rendering import rendered_field, render_api_object
 from . import activity
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
@@ -213,6 +214,16 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
     comments = db.relationship(
         'Comment', primaryjoin='Comment.test_id==Test.id', backref=backref('test'))
 
+    first_error_obj = db.relationship(lambda: Error,
+                                  primaryjoin=lambda: and_(
+                                      Test.id == Error.test_id,
+                                      Error.timestamp == select([func.max(Error.timestamp)]).
+                                      where(Error.test_id==Test.id).
+                                      correlate(Test.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
 
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
@@ -226,6 +237,12 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
         if self.end_time is None or self.start_time is None:
             return None
         return self.end_time - self.start_time
+
+    @rendered_field
+    def first_error(self):
+        if self.first_error_obj is None:
+            return None
+        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
 
     @rendered_field
     def info(self):

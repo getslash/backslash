@@ -83,3 +83,28 @@ pre span{
     font-weight: bold;
     font-family: monospace;
 }
+
+
+.tooltipster-error-preview {
+	border-radius: 5px; 
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+	background: $brand-danger;
+	color: white;
+}
+
+.tooltipster-skip-reason {
+	border-radius: 5px; 
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+	background: $brand-warning;
+	color: white;
+}
+
+
+.tooltipster-error-preview .tooltipster-content, .tooltipster-skip-reason .tooltipster-content {
+	overflow: ellipsis;
+	text-overflow: ellipsis;
+	font-family: monospace;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 8px 10px;
+}

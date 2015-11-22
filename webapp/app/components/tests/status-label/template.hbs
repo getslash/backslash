@@ -1,0 +1,7 @@
+{{#if display_tooltip}}
+  {{#tool-tipster content=tooltip_html position="bottom" theme=tooltip_class contentAsHTML=true}}
+    <div class="status-label {{status}}">{{status}}</div>
+  {{/tool-tipster}}
+{{else}}
+  <div class="status-label {{status}}">{{status}}</div>
+{{/if}}
