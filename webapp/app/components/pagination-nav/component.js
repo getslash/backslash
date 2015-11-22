@@ -50,7 +50,6 @@ export default Ember.Component.extend({
 
     actions: {
         goto: function(page) {
-            console.log('Going to page', page);
             let self = this;
             let p = self.get('page');
             if (page === "next") {

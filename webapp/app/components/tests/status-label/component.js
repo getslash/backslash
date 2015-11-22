@@ -16,7 +16,6 @@ export default Ember.Component.extend({
         let text = null;
         const skip_reason = this.get('test.skip_reason');
         const first_error = this.get('test.first_error');
-        console.log('s=', skip_reason, 'f=', first_error);
 
         if (skip_reason) {
             text = skip_reason;
@@ -31,7 +30,6 @@ export default Ember.Component.extend({
         }
 
         let returned = '<span class="error-preview"><i class="fa fa-exclamation"></i> ' + text + '</span>';
-        console.log('returning', returned);
         return returned;
     }.property('test.first_error', 'test.skip_reason'),
 
