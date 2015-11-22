@@ -40,6 +40,7 @@ export default PaginatedFilteredController.extend({
                     session_id: sid
                 }).then(function() {
                     self.set('investigating', false);
+                    self.set('session_model.investigated', true);
                     self.send('refreshRoute');
                 });
             });
