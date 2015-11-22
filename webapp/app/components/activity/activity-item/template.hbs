@@ -10,7 +10,7 @@
       <img src="{{gravatar-url item.user_email}}" class="img-circle avatar small"> On {{moment-time unix=item.timestamp}}, {{item.user_email}} {{action_message}}
     </div>
     <div class="activity-content">
-      {{item.text}}
+      {{linkify item.text}}
     </div>
   {{/if}}
 </div>
