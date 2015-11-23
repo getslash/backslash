@@ -84,15 +84,36 @@
 </div>
 
 {{hr-separator title="Additional Information"}}
-
 <div class="container-fluid">
-  {{#if metadata.slash.commandline}}
-    Command-line
+  <table class="table metadata-table hover">
+    <tbody>
+      <tr>
+        <td>Ran from:</td>
+        <td>{{session_model.hostname}}</td>
+      </tr>
+      {{#each-in metadata as |name value|}}
+        {{#if (not (eq name "slash"))}}
+        <tr>
+          <td>{{name}}</td>
+          <td>{{value}}</td>
+        </tr>
+        {{/if}}
+      {{/each-in}}
+    </tbody>
+  </table>
+</div>
+
+
+{{#if metadata.slash.commandline}}
+<div class="metadata-item">
+  <div class="title">Command-line</div>
+  <div class="content">
     <div class="console">
       {{metadata.slash.commandline}}
     </div>
-  {{/if}}
+  </div>
 </div>
+{{/if}}
 
 
 {{hr-separator title="Activity"}}

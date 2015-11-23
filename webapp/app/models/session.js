@@ -19,6 +19,7 @@ export default DS.Model.extend(HasLogicalId, {
     num_skipped_tests: DS.attr('number'),
 
     total_num_tests: DS.attr('number'),
+    hostname: DS.attr(),
 
     num_warnings: DS.attr('number'),
     num_test_warnings: DS.attr('number'),
