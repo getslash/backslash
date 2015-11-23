@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 PYTHON_INTERPRETER = "python3"
+_PREVENT_FORK_MARKER = 'WEBER_PREVENT_FORK'
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 _ENV_DIR = os.environ.get("VIRTUALENV_PATH", os.path.join(_PROJECT_ROOT, ".env"))
@@ -48,8 +49,8 @@ def bootstrap_env(deps=("base",)):
             _mark_up_to_date(dep)
 
     python = os.path.abspath(os.path.join(_ENV_DIR, "bin", "python"))
-    if os.path.abspath(sys.executable) != python:
-        os.execv(python, [python] + sys.argv)
+    if os.path.abspath(sys.executable) != python and _PREVENT_FORK_MARKER not in os.environ:
+        os.execve(python, [python] + sys.argv, dict(os.environ, _PREVENT_FORK_MARKER='true'))
 
 
 def _is_dep_out_of_date(dep):
