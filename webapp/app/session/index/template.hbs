@@ -39,11 +39,10 @@
 
 
 {{hr-separator title="Overview"}}
-
 <div class="container-fluid session-details">
   <div class="col-md-2">
     {{#link-to "user.sessions" session_model.user_email}}
-      <img class="img-circle" title="Started by {{session.user_email}}" src="{{gravatar-url session_model.user_email}}" />
+      {{users/user-avatar user=user}}
     {{/link-to}}
   </div>
   <div class="col-md-8">
@@ -72,7 +71,7 @@
           {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
         </td>
       </tr>
-      
+
     </table>
 
   </div>

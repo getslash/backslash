@@ -12,7 +12,7 @@
 {{#each model as |user| }}
   {{#link-to "user.sessions" user.email tagName="tr" classNames="clickable"}}
     <td>
-      <img src="{{gravatar-url user.email}}" class="img-circle avatar small">
+      {{users/user-avatar user=user small=true}}
     </td>
     <td>
       {{user.email}}

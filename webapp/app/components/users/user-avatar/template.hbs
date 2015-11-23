@@ -1,0 +1,7 @@
+<img class="img-circle" src={{gravatar-url user_email}}>
+{{# if is_admin }}
+<i class="fa fa-chevron-up upper"></i>
+{{/if}}
+{{#if (or is_moderator is_admin)}}
+<i class="fa fa-chevron-up lower"></i>
+{{/if}}
