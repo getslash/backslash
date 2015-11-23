@@ -281,12 +281,23 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
 
 @API
 def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
+    _set_metadata_dict(entity_type=entity_type, entity_id=entity_id, metadata={key: value})
+
+
+@API
+def set_metadata_dict(entity_type: str, entity_id: int, metadata: dict):
+    _set_metadata_dict(entity_type=entity_type, entity_id=entity_id, metadata=metadata)
+
+
+def _set_metadata_dict(*, entity_type, entity_id, metadata):
     model = _get_metadata_model(entity_type)
-    db.session.add(model(key=key, metadata_item=value, **{'{}_id'.format(entity_type): entity_id}))
+    for key, value in metadata.items():
+        db.session.add(model(key=key, metadata_item=value, **{'{}_id'.format(entity_type): entity_id}))
     try:
         db.session.commit()
     except IntegrityError:
         abort(requests.codes.not_found)
+
 
 
 @API(generates_activity=True)

@@ -14,6 +14,18 @@ def test_add_metadata(metadata_holder, metadata_key, metadata_value):
     }
 
 
+def test_add_metadata_dict(metadata_holder, metadata_key, metadata_value):
+    another_key = 'another_key'
+    another_value = {'another': 31337}
+
+    metadata_holder.set_metadata_dict({metadata_key: metadata_value, another_key: another_value})
+    assert metadata_holder.get_metadata() == {
+        metadata_key: metadata_value,
+        another_key: another_value
+    }
+
+
+
 def test_get_metadata_by_logical_id(metadata_holder, metadata_key, metadata_value, client):
     assert metadata_holder.logical_id
     metadata_holder.set_metadata(metadata_key, metadata_value)
