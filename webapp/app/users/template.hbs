@@ -5,7 +5,7 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th></th><th>Email</th><th>Last Active</th>
+      <th></th><th>Email</th><th>Last Activity</th>
     </tr>
   </thead>
   <tbody>
@@ -18,7 +18,11 @@
       {{user.email}}
     </td>
     <td>
-      {{moment-time unix=user.last_active}}
+      {{#if user.last_activity}}
+        {{moment-time ago=user.last_activity}}
+      {{else}}
+        <span class="faint">(Never)</span>
+      {{/if}}
     </td>
   {{/link-to}}
 {{/each}}

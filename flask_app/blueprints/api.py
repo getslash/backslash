@@ -28,11 +28,15 @@ api = SimpleAPI(blueprint)
 NoneType = type(None)
 
 
-def API(func=None, require_real_login=False):
+def API(func=None, require_real_login=False, generates_activity=True):
     if func is None:
-        return functools.partial(API, require_real_login=require_real_login)
+        return functools.partial(API, require_real_login=require_real_login, generates_activity=generates_activity)
 
     returned = auto_render(func)
+
+    if generates_activity:
+        returned = activity.updates_last_active(returned)
+
     if require_real_login:
         returned = requires_login(returned)
     else:
@@ -285,7 +289,7 @@ def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
         abort(requests.codes.not_found)
 
 
-@API
+@API(generates_activity=True)
 def get_metadata(entity_type: str, entity_id: (int, str)):
     query = _get_metadata_query(entity_type=entity_type, entity_id=entity_id)
     return {obj.key: obj.metadata_item for obj in query}

@@ -317,6 +317,8 @@ class User(db.Model, UserMixin, TypenameMixin):
                             backref=db.backref('users', lazy='dynamic'))
     run_tokens = db.relationship('RunToken', lazy='dynamic')
 
+    last_activity = db.Column(db.Float())
+
     @rendered_field
     def user_roles(self):
         return [{'name': role.name} for role in self.roles]

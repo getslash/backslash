@@ -3,6 +3,8 @@ import pytest
 import requests
 import flux
 
+from flask_app import models
+
 
 def test_activity_by_user(client, testuser_id, real_login):
     assert _get_activities(client, {'user_id': testuser_id}) == []
@@ -38,6 +40,24 @@ def test_comment(client, commentable, real_login):
     [a1] = _get_activities(client, commentable)
     assert a1['action'] == 'commented'
     assert a1['text'] == comment
+
+
+def test_user_last_activity(client, testuser_id, db_context):
+    s = client.report_session_start()
+    start_time = flux.current_timeline.time()
+
+    def get_last_active():
+        with db_context():
+            return models.User.query.get(testuser_id).last_activity
+
+    l1 = get_last_active()
+    assert l1 == start_time
+
+    flux.current_timeline.sleep(1)
+
+    _ = s.get_metadata()
+    l2 = get_last_active()
+    assert l2 == l1
 
 
 def test_delete_comment(commentable, real_login, client):

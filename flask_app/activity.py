@@ -1,5 +1,9 @@
 import functools
 
+import flux
+
+from flask import g
+
 from sqlalchemy.sql import select, union_all, literal_column, text
 from sqlalchemy import and_
 
@@ -75,3 +79,23 @@ def _apply_filters(model, query, **filters):
             continue
         whereclause.append(getattr(model, key) == value)
     return query.where(and_(*whereclause))
+
+
+def updates_last_active(func):
+    from . import models
+
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        if hasattr(g, 'token_user'):
+            u = g.token_user
+        elif current_user.is_authenticated:
+            u = models.User.query.get(current_user.id)
+        else:
+            u = None
+
+        if u is not None:
+            u.last_activity = flux.current_timeline.time()
+            models.db.session.add(u)
+        return func(*args, **kwargs)
+
+    return new_func

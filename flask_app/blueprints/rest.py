@@ -125,7 +125,7 @@ class ErrorResource(ModelResource):
 @_resource('/users', '/users/<object_id>')
 class UserResource(ModelResource):
 
-    ONLY_FIELDS = ['id', 'email']
+    ONLY_FIELDS = ['id', 'email', 'last_activity']
     MODEL = User
 
     def _get_object_by_id(self, object_id):
