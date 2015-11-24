@@ -6,7 +6,11 @@
         {{#if (not (eq name "slash"))}}
           <tr>
             <td>{{name}}</td>
-            <td>{{value}}</td>
+            <td>{{value}}
+              {{#copy-button clipboardText=value}}
+                <i class="fa fa-clipboard"></i>
+              {{/copy-button}}
+            </td>
           </tr>
         {{/if}}
       {{/each-in}}

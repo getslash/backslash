@@ -17,6 +17,7 @@
     "js-md5": "~1.1.0",
     "loader.js": "ember-cli/loader.js#3.2.1",
     "qunit": "~1.20.0",
-    "tooltipster": "~3.3.0"
+    "tooltipster": "~3.3.0",
+    "clipboard": "~1.4.2"
   }
 }

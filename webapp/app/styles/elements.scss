@@ -42,3 +42,20 @@
     display: inline-block;
 }
 
+.copy-btn {
+    @extend .btn;
+    cursor: pointer;
+    padding: 1px 4px 1px 4px;
+
+    &:hover {
+	background: $gray-lighter;
+    }
+
+    &:focus, &:active {
+	outline: 0;
+    }
+
+    .success {
+	bacground-color: $mild-green;
+    }
+}
