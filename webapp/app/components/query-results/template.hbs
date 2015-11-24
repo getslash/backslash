@@ -5,7 +5,7 @@
 
 {{#each results as |result|}}
   {{#if (eq result.type "test")}}
-    {{query-result-test test=result goto_test=(action this.attrs.goto_test)}}
+    {{query-result-test test=result}}
   {{/if}}
 
 {{/each}}

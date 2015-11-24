@@ -56,10 +56,6 @@ export default PaginatedFilteredController.extend({
             this.set('page', page_number);
         },
 
-        goto_test: function(test) {
-            this.transitionToRoute('test', test.id);
-        },
-
         update_filter: function(filter_config) {
             this.set('filter', filter_config);
         },

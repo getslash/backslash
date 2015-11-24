@@ -8,10 +8,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
             this.transitionTo('session', session.id);
         },
 
-        goto_test: function(test) {
-            this.transitionTo('test', test.id);
-        },
-
         loading: function(transition) {
             let controller = this.controllerFor('application');
             controller.set('loading', true);

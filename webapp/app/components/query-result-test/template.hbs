@@ -1,3 +1,4 @@
+{{#link-to 'test' test.id}}
 <div class="col-md-8">
   {{artifact-counter warnings=test.num_warnings fixed_width=true}}
   {{tests/status-label test=test}}
@@ -9,3 +10,4 @@
  <div class="col-md-2">
   {{humanized-duration start_time=test.start_time end_time=test.end_time}}
 </div>
+{{/link-to}}
