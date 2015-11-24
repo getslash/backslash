@@ -12,11 +12,9 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
         }
     },
 
-    resetController: function (controller, isExiting) {
-        if (isExiting) {
-            controller.set('filter', undefined);
-            controller.set('page', 1);
-        }
+    resetController: function (controller) {
+        controller.set('filter', undefined);
+        controller.set('page', 1);
     }
 
 
