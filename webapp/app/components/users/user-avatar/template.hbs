@@ -1,4 +1,4 @@
 <img class="img-circle" src={{gravatar-url user_email}}>
 {{# if (or is_admin is_moderator)}}
-<i class="fa fa-star {{if is_admin 'admin'}} {{if is_moderator 'moderator'}}"></i>
+<i class="fa fa-star {{if is_admin 'admin'}} {{if (not is_admin and is_moderator) 'moderator'}}"></i>
 {{/if}}

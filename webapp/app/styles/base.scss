@@ -57,6 +57,11 @@ span.danger
     background: $mild-green;
 }
 
+.btn.disabled, .btn.disabled:focus
+{
+	outline:0;
+}
+
 .label-badge
 {
     border-radius: 1em;
