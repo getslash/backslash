@@ -26,11 +26,11 @@
     font-weight: bold;
     padding: 0.5em;
     background-color: $gray-lighter;
-    white-space: pre;
-
+    white-space: pre-wrap;
+    
     .lineno {
-	color: $gray-light;
-	min-width: 3em;
+        color: $gray-light;
+        min-width: 3em;
     }
 }
 
