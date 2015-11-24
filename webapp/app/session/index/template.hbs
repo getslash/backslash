@@ -51,10 +51,15 @@
       <tr>
         <td class="faint">Run time: </td>
         <td>
-          <strong>{{moment-time unix=session_model.start_time}}</strong> &rarr;
-          <strong>{{moment-time unix=session_model.end_time}}</strong>
+          <strong>{{moment-range start_time=session_model.start_time end_time=session_model.end_time}}</strong>
         </td>
       </tr>
+      <tr>
+        <td class="faint">Duration: </td>
+        <td>
+          <strong>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</strong>
+        </td>
+      </tr> 
       <tr>
         <td class="faint">Test Subjects:</td>
         <td>

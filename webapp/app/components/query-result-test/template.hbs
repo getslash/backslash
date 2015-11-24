@@ -3,5 +3,9 @@
   {{tests/status-label test=test}}
   {{test.info.name}}
 </div>
-<div class="col-md-4">
+<div class="col-md-2">
+  {{humanized-time start_time=test.start_time end_time=test.end_time is_running=test.is_running}}
+ </div>
+ <div class="col-md-2">
+  {{humanized-duration start_time=test.start_time end_time=test.end_time}}
 </div>

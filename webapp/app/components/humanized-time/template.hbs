@@ -1,0 +1,11 @@
+{{#if is_running }}
+  <span class="hint--bottom" data-hint="{{moment-time unix=start_time}}">
+	<i class="fa fa-calendar-o"></i>
+    Started {{moment-time ago=start_time}}
+  </span>
+{{else}}
+  <span class="hint--bottom" data-hint="{{moment-range start_time=start_time end_time=end_time}}">
+   <i class="fa fa-calendar-o"></i>
+   {{moment-time time=end_time}}
+  </span>
+{{/if}}

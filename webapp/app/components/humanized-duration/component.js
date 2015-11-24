@@ -8,10 +8,8 @@ export default Ember.Component.extend({
 
     start_time: null,
     end_time: null,
-    is_running: false,
 
     durationMilliseconds: function() {
-
         return moment.unix(this.get('end_time')).diff(moment.unix(this.get('start_time')));
     }.property('start_time', 'end_time'),
 
@@ -32,11 +30,5 @@ export default Ember.Component.extend({
         }
         return this.get('duration').humanize();
     }.property('duration'),
-
-    humanizedEndTime: function() {
-
-        return moment.unix(this.get('end_time')).fromNow();
-
-    }.property('end_time')
 
 });
