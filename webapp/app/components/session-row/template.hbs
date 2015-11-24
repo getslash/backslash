@@ -1,14 +1,7 @@
 <div class="breakdown col-md-2">
   <div class="row">
     <div class="col-md-2">
-      <span class="hint--bottom" data-hint="{{session.user_email}}">
-        <img src="{{gravatar-url session.user_email}}" class="img-circle avatar small {{if session.is_delegate 'delegate'}}">
-      </span>
-      {{#if session.is_delegate}}
-        <div class="delegate-info hint--bottom" data-hint="Actually run by {{session.real_email}}">
-          <i class="fa fa-asterisk"></i>
-        </div>
-      {{/if}}
+      {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
     </div>
     <div class="col-md-10">
       {{session-breakdown session=session}}

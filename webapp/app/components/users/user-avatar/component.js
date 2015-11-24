@@ -6,6 +6,7 @@ export default Ember.Component.extend({
     classNameBindings: ['small'],
 
     email: null,
+    real_email: null,
     user: null,
     _false: false,
 
@@ -27,7 +28,12 @@ export default Ember.Component.extend({
 
     _has_role: function(role) {
         let roles = [];
-        this.get('user.user_roles').forEach(r => roles.push(r.name));
+        let user_roles = this.get('user.user_roles');
+
+        if (!user_roles) {
+            return false;
+        }
+        user_roles.forEach(r => roles.push(r.name));
         return roles.indexOf(role) !== -1;
     }
 });

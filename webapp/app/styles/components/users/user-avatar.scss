@@ -2,6 +2,7 @@
     position: relative;
     display: inline-block;
     text-decoration: none;
+    z-index: 1;
     
     i {
 	&.admin {
@@ -27,6 +28,23 @@
 	    font-size: 0.8em;
 	}
     }
+
+    
+    img.real-user {
+	position: absolute;
+	z-index: -1;
+	left: 0;
+	top: 0;
+	transition: left 0.5s;
+    }
 }
+
+// TODO: change this to query-result
+.session-row:hover img.real-user {
+    left: -20px;
+    transition: left 0.5s;
+}
+
+
 
 
