@@ -4,18 +4,17 @@
     text-decoration: none;
     
     i {
-	color: gold;
+	&.admin {
+	    color: gold;
+	    text-shadow: 1px 1px 1px red;
+	}
+	
+	&.moderator {
+	    color: $gray-lighter;
+	    text-shadow: 1px 1px 1px black;
+	}
 	font-size: x-large;
-	text-shadow: 1px 1px 1px red;
 	position: absolute;
-    }
-
-    i.upper {
-	bottom: 0.5em;
-	right: 0;
-    }
-
-    i.lower {
 	bottom: 0;
 	right: 0;
     }
