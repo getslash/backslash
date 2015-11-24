@@ -3,10 +3,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
-
     model: function() {
         let session = this.modelFor('session');
-
         return this.store.query('error', {session_id: session.id});
     },
 
@@ -18,5 +16,11 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
     renderTemplate: function() {
         this.render('errors');
+    },
+    
+    afterModel(model) {
+        if (model.get('meta.total') === 1) {
+          this.transitionTo('session.single_error', this.modelFor('session').id, model.objectAt(0).id);
+        }
     }
 });
