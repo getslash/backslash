@@ -20,6 +20,10 @@ export default Ember.Controller.extend({
     actions: {
         toggle: function(role) {
             let self = this;
+            if (!self.get('session.data.authenticated.user_info.roles').contains('admin')){
+            	return;
+            }
+            
             if (role === 'admin' && self.get('user.email') === self.get('session.data.authenticated.user_info.email')) {
                 if (!window.confirm('You are about to drop your own admin privileges. Are you sure?')) {
                     return;
@@ -28,7 +32,9 @@ export default Ember.Controller.extend({
             self.api.call('toggle_user_role', {
                 user_id: parseInt(this.get('user.id')),
                 role: role}).then(function() {
-                    self.send('refreshRoute');
+                	self.get('user').reload().then(function(){
+                		self.send('refreshRoute');
+                	});
                 });
         }
     }
