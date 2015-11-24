@@ -28,7 +28,6 @@ export default Ember.Component.extend({
     _has_role: function(role) {
         let roles = [];
         this.get('user.user_roles').forEach(r => roles.push(r.name));
-        console.log(roles);
         return roles.indexOf(role) !== -1;
     }
 });

@@ -11,7 +11,6 @@
 @import 'users.scss';
 @import 'comments.scss';
 @import 'activity.scss';
-@import 'metadata.scss';
 @import 'loading-indicator.scss';
 
 @import 'components/session-breakdown.scss';
@@ -19,6 +18,8 @@
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
 @import 'components/artifact-counter.scss';
+@import 'components/metadata/metadata-table.scss';
+
 
 
 @import 'components/errors/traceback-frame.scss';
