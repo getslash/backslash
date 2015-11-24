@@ -11,13 +11,13 @@ export default Ember.Controller.extend({
         let test = self.get('test');
 
         let time_range = moment.unix(test.get('start_time')).twix(moment.unix(test.get('end_time')));
-        
+
         let returned = Ember.Object.create({
             'File name': test.get('info.file_name'),
         });
 
         returned.set(self.get('is_method')?'Method':'Function', test.get('info.name'));
-        returned.set('Run time', time_range.format());
+        returned.set('Run time', time_range.simpleFormat('YYYY/MM/DD hh:mm:ss'));
         returned.set('Duration', time_range.humanizeLength());
 
         if (self.get('test.is_skipped')) {
