@@ -4,7 +4,6 @@ export default Ember.Component.extend({
 
     page: 1,
     pages_total: null,
-
     num_visible: 10,
 
     paginated: function() {

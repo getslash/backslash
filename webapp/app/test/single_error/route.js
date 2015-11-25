@@ -4,11 +4,11 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
-
         let test = this.modelFor('test');
 
         return Ember.RSVP.hash({
-            'error': this.store.find('error', params.error_id),
+        	'index': params.index,
+            'error': this.store.queryRecord('error', {test_id:test.id, page:params.index, page_size:1}),
             'test': test,
             'session': this.store.find('session', test.get('session_id'))
         });
@@ -17,7 +17,6 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
     setupController: function(controller, model) {
         this._super(controller, model);
         controller.setProperties(model);
-
     },
 
     renderTemplate: function() {

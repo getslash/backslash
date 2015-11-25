@@ -6,7 +6,7 @@ export default Ember.Component.extend({
 
     page: Ember.computed.oneWay('results.meta.page'),
     pages_total: Ember.computed.oneWay('results.meta.pages_total'),
-
+    num_visible: Ember.computed.oneWay('results.meta.page_size'),
     filter_config: Ember.computed.oneWay('results.meta.filter_config')
 
 });

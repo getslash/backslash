@@ -91,12 +91,12 @@ class ModelResource(RestResource):
             iterator = iterator.order_by(*self.DEFAULT_SORT)
         return iterator
 
-
     def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
         metadata['total'] = query.count()
         metadata['pages_total'] = int(math.ceil(metadata['total'] / args.page_size)) or 1
         metadata['page'] = args.page
+        metadata['page_size'] = args.page_size
         return query.offset((args.page - 1) * args.page_size).limit(args.page_size)
 
     def _get_collection_key_for_object(self, obj):

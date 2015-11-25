@@ -20,7 +20,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     
     afterModel(model) {
         if (model.get('meta.total') === 1) {
-          this.transitionTo('session.single_error', this.modelFor('session').id, model.objectAt(0).id);
+          this.transitionTo('session.single_error', 1);
         }
     }
 });
