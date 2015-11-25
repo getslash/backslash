@@ -13,8 +13,11 @@ export default Ember.Component.extend({
     num_skipped_tests: Ember.computed.alias('session.num_skipped_tests'),
     num_error_tests: Ember.computed.alias('session.num_error_tests'),
     num_finished_tests: Ember.computed.alias('session.num_finished_tests'),
-    is_running: Ember.computed.alias('session.is_running'),
     is_abandoned: Ember.computed.alias('session.is_abandoned'),
+
+    is_running: function() {
+        return this.get('session.is_running') && !this.get('is_abandoned');
+    }.property('session'),
 
     num_successful_tests: function() {
         return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');
