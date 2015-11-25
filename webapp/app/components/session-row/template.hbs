@@ -14,7 +14,12 @@
 </div>
 <div class="col-md-2">
   {{#each session.subjects as |subject index|}}
-    {{if index ", "}}<strong>{{subject.name}}</strong>
+    {{#if index}}
+      ,
+    {{else}}
+      <i class="fa fa-rocket"></i>
+    {{/if}}
+    <strong>{{subject.name}}</strong>
   {{/each}}
   {{session.products_string}}
 </div>

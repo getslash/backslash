@@ -4,7 +4,7 @@
       <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
 
       {{# if needs_investigation }}
-        <button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as investigated</button>
+        <button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as Investigated</button>
 
       {{else}}
         {{# if session_model.investigated }}

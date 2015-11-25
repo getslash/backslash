@@ -3,6 +3,7 @@
   {{filter-control filter_config=model.meta.filter_config filter_action="filter"}}
   <form class="navbar-form navbar-right">
     <button type="button" class="btn {{if (not show_archived) 'btn-default'}}" {{action "toggle_show_archived"}}>
+      <i class="fa fa-archive"></i>
       {{#if show_archived}}Hide Archived{{else}}Show Archived{{/if}}
     </button>
   </form>
