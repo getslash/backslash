@@ -1,11 +1,11 @@
-{{#if is_running }}
-  {{#elements/tool-tip content=humanized_start_time position="left"}}
-    <i class="fa fa-calendar-o"></i>
-    Started {{moment-time ago=start_time}}
-  {{/elements/tool-tip}}
-{{else}}
+{{#if end_time }}
   {{#elements/tool-tip content=humanized_range position="left"}}
    <i class="fa fa-calendar-o"></i>
    {{moment-time time=end_time}}
+  {{/elements/tool-tip}}
+{{else}}
+  {{#elements/tool-tip content=humanized_start_time position="left"}}
+    <i class="fa fa-calendar-o"></i>
+    Started {{moment-time ago=start_time}}
   {{/elements/tool-tip}}
 {{/if}}

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {momentTime} from '../../helpers/moment-time';
 
 /* global moment */
 
@@ -10,15 +11,19 @@ export default Ember.Controller.extend({
         let self = this;
         let test = self.get('test');
 
-        let time_range = moment.unix(test.get('start_time')).twix(moment.unix(test.get('end_time')));
-
         let returned = Ember.Object.create({
             'File name': test.get('info.file_name'),
         });
-
         returned.set(self.get('is_method')?'Method':'Function', test.get('info.name'));
-        returned.set('Run time', time_range.simpleFormat('YYYY/MM/DD hh:mm:ss'));
-        returned.set('Duration', time_range.humanizeLength());
+
+        if (test.get('end_time')) {        	
+        	let end_time = test.get('end_time')?moment.unix(test.get('end_time')):moment.unix();
+        	let time_range = moment.unix(test.get('start_time')).twix(end_time);
+        	returned.set('Run time', time_range.simpleFormat('YYYY/MM/DD hh:mm:ss'));
+        	returned.set('Duration', time_range.humanizeLength());
+        } else {
+        	returned.set('Run time', 'Started ' + momentTime([], {ago:test.get('start_time')}));
+        }
 
         if (self.get('test.is_skipped')) {
             returned.set('Skip Reason', self.get('test.skip_reason'));

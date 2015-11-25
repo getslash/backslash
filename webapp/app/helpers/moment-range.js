@@ -8,8 +8,8 @@ export function momentRange(params, opts) {
     	return '-';
     }
 
-    if (opts.end_time === undefined){
-        return moment.unix(opts.ago).calendar();
+    if (!opts.end_time){
+        return 'Started ' + moment.unix(opts.start_time).calendar();
     }
 
     let range = moment.unix(opts.start_time).twix(moment.unix(opts.end_time));
