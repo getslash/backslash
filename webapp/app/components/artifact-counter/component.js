@@ -5,6 +5,10 @@ export default Ember.Component.extend({
     classNames: "counter",
     classNameBindings: ['class_name', 'visibility_class_name', 'has_caption:varwidth'],
 
+    tooltip: function() {
+        return this.get('counter') + ' ' + this.get('artifact_name') + 's';
+    }.property('artifact_name', 'counter'),
+
     fixed_width: false,
 
     warnings: null,
@@ -32,12 +36,14 @@ export default Ember.Component.extend({
 
     counter: Ember.computed.or('warnings', 'errors'),
 
-    class_name: function() {
+    artifact_name: function() {
         if (this.get('warnings')) {
             return 'warning';
         } else if (this.get('errors')) {
             return 'error';
         }
-    }.property('warnings', 'errors')
+    }.property('warnings', 'errors'),
+
+    class_name: Ember.computed.oneWay('artifact_name'),
 
 });

@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+import {momentRange} from '../../helpers/moment-range';
+
 /* global moment */
 
 export default Ember.Component.extend({
@@ -8,6 +10,11 @@ export default Ember.Component.extend({
 
     start_time: null,
     end_time: null,
+
+    humanized_range: function() {
+        return momentRange([], {start_time: this.get('start_time'),
+                                end_time: this.get('end_time')});
+    }.property('start_time', 'end_time'),
 
     durationMilliseconds: function() {
         return moment.unix(this.get('end_time')).diff(moment.unix(this.get('start_time')));

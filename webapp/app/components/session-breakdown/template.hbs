@@ -1,4 +1,4 @@
-{{#tool-tipster content=tooltip_content position=tooltip_position theme="tooltipster-shadow" contentAsHTML=true}}
+{{#elements/tool-tip content=tooltip_content position=tooltip_position contentAsHTML=true}}
 <div class="progress {{if is_running 'running'}}">
   {{#if is_abandoned}}
   <div class="abandoned-overlay"></div>
@@ -10,4 +10,4 @@
   <div class="progress-bar progress-bar-danger {{if is_running 'progress-bar-striped active'}}" style={{failedPercent}}>
   </div>
 </div>
-{{/tool-tipster}}
+{{/elements/tool-tip}}
