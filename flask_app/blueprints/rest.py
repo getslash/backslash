@@ -86,39 +86,37 @@ def _get_object_by_id_or_logical_id(model, object_id):
     return returned
 
 
-activity_parser = reqparse.RequestParser()
-activity_parser.add_argument('session_id', type=int, default=None)
-activity_parser.add_argument('test_id', type=int, default=None)
+session_test_user_query_parser = reqparse.RequestParser()
+session_test_user_query_parser.add_argument('session_id', type=int, default=None)
+session_test_user_query_parser.add_argument('test_id', type=int, default=None)
+session_test_user_query_parser.add_argument('user_id', type=int, default=None)
 
 
 @_resource('/warnings', '/warnings/<int:object_id>')
 class WarningsResource(ModelResource):
 
     MODEL = models.Warning
-    DEFAULT_SORT = (models.Warning.timestamp.desc(),)
+    DEFAULT_SORT = (models.Warning.timestamp.asc(),)
 
     def _get_iterator(self):
-        args = activity_parser.parse_args()
+        args = session_test_user_query_parser.parse_args()
         returned = self.MODEL.query.filter_by(test_id=args.test_id, session_id=args.session_id)
         return returned
 
-
-session_test_user_query_parser = reqparse.RequestParser()
-session_test_user_query_parser.add_argument('session_id', type=int, default=None)
-session_test_user_query_parser.add_argument('test_id', type=int, default=None)
-session_test_user_query_parser.add_argument('user_id', type=int, default=None)
 
 @_resource('/errors', '/errors/<int:object_id>')
 class ErrorResource(ModelResource):
 
     MODEL = Error
-
+    DEFAULT_SORT = (Error.timestamp.asc(),)
+    
     def _get_iterator(self):
         args = session_test_user_query_parser.parse_args()
+        
         if args.session_id is not None:
-            return Error.query.join((Session, Error.session)).filter(Session.id == args.session_id)
+            return Error.query.filter_by(session_id=args.session_id)
         elif args.test_id is not None:
-            return Error.query.join((Test, Error.test)).filter(Test.id == args.test_id)
+            return Error.query.filter_by(test_id=args.test_id)
         abort(requests.codes.bad_request)
 
 
@@ -143,8 +141,7 @@ class UserResource(ModelResource):
 def get_activities():
     args = session_test_user_query_parser.parse_args()
 
-    if not (
-            (args.session_id is not None) ^
+    if not ((args.session_id is not None) ^
             (args.test_id is not None) ^
             (args.user_id is not None)):
         error_abort('Either test_id, session_id or user_id must be passed to the query')

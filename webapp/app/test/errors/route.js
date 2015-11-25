@@ -20,7 +20,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
         controller.setProperties(model);
         controller.setProperties({
             single_error_route_name: 'test.single_error',
-            parent_id: model.session.id
+            parent_id: model.test.id
         });
     },
 
@@ -30,7 +30,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     
     afterModel(model) {
         if (model.errors.get('meta.total') === 1) {
-          this.transitionTo('test.single_error', model.test.id, model.errors.objectAt(0).id);
+          this.transitionTo('test.single_error', 1);
         }
     }
 });

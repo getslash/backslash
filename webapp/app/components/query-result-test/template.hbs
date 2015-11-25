@@ -1,6 +1,9 @@
-{{#link-to 'test' test.id}}
-<div class="col-md-8">
-  {{artifact-counter warnings=test.num_warnings fixed_width=true}}
+{{#link-to 'test' test.display_id}}
+<div class="col-md-1">
+  {{artifact-counter warnings=test.num_warnings}}
+  {{artifact-counter errors=test.num_errors}}
+</div>
+<div class="col-md-7">
   {{tests/status-label test=test}}
   {{test.info.name}}
 </div>

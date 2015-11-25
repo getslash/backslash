@@ -5,7 +5,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
 
     actions: {
         goto_session: function (session) {
-            this.transitionTo('session', session.id);
+            this.transitionTo('session', session.get('display_id'));
         },
 
         loading: function(transition) {
