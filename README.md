@@ -1,12 +1,15 @@
 Backslash
 =========
 
-![Build Status](https://secure.travis-ci.org/slash-testing/backslash.png?branch=master ) 
+![Build Status](https://secure.travis-ci.org/getslash/backslash.png?branch=master ) 
 
 Backslash is a centralized service for tracking execution of automated tests.
 
 Getting Started
 ===============
+
+Running the Testing Server Locally
+----------------------------------
 
 1. Check out the repository
 2. Go through the configuration in `flask_app/app.yml` - most configuration options there are self-explanatory, and you might be interested in tweaking them to your needs.
@@ -17,12 +20,15 @@ $ python manage.py testserver
 ```
 
 Installation/Deployment
-=======================
+-----------------------
 
 See `INSTALLING.md`
 
 Development
 ===========
+
+Prerequisites
+-------------
 
 To start developing and testing, bootstrap the development environment with:
 
@@ -41,6 +47,7 @@ $ python manage.py db upgrade
 
 If you wish to run an out-of-the-box test server:
 - install tMux (http://tmux.sourceforge.net/)
+- install redis
 - run:
 ```
 $ make testserver
