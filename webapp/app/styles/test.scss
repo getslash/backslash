@@ -57,6 +57,10 @@ pre span{
 
 .status-label {
     
+    &.running {
+    background-color: $brand-info;
+    }
+    
     &.failure, &.error {
 	background-color: $brand-danger;
     }
