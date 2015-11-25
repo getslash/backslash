@@ -1,5 +1,8 @@
 /* jshint node: true */
 
+var spawnSync = require('child_process').spawnSync;
+
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'webapp',
@@ -37,10 +40,10 @@ module.exports = function(environment) {
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
-    ENV.APP.LOG_ACTIVE_GENERATION = true;
-    ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    ENV.APP.LOG_VIEW_LOOKUPS = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
   }
 
   if (environment === 'test') {
@@ -59,5 +62,15 @@ module.exports = function(environment) {
 
   }
 
+  ENV.app_version = '?';
+  if (spawnSync !== undefined) {
+    var result = spawnSync('git', ['describe', '--tags']);
+    if (result.status !== 0) {
+      throw new Error('Git returned with status ' + result.status + ': ' +
+              result.stderr.toString().trim());
+    }
+    ENV.app_version = result.stdout.toString().trim();
+  }
+  
   return ENV;
 };

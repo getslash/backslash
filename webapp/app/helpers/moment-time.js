@@ -5,8 +5,11 @@ import Ember from 'ember';
 export function momentTime(params, opts) {
 
     if (opts.ago !== undefined) {
-
         return moment.unix(opts.ago).fromNow();
+    }
+    
+    if (opts.time !== undefined) {
+    	return moment.unix(opts.time).calendar();
     }
 
     if (opts.unix === null) {

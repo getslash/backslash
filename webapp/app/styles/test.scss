@@ -1,10 +1,3 @@
-.total-errors {
-  color: #ff5956;
-}
-
-.no-errors {
-  color: #3d7d36;
-}
 .exception-type {
     color: rgb(70, 82, 98);
     border: 0px none rgb(70, 82, 98);
@@ -60,4 +53,58 @@ pre span{
     padding: 0.2em;
     font-size: small;
     color: white;
+}
+
+.status-label {
+    
+    &.failure, &.error {
+	background-color: $brand-danger;
+    }
+
+    &.skipped {
+	background-color: $brand-warning;
+    }
+
+    &.success {
+	background-color: $brand-success;
+    }
+    
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: inline-block;
+    color: white;
+    padding: 0.1em 0.5em 0.1em 0.5em;
+    text-align: center;
+    margin-right: 2em;
+    width: 5em;
+}
+
+.test-detail-value {
+    font-weight: bold;
+    font-family: monospace;
+}
+
+
+.tooltipster-error-preview {
+	border-radius: 5px; 
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+	background: $brand-danger;
+	color: white;
+}
+
+.tooltipster-skip-reason {
+	border-radius: 5px; 
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+	background: $brand-warning;
+	color: white;
+}
+
+
+.tooltipster-error-preview .tooltipster-content, .tooltipster-skip-reason .tooltipster-content {
+	overflow: ellipsis;
+	text-overflow: ellipsis;
+	font-family: monospace;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 8px 10px;
 }

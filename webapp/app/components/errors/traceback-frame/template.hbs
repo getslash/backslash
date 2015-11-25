@@ -1,0 +1,40 @@
+<div class="traceback-frame">
+  <button class="btn btn-default btn-expand pull-right" {{action "toggle"}}>
+    {{#if show_vars }}
+    <i class="fa fa-compress"></i> Collapse variables
+    {{else}}
+    <i class="fa fa-expand"></i> Expand variables
+    {{/if}}
+  </button>
+  
+  <div class="frame-info">
+
+    {{frame.filename}}, line <strong>{{frame.lineno}}</strong> (in <strong>{{frame.func_name}}</strong>)
+  </div>
+
+  <div class="frame-code"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
+
+  {{#if show_vars}}
+    {{#if (or has_globals has_locals)}}
+      <div class="traceback-frame-vars">
+        <table class="table">
+          <tbody>
+            {{#if has_locals}}
+              <tr><td colspan="2" class="vars-heading">Locals</td></tr>
+              {{#each-in frame.locals as |name value|}}
+                <tr class="variable"><td>{{name}}</td><td>{{value.value}}</td></tr>
+              {{/each-in}}
+            {{/if}}
+            {{#if has_globals}}
+              <tr><td colspan="2" class="vars-heading">Globals</td></tr>
+              {{#each-in frame.globals as |name value|}}
+                <tr class="variable"><td>{{name}}</td><td>{{value.value}}</td></tr>
+              {{/each-in}}
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+    {{/if}}
+  {{/if}}
+</div>
+

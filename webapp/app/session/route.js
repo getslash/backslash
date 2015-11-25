@@ -1,10 +1,8 @@
-import BaseRoute from '../routes/base';
+import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import RefreshableRouteMixin from '../mixins/refreshable-route';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
-    title: 'Session Details',
 
     model: function(params) {
         return this.store.find('session', params.id);

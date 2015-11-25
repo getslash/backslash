@@ -1,7 +1,6 @@
 import math
 import os
 import sys
-import uuid
 from uuid import uuid4
 
 import logbook.compat
@@ -17,8 +16,6 @@ from munch import Munch
 from urlobject import URLObject as URL
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-
 
 
 @pytest.fixture
@@ -55,6 +52,7 @@ def freeze_timeline(request):
     next_round_time = math.ceil(current_time * 10000) / 10000.0
     flux.current_timeline.sleep(next_round_time - current_time)
 
+
 @pytest.fixture(autouse=True, scope='function')
 def advance_timeline():
     flux.current_timeline.sleep(10)
@@ -81,13 +79,13 @@ def nonexistent_session(client):
 
 @pytest.fixture
 def started_test(started_session, file_name, class_name, test_name):
-    return started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name, test_logical_id='11')
+    return started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name, test_logical_id=str(uuid4()))
 
 
 @pytest.fixture
 def started_session_with_ended_test(started_session, test_info):
     test = started_session.report_test_start(
-        test_logical_id='11', **test_info)
+        test_logical_id=str(uuid4()), **test_info)
     test.report_end()
     return (started_session, test)
 
@@ -95,7 +93,7 @@ def started_session_with_ended_test(started_session, test_info):
 @pytest.fixture
 def ended_test(started_session, test_info):
     returned = started_session.report_test_start(
-        test_logical_id='11', **test_info)
+        test_logical_id=str(uuid4()), **test_info)
     returned.report_end()
     return returned
 
@@ -145,13 +143,11 @@ def metadata():
 
 @pytest.fixture(params=['session', 'test'])
 def metadata_holder(request, client, test_info):
-    session = client.report_session_start()
+    session = client.report_session_start(logical_id=str(uuid4()))
     if request.param == 'session':
         return session
-    test = session.report_test_start(**test_info)
+    test = session.report_test_start(test_logical_id=str(uuid4()), **test_info)
     return test
-
-
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -160,6 +156,7 @@ def patch_proxy_bypass():
     """
     import requests
     requests.utils.should_bypass_proxies = lambda url: True
+
 
 @pytest.fixture(scope='session', autouse=True)
 def invalidate_cache():
@@ -177,23 +174,20 @@ def redirect_logging():
 
 @pytest.fixture
 def client(webapp_without_login, runtoken, testuser_id):
-    returned = BackslashClient('http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
+    returned = BackslashClient(
+        'http://{0}'.format(webapp_without_login.hostname), runtoken=runtoken)
+
     def _do_real_login():
         returned.api.session.post(
             returned.api.url.add_path('testing_login').add_query_param('user_id', str(testuser_id))).raise_for_status(),
     returned.do_real_login = _do_real_login
     return returned
 
+
 @pytest.fixture
 def real_login(client):
     client.do_real_login()
 
-@pytest.fixture
-def get_activities(webapp, testuser_id):
-    def returned():
-        with webapp.app.app_context():
-            return models.Activity.query.filter(models.Activity.user_id==testuser_id).all()
-    return returned
 
 @pytest.fixture
 def backslash_url(request):
@@ -217,6 +211,7 @@ def webapp_without_login(request):
 
 _cached_app = None
 _cached_config = None
+
 
 def _create_flask_app():
     global _cached_app
@@ -248,9 +243,11 @@ def _create_webapp(request):
     request.addfinalizer(returned.deactivate)
     return returned
 
+
 @pytest.fixture
 def db():
     return models.db
+
 
 @pytest.fixture
 def runtoken(db, db_context, testuser):
@@ -260,6 +257,7 @@ def runtoken(db, db_context, testuser):
         db.session.add(token)
         db.session.commit()
     return token_string
+
 
 def _get_role_fixture(role_name):
 
@@ -276,23 +274,29 @@ moderator_role = _get_role_fixture('moderator')
 proxy_role = _get_role_fixture('proxy')
 admin_role = _get_role_fixture('admin')
 
+
 @pytest.fixture
 def testuser(testuser_tuple):
     return testuser_tuple[-1]
+
 
 @pytest.fixture
 def testuser_id(testuser_tuple):
     return testuser_tuple[0]
 
+
 @pytest.fixture(scope='session')
 def users_to_delete(request):
     returned = set()
+
     @request.addfinalizer
     def cleanup():
         with _create_flask_app().app_context():
-            models.User.query.filter(models.User.id.in_(list(returned))).delete(synchronize_session=False)
+            models.User.query.filter(models.User.id.in_(
+                list(returned))).delete(synchronize_session=False)
             models.db.session.commit()
     return returned
+
 
 def _create_user(users_to_delete):
     user = models.User(email='user{}@localhost'.format(uuid4()), active=True)
@@ -302,31 +306,38 @@ def _create_user(users_to_delete):
     users_to_delete.add(user_id)
     return user.id, user.email, user
 
+
 @pytest.fixture
 def testuser_email(testuser_tuple):
     return testuser_tuple[1]
+
 
 @pytest.fixture
 def otheruser_email(otheruser_tuple):
     return otheruser_tuple[1]
 
+
 @pytest.fixture
 def otheruser_id(otheruser_tuple):
     return otheruser_tuple[0]
+
 
 @pytest.fixture
 def testuser_tuple(db_context, users_to_delete):
     with db_context():
         return _create_user(users_to_delete)
 
+
 @pytest.fixture
 def otheruser_tuple(db_context, users_to_delete):
     with db_context():
         return _create_user(users_to_delete)
 
+
 @pytest.fixture
 def db_context(webapp_without_login):
     return webapp_without_login.app.app_context
+
 
 @pytest.fixture
 def file_name():
@@ -347,13 +358,16 @@ def test_name():
 def test_info(file_name, test_name, class_name):
     return {'file_name': file_name, 'name': test_name, 'class_name': class_name}
 
+
 @pytest.fixture(params=['session', 'test'])
 def error_container(request, client):
     return _get_api_object_by_typename(client=client, typename=request.param)
 
+
 @pytest.fixture(params=['session', 'test'])
 def warning_container(request, client):
     return _get_api_object_by_typename(typename=request.param, client=client)
+
 
 def _get_api_object_by_typename(*, typename, client):
     session = client.report_session_start()
@@ -362,7 +376,7 @@ def _get_api_object_by_typename(*, typename, client):
     elif typename == 'test':
         test = session.report_test_start('name')
         return test
-    raise NotImplementedError() # pragma: no cover
+    raise NotImplementedError()  # pragma: no cover
 
 
 @pytest.fixture
@@ -372,13 +386,15 @@ def nonexistent_error_container(error_container):
     returned = type(error_container)(error_container.client, new_data)
     return returned
 
+
 class Webapp(object):
 
     def __init__(self, app):
         super(Webapp, self).__init__()
         self.app = app
         self.loopback = FlaskLoopback(self.app)
-        self.hostname = str(uuid.uuid1())
+        self.hostname = str(uuid4())
+        self.url = URL('http://{0}'.format(self.hostname))
 
     def activate(self):
         self.loopback.activate_address((self.hostname, 80))
@@ -420,6 +436,7 @@ for _method in ("get", "put", "post", "delete"):
 @pytest.fixture
 def flask_app(webapp):
     return webapp.app
+
 
 @pytest.fixture(params=['admin', 'proxy', 'moderator'])
 def role(request):

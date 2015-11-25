@@ -14,7 +14,8 @@ def test_add_warnings(warning_container, filename, lineno, message, timestamp):
     assert fetched.timestamp == timestamp
     assert fetched.filename == filename
     if isinstance(warning_container, TestType):
-        assert warning_container.get_session().num_warnings == 1
+        assert warning_container.get_session().num_test_warnings == 1
+        assert warning_container.get_session().num_warnings == 0
 
 def test_add_warnings_nonexistent_session(warning_container, message):
     warning_container.id *= 1000

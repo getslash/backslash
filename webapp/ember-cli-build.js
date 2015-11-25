@@ -6,6 +6,9 @@ module.exports = function(defaults) {
       'ember-cli-bootstrap-sassy': {
           'quiet': true
       },
+      'ember-cli-tooltipster': {
+          importTooltipsterShadow: true
+      },
       vendorFiles: {
           'handlebars.js': null
       }});
@@ -25,7 +28,9 @@ module.exports = function(defaults) {
   app.import('bower_components/fontawesome/css/font-awesome.min.css');
   app.import('bower_components/js-md5/js/md5.min.js');
   app.import('bower_components/moment/moment.js');
-  app.import('bower_components/hint.css/hint.css');
+  app.import('bower_components/twix/dist/twix.min.js');
+
+    
 
   var mergeTrees = require('broccoli-merge-trees');
   var pickFiles = require('broccoli-static-compiler');

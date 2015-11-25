@@ -1,3 +1,5 @@
+import slash
+
 def test_0():
     pass
 
@@ -14,7 +16,7 @@ def test_4():
     pass
 
 def test_5():
-    pass
+    slash.logger.warning("this is a sample warning")
 
 def test_6():
     pass
@@ -290,7 +292,7 @@ def test_96():
     pass
 
 def test_97():
-    pass
+    slash.logger.warning("this is a sample warning #2")
 
 def test_98():
     pass

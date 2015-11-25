@@ -1,0 +1,23 @@
+{{#tool-bar}}
+
+  <p class="navbar-text">{{#link-to 'session' session.display_id}} Session {{session.display_id}}{{/link-to}} /
+    {{#if test }}
+      {{#link-to 'test' test.display_id }}Test {{test.display_id}}{{/link-to}} /
+    {{/if}}
+    Errors
+  </p>
+
+{{/tool-bar}}
+
+<div class="container">
+  <table class="table table-hover">
+    <tbody>
+      {{#each errors as |error index|}}
+        {{#link-to single_error_route_name (paginated-index index errors.meta.page errors.meta.page_size) tagName="tr" classNames="clickable"}}
+        <td><strong>{{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})</strong></td>
+        <td><code>{{error.full_message}}</code></td>
+        {{/link-to}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>

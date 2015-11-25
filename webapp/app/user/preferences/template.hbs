@@ -1,18 +1,10 @@
 <div class="container">
   <div class="row-fluid">
     <div class="col-md-6">
-      <div class="pref-pane">
+      <div class="frame">
         <h4>User Roles</h4>
         {{#each roles as |role|}}
           {{boolean-toggle name=role.name value=role.enabled enabled=session.data.authenticated.user_info.can.admin action=(action "toggle" role.name)}}
-        {{/each}}
-      </div>
-    </div>
-    <div class="col-md-6">
-       <div class="pref-pane">
-        <h4>Tokens</h4>
-        {{#each tokens as |token|}}
-          <pre>{{token.string}}</pre>
         {{/each}}
       </div>
     </div>

@@ -1,3 +1,12 @@
-$gray-ultralight: #fafafa;
-$mild-green: MediumSeaGreen;
+$gray-ultralight: #FAFAFA;
+$mild-green: #DAF3DA;
+$mild-red: #FFEEEE;
 $mild-blue: CornflowerBlue;
+
+$backslash-orange: #f0ad4e;
+$backslash-orange-light: lighten($backslash-orange, 10%);
+$backslash-orange-lighter: lighten($backslash-orange, 20%);
+
+/* Component-specific */
+$console-bg: lighten($navbar-inverse-bg, 15%);
+$sub-section-heading-color: darken($navbar-default-bg, 20%);

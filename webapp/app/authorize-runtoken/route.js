@@ -3,7 +3,6 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, {
   model: function(params) {
-
       return Ember.$.ajax({
           type: "POST",
           url: "/runtoken/request/" + params.requestid + '/complete',

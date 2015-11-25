@@ -22,6 +22,14 @@ def test_report_test_start_logical_id(started_session, test_name):
         name=test_name, test_logical_id='11')
     assert test is not None
 
+def test_report_interactive_test_start(client):
+    num_tests = 10
+    session = client.report_session_start(total_num_tests=num_tests)
+    assert session.total_num_tests == num_tests
+    t = session.report_test_start('<interactive>', is_interactive=True)
+    assert t.refresh().is_interactive == True
+    assert session.refresh().total_num_tests == num_tests + 1
+
 
 def test_test_session_id(started_session, started_test):
     assert started_test.session_id == started_session.id

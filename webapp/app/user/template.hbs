@@ -1,5 +1,5 @@
 <div class="container">
-  <h1><img class="img-circle" src="{{gravatar-url model.email}}?s=40"> {{model.display_name}}</h1>
+  <h1>{{users/user-avatar user=model}} {{model.display_name}}</h1>
 
   <ul class="nav nav-tabs">
     {{#nav-link to="user.sessions"}}Sessions{{/nav-link}}

@@ -1,0 +1,31 @@
+
+<div class="container-fluid">
+  <table class="table metadata-table hover">
+    <tbody>
+      {{#each-in all_metadata as |name value|}}
+        {{#if (not (eq name "slash"))}}
+          <tr>
+            <td>{{name}}</td>
+            <td>{{value}}
+              {{#copy-button clipboardText=value}}
+                <i class="fa fa-clipboard"></i>
+              {{/copy-button}}
+            </td>
+          </tr>
+        {{/if}}
+      {{/each-in}}
+    </tbody>
+  </table>
+</div>
+
+
+{{#if metadata.slash.commandline}}
+  <div class="metadata-item">
+    <div class="title">Command-line</div>
+    <div class="content">
+      <div class="console">
+        {{metadata.slash.commandline}}
+      </div>
+    </div>
+  </div>
+{{/if}}

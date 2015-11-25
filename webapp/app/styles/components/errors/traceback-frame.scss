@@ -1,0 +1,52 @@
+.traceback-frame {
+    border: 1px solid $gray-light;
+    margin: 0.5em;
+    
+    .btn-expand {
+	visibility: hidden;
+    }
+
+    &:hover .btn-expand {
+	visibility: visible;
+    }
+
+    
+}
+
+.frame-info {
+    padding: 0.5em;
+    font-size: small;
+    color: $gray-light;
+    
+}
+
+.frame-code {
+
+    font-family: monospace;
+    font-weight: bold;
+    padding: 0.5em;
+    background-color: $gray-lighter;
+    white-space: pre-wrap;
+    
+    .lineno {
+        color: $gray-light;
+        min-width: 3em;
+    }
+}
+
+.traceback-frame-vars {
+
+    margin: 0.5em;
+    border: 1px solid $gray-light;
+    color: $gray-light;
+}
+
+.vars-heading {
+    background: $backslash-orange-lighter;
+    
+    font-size: small;
+}
+
+tr.variable {
+    font-family: monospace
+}

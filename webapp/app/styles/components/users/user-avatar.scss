@@ -1,0 +1,50 @@
+.user-avatar {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    z-index: 1;
+    
+    i {
+	&.admin {
+	    color: gold;
+	    text-shadow: 1px 1px 1px red;
+	}
+	
+	&.moderator {
+	    color: $gray-lighter;
+	    text-shadow: 1px 1px 1px black;
+	}
+	font-size: x-large;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+    }
+
+    &.small {
+	img {
+	    height: 2em;
+	}
+	i {
+	    font-size: 0.8em;
+	}
+    }
+
+    
+    img.real-user {
+	position: absolute;
+	z-index: -1;
+	left: 0;
+	top: 0;
+	transition: left 0.5s;
+    }
+}
+
+// TODO: change this to query-result
+.session-row:hover img.real-user {
+    left: -20px;
+    transition: left 0.5s;
+}
+
+
+
+

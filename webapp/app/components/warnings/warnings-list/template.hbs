@@ -1,0 +1,12 @@
+<div class="container">
+{{#each warnings as |w|}}
+  <div class="warning-box">
+    <div class="warning-info">
+      {{moment-time unix=w.timestamp}} - From <strong>{{w.filename}}</strong>, line <strong>{{w.lineno}}</strong>
+    </div>
+    <div class="warning-message">
+      {{w.message}}
+    </div>
+  </div>
+{{/each}}
+</div>

@@ -1,10 +1,26 @@
-import PaginatedFilteredRoute from '../../routes/paginated_filtered_route';
+import BaseRoute from '../../routes/base';
+import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
-export default PaginatedFilteredRoute.extend({
+export default BaseRoute.extend(AuthenticatedRouteMixin, {
 
-    needs: ['session'],
+    model: function() {
+        let session = this.modelFor('session');
+        return this.store.query('error', {session_id: session.id});
+    },
 
-    model: function(params) {
-        return this.store.query('error', {session_id: this.modelFor('session').id, page: params.page || 1});
+    setupController: function(controller, model) {
+        this._super(controller, model);
+        controller.set('session', this.modelFor('session'));
+        controller.set('errors', model);
+    },
+
+    renderTemplate: function() {
+        this.render('errors');
+    },
+    
+    afterModel(model) {
+        if (model.get('meta.total') === 1) {
+          this.transitionTo('session.single_error', 1);
+        }
     }
 });

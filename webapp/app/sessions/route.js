@@ -1,7 +1,8 @@
 import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import PollingRoute from '../mixins/polling-route';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, {
 
     queryParams: {
         show_archived: {
@@ -22,6 +23,6 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
 
     get_user_id_parameter: function() {
         return undefined;
-    }
+    },
 
 });

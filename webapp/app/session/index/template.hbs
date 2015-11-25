@@ -1,38 +1,97 @@
-{{#with session as |obj|}}
-  {{partial "errors-failures-notice"}}
-{{/with}}
+{{#tool-bar}}
+  <form class="navbar-form navbar-right">
+    {{# if (or session.data.authenticated.user_info.can.moderate session.data.authenticated.user_info.can.admin) }}
+      <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
 
-<div class="row">
+      {{# if needs_investigation }}
+        <button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as investigated</button>
 
-  <div class="col-xs-2">
-    {{#link-to "user.sessions" session.user_email}}
-    <img class="img-circle" title="Started by {{session.user_email}}" src="{{gravatar-url session.user_email}}"/>
-    {{/link-to}}
-
-  </div>
-
-  <div class="col-xs-10">
-    <div class="row">
-      <div class="col-xs-6">
-        <p><i class="fa fa-clock-o"></i> <strong>Started</strong>: {{moment-time unix=session.start_time}}</p>
-        <p><i class="fa fa-clock-o"></i> <strong>Ended</strong>: {{moment-time unix=session.end_time}}</p>
-      </div>
-      <div class="col-md-6">
-        {{#if metadata.slash }}
-          <p><i class="fa fa-chevron-right"></i> <strong>Command line:</strong> <code>{{metadata.slash.commandline}}</code></p>
+      {{else}}
+        {{# if session_model.investigated }}
+          <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
         {{/if}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        {{#each session.subjects as |subject|}}
-          <p>
-            <i class="fa fa-barcode"></i> <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
-          </p>
-        {{/each}}
-      </div>
+      {{/if}}
+    {{/if}}
 
+
+  </form>
+  <p class="navbar-text">Session {{session_model.display_id}}</p>
+
+{{/tool-bar}}
+
+
+{{#if investigating}}
+  {{#modal-dialog close="cancel_investigating"
+     targetAttachment="center"
+     translucentOverlay=true}}
+    <p>You are marking this session as <strong>investigted</strong></p>
+    <div class="container-fluid">
+      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
     </div>
+    <div class="container-fluid add-margin-top">
+      {{#if investigate_conclusion}}
+        <button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
+      {{/if}}
+      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
+    </div>
+  {{/modal-dialog}}
+{{/if}}
+
+
+{{hr-separator title="Overview"}}
+<div class="container-fluid session-details">
+  <div class="col-md-2">
+    {{#link-to "user.sessions" session_model.user_email}}
+      {{users/user-avatar user=user}}
+    {{/link-to}}
   </div>
+  <div class="col-md-8">
+    {{session-breakdown session=session_model tooltip_position="bottom"}}
+    <table class="table details">
+      <tr>
+        <td class="faint">Run time: </td>
+        <td>
+          <strong>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</strong>
+        </td>
+      </tr>
+      <tr>
+        <td class="faint">Duration: </td>
+        <td>
+          <strong>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</strong>
+        </td>
+      </tr>
+      <tr>
+        <td class="faint">Test Subjects:</td>
+        <td>
+          {{#each session_model.subjects as |subject|}}
+            <i class="fa fa-barcode"></i>
+            <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
+          {{/each}}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
+          {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
+          {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
+        </td>
+      </tr>
 
+    </table>
+
+  </div>
 </div>
+
+{{hr-separator title="Tests"}}
+
+<div class="container-fluid">
+  {{query-results results=tests filter_action=(action "filter") goto_page=(action "goto_tests_page")}}
+</div>
+
+{{hr-separator title="Additional Information"}}
+
+{{metadata/metadata-table metadata=metadata additional=additional_metadata}}
+
+{{hr-separator title="Activity"}}
+
+{{activity/activity-timeline items=activity parent=session_model comment_added="refreshRoute"}}

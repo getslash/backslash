@@ -1,60 +1,139 @@
-body {
+body
+{
     padding-top: 52px;
 
     //font-family: 'Open Sans', sans-serif;
 }
 
-#navbar-brand-img {
-    height: 100%;
+#navbar-brand-img
+{
     position: relative;
     top: -11%;
+
+    height: 100%;
 }
 
-.clickable {
+.clickable
+{
     cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+     -khtml-user-select: none;
 }
 
-.clickable.danger:hover {
+span.danger 
+{
     color: $brand-danger;
 }
 
-.avatar {
+.clickable.danger:hover
+{
+    color: $brand-danger;
+}
+
+.avatar
+{
     height: 4em;
 }
 
-.navbar-header .avatar {
+.navbar-header .avatar
+{
     height: 3em;
     margin-top: 3px;
     margin-right: 2em;
 }
 
-.avatar.small {
+.avatar.small
+{
     height: 1.5em;
 }
 
-.btn.mild-green {
+.btn.mild-green
+{
     background: $mild-green;
 }
 
-.label-badge {
+.btn.disabled, .btn.disabled:focus
+{
+	outline:0;
+}
+
+.label-badge
+{
     border-radius: 1em;
 }
 
-span.warning {
+span.warning, i.warning
+{
     color: $brand-warning;
 }
 
-.details-pane {
-    padding: 1em;
-    border: 1px dashed $gray-lighter;
-    border-sizing: box;
+.details-pane
+{
+    margin-top: .5em;
     margin-right: 1em;
-    margin-top: 0.5em;
+    padding: 1em;
+
+    border: 1px dashed $gray-lighter;
+
+    border-sizing: box;
+}
+
+.footer
+{
+    margin-top: 5em;
+}
+
+.frame
+{
+    margin: .5em;
+    padding: .5em;
+    padding-left: 1em;
+
+    background: $gray-lighter;
+}
+
+/* Margins shortcut */
+$added-margin-amount: 1em;
+.add-margin-top
+{
+    margin-top: $added-margin-amount;
+}
+
+.add-margin-right
+{
+    margin-right: $added-margin-amount;
+}
+
+.add-margin-left
+{
+    margin-left: $added-margin-amount;
+}
+
+.add-margin-bottom
+{
+    margin-bottom: $added-margin-amount;
+}
+
+span {
+    &.skip, &.warning {
+	color: $brand-warning;
+    }
+
+    &.error {
+	color: $brand-danger;
+    }
+
+    &.success {
+	color: $brand-success;
+    }
+}
+
+.faint
+{
+    color: $gray-light;
 }

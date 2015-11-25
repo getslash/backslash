@@ -6,6 +6,7 @@ import logbook
 import requests
 from flask import abort, Blueprint, request, g
 from flask.ext.simple_api import SimpleAPI
+from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
 from sqlalchemy.exc import IntegrityError
@@ -14,7 +15,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from .. import activity
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning
 from ..utils import get_current_time, statuses
-from ..utils.api_utils import API_SUCCESS, auto_commit, auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ..utils.rendering import render_api_object
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 from ..utils.users import get_user_id_by_email, has_role
@@ -26,11 +28,15 @@ api = SimpleAPI(blueprint)
 NoneType = type(None)
 
 
-def API(func=None, require_real_login=False):
+def API(func=None, require_real_login=False, generates_activity=True):
     if func is None:
-        return functools.partial(API, require_real_login=require_real_login)
+        return functools.partial(API, require_real_login=require_real_login, generates_activity=generates_activity)
 
-    returned = auto_render(auto_commit(func))
+    returned = auto_render(func)
+
+    if generates_activity:
+        returned = activity.updates_last_active(returned)
+
     if require_real_login:
         returned = requires_login(returned)
     else:
@@ -46,27 +52,59 @@ def report_session_start(logical_id: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
                          user_email: str=None,
+                         keepalive_interval: (NoneType, int)=None,
+                         subjects: (list, NoneType)=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
+
+    # fix user identification
+    if user_email is not None and user_email != g.token_user.email:
+        if not has_role(g.token_user.id, 'proxy'):
+            error_abort('User is not authorized to run tests on others behalf', code=requests.codes.forbidden)
+        real_user_id = g.token_user.id
+        user_id = get_user_id_by_email(user_email)
+    else:
+        user_id = g.token_user.id
+        real_user_id = None
+
     returned = Session(
         hostname=hostname,
         total_num_tests=total_num_tests,
-        user_id=g.token_user.id,
+        user_id=user_id,
+        real_user_id=real_user_id,
         status=statuses.RUNNING,
         logical_id=logical_id,
+        keepalive_interval=keepalive_interval,
+        next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
     )
-    if user_email is not None and user_email != g.token_user.email:
-        if not has_role(g.token_user.id, 'proxy'):
-            abort(requests.codes.forbidden)
-        returned.real_user_id = returned.user_id
-        returned.user_id = get_user_id_by_email(user_email)
+
+    if subjects:
+        for subject_data in subjects:
+            subject_name = subject_data.get('name', None)
+            if subject_name is None:
+                error_abort('Missing subject name')
+            subject = get_or_create_subject_instance(
+                name=subject_name,
+                product=subject_data.get('product', None),
+                version=subject_data.get('version', None),
+                revision=subject_data.get('revision', None))
+            returned.subject_instances.append(subject)
+
     if metadata is not None:
         for key, value in metadata.items():
-            db.session.add(
-                SessionMetadata(session=returned, key=key, metadata_item=value))
+            returned.metadata_items.append(SessionMetadata(session=returned, key=key, metadata_item=value))
+
+    db.session.add(returned)
+    db.session.commit()
     return returned
 
+@API
+def send_keepalive(session_id: int):
+    s = Session.query.get_or_404(session_id)
+    s.next_keepalive = get_current_time() + s.keepalive_interval
+    db.session.add(s)
+    db.session.commit()
 
 @API
 def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
@@ -78,17 +116,18 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
         revision=revision)
     session.subject_instances.append(subject)
     db.session.add(session)
+    db.session.commit()
 
 
 @API
-def report_session_end(id: int, duration: int=None):
+def report_session_end(id: int, duration: (int, NoneType)=None):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
-        abort(requests.codes.not_found)
+        error_abort('Session not found', code=requests.codes.not_found)
 
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
-        abort(requests.codes.conflict)
+        error_abort('Session is not running', code=requests.codes.conflict)
 
     session.end_time = get_current_time(
     ) if duration is None else session.start_time + duration
@@ -100,6 +139,7 @@ def report_session_end(id: int, duration: int=None):
     else:
         session.status = statuses.SUCCESS
     db.session.add(session)
+    db.session.commit()
 
 
 @API
@@ -113,15 +153,19 @@ def report_test_start(
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
         scm_dirty: bool=False,
+        is_interactive: bool=False,
 ):
     session = Session.query.get(session_id)
     if session is None:
         abort(requests.codes.not_found)
     if session.end_time is not None:
-        abort(requests.codes.conflict)
+        error_abort('Session already ended', code=requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
-    return Test(
+    if is_interactive:
+        session.total_num_tests = Session.total_num_tests + 1
+        db.session.add(session)
+    returned = Test(
         session_id=session.id,
         logical_id=test_logical_id,
         test_info_id=test_info_id,
@@ -129,8 +173,12 @@ def report_test_start(
         scm_dirty=scm_dirty,
         scm_revision=scm_revision,
         scm=scm,
+        is_interactive=is_interactive,
         file_hash=file_hash,
     )
+    db.session.add(returned)
+    db.session.commit()
+    return returned
 
 
 @API
@@ -141,7 +189,7 @@ def report_test_end(id: int, duration: (float, int)=None):
 
     if test.end_time is not None:
         # we have a test, but it already ended
-        abort(requests.codes.conflict)
+        error_abort('Test already ended', code=requests.codes.conflict)
 
     with updating_session_counters(test):
         test.end_time = get_current_time() if duration is None else Test.start_time + \
@@ -154,6 +202,7 @@ def report_test_end(id: int, duration: (float, int)=None):
             test.status = statuses.SUCCESS
 
     db.session.add(test)
+    db.session.commit()
 
 
 @contextmanager
@@ -187,20 +236,25 @@ def report_test_skipped(id: int, reason: (str, NoneType)=None):
     _update_running_test_status(
         id, statuses.SKIPPED, ignore_conflict=True,
         additional_updates={'skip_reason': reason})
+    db.session.commit()
 
 
 @API
 def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('moderator')
 def toggle_archived(session_id: int):
-        return _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
+    returned = _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
+    db.session.commit()
+    return returned
 
 @API(require_real_login=True)
 def toggle_investigated(session_id: int):
-    return _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+    returned = _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+    db.session.commit()
 
 def _toggle_session_attribute(session_id, attr, on_action, off_action):
     session = Session.query.get_or_404(session_id)
@@ -221,35 +275,58 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
         if Test.query.filter(Test.id == test_id).count():
             # we have a test, but it already ended
             if not ignore_conflict:
-                abort(requests.codes.conflict)
+                error_abort('Test already ended', requests.codes.conflict)
         else:
             abort(requests.codes.not_found)
 
 @API
 def set_metadata(entity_type: str, entity_id: int, key: str, value: object):
-    model, kwargs = _get_metadata_model(entity_type, entity_id)
-    db.session.add(model(key=key, metadata_item=value, **kwargs))
+    _set_metadata_dict(entity_type=entity_type, entity_id=entity_id, metadata={key: value})
+
+
+@API
+def set_metadata_dict(entity_type: str, entity_id: int, metadata: dict):
+    _set_metadata_dict(entity_type=entity_type, entity_id=entity_id, metadata=metadata)
+
+
+def _set_metadata_dict(*, entity_type, entity_id, metadata):
+    model = _get_metadata_model(entity_type)
+    for key, value in metadata.items():
+        db.session.add(model(key=key, metadata_item=value, **{'{}_id'.format(entity_type): entity_id}))
     try:
         db.session.commit()
     except IntegrityError:
         abort(requests.codes.not_found)
 
 
-@API
-def get_metadata(entity_type: str, entity_id: int):
-    model, kwargs = _get_metadata_model(entity_type, entity_id)
-    return {obj.key: obj.metadata_item
-            for obj in model.query.filter_by(**kwargs)}
+
+@API(generates_activity=True)
+def get_metadata(entity_type: str, entity_id: (int, str)):
+    query = _get_metadata_query(entity_type=entity_type, entity_id=entity_id)
+    return {obj.key: obj.metadata_item for obj in query}
 
 
-def _get_metadata_model(entity_type, entity_id):
+def _get_metadata_query(*, entity_type, entity_id):
+    model = _get_metadata_model(entity_type)
     if entity_type == 'session':
-        return SessionMetadata, {'session_id': entity_id}
+        related = Session
+    elif entity_type == 'test':
+        related = Test
+    else:
+        error_abort('Invalid entity type', requests.codes.bad_request)
+    if isinstance(entity_id, int):
+        return model.query.filter_by(**{'{}_id'.format(entity_type): entity_id})
+    return model.query.join(related).filter(related.logical_id == entity_id)
+
+
+def _get_metadata_model(entity_type):
+    if entity_type == 'session':
+        return SessionMetadata
 
     if entity_type == 'test':
-        return TestMetadata, {'test_id': entity_id}
+        return TestMetadata
 
-    abort(requests.codes.bad_request)
+    error_abort('Unknown entity type')
 
 
 @API
@@ -259,6 +336,7 @@ def add_test_metadata(id: int, metadata: dict):
         test.metadata_objects.append(TestMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
 
 @API
@@ -269,12 +347,13 @@ def add_session_metadata(id: int, metadata: dict):
             SessionMetadata(metadata_item=metadata))
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
 
 @API
-def add_error(message: str, exception_type: str=None, traceback: list=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
+def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
     if not ((test_id is not None) ^ (session_id is not None)):
-        abort(requests.codes.bad_request)
+        error_abort('Either test_id or session_id required')
 
     if timestamp is None:
         timestamp = get_current_time()
@@ -292,7 +371,7 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
             {increment_field: increment_field + 1})
         obj.errors.append(Error(message=message,
                                 exception_type=exception_type,
-                                traceback=traceback,
+                                traceback=_normalize_traceback(traceback),
                                 is_failure=is_failure,
                                 timestamp=timestamp))
         if obj.end_time is not None:
@@ -309,12 +388,21 @@ def add_error(message: str, exception_type: str=None, traceback: list=None, time
 
     except NoResultFound:
         abort(requests.codes.not_found)
+    db.session.commit()
 
+def _normalize_traceback(traceback_json):
+    if traceback_json:
+        for frame in traceback_json:
+            code_string = frame['code_string']
+            if code_string:
+                code_string = code_string.splitlines()[-1]
+            frame['code_string'] = code_string
+    return traceback_json
 
 @API
 def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
     if not ((test_id is not None) ^ (session_id is not None)):
-        abort(requests.codes.bad_request)
+        error_abort('Either session_id or test_id required')
     if session_id is not None:
         obj = Session.query.get_or_404(session_id)
     else:
@@ -325,16 +413,18 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
         Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
     obj.num_warnings = type(obj).num_warnings + 1
     if session_id is None:
-        obj.session.num_warnings = Session.num_warnings + 1
+        obj.session.num_test_warnings = Session.num_test_warnings + 1
         db.session.add(obj.session)
+
     db.session.add(obj)
+    db.session.commit()
 
 
 
 @API(require_real_login=True)
 def post_comment(comment: str, session_id: int=None, test_id: int=None):
     if not (session_id is not None) ^ (test_id is not None):
-        abort(requests.codes.bad_request)
+        error_abort('Either session_id or test_id required')
 
     if session_id is not None:
         obj = db.session.query(Session).get(session_id)
@@ -360,6 +450,7 @@ def delete_comment(comment_id: int):
     comment.comment = ''
 
     db.session.add(comment)
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('admin')
@@ -371,6 +462,7 @@ def toggle_user_role(user_id: int, role: str):
         user.roles.remove(role_obj)
     else:
         user.roles.append(role_obj)
+    db.session.commit()
 
 @API(require_real_login=True)
 def get_user_run_tokens(user_id: int):

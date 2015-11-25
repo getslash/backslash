@@ -15,6 +15,7 @@ var api = {
 export function initialize(application) {
     application.register('api:main', api, {instantiate: false});
 
+    application.inject('component', 'api', 'api:main');
     application.inject('controller', 'api', 'api:main');
     application.inject('route', 'api', 'api:main');
 }

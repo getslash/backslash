@@ -1,4 +1,8 @@
-<div class="progress {{if is_running 'running'}} {{if has_errors_or_failures 'error'}}">
+{{#elements/tool-tip content=tooltip_content position=tooltip_position contentAsHTML=true}}
+<div class="progress {{if is_running 'running'}}">
+  {{#if is_abandoned}}
+  <div class="abandoned-overlay"></div>
+  {{/if}}
   <div class="progress-bar progress-bar-success {{if is_running 'progress-bar-striped active'}}" style={{successPercent}}>
   </div>
   <div class="progress-bar progress-bar-warning {{if is_running 'progress-bar-striped active'}}" style={{skipPercent}}>
@@ -6,3 +10,4 @@
   <div class="progress-bar progress-bar-danger {{if is_running 'progress-bar-striped active'}}" style={{failedPercent}}>
   </div>
 </div>
+{{/elements/tool-tip}}

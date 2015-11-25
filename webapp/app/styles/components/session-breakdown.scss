@@ -1,8 +1,20 @@
-.progress {
-    margin-bottom: 0px;
+.progress
+{
+    position: relative;
+
+    margin-bottom: 0;
 }
 
-.progress.error {
-    background: lighten($brand-danger, 30%);
-}
 
+.abandoned-overlay
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: .6;
+    background: url(/static/assets/img/grunge-overlay.jpg);
+}

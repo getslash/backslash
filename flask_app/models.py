@@ -1,15 +1,14 @@
-import datetime
-
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import UserMixin, RoleMixin, current_user
 
 from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.sql import and_, select, func
 
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import rendered_field
+from .utils.rendering import rendered_field, render_api_object
 from . import activity
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
@@ -45,40 +44,6 @@ class StatusPredicatesMixin(object):
 
 
 
-
-
-test_error = db.Table('test_error',
-                      db.Column('test_id',
-                                db.Integer,
-                                db.ForeignKey('test.id', ondelete='CASCADE')),
-                      db.Column('error_id',
-                                db.Integer,
-                                db.ForeignKey('error.id', ondelete='CASCADE')))
-
-session_error = db.Table('session_error',
-                         db.Column('session_id',
-                                   db.Integer,
-                                   db.ForeignKey('session.id', ondelete='CASCADE')),
-                         db.Column('error_id',
-                                   db.Integer,
-                                   db.ForeignKey('error.id', ondelete='CASCADE')))
-
-test_comment = db.Table('test_comment',
-                        db.Column('test_id',
-                                  db.Integer,
-                                  db.ForeignKey('test.id', ondelete='CASCADE')),
-                        db.Column('comment_id',
-                                  db.Integer,
-                                  db.ForeignKey('comment.id', ondelete='CASCADE')))
-
-session_comment = db.Table('session_comment',
-                           db.Column('session_id',
-                                     db.Integer,
-                                     db.ForeignKey('session.id', ondelete='CASCADE')),
-                           db.Column('comment_id',
-                                     db.Integer,
-                                     db.ForeignKey('comment.id', ondelete='CASCADE')))
-
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -104,9 +69,9 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     tests = db.relationship(
         'Test', backref=backref('session'), cascade='all, delete, delete-orphan')
     errors = db.relationship(
-        'Error', secondary=session_error, backref=backref('session', lazy='dynamic'))
+        'Error', backref=backref('session'))
     comments = db.relationship(
-        'Comment', secondary=session_comment, backref=backref('session', lazy='dynamic'))
+        'Comment', primaryjoin='Comment.session_id==Session.id', backref=backref('session'))
     metadata_items = db.relationship(
         'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
 
@@ -121,6 +86,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_finished_tests = db.Column(db.Integer, default=0)
 
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+    num_test_warnings = db.Column(db.Integer, nullable=False, server_default="0")
 
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
@@ -134,6 +100,18 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+
+    # keepalive
+    keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
+    next_keepalive = db.Column(db.Float, nullable=True, default=None)
+
+    @rendered_field
+    def is_abandoned(self):
+        if self.next_keepalive is None:
+            return False
+        if self.next_keepalive > get_current_time():
+            return False
+        return self.end_time is None
 
     # rendered extras
     @rendered_field
@@ -225,15 +203,29 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
 
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     errors = db.relationship(
-        'Error', secondary=test_error, backref=backref('test', lazy='dynamic'))
+        'Error', backref=backref('test'))
     comments = db.relationship(
-        'Comment', secondary=test_comment, backref=backref('test', lazy='dynamic'))
+        'Comment', primaryjoin='Comment.test_id==Test.id', backref=backref('test'))
+
+    first_error_obj = db.relationship(lambda: Error,
+                                  primaryjoin=lambda: and_(
+                                      Test.id == Error.test_id,
+                                      Error.timestamp == select([func.max(Error.timestamp)]).
+                                      where(Error.test_id==Test.id).
+                                      correlate(Test.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
+
+    is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
@@ -247,9 +239,16 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
         return self.end_time - self.start_time
 
     @rendered_field
+    def first_error(self):
+        if self.first_error_obj is None:
+            return None
+        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
+
+    @rendered_field
     def info(self):
         return {attr: getattr(self.test_info, attr)
                 for attr in ('file_name', 'class_name', 'name')}
+
 
 
 _METADATA_KEY_TYPE = db.String(1024)
@@ -278,9 +277,12 @@ class Error(db.Model, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
     exception_type = db.Column(db.String(256), index=True)
-    message = db.Column(db.String(256), index=True)
+    message = db.Column(db.Text(), index=True)
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
+
 
 class Warning(db.Model, TypenameMixin):
 
@@ -315,6 +317,8 @@ class User(db.Model, UserMixin, TypenameMixin):
                             backref=db.backref('users', lazy='dynamic'))
     run_tokens = db.relationship('RunToken', lazy='dynamic')
 
+    last_activity = db.Column(db.Float())
+
     @rendered_field
     def user_roles(self):
         return [{'name': role.name} for role in self.roles]
@@ -339,6 +343,8 @@ class Comment(db.Model, TypenameMixin):
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.Float, default=get_current_time)
     deleted = db.Column(db.Boolean, server_default="false")
+    session_id = db.Column(db.ForeignKey(Session.id, ondelete='CASCADE'), nullable=True, index=True)
+    test_id = db.Column(db.ForeignKey(Test.id, ondelete='CASCADE'), nullable=True, index=True)
 
     @rendered_field
     def user_email(self):

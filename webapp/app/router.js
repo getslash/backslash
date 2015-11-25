@@ -1,25 +1,21 @@
 import Ember from 'ember';
 import config from './config/environment';
 
-var Router = Ember.Router.extend({
+const Router = Ember.Router.extend({
   location: config.locationType
 });
 
 Router.map(function() {
   this.route("sessions", { path: "/sessions" });
   this.route("session", { path: "/sessions/:id" }, function() {
-    this.route('tests');
-    this.route('comments');
     this.route('errors');
-    this.route('activity');
-    this.route('investigate');
+    this.route('single_error', { path: "/errors/:index" });
     this.route('warnings');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
     this.route('errors');
-    this.route('comments');
-    this.route('activity');
+    this.route('single_error', { path: "/errors/:index" });
     this.route('warnings');
   });
 

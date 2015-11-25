@@ -1,8 +1,10 @@
 
 {{#tool-bar}}
-  {{filter-control filter_config=filter_config filter_action="filter"}}
+  {{filter-control filter_config=model.meta.filter_config filter_action="filter"}}
   <form class="navbar-form navbar-right">
-    <button type="button" class="btn {{if show_archived 'btn-success'}}" {{action "toggle_show_archived"}}>Show Archived</button>
+    <button type="button" class="btn {{if (not show_archived) 'btn-default'}}" {{action "toggle_show_archived"}}>
+      {{#if show_archived}}Hide Archived{{else}}Show Archived{{/if}}
+    </button>
   </form>
 {{/tool-bar}}
 
@@ -14,4 +16,4 @@
   {{/each}}
 </div>
 
-{{pagination-nav page=page pages_total=pages_total next_page="next_page" prev_page="prev_page" goto_page="goto_page"}}
+{{pagination-nav page=model.meta.page pages_total=model.meta.pages_total num_visible=model.meta.page_size goto_page="goto_page"}}

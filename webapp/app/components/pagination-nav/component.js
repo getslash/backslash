@@ -4,7 +4,6 @@ export default Ember.Component.extend({
 
     page: 1,
     pages_total: null,
-
     num_visible: 10,
 
     paginated: function() {
@@ -49,16 +48,17 @@ export default Ember.Component.extend({
 
 
     actions: {
-        prev_page: function() {
-            this.sendAction('prev_page');
-        },
-
-        goto_page: function(page) {
-            this.sendAction('goto_page', page);
-        },
-
-        next_page: function() {
-            this.sendAction('next_page');
+        goto: function(page) {
+            let self = this;
+            let p = self.get('page');
+            if (page === "next") {
+                p = self.get('has_next')?(p + 1):p;
+            } else if (page === "prev") {
+                p = self.get('has_prev')?(p - 1):p;
+            } else {
+                p = page;
+            }
+            this.sendAction('goto_page', p);
         }
     }
 });

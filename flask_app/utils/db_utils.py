@@ -8,5 +8,6 @@ def get_or_create(model, **kwargs):
     except NoResultFound:
         returned = model(**kwargs)
         models.db.session.add(returned)
+        models.db.session.flush()
         models.db.session.commit()
     return returned
