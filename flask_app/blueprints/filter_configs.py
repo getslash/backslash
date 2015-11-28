@@ -5,7 +5,7 @@ from ..utils import statuses
 from ..utils.filtering import ConstFilter, FilterConfig, in_, notin_
 
 _STATUS_FILTERS = {
-        'unsuccessful': (notin_, (statuses.SUCCESS, statuses.SKIPPED)),
+        'unsuccessful': (notin_, (statuses.SUCCESS, statuses.SKIPPED, statuses.RUNNING)),
         'successful': (in_, (statuses.SUCCESS, statuses.SKIPPED)),
         'skipped': (operator.eq, statuses.SKIPPED),
 }
