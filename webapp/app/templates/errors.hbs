@@ -10,14 +10,17 @@
 {{/tool-bar}}
 
 <div class="container">
-  <table class="table table-hover">
-    <tbody>
-      {{#each errors as |error index|}}
-        {{#link-to single_error_route_name (paginated-index index errors.meta.page errors.meta.page_size) tagName="tr" classNames="clickable"}}
-        <td><strong>{{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})</strong></td>
-        <td><code>{{error.full_message}}</code></td>
-        {{/link-to}}
-      {{/each}}
-    </tbody>
-  </table>
+  {{#each errors as |error index|}}
+
+    {{#link-to single_error_route_name (paginated-index index errors.meta.page errors.meta.page_size) classNames="clickable nodecoration"}}
+      <div class="box error">
+        <div class="info">
+          {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})
+        </div>
+        <div class="message">
+          {{error.full_message}}
+        </div>
+      </div>
+    {{/link-to}}
+  {{/each}}
 </div>

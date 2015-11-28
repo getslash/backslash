@@ -1,0 +1,32 @@
+.box {
+    
+    border: 1px solid;
+    margin: 1em;
+
+    &.warning {
+	border-color: $backslash-orange;
+
+	.info {
+	    background-color: $backslash-orange;
+	}
+
+    }
+
+    &.error {
+	border-color: $brand-danger;
+
+	.info {
+	    background-color: $brand-danger;
+	}
+    }
+
+    .info {
+	padding: 0.5em;
+	color: white;
+    }
+
+    .message {
+	padding: 0.5em;
+	font-family: monospace;
+    }
+}

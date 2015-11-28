@@ -25,6 +25,11 @@ body
      -khtml-user-select: none;
 }
 
+.nodecoration, .nodecoration:hover {
+    text-decoration: none;
+    color: black;
+}
+
 span.danger 
 {
     color: $brand-danger;
