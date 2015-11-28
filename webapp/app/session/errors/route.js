@@ -17,7 +17,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     renderTemplate: function() {
         this.render('errors');
     },
-    
+
     afterModel(model) {
         if (model.get('meta.total') === 1) {
           this.transitionTo('session.single_error', 1);
