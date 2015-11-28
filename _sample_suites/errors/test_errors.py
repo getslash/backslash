@@ -1,5 +1,8 @@
+import slash
+
 def test_1():
-    pass
+    for i in range(30):
+        slash.logger.warning('Warning number {}', i)
 
 def test_2():
     f()
