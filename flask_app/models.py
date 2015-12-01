@@ -140,8 +140,12 @@ class SubjectInstance(db.Model):
     revision_id = db.Column(db.Integer, db.ForeignKey('product_revision.id'), index=True)
     revision = db.relationship('ProductRevision', lazy='joined')
 
+    @rendered_field
+    def name(self):
+        return self.subject.name
 
-class Subject(db.Model):
+
+class Subject(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), nullable=False, index=True, unique=True)

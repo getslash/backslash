@@ -100,10 +100,10 @@ class ModelResource(RestResource):
         return query.offset((args.page - 1) * args.page_size).limit(args.page_size)
 
     def _get_collection_key_for_object(self, obj):
-        return plural_noun(get_model_typename(type(obj)))
+        return plural_noun(obj.get_typename())
 
     def _get_single_object_key(self):
-        return get_model_typename(self.MODEL)
+        return self.MODEL.get_typename()
 
     def _format_result(self, result, metadata):
         if not result:
@@ -116,7 +116,3 @@ pagination_parser.add_argument(
     'page_size', type=int, location='args', default=10)
 pagination_parser.add_argument('page', type=int, location='args', default=1)
 
-
-def get_model_typename(model):
-    assert isinstance(model, type)
-    return model.__name__.lower()

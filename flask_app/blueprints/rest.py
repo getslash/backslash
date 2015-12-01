@@ -71,6 +71,23 @@ class TestResource(ModelResource):
             return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
         return super(TestResource, self)._get_iterator()
 
+@_resource('/subjects', '/subjects/<object_id>')
+class SubjetInstanceResource(ModelResource):
+
+    MODEL = models.Subject
+    ONLY_FIELDS = ['id', 'name']
+
+    def _get_object_by_id(self, object_id):
+        try:
+            object_id = int(object_id)
+        except ValueError:
+            try:
+                return self.MODEL.query.filter(models.Subject.name == object_id).one()
+            except NoResultFound:
+                abort(requests.codes.not_found)
+        else:
+            return self.MODEL.query.get_or_404(object_id)
+
 
 def _get_object_by_id_or_logical_id(model, object_id):
     query_filter = model.logical_id == object_id
@@ -109,10 +126,10 @@ class ErrorResource(ModelResource):
 
     MODEL = Error
     DEFAULT_SORT = (Error.timestamp.asc(),)
-    
+
     def _get_iterator(self):
         args = session_test_user_query_parser.parse_args()
-        
+
         if args.session_id is not None:
             return Error.query.filter_by(session_id=args.session_id)
         elif args.test_id is not None:
