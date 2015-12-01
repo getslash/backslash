@@ -12,7 +12,7 @@
       </a>
       <ul class="dropdown-menu" aria-labelledby="dropdown-{{f.name}}">
         {{#each f.options as |option|}}
-          <li><a class="clickable" {{action "filter" f.name option.name}}>
+          <li><a class="clickable" {{action "update_filter" f.name option.name}}>
             <i class="fa fa-fw {{if option.selected 'fa-check'}}"></i>{{option.name}}</a>
           </li>
         {{/each}}

@@ -4,8 +4,8 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 export default Ember.Route.extend(ApplicationRouteMixin, {
 
     actions: {
-        goto_session: function (session) {
-            this.transitionTo('session', session.get('display_id'));
+        route_to(route_name, param) {
+            this.transitionTo(route_name, param);
         },
 
         loading: function(transition) {

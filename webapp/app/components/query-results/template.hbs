@@ -1,13 +1,10 @@
 {{#tool-bar}}
-  {{filter-control filter_config=filter_config filter_action=(action this.attrs.filter_action)}}
+  {{filter-control filter_config=filter_config update_filter=(action this.attrs.update_filter)}}
 {{/tool-bar}}
 
 
 {{#each results as |result|}}
-  {{#if (eq result.type "test")}}
-    {{query-result-test test=result}}
-  {{/if}}
-
+  {{query-result result=result route_to="route_to"}}
 {{/each}}
 
 {{pagination-nav page=page pages_total=pages_total num_visible=num_visible goto_page=(action this.attrs.goto_page)}}

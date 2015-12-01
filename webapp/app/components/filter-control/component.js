@@ -5,9 +5,9 @@ export default Ember.Component.extend({
     filter_config: [],
 
     actions: {
-        filter: function(name, value) {
-            this.sendAction('filter_action', name, value);
-        }
+        update_filter(name, value) {
+            this.sendAction('update_filter', name, value);
+        },
     }
 
 });

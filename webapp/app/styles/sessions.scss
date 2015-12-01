@@ -1,29 +1,3 @@
-.session-row:hover,
-.test-row:hover
-{
-    background-color: $gray-lighter;
-    
-    &.success {
-	background-color: $mild-green;
-    }
-
-    &.error, &.failure {
-	background-color: $mild-red;
-    }
-}
-
-.session-row,
-.test-row
-{
-    padding: 1em;
-
-    cursor: pointer;
-}
-
-.session-row.investigated
-{
-    opacity: .5;
-}
 
 .delegate-info
 {

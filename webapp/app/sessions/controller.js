@@ -6,9 +6,9 @@ export default PaginatedFilteredController.extend({
     show_archived: false,
 
     actions: {
-        toggle_show_archived: function() {
+        toggle_show_archived() {
             this.set('show_archived', !this.get('show_archived'));
-        }
+        },
     }
 
 });

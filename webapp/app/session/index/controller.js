@@ -51,15 +51,6 @@ export default PaginatedFilteredController.extend({
             });
         },
 
-
-        goto_tests_page: function(page_number) {
-            this.set('page', page_number);
-        },
-
-        update_filter: function(filter_config) {
-            this.set('filter', filter_config);
-        },
-
         toggle_archive: function() {
             this.toggle('archived');
         },

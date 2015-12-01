@@ -10,7 +10,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         }
     },
 
-    model: function(params) {
+    model(params) {
         let query_params = {page: params.page, filter: params.filter, show_archived: (params.show_archived)};
 
         let user_id = this.get_user_id_parameter();
@@ -19,6 +19,10 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
             query_params.user_id = user_id;
         }
         return this.store.query('session', query_params);
+    },
+
+    setupController(controller, model) {
+        controller.set('sessions', model);
     },
 
     get_user_id_parameter: function() {

@@ -85,7 +85,7 @@
 {{hr-separator title="Tests"}}
 
 <div class="container-fluid">
-  {{query-results results=tests filter_action=(action "filter") goto_page=(action "goto_tests_page")}}
+  {{query-results results=tests update_filter=(action "update_filter") goto_page=(action "goto_page") route_to="route_to"}}
 </div>
 
 {{hr-separator title="Additional Information"}}

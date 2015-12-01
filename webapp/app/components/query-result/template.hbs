@@ -1,0 +1,11 @@
+{{#if (eq typename "test")}}
+  {{#with result as |test|}}
+    {{partial "test-result"}}
+  {{/with}}
+{{/if}}
+{{#if (eq typename "session")}}
+  {{#with result as |session|}}
+    {{partial "session-result"}}
+  {{/with}}
+{{/if}}
+

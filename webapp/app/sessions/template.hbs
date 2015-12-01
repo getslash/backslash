@@ -1,20 +1,2 @@
 
-{{#tool-bar}}
-  {{filter-control filter_config=model.meta.filter_config filter_action="filter"}}
-  <form class="navbar-form navbar-right">
-    <button type="button" class="btn {{if (not show_archived) 'btn-default'}}" {{action "toggle_show_archived"}}>
-      <i class="fa fa-archive"></i>
-      {{#if show_archived}}Hide Archived{{else}}Show Archived{{/if}}
-    </button>
-  </form>
-{{/tool-bar}}
-
-
-<div class="container">
-
-  {{#each model as |session|}}
-    {{ session-row session=session action="goto_session"}}
-  {{/each}}
-</div>
-
-{{pagination-nav page=model.meta.page pages_total=model.meta.pages_total num_visible=model.meta.page_size goto_page="goto_page"}}
+{{query-results results=sessions update_filter=(action "update_filter") goto_page=(action "goto_page") route_to="route_to"}}
