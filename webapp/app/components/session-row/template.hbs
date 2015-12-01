@@ -19,7 +19,7 @@
     {{else}}
       <i class="fa fa-rocket"></i>
     {{/if}}
-    <strong>{{subject.name}}</strong>
+    <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong>
   {{/each}}
   {{session.products_string}}
 </div>
