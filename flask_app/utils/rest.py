@@ -106,7 +106,7 @@ class ModelResource(RestResource):
 
     def _format_result(self, result, metadata):
         if not result:
-            result[plural_noun(get_model_typename(self.MODEL))] = []
+            result[plural_noun(self.MODEL.get_typename())] = []
         return super(ModelResource, self)._format_result(result, metadata)
 
 

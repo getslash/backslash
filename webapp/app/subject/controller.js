@@ -1,9 +1,7 @@
+import Ember from 'ember';
+
 import PaginatedFilteredController from '../controllers/paginated_filtered_controller';
 
 export default PaginatedFilteredController.extend({
-
-    actions: {
-        filter() {
-        }
-    }
+    collection: Ember.computed.oneWay('sessions'),
 });

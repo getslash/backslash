@@ -8,7 +8,11 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
     model(params) {
         return Ember.RSVP.hash({
             subject: this.store.find('subject', params.name),
-            sessions: this.store.query('session', {}),
+            sessions: this.store.query('session', {
+                subject_name: params.name,
+                page: params.page,
+                filter: params.filter
+            }),
         });
     },
 

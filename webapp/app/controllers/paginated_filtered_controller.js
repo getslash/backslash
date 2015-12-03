@@ -31,7 +31,7 @@ export default Ember.Controller.extend({
 
     get_new_filter_with: function(name, value) {
         let returned = this.get('decoded_filter');
-        if (value === this.get('filter_config.' + name + '.default')) {
+        if (returned[name] === value || value === this.get('filter_config.' + name + '.default')) {
             delete returned[name];
         } else {
             returned[name] = value;

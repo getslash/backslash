@@ -8,7 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask.ext.simple_api import error_abort
 
 from .. import models
-from ..models import Error, Session, Test, User
+from ..models import Error, Session, Test, User, Subject
 from .. import activity
 from ..utils.rest import ModelResource
 
@@ -28,6 +28,7 @@ def _resource(*args, **kwargs):
 
 session_parser = reqparse.RequestParser()
 session_parser.add_argument('user_id', type=int, default=None)
+session_parser.add_argument('subject_name', type=str, default=None)
 
 @_resource('/sessions', '/sessions/<object_id>')
 class SessionResource(ModelResource):
@@ -42,6 +43,8 @@ class SessionResource(ModelResource):
     def _get_iterator(self):
         returned = super(SessionResource, self)._get_iterator()
         args = session_parser.parse_args()
+        if args.subject_name is not None:
+            returned = returned.join(Session.subject_instances).filter(Subject.name == args.subject_name)
         if args.user_id is not None:
             returned = returned.filter(Session.user_id == args.user_id)
         return returned

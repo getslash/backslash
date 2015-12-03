@@ -4,14 +4,8 @@ import PollingRoute from '../mixins/polling-route';
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, {
 
-    queryParams: {
-        show_archived: {
-            refreshModel: true
-        }
-    },
-
     model(params) {
-        let query_params = {page: params.page, filter: params.filter, show_archived: (params.show_archived)};
+        let query_params = {page: params.page, filter: params.filter};
 
         let user_id = this.get_user_id_parameter();
 
