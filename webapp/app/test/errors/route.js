@@ -1,17 +1,16 @@
 import Ember from 'ember';
 
-import BaseRoute from '../../routes/base';
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import PaginatedFilteredRoute from '../../routes/paginated_filtered_route';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, {
+export default PaginatedFilteredRoute.extend({
 
-    model: function() {
+    model: function(params) {
         let test = this.modelFor('test');
 
         return Ember.RSVP.hash({
             test: test,
             session: this.store.find('session', test.get('session_id')),
-            errors: this.store.query('error', {test_id: test.id})
+            errors: this.store.query('error', {test_id: test.id, page: params.page})
         });
     },
 
@@ -27,7 +26,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     renderTemplate: function() {
         this.render('errors', {});
     },
-    
+
     afterModel(model) {
         if (model.errors.get('meta.total') === 1) {
           this.transitionTo('test.single_error', 1);

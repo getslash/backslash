@@ -24,3 +24,8 @@
     {{/link-to}}
   {{/each}}
 </div>
+
+{{#with errors.meta as |meta|}}
+{{pagination-nav
+  page=meta.page pages_total=meta.pages_total goto_page="goto_page"}}
+{{/with}}

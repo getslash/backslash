@@ -7,6 +7,10 @@ def test_1():
 def test_2():
     f()
 
+def test_3():
+    for i in range(30):
+        slash.add_error('sample error #{}'.format(i))
+
 def f():
     var = 2
     g()
