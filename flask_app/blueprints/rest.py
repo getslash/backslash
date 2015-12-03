@@ -44,8 +44,6 @@ class SessionResource(ModelResource):
         args = session_parser.parse_args()
         if args.user_id is not None:
             returned = returned.filter(Session.user_id == args.user_id)
-        if request.args.get('show_archived') != 'true':
-            returned = returned.filter(Session.archived == False)
         return returned
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')

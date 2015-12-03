@@ -12,11 +12,26 @@ export default Ember.Controller.extend({
     page: 1,
     pages_total: null,
     filter: undefined,
-    filter_config: null,
+    collection: null,
+
+    filter_config: function() {
+        let raw = this.get('collection.meta.filter_config'), returned = {};
+
+        if (raw === undefined) {
+            return null;
+        }
+
+        raw.map(function(f) {
+            returned[f.name] = f;
+        });
+
+        return returned;
+
+    }.property('collection'),
 
     get_new_filter_with: function(name, value) {
         let returned = this.get('decoded_filter');
-        if (returned[name] === value) {
+        if (value === this.get('filter_config.' + name + '.default')) {
             delete returned[name];
         } else {
             returned[name] = value;

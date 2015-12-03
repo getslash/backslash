@@ -1,22 +1,28 @@
 
-<ul class="nav navbar-nav navbar-right">
+<ul class="nav navbar-nav navbar-right filter-control">
   {{#each filter_config as |f|}}
-    <li class="dropdown">
-      <a class="dropdown-toggle {{if f.selected 'selected'}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="dropdown-{{f.name}}">
-        {{#if f.selected}}
-          {{f.value}}
-        {{else}}
-          {{f.name}}
-        {{/if}}
-        <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="dropdown-{{f.name}}">
-        {{#each f.options as |option|}}
-          <li><a class="clickable" {{action "update_filter" f.name option.name}}>
-            <i class="fa fa-fw {{if option.selected 'fa-check'}}"></i>{{option.name}}</a>
-          </li>
-        {{/each}}
-      </ul>
-    </li>
+    {{#if f.is_toggle}}
+      <form class="navbar-form navbar-right" action="">
+        <button type="button" class="btn {{if f.value 'btn-success'}}" {{action "update_filter" f.name (not f.value)}}>{{f.name}}</button>
+      </form>
+    {{else}}
+      <li class="dropdown">
+        <a class="dropdown-toggle {{if f.selected 'selected'}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="dropdown-{{f.name}}">
+          {{#if f.selected}}
+            {{f.value}}
+          {{else}}
+            {{f.name}}
+          {{/if}}
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdown-{{f.name}}">
+          {{#each f.options as |option|}}
+            <li><a class="clickable" {{action "update_filter" f.name option.name}}>
+              <i class="fa fa-fw {{if option.selected 'fa-check'}}"></i>{{option.name}}</a>
+            </li>
+          {{/each}}
+        </ul>
+      </li>
+    {{/if}}
   {{/each}}
 </ul>

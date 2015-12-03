@@ -43,17 +43,23 @@ class FilterConfig(object):
 
 
     def _create_filter_config_dict(self, filter_json):
-        returned = [
-            {
+        returned = []
+
+        for name, f in sorted(self._cfg.items()):
+            is_toggle = isinstance(f, ToggleFilter)
+            cfg = {
                 'name': name,
                 'selected': name in filter_json or self._cfg[name].default,
                 'value': filter_json.get(name) or self._cfg[name].default,
-                'options': [
-                    {'name': opt_name, 'selected': filter_json.get(name, None) == opt_name}
-                    for opt_name in f.options]
+                'is_toggle': is_toggle,
+                'default': f.default,
             }
-            for name, f in self._cfg.items()
-        ]
+            if not is_toggle:
+                cfg['options'] = [
+                    {'name': opt_name, 'selected': filter_json.get(name, None) == opt_name}
+                    for opt_name in f.options
+                ]
+            returned.append(cfg)
         return returned
 
 
@@ -71,4 +77,15 @@ class ConstFilter(object):
     def filter(self, iterator, value):
         operator, opt_val = self.options[value]
         iterator = iterator.filter(operator(self.field, opt_val))
+        return iterator
+
+class ToggleFilter(object):
+
+    def __init__(self, field, default):
+        super(ToggleFilter, self).__init__()
+        self.field = field
+        self.default = default
+
+    def filter(self, iterator, value):
+        iterator = iterator.filter(self.field == value)
         return iterator
