@@ -18,7 +18,7 @@ def auto_render(func):
     def new_func(*args, **kwargs):
         returned = func(*args, **kwargs)
         if isinstance(returned, db.Model):
-            returned = render_api_object(returned)
+            returned = render_api_object(returned, is_single=True)
         return returned
     return new_func
 

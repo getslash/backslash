@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning
+from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.rendering import render_api_object
@@ -117,6 +117,21 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
     session.subject_instances.append(subject)
     db.session.add(session)
     db.session.commit()
+
+
+@API
+def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=None):
+    if not ((test_id is not None) ^ (session_id is not None)):
+        error_abort('Either test_id or session_id required')
+
+    db.session.add(RelatedEntity(
+        test_id = test_id,
+        session_id = session_id,
+        type=type,
+        name=name
+        ))
+    db.session.commit()
+
 
 
 @API

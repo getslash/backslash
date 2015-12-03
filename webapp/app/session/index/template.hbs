@@ -90,7 +90,12 @@
 
 {{hr-separator title="Additional Information"}}
 
-{{metadata/metadata-table metadata=metadata additional=additional_metadata}}
+{{metadata/metadata-table metadata=metadata additional=additional_metadata }}
+
+{{#if session_model.related}}
+  {{hr-separator title="Related Entities"}}
+  {{metadata/related-entities related=session_model.related}}
+{{/if}}
 
 {{hr-separator title="Activity"}}
 

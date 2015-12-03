@@ -4,7 +4,7 @@ import socket
 import flux
 import pytest
 
-from .utils import raises_conflict, raises_not_found
+from .utils import raises_conflict, raises_not_found, without_single_rendered_fields
 
 
 def test_start_session(client):
@@ -112,5 +112,5 @@ def test_session_query_tests(started_session_with_ended_test):
     [queried_test] = started_session.query_tests()
     assert queried_test.id == test.id
     test.refresh()  # need to update end_time
-    assert queried_test == test
+    assert queried_test == without_single_rendered_fields(test)
 

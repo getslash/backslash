@@ -4,6 +4,8 @@ import pytest
 
 from backslash.lazy_query import LazyQuery
 
+from .utils import without_single_rendered_fields
+
 
 def test_get_by_logical_id(client, logical_id_object, logical_id, logical_id_url, logical_id_object_type):
     returned = client.api.session.get(logical_id_url)
@@ -18,7 +20,7 @@ def test_get_tests_by_logical_id(client, logical_id):
     result = LazyQuery(client, 'rest/tests', query_params={
         'session_id': logical_id})
     [fetched_test] = result
-    assert fetched_test == test
+    assert fetched_test == without_single_rendered_fields(test)
 
 
 @pytest.fixture

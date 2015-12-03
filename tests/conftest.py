@@ -365,6 +365,21 @@ def error_container(request, client):
 
 
 @pytest.fixture(params=['session', 'test'])
+def related_entity_container(request, client):
+    return _get_api_object_by_typename(client=client, typename=request.param)
+
+
+@pytest.fixture
+def related_type():
+    return 'some_entity_type'
+
+
+@pytest.fixture
+def related_name():
+    return 'some_entity_name'
+
+
+@pytest.fixture(params=['session', 'test'])
 def warning_container(request, client):
     return _get_api_object_by_typename(typename=request.param, client=client)
 

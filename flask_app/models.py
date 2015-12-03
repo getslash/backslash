@@ -8,7 +8,7 @@ from sqlalchemy.sql import and_, select, func
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import rendered_field, render_api_object
+from .utils.rendering import rendered_field, render_api_object, rendered_only_on_single
 from . import activity
 
 from sqlalchemy.dialects.postgresql import JSON, JSONB
@@ -22,6 +22,13 @@ class TypenameMixin(object):
     @classmethod
     def get_typename(cls):
         return cls.__name__.lower()
+
+
+class HasRelatedMixin(object):
+
+    @rendered_only_on_single
+    def related(self):
+        return [{'name': obj.name, 'type': obj.type} for obj in self.related_entities]
 
 
 class StatusPredicatesMixin(object):
@@ -54,7 +61,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
@@ -105,6 +112,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
     next_keepalive = db.Column(db.Float, nullable=True, default=None)
 
+
     @rendered_field
     def is_abandoned(self):
         if self.next_keepalive is None:
@@ -114,6 +122,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin):
         return self.end_time is None
 
     # rendered extras
+    related_entities = db.relationship('RelatedEntity')
+
     @rendered_field
     def user_email(self):
         return self.user.email
@@ -143,6 +153,14 @@ class SubjectInstance(db.Model):
     @rendered_field
     def name(self):
         return self.subject.name
+
+
+class RelatedEntity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(256), nullable=False)
+    name = db.Column(db.Text(), nullable=False)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
 
 class Subject(db.Model, TypenameMixin):
@@ -193,7 +211,7 @@ class TestInformation(db.Model):
     name = db.Column(db.String(256), nullable=False, index=True)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -229,6 +247,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
                                   lazy='joined'
                               )
 
+    related_entities = db.relationship('RelatedEntity')
+
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
@@ -247,6 +267,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin):
         if self.first_error_obj is None:
             return None
         return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
+
 
     @rendered_field
     def info(self):

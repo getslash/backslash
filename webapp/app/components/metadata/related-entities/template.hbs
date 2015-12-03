@@ -1,0 +1,22 @@
+<div class="container-fluid">
+  <table class="table metadata-table hover">
+    <tbody>
+      {{#each-in groups as |name value|}}
+        <tr>
+          <td>{{name}}</td>
+          {{# if (eq value.length 1)}}
+            <td>{{value}}</td>
+          {{ else }}
+            <td>
+              <ul>
+                {{#each value as |v|}}
+                  <li>{{v}}</li>
+                {{/each}}
+              </ul>
+            </td>
+          {{/if}}
+        </tr>
+      {{/each-in}}
+    </tbody>
+  </table>
+</div>

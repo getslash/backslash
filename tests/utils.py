@@ -32,3 +32,8 @@ def model_for(backslash_client_obj):
     # not supported
     assert backslash_client_obj.type == 'session'
     return models.Session.query.get(backslash_client_obj.id)
+
+_SINGLE_RENDERED_FIELDS = {'related'}
+
+def without_single_rendered_fields(obj):
+    return obj.without_fields(_SINGLE_RENDERED_FIELDS)

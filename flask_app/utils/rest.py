@@ -19,9 +19,8 @@ class RestResource(Resource):
         object_id = request.view_args.get('object_id')
         metadata = {}
         if object_id is not None:
-            _logger.debug('Looking for object id {}', object_id)
             obj = self._get_object_by_id(object_id)
-            return self._format_result({self._get_single_object_key(): self._render_single(obj)}, metadata=metadata)
+            return self._format_result({self._get_single_object_key(): self._render_single(obj, in_collection=False)}, metadata=metadata)
         else:
             iterator = self._get_iterator()
             iterator = self._filter(iterator, metadata)
@@ -33,7 +32,7 @@ class RestResource(Resource):
                 collection = result.get(key)
                 if collection is None:
                     collection = result[key] = []
-                collection.append(self._render_single(obj))
+                collection.append(self._render_single(obj, in_collection=True))
             return self._format_result(result, metadata=metadata)
 
     def _filter(self, iterator, metadata):
@@ -59,7 +58,7 @@ class RestResource(Resource):
     def _get_single_object_key(self):
         raise NotImplementedError() # pragma: no cover
 
-    def _render_single(self, obj):
+    def _render_single(self, obj, *, in_collection: bool):
         raise NotImplementedError()  # pragma: no cover
 
     def _format_result(self, result, metadata=None):
@@ -83,8 +82,8 @@ class ModelResource(RestResource):
         assert self.MODEL is not None
         return self.MODEL.query.get(object_id)
 
-    def _render_single(self, obj):
-        return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS)
+    def _render_single(self, obj, *, in_collection: bool):
+        return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=not in_collection)
 
     def _sort(self, iterator, metadata):
         if self.DEFAULT_SORT is not None:
