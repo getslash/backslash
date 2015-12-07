@@ -13,6 +13,7 @@ from flask.ext.loopback import FlaskLoopback
 from flask_app import app, auth, models
 from flask_app.utils.caching import cache
 from munch import Munch
+from sentinels import NOTHING
 from urlobject import URLObject as URL
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -352,6 +353,16 @@ def class_name(request):
 @pytest.fixture
 def test_name():
     return 'test_something'
+
+
+@pytest.fixture(params=[
+    NOTHING,
+    None,
+    {'x': 2, 'y': 'string'},
+])
+def variation(request):
+    return request.param
+
 
 
 @pytest.fixture

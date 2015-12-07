@@ -1,8 +1,9 @@
 import flux
 import pytest
-import datetime
 
-from .utils import raises_not_found, raises_conflict, raises_bad_request
+from sentinels import NOTHING
+
+from .utils import raises_not_found, raises_conflict
 
 
 def test_test_information_filename(started_test, file_name):
@@ -21,6 +22,7 @@ def test_report_test_start_logical_id(started_session, test_name):
     test = started_session.report_test_start(
         name=test_name, test_logical_id='11')
     assert test is not None
+
 
 def test_report_interactive_test_start(client):
     num_tests = 10
@@ -150,3 +152,13 @@ def test_skip_reason(started_test, reason):
     started_test.report_end()
     assert started_test.refresh().status == 'SKIPPED'
     assert started_test.skip_reason == reason
+
+
+def test_test_variation(started_session, variation, test_name, class_name):
+    test = started_session.report_test_start(
+        name=test_name, class_name=class_name, variation=variation)
+    if variation is NOTHING:
+        expected_variation = None
+    else:
+        expected_variation = variation
+    assert test.refresh().variation == expected_variation

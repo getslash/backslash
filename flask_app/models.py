@@ -211,12 +211,28 @@ class TestInformation(db.Model):
     name = db.Column(db.String(256), nullable=False, index=True)
 
 
+class TestVariation(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    variation = db.Column(JSONB)
+
+
 class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
+
+    test_variation_id = db.Column(db.Integer, db.ForeignKey('test_variation.id', ondelete='CASCADE'), index=True)
+    test_variation = db.relationship('TestVariation', lazy='joined')
+
+    @rendered_field
+    def variation(self):
+        v = self.test_variation
+        if v is None:
+            return None
+        return v.variation
 
     scm = db.Column(db.String(5), default=None)
     scm_dirty = db.Column(db.Boolean, server_default='false')

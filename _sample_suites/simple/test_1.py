@@ -14,7 +14,7 @@ def test_3():
 
 
 @slash.parametrize('param', ['x.y', 'x(y'])
-def test_4(param):
+def test_4(param): # pylint: disable=unused-argument
     pass
 
 

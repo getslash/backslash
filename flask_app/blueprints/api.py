@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity
+from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.rendering import render_api_object
@@ -169,6 +169,7 @@ def report_test_start(
         scm_revision: (str, NoneType)=None,
         scm_dirty: bool=False,
         is_interactive: bool=False,
+        variation: (dict, NoneType)=None,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -191,6 +192,8 @@ def report_test_start(
         is_interactive=is_interactive,
         file_hash=file_hash,
     )
+    if variation is not None:
+        returned.test_variation = TestVariation(variation=variation)
     db.session.add(returned)
     db.session.commit()
     return returned
