@@ -78,13 +78,14 @@ def testserver(livereload, port):
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
+@click.option("--vagrant-machine", type=str, default="", help="Vagrant machine to provision")
 @click.option("--sudo/--no-sudo", default=False)
 @click.option("--ask-sudo-pass/--no-ask-sudo-pass", default=False)
-def deploy(dest, sudo, ask_sudo_pass):
-    _run_deploy(dest, sudo, ask_sudo_pass)
+def deploy(dest, sudo, ask_sudo_pass, vagrant_machine):
+    _run_deploy(dest, sudo, ask_sudo_pass, vagrant_machine)
 
 
-def _run_deploy(dest, sudo=False, ask_sudo_pass=False):
+def _run_deploy(dest, sudo=False, ask_sudo_pass=False, vagrant_machine=""):
     prepare_source_package()
     ansible = ensure_ansible()
     click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
@@ -95,8 +96,8 @@ def _run_deploy(dest, sudo=False, ask_sudo_pass=False):
         environ["PATH"] = "{}:{}".format(os.path.dirname(ansible), environ["PATH"])
         # "vagrant up --provision" doesn't call provision if the virtual machine is already up,
         # so we have to call vagrant provision explicitly
-        subprocess.check_call('vagrant up', shell=True, env=environ)
-        subprocess.check_call('vagrant provision', shell=True, env=environ)
+        subprocess.check_call('vagrant up ' + vagrant_machine, shell=True, env=environ)
+        subprocess.check_call('vagrant provision ' + vagrant_machine, shell=True, env=environ)
     else:
         cmd = [ansible, "-i",
                from_project_root("ansible", "inventories", dest)]
