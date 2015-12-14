@@ -15,7 +15,7 @@ export function momentRange(params, opts) {
     let range = moment.unix(opts.start_time).twix(moment.unix(opts.end_time));
 
     if (opts.expanded) {
-         return range.simpleFormat('YYYY/MM/DD hh:mm:ss');
+         return range.simpleFormat('YYYY/MM/DD HH:mm:ss');
     }
     return range.format();
 }

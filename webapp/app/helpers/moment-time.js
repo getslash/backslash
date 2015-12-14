@@ -15,7 +15,7 @@ export function momentTime(params, opts) {
     if (opts.unix === null) {
         return '-';
     }
-    return moment.unix(opts.unix).format('YYYY/MM/DD hh:mm:ss');
+    return moment.unix(opts.unix).format('YYYY/MM/DD HH:mm:ss');
 }
 
 export default Ember.Helper.helper(momentTime);

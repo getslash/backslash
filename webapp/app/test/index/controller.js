@@ -16,10 +16,10 @@ export default Ember.Controller.extend({
         });
         returned.set(self.get('is_method')?'Method':'Function', test.get('info.name'));
 
-        if (test.get('end_time')) {        	
+        if (test.get('end_time')) {
         	let end_time = test.get('end_time')?moment.unix(test.get('end_time')):moment.unix();
         	let time_range = moment.unix(test.get('start_time')).twix(end_time);
-        	returned.set('Run time', time_range.simpleFormat('YYYY/MM/DD hh:mm:ss'));
+        	returned.set('Run time', time_range.simpleFormat('YYYY/MM/DD HH:mm:ss'));
         	returned.set('Duration', time_range.humanizeLength());
         } else {
         	returned.set('Run time', 'Started ' + momentTime([], {ago:test.get('start_time')}));
