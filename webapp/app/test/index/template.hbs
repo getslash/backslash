@@ -10,6 +10,7 @@
 
   <table class="table table-hover">
     <tbody>
+      <tr><td>Name</td><td>{{tests/test-name test=test}}</td></tr>
       {{#each-in test_details as |name value|}}
         <tr>
           <td>{{name}}</td><td class="test-detail-value">{{value}}</td>

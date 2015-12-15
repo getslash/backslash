@@ -1,0 +1,5 @@
+{{test.info.name}}{{#if test.variation}}<ul class="params">
+  {{#each-in test.variation as |name value|}}
+    <li>{{name}}=<code>{{value}}</code></li>
+  {{/each-in}}
+</ul>{{/if}}
