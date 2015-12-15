@@ -1,9 +1,12 @@
+import Ember from 'ember';
 import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
 
 export default PaginatedFilteredController.extend({
 
 
     investigating: false,
+
+    collection: Ember.computed.oneWay('tests'),
 
     needs_investigation: function() {
         return this.get('session_model.investigated') !== true && this.get('session_model.status') !== 'SUCCESS';

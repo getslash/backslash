@@ -15,6 +15,11 @@ export default Ember.Controller.extend({
     collection: null,
 
     filter_config: function() {
+
+        if (!this.get('collection')) {
+            console.warn('Collection is unexpectedly null on ', this);
+        }
+
         let raw = this.get('collection.meta.filter_config'), returned = {};
 
         if (raw === undefined) {
