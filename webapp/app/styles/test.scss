@@ -55,10 +55,22 @@ pre span{
     color: white;
 }
 
+$running-color: $brand-info;
+
+@keyframes running-pulse {
+  from { background-color: $running-color;}
+  50% { background-color: darken($running-color, 20%);}
+  to { background-color: $running-color;}
+}
+
+
 .status-label {
     
     &.running {
-    background-color: $brand-info;
+	background-color: $running-color;
+	animation-name: running-pulse;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
     }
     
     &.failure, &.error {
