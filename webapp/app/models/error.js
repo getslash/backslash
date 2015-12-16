@@ -5,7 +5,12 @@ export default DS.Model.extend({
   exception_type: DS.attr('string'),
 
   full_message: function() {
-      return this.get('exception_type') + ': ' + this.get('message');
+      let exc_type = this.get('exception_type');
+
+      if (exc_type) {
+          return exc_type + ': ' + this.get('message');
+      }
+      return this.get('message');
   }.property('exception_type', 'message'),
 
   timestamp: DS.attr(),
