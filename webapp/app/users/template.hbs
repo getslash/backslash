@@ -5,7 +5,9 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th></th><th>Email</th><th>Last Activity</th>
+      <th></th>
+      {{sortable-heading sort=sort title="Email" set_sort="set_sort"}}
+      {{sortable-heading sort=sort title="Last Active" name="last_activity" set_sort="set_sort"}}
     </tr>
   </thead>
   <tbody>

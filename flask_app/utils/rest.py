@@ -3,6 +3,7 @@ import logbook
 from flask import jsonify, request
 
 from flask_restful import reqparse, Resource
+from flask.ext.simple_api import error_abort
 from sqlalchemy.orm import class_mapper
 from sqlalchemy import text
 
@@ -72,6 +73,7 @@ class ModelResource(RestResource):
     ONLY_FIELDS = None
     EXTRA_FIELDS = None
     DEFAULT_SORT = None
+    SORTABLE_FIELDS = []
 
     def _get_iterator(self):
         assert self.MODEL is not None
@@ -86,7 +88,15 @@ class ModelResource(RestResource):
         return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=not in_collection)
 
     def _sort(self, iterator, metadata):
-        if self.DEFAULT_SORT is not None:
+        sort_fields = request.args.get('sort', None)
+        if sort_fields:
+            sort_fields = sort_fields.split(',')
+            if not all(sort_field in self.SORTABLE_FIELDS for sort_field in sort_fields):
+                error_abort('Cannot sort according to given criteria - can only sort by {}'.format(', '.join(self.SORTABLE_FIELDS)))
+
+
+            iterator = iterator.order_by(*[getattr(self.MODEL, f) for f in sort_fields])
+        elif self.DEFAULT_SORT is not None:
             iterator = iterator.order_by(*self.DEFAULT_SORT)
         return iterator
 
