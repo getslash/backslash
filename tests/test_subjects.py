@@ -1,4 +1,5 @@
 import functools
+import requests
 import pytest
 
 from .utils import model_for
@@ -59,3 +60,22 @@ def test_add_subject_deduplication(started_session, flask_app, field_name):
             assert rev1 != rev2
         else:
             raise NotImplementedError()  # pragma: no cover
+
+
+def test_query_sessions_by_subjects(client, subjects):
+    session1 = client.report_session_start(
+        subjects=[subjects[0]]
+    )
+    session2 = client.report_session_start(
+        subjects=[subjects[1]]
+    )
+
+    assert subjects[0].name != subjects[1].name
+
+    _get = lambda subject: requests.get(client.api.url.add_path('rest/sessions').add_query_param('subject_name', subject.name)).json()['sessions']
+
+    [s1] = _get(subjects[0])
+    assert s1['id'] == session1.id
+
+    [s2] = _get(subjects[1])
+    assert s2['id'] == session2.id

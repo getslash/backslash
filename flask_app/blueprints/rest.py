@@ -44,9 +44,15 @@ class SessionResource(ModelResource):
         returned = super(SessionResource, self)._get_iterator()
         args = session_parser.parse_args()
         if args.subject_name is not None:
-            returned = returned.join(Session.subject_instances).filter(Subject.name == args.subject_name)
+            returned = (
+                returned
+                .join(Session.subject_instances)
+                .join(Subject)
+                .filter(Subject.name == args.subject_name))
+
         if args.user_id is not None:
             returned = returned.filter(Session.user_id == args.user_id)
+
         return returned
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
