@@ -13,12 +13,12 @@ ul.params {
 	display: inline-block;
 
 	&:after {
-	    content: ','
+	    content: ',';
 	}
 	
 
 	&:last-of-type:after {
-	    content:''
+	    content:'';
 	}
 
 	code {
