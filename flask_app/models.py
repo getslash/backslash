@@ -11,6 +11,7 @@ from .utils import get_current_time
 from .utils.rendering import rendered_field, render_api_object, rendered_only_on_single
 from . import activity
 
+from sqlalchemy import Index, text
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 
@@ -111,6 +112,11 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
     next_keepalive = db.Column(db.Float, nullable=True, default=None)
+
+    __table_args__ = (
+        Index('ix_session_start_time', start_time.desc()),
+    )
+
 
 
     @rendered_field
@@ -276,6 +282,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     skip_reason = db.Column(db.Text(), nullable=True)
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+
+    __table_args__ = (
+        Index('ix_test_start_time', start_time.desc()),
+    )
 
     @rendered_field
     def duration(self):
