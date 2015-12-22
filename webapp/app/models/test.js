@@ -10,6 +10,8 @@ export default DS.Model.extend(HasLogicalId, {
     num_errors: DS.attr('number'),
     num_warnings: DS.attr('number'),
 
+    test_info_id: DS.attr('number'),
+
     type: DS.attr(),
 
     first_error: DS.attr(),

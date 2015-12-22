@@ -30,6 +30,7 @@ Router.map(function() {
   this.route('users');
   this.route('subjects');
   this.route('subject', { path: '/subjects/:name' });
+  this.route('test_info', { path: '/test_info/:id' });
 });
 
 export default Router;

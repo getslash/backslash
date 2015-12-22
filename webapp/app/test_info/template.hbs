@@ -1,0 +1,12 @@
+{{#tool-bar}}
+  <p class="navbar-text">Test details: {{tests/test-name info=test_info show_file=true}}</p>
+{{/tool-bar}}
+
+{{hr-separator title="Stats"}}
+
+{{hr-separator title="Tests"}}
+
+<div class="container-fluid">
+  {{query-results results=tests update_filter=(action "update_filter") goto_page=(action "goto_page") route_to="route_to"}}
+</div>
+

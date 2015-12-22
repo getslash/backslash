@@ -210,6 +210,11 @@ class TestInformation(db.Model):
     class_name = db.Column(db.String(256), nullable=True, index=True)
     name = db.Column(db.String(256), nullable=False, index=True)
 
+    @classmethod
+    def get_typename(cls):
+        return 'test_info'
+
+
 
 class TestVariation(db.Model):
 

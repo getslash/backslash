@@ -55,6 +55,11 @@ class SessionResource(ModelResource):
 
         return returned
 
+test_query_parser = reqparse.RequestParser()
+test_query_parser.add_argument('session_id', type=int, default=None)
+test_query_parser.add_argument('info_id', type=int, default=None)
+
+
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
 class TestResource(ModelResource):
 
@@ -66,17 +71,32 @@ class TestResource(ModelResource):
         return _get_object_by_id_or_logical_id(self.MODEL, object_id)
 
     def _get_iterator(self):
-        session_id = request.args.get('session_id')
-        if session_id is None:
-            session_id = request.view_args.get('session_id')
-        if session_id is not None:
+        args = test_query_parser.parse_args()
+
+        if args.session_id is None:
+            args.session_id = request.view_args.get('session_id')
+
+        returned = super(TestResource, self)._get_iterator()
+
+        if args.session_id is not None:
             try:
-                session_id = int(session_id)
+                session_id = int(args.session_id)
             except ValueError:
                 return Test.query.join(Session).filter(Session.logical_id == session_id)
 
-            return Test.query.filter(Test.session_id == session_id).order_by(*self.DEFAULT_SORT)
-        return super(TestResource, self)._get_iterator()
+            returned = returned.filter(Test.session_id == session_id)
+
+        if args.info_id is not None:
+            returned = returned.filter(Test.test_info_id == args.info_id)
+
+        return returned
+
+
+@_resource('/test_infos/<object_id>')
+class TestInfoResource(ModelResource):
+
+    MODEL = models.TestInformation
+
 
 @_resource('/subjects', '/subjects/<object_id>')
 class SubjetInstanceResource(ModelResource):

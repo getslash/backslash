@@ -342,7 +342,7 @@ def db_context(webapp_without_login):
 
 @pytest.fixture
 def file_name():
-    return 'path/to/test/file.py'
+    return 'path/to/test/{0}.py'.format(uuid4())
 
 
 @pytest.fixture(params=['SomeClass', None])
