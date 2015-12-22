@@ -56,7 +56,7 @@ class SessionResource(ModelResource):
         return returned
 
 test_query_parser = reqparse.RequestParser()
-test_query_parser.add_argument('session_id', type=int, default=None)
+test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
 
 
