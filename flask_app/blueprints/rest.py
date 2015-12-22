@@ -82,7 +82,7 @@ class TestResource(ModelResource):
             try:
                 session_id = int(args.session_id)
             except ValueError:
-                return Test.query.join(Session).filter(Session.logical_id == session_id)
+                return Test.query.join(Session).filter(Session.logical_id == args.session_id)
 
             returned = returned.filter(Test.session_id == session_id)
 
