@@ -95,17 +95,14 @@ def _run_tmux_frontend(port):
     os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port)))
 
 @cli.command()
-@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant"]), help="Deployment target", required=True)
+@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant", "custom"]), help="Deployment target", required=True)
+@click.option("-i", "--inventory", type=str, default=None, help="Path to an inventory file. Should be specified only when \"--dest custom\" is set")
+@click.option("--vagrant-machine", type=str, default="", help="Vagrant machine to provision")
 @click.option("--sudo/--no-sudo", default=False)
 @click.option("--ask-sudo-pass/--no-ask-sudo-pass", default=False)
-def deploy(dest, sudo, ask_sudo_pass):
-    _run_deploy(dest, sudo, ask_sudo_pass)
-
-
-def _run_deploy(dest, sudo=False, ask_sudo_pass=False):
+def deploy(dest, sudo, ask_sudo_pass, vagrant_machine, inventory):
     prepare_source_package()
     ansible = ensure_ansible()
-    click.echo(click.style("Running deployment on {0!r}. This may take a while...".format(dest), fg='magenta'))
 
     if dest == "vagrant":
         # Vagrant will invoke ansible
@@ -113,11 +110,21 @@ def _run_deploy(dest, sudo=False, ask_sudo_pass=False):
         environ["PATH"] = "{}:{}".format(os.path.dirname(ansible), environ["PATH"])
         # "vagrant up --provision" doesn't call provision if the virtual machine is already up,
         # so we have to call vagrant provision explicitly
-        subprocess.check_call('vagrant up', shell=True, env=environ)
-        subprocess.check_call('vagrant provision', shell=True, env=environ)
+        click.echo(click.style("Running deployment on Vagrant. This may take a while...", fg='magenta'))
+        subprocess.check_call('vagrant up ' + vagrant_machine, shell=True, env=environ)
+        subprocess.check_call('vagrant provision ' + vagrant_machine, shell=True, env=environ)
     else:
-        cmd = [ansible, "-i",
-               from_project_root("ansible", "inventories", dest)]
+        if dest == "custom":
+            if inventory is None:
+                raise click.ClickException("-i/--inventory should be specified together with \"--dest custom\"")
+            if not os.path.exists(inventory):
+                raise click.ClickException("Custom inventory file {} doesn't exist".format(inventory))
+        else:
+            if inventory is not None:
+                raise click.ClickException("-i/--inventory should be specified only when \"--dest custom\" is specified")
+            inventory = from_project_root("ansible", "inventories", dest)
+        click.echo(click.style("Running deployment on {}. This may take a while...".format(inventory), fg='magenta'))
+        cmd = [ansible, "-i", inventory]
         if dest in ("localhost",):
             cmd.extend(["-c", "local"])
             if dest == "localhost":
