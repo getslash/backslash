@@ -10,7 +10,14 @@
 
   <table class="table table-hover">
     <tbody>
-      <tr><td>Name</td><td>{{tests/test-name test=test}}</td></tr>
+      <tr>
+        <td>Test</td>
+        <td>
+          {{#link-to 'test_info' test.test_info_id}}
+            {{tests/test-name info=test.info show_file=true}}
+          {{/link-to}}
+        </td>
+      </tr>
       {{#each-in test_details as |name value|}}
         <tr>
           <td>{{name}}</td><td class="test-detail-value">{{value}}</td>
@@ -20,7 +27,7 @@
       {{#each-in scm_details as |name value|}}
         <tr>
           <td><i class="fa fa-git-square"></i> {{name}}</td>
-          <td class="test-detail-value">{{value}}</td>
+          <td class="test-detail-value">{{value}} {{clipboard-button value=value}}</td>
         </tr>
       {{/each-in}}
 

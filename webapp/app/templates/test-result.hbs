@@ -4,9 +4,7 @@
   {{#link-to 'test.errors' test.display_id}}{{artifact-counter errors=test.num_errors}}{{/link-to}}
 </div>
 <div class="col-md-6">
-  {{#link-to 'test_info' test.test_info_id bubbles=false}}
-    {{tests/test-name info=test.info variation=test.variation}}
-  {{/link-to}}
+  {{tests/test-name info=test.info variation=test.variation}}
 </div>
 <div class="col-md-2">
   {{humanized-time start_time=test.start_time end_time=test.end_time is_running=test.is_running}}
