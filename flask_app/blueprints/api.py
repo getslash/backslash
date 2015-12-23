@@ -13,6 +13,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
+from .. import stats
+from .. import models
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
 from ..utils import get_current_time, statuses
 from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
@@ -487,3 +489,15 @@ def get_user_run_tokens(user_id: int):
     if not has_role(current_user, 'admin') and current_user.id != user_id:
         abort(requests.codes.forbidden)
     return [t.token for t in User.query.get_or_404(user_id).run_tokens]
+
+@API(require_real_login=True)
+@requires_role('admin')
+def get_admin_stats():
+    returned = {}
+    history = returned['history'] = []
+
+    for s in models.Stat.query.order_by('timestamp asc').all():
+        item = {'timestamp': s.timestamp}
+        item.update({name: getattr(s, 'stat_' + name) for name in stats.iter_stat_names()})
+        history.append(item)
+    return returned

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 var api = {
-    call: function(name, params) {
+    call: function(name, params={}) {
         return Ember.$.ajax({
             type: 'POST',
             url: '/api/' + name,

@@ -22,6 +22,7 @@
     "broccoli-asset-rev": "^2.2.0",
     "broccoli-merge-trees": "^0.2.1",
     "broccoli-static-compiler": "^0.2.1",
+    "ember-c3": "0.2.3",
     "ember-cli": "1.13.13",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-babel": "^5.1.5",

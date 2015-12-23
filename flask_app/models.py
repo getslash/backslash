@@ -67,7 +67,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
-    end_time = db.Column(db.Float, default=None)
+    end_time = db.Column(db.Float, default=None, index=True)
     hostname = db.Column(db.String(100))
 
 
@@ -111,7 +111,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
-    next_keepalive = db.Column(db.Float, nullable=True, default=None)
+    next_keepalive = db.Column(db.Float, nullable=True, default=None, index=True)
 
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
@@ -446,3 +446,18 @@ class Activity(db.Model, TypenameMixin):
 
     def __repr__(self):
         return '<{} {} {}>'.format(self.user_id, self.action_string(), self.what())
+
+
+class Stat(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    timestamp = db.Column(db.Float, default=get_current_time, index=True)
+
+    __table_args__ = (
+        Index('ix_stat_timestamp', timestamp.desc()),
+    )
+
+    ### statistics
+    stat_db_size = db.Column(db.BIGINT, server_default="0")
+    stat_num_new_sessions = db.Column(db.Integer, server_default="0")

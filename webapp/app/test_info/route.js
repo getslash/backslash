@@ -20,7 +20,6 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
     },
 
     setupController(controller, model) {
-        console.log('setting up', controller, 'with', model);
         controller.setProperties(model);
     },
 

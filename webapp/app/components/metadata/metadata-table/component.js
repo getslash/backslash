@@ -13,7 +13,6 @@ export default Ember.Component.extend({
                 returned[attrname] = obj[attrname];
             }
         });
-        console.log('all metadata:', returned);
         return returned;
     }.property('additional', 'metadata')
 

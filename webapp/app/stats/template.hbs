@@ -1,0 +1,21 @@
+{{hr-separator title="Usage Statistics"}}
+
+<div class="container-fluid">
+  <div class="col-md-6">
+    {{stats/admin-stats data=model.history series_key="num_new_sessions" series_name="Number of New Sessions"}}
+  </div>
+
+</div>
+
+
+{{# if session.data.authenticated.user_info.can.admin }}
+
+{{hr-separator title="Database Statistics"}}
+
+<div class="container-fluid">
+  <div class="col-md-6">
+    {{stats/admin-stats data=model.history series_key="db_size" series_name="DB Size" formatter=format_bytes}}
+  </div>
+</div>
+
+{{/if}}
