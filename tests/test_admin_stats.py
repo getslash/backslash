@@ -25,10 +25,10 @@ def test_collect_stats(active_db_context):
 
 
 def test_max_num_stats(active_db_context, request):
-    for _ in range(stats._NUM_SAMPLES + 1):
+    for _ in range(stats.NUM_SAMPLES + 1):
         stats.collect_stats()
         flux.current_timeline.sleep(60 * 60)
-    assert models.Stat.query.count() == stats._NUM_SAMPLES  # pylint: disable=no-member
+    assert models.Stat.query.count() == stats.NUM_SAMPLES  # pylint: disable=no-member
 
 
 @pytest.yield_fixture
