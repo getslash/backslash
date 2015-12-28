@@ -10,6 +10,11 @@ export function initialize(/* application */) {
 	        LLLL : "dddd D MMMM YYYY LT"
 	    },
 		calendar:{
+			lastDay : '[Yesterday at] LTS',
+	        sameDay : '[Today at] LTS',
+	        nextDay : '[Tomorrow at] LTS',
+	        lastWeek : '[last] dddd [at] LTS',
+	        nextWeek : 'dddd [at] LTS',
 			sameElse:"L LTS"
 		}
 	});
