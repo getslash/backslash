@@ -60,6 +60,8 @@ def bootstrap(develop, app):
 def testserver(livereload, port):
     from flask_app.app import create_app
 
+    os.environ['CONFIG_DIRECTORY'] = from_project_root("conf.d")
+
     extra_files=[
         from_project_root("flask_app", "app.yml")
     ]
