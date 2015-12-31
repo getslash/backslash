@@ -74,8 +74,6 @@ def testserver(tmux, livereload, port):
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
 
-    os.environ['CONFIG_DIRECTORY'] = from_project_root("conf.d")
-
     extra_files=[
         from_project_root("flask_app", "app.yml")
     ]
@@ -94,7 +92,7 @@ def testserver(tmux, livereload, port):
 
 def _run_tmux_frontend(port):
     tmuxp = from_env_bin('tmuxp')
-    os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port)))
+    os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port), CONFIG_DIRECTORY=from_project_root("conf.d")))
 
 @cli.command()
 @click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant", "custom"]), help="Deployment target", required=True)
