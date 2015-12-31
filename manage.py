@@ -74,6 +74,8 @@ def testserver(tmux, livereload, port):
     from flask_app.app import create_app
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
 
+    os.environ['CONFIG_DIRECTORY'] = from_project_root("conf.d")
+
     extra_files=[
         from_project_root("flask_app", "app.yml")
     ]
