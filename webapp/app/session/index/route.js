@@ -18,7 +18,6 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, Refreshabl
             'user': this.store.find('user', session.get('user_id')),
             'tests': this.store.query('test', {session_id: session_id, page: params.page, filter: params.filter}),
             'activity': this.store.query('activity', {session_id: parseInt(session.id)})
-
         });
     },
 

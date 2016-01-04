@@ -1,0 +1,8 @@
+<div class="container-fluid">
+  <div class="col-md-12" style="display:flex;flex-direction:column;height:500px;align-items:center;justify-content:center;">
+    <h1><span class="error">{{model.message}}</span></h1>
+    {{#each model.errors as |error|}}
+        <h3>{{error.status}}: {{error.title}}</h3>
+    {{/each}}
+  </div>
+</div>
