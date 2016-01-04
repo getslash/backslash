@@ -13,6 +13,7 @@ export default Ember.Component.extend({
 
     warnings: null,
     errors: null,
+    comments: null,
     caption: null,
 
     has_caption: Ember.computed.notEmpty('caption'),
@@ -21,8 +22,11 @@ export default Ember.Component.extend({
         if (this.get('warnings')) {
             return 'warning';
         }
+        if (this.get('comments')) {
+        	return 'comment';
+        }
         return 'times-circle';
-    }.property('warnings', 'errors'),
+    }.property('warnings', 'errors', 'comments'),
 
 
     visibility_class_name: function() {
@@ -34,15 +38,17 @@ export default Ember.Component.extend({
         }
     }.property('counter', 'fixed_width'),
 
-    counter: Ember.computed.or('warnings', 'errors'),
+    counter: Ember.computed.or('warnings', 'errors', 'comments'),
 
     artifact_name: function() {
         if (this.get('warnings')) {
             return 'warning';
-        } else if (this.get('errors')) {
-            return 'error';
+        } 
+        if (this.get('comments')){
+        	return 'comment';
         }
-    }.property('warnings', 'errors'),
+        return 'error';
+    }.property('warnings', 'errors', 'comments'),
 
     class_name: Ember.computed.oneWay('artifact_name'),
 

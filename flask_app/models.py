@@ -113,6 +113,9 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
     next_keepalive = db.Column(db.Float, nullable=True, default=None, index=True)
 
+    # activity
+    num_comments = db.Column(db.Integer, default=0)
+
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
     )
@@ -256,8 +259,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
-    num_errors = db.Column(db.Integer, default=0)
-    num_failures = db.Column(db.Integer, default=0)
+                             
     errors = db.relationship(
         'Error', backref=backref('test'))
     comments = db.relationship(
@@ -281,6 +283,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)
+    
+    num_errors = db.Column(db.Integer, default=0)
+    num_failures = db.Column(db.Integer, default=0)
+    num_comments = db.Column(db.Integer, default=0)
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
 
     __table_args__ = (

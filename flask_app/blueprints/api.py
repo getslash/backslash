@@ -453,6 +453,10 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
 
     returned = Comment(user_id=current_user.id, comment=comment)
     obj.comments.append(returned)
+    
+    obj.num_comments = type(obj).num_comments + 1
+    db.session.add(obj)
+    
     db.session.commit()
     return returned
 
@@ -469,6 +473,9 @@ def delete_comment(comment_id: int):
     comment.deleted = True
     comment.comment = ''
 
+    obj.num_comments = min(type(obj).num_comments - 1, 0)
+    
+    db.session.add(obj)
     db.session.add(comment)
     db.session.commit()
 

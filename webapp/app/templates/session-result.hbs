@@ -11,6 +11,7 @@
 <div class="col-md-2">
   {{artifact-counter errors=session.num_errors}}
   {{artifact-counter warnings=session.total_num_warnings}}
+  {{artifact-counter comments=session.num_comments}}
 </div>
 <div class="col-md-2">
   {{#each session.subjects as |subject index|}}

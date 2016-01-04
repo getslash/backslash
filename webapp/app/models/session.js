@@ -23,6 +23,7 @@ export default DS.Model.extend(HasLogicalId, {
 
     num_warnings: DS.attr('number'),
     num_test_warnings: DS.attr('number'),
+    num_comments:DS.attr('number'),
 
     related: DS.attr(),
 

@@ -40,6 +40,7 @@ def test_comment(client, commentable, real_login):
     [a1] = _get_activities(client, commentable)
     assert a1['action'] == 'commented'
     assert a1['text'] == comment
+    assert commentable.refresh().num_comments == 1
 
 
 def test_user_last_activity(client, testuser_id, db_context):
