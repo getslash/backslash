@@ -1,6 +1,6 @@
 {{#tool-bar}}
 
-  <p class="navbar-text">{{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} / Test {{test.display_id}}</p>
+  <p class="navbar-text">{{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} / Test {{elements/copyable-text value=test.display_id}}</p>
 
 {{/tool-bar}}
 
@@ -27,7 +27,7 @@
       {{#each-in scm_details as |name value|}}
         <tr>
           <td><i class="fa fa-git-square"></i> {{name}}</td>
-          <td class="test-detail-value">{{value}} {{clipboard-button value=value}}</td>
+          <td class="test-detail-value">{{elements/copyable-text value=value}}</td>
         </tr>
       {{/each-in}}
 

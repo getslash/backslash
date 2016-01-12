@@ -6,9 +6,7 @@
         {{#if (not (eq name "slash"))}}
           <tr>
             <td>{{name}}</td>
-            <td>{{value}}
-              {{clipboard-button value=value}}
-            </td>
+            <td>{{elements/copyable-text value=value}}</td>
           </tr>
         {{/if}}
       {{/each-in}}
