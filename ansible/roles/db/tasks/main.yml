@@ -44,6 +44,18 @@
 - name: enable local authentication in postresql
   lineinfile: dest=/var/lib/pgsql/data/pg_hba.conf regexp="^host.*::1/128" line="host all all ::1/128 md5" state=present
   when: ansible_distribution == 'CentOS'
+- name: config postgres local hosts
+  lineinfile: dest=/etc/postgresql/{{postgres_version}}/main/pg_hba.conf regexp='^local.*all.*all.*[pm]' line="local  all  all  md5"
+  notify: restart postgres
+  when: groups['db'][0] != groups['webapp'][0] and ansible_distribution == 'Debian'
+- name: enable remote authentication in postresql
+  lineinfile: dest=/etc/postgresql/{{postgres_version}}/main/pg_hba.conf regexp='0\.0\.0\.0' line="host  all  all  0.0.0.0/0  md5"
+  notify: restart postgres
+  when: groups['db'][0] != groups['webapp'][0] and ansible_distribution == 'Debian'
+- name: config postgresql
+  lineinfile: dest=/etc/postgresql/{{postgres_version}}/main/postgresql.conf regexp=^listen_addresses line="listen_addresses='*'"
+  notify: restart postgres
+  when: groups['db'][0] != groups['webapp'][0] and ansible_distribution == 'Debian'
 - service: name=postgresql state=started enabled=True
 - name: setup db
   action: postgresql_db name={{app_name}} encoding=utf8
