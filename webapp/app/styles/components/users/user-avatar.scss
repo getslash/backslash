@@ -37,14 +37,28 @@
 	top: 0;
 	transition: left 0.5s, opacity 0.5s;
 	opacity: 0;
+
+    }
+    
+    img.fake-user {
+	box-sizing: content-box;
+	border: 2px solid silver;
+	transition: border 0.5s;
+	margin: -2px;
     }
 }
 
-// TODO: change this to query-result
-.session-row:hover img.real-user {
-    left: -20px;
-    transition: left 0.5s, opacity 0.5s;
-    opacity: 1;
+.query-result:hover {
+    img.real-user {
+	left: -20px;
+	transition: left 0.5s, opacity 0.5s;
+	opacity: 1;
+    }
+    
+    img.fake-user {
+	border-color: rgba(0, 0, 0, 0);
+	transition: border 0.5s;
+    }
 }
 
 
