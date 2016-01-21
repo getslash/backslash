@@ -55,3 +55,4 @@ _build
 persistent
 static
 webapp/tmp
+tests/.cache
