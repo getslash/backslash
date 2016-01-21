@@ -60,3 +60,4 @@ static
 webapp/tmp
 .devconfig.yml
 .cache
+tests/.cache
