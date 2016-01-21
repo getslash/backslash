@@ -21,7 +21,6 @@ export default PaginatedFilteredController.extend({
         });
     },
 
-    // TODO: use the (hash ...) helper when Ember 2.3 is released
     additional_metadata: function() {
         return {'Ran from': this.get('session_model.hostname')};
     }.property('session_model.hostname'),
