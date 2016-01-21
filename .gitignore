@@ -41,3 +41,4 @@ src/static/vendor/bootstrap/bootstrap.css
 .ansible-env
 .wheels
 persistent
+tests/.cache
