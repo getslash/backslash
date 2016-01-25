@@ -1,0 +1,10 @@
+- name: install systemd service
+  action: template src=../templates/gunicorn.service.j2 dest=/lib/systemd/system/{{app_name}}-wsgi.service
+  when: sources.changed or configuration.changed
+- name: install systemd service (Celery worker)
+  action: template src=../templates/celery-worker.service.j2 dest=/lib/systemd/system/{{app_name}}-celery-worker.service
+  when: sources.changed or configuration.changed
+- name: install systemd service (Celery beat)
+  action: template src=../templates/celery-beat.service.j2 dest=/lib/systemd/system/{{app_name}}-celery-beat.service
+  when: sources.changed or configuration.changed
+  
