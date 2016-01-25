@@ -31,7 +31,7 @@ def testing_login():
         user = User.query.get_or_404(int(user_id))
     else:
         testing_email = 'testing@localhost'
-        user = _get_or_create_user({'email': testing_email})
+        user = get_or_create_user({'email': testing_email})
     assert user
     login_user(user)
     user_info = {}
@@ -50,7 +50,7 @@ def login():
 
     _check_alowed_email_domain(user_info)
 
-    user = _get_or_create_user(user_info)
+    user = get_or_create_user(user_info)
     _fix_first_user_role(user)
 
     login_user(user)
@@ -97,7 +97,7 @@ def _get_token_serializer():
     return TimedSerializer(current_app.config['SECRET_KEY'])
 
 
-def _get_or_create_user(user_info):
+def get_or_create_user(user_info):
     email = user_info['email']
     user = user_datastore.get_user(email)
     if not user:

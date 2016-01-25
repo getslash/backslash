@@ -32,14 +32,20 @@ def complete_runtoken_request(request_id):
     if redis.get(key) is None:
         abort(requests.codes.not_found)
 
-    token = '{}:{}'.format(current_user.id, uuid4())
-    db.session.add(RunToken(
-        user_id=current_user.id,
-        token=token))
+    token = create_new_runtoken(user)
     db.session.commit()
     # set reply
     redis.setex(key, token, _REDIS_TOKEN_TTL)
     return 'success'
+
+
+def create_new_runtoken(user):
+    token = '{}:{}'.format(user.id, uuid4())
+    db.session.add(RunToken(
+        user_id=user.id,
+        token=token))
+    return token
+
 
 
 def _create_new_runtoken_request():
