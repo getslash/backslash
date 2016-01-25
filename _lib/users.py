@@ -26,12 +26,12 @@ def create(user_email):
 
     with app.app_context():
         user = get_or_create_user({'email': user_email})
-        if user.run_tokens:
+        if user.run_tokens.all():
             print('User', user_email, 'already has tokens. Skipping...')
             return
         token = create_new_runtoken(user)
         print('Created token', token, 'for', user_email)
-        db.session.commit()
+        models.db.session.commit()
 
 
 @token.command()
