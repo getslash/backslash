@@ -60,8 +60,6 @@ def ensure():
     elif match.group('db_type') == 'postgresql':
         _create_postgres(match)
 
-    with app.app_context():
-        db.create_all()
     logbook.info("DB successfully created")
 
 
