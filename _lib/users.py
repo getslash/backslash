@@ -19,7 +19,6 @@ def create(user_email):
     from flask_app.app import create_app
     from flask_app import models
     from flask_app.auth import get_or_create_user
-    from flask_app import models
     from flask_app.blueprints.runtoken import create_new_runtoken
 
     app = create_app()
