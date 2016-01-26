@@ -1,13 +1,14 @@
 from uuid import uuid4
 
-from flask import Blueprint, jsonify, redirect, request, url_for
-from flask.ext.security.decorators import login_required
+import requests
+
+from flask import Blueprint, abort, jsonify, request, url_for
 from flask.ext.security.core import current_user
-
-from ..models import db, RunToken
-
+from flask.ext.security.decorators import login_required
 from redis import Redis
 from urlobject import URLObject as URL
+
+from ..models import RunToken, db
 
 _REDIS_TOKEN_TTL = 15 * 60
 _REDIS_REQUEST_TTL = 5 * 60
@@ -30,9 +31,9 @@ def complete_runtoken_request(request_id):
     redis = _get_redis_client()
     key = _get_request_key(request_id)
     if redis.get(key) is None:
-        abort(requests.codes.not_found)
+        abort(requests.codes.not_found) # pylint: disable=no-member
 
-    token = create_new_runtoken(user)
+    token = create_new_runtoken(current_user)
     db.session.commit()
     # set reply
     redis.setex(key, token, _REDIS_TOKEN_TTL)
@@ -61,7 +62,7 @@ def _get_runtoken_request_status(request_id):
     request_key = 'request:{}'.format(request_id)
     value = _get_redis_client().get(request_key)
     if value is None:
-        abort(requests.codes.not_found)
+        abort(requests.codes.not_found) # pylint: disable=no-member
     return jsonify({
         'token': value,
         'url': URL(request.host_url).add_path(url_for('runtoken.runtoken_request', request_id=request_id)),
