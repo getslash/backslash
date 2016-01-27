@@ -59,11 +59,11 @@
 - service: name=postgresql state=started enabled=True
 - name: setup db
   action: postgresql_db name={{app_name}} encoding=utf8
-  sudo_user: postgres
-  sudo: true
+  become: true
+  become_user: postgres
   tags: db
 - name: setup db user
   action: postgresql_user name={{app_name}} password={{app_name}} db={{app_name}} priv=ALL role_attr_flags=SUPERUSER
-  sudo_user: postgres
-  sudo: true
+  become: true
+  become_user: postgres
   tags: db
