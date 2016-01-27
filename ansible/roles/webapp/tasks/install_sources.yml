@@ -9,7 +9,7 @@
 - name: migrate db
   shell: cd {{src_root}} && python manage.py db upgrade
 - name: fix permissions
-  shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
+  file: path={{deploy_root}} owner={{user_name}} group={{group_name}} recurse=true
 - name: ensure that nginx sites directory exists
   file: dest={{nginx_sites_dir}} state=directory
 - name: ensure nginx configuration
