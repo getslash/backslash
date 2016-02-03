@@ -1,7 +1,7 @@
 - name: untar to temporary location
   shell: cd /tmp/ && rm -rf {{webapp_archive_location}}.untarred && mkdir {{webapp_archive_location}}.untarred && cd {{webapp_archive_location}}.untarred && tar xzf {{webapp_archive_location}}
-- name: rsync to src dir
-  shell: rsync -avP --delete {{webapp_archive_location}}.untarred/ {{src_root}}/
+- synchronize: src="{{webapp_archive_location}}.untarred/" dest="{{src_root}}/"
+  delegate_to: "{{ inventory_hostname }}"
 - name: bootstrap
   shell: python {{src_root}}/manage.py bootstrap --app
 - name: ensure private config
