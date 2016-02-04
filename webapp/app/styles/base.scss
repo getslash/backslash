@@ -5,8 +5,27 @@ body {
 }
 
 pre, .mono {
-    
+
     font-family: 'Fira Mono', monospace;
+}
+
+.app-error {
+    align-items: center;
+    display: flex;
+    padding: 100px;
+
+    .img {
+	margin: 100px;
+    }
+
+    .error-details {
+	margin-left: 100px;
+    }
+
+    .additional-details {
+	color: $gray-light;
+	font-size: x-small;
+    }
 }
 
 #navbar-brand-img {
@@ -33,7 +52,7 @@ pre, .mono {
     color: black;
 }
 
-span.danger 
+span.danger
 {
     color: $brand-danger;
 }
