@@ -21,8 +21,7 @@
 }
 
 .frame-code {
-
-    font-family: monospace;
+    @extend .mono;
     font-weight: bold;
     padding: 0.5em;
     background-color: $gray-lighter;
@@ -48,5 +47,5 @@
 }
 
 tr.variable {
-    font-family: monospace
+    @extend .mono;
 }

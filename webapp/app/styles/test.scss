@@ -5,41 +5,41 @@
     font-weight: bold;
     font-size: 18px;
     padding-top: 10px;
-  }
+}
 
 .exception-description {
-  color: rgb(71, 71, 71);
-  border: 0px none rgb(71, 71, 71);
-  border-radius: 4px 4px 4px 4px;
-  margin: 0px 0px 10px;
-  outline: rgb(71, 71, 71) none 0px;
-  padding: 10px;
-  background: rgb(248, 248, 248) none repeat scroll 0% 0% / auto padding-box border-box;
+    color: rgb(71, 71, 71);
+    border: 0px none rgb(71, 71, 71);
+    border-radius: 4px 4px 4px 4px;
+    margin: 0px 0px 10px;
+    outline: rgb(71, 71, 71) none 0px;
+    padding: 10px;
+    background: rgb(248, 248, 248) none repeat scroll 0% 0% / auto padding-box border-box;
 }
 
 .traceback-line-headline {
-  color: rgb(70, 82, 98);
-  text-align: left;
+    color: rgb(70, 82, 98);
+    text-align: left;
 }
 
 .traceback-line-code {
-  color: rgba(0, 0, 0, 0.74902);
-  cursor: pointer;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  background: rgb(222, 227, 233) none repeat scroll 0% 0% / auto padding-box border-box;
-  border: 0px none rgba(0, 0, 0, 0.74902);
-  padding: 5px 5px 5px 10px;
-  font-family: courier, monospace;
+    @extend .mono;
+    color: rgba(0, 0, 0, 0.74902);
+    cursor: pointer;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    background: rgb(222, 227, 233) none repeat scroll 0% 0% / auto padding-box border-box;
+    border: 0px none rgba(0, 0, 0, 0.74902);
+    padding: 5px 5px 5px 10px;
 }
 
 pre span{
-  background: rgb(213, 218, 224) none repeat scroll 0% 0% / auto padding-box border-box;
+    background: rgb(213, 218, 224) none repeat scroll 0% 0% / auto padding-box border-box;
 }
 
 
 .error-description {
-  border-top: 1px dotted rgb(71, 71, 71);
+    border-top: 1px dotted rgb(71, 71, 71);
 }
 
 .skip-reason {
@@ -58,9 +58,9 @@ pre span{
 $running-color: $brand-info;
 
 @keyframes running-pulse {
-  from { background-color: $running-color;}
-  50% { background-color: darken($running-color, 20%);}
-  to { background-color: $running-color;}
+    from { background-color: $running-color;}
+    50% { background-color: darken($running-color, 20%);}
+    to { background-color: $running-color;}
 }
 
 
@@ -102,25 +102,25 @@ $running-color: $brand-info;
 
 
 .tooltipster-error-preview {
-	border-radius: 5px; 
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-	background: $brand-danger;
-	color: white;
+    border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    background: $brand-danger;
+    color: white;
 }
 
 .tooltipster-skip-reason {
-	border-radius: 5px; 
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-	background: $brand-warning;
-	color: white;
+    border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    background: $brand-warning;
+    color: white;
 }
 
 
 .tooltipster-error-preview .tooltipster-content, .tooltipster-skip-reason .tooltipster-content {
-	overflow: ellipsis;
-	text-overflow: ellipsis;
-	font-family: monospace;
-	font-size: 14px;
-	line-height: 16px;
-	padding: 8px 10px;
+    @extend .mono;
+    overflow: ellipsis;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 8px 10px;
 }

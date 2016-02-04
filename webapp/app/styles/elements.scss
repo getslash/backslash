@@ -1,10 +1,10 @@
 
 /* Test details: Command-line */
 .console {
+    @extend .mono;
     background-color: $console-bg;
     border: 2px solid $gray-lighter;
     color: $gray-lighter;
-    font-family: monospace;
     overflow: scroll;
     padding: 1em;
     white-space: nowrap;

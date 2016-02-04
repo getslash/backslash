@@ -1,12 +1,15 @@
-body
-{
+body {
     padding-top: 52px;
 
-    //font-family: 'Open Sans', sans-serif;
+    font-family: 'Lato', sans-serif;
 }
 
-#navbar-brand-img
-{
+pre, .mono {
+    
+    font-family: 'Fira Mono', monospace;
+}
+
+#navbar-brand-img {
     position: relative;
     top: -11%;
 
