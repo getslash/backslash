@@ -25,8 +25,10 @@ export default Ember.Component.extend({
             return null;
         }
 
-        if (text.length > 50) {
-            text = text.substr(0, 50) + '...';
+        const max_width = 200;
+
+        if (text.length > max_width) {
+            text = text.substr(0, max_width) + '...';
         }
 
         let returned = '<span class="error-preview"><i class="fa fa-exclamation"></i> ' + text + '</span>';

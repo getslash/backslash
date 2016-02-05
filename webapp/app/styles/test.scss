@@ -65,14 +65,14 @@ $running-color: $brand-info;
 
 
 .status-label {
-    
+
     &.running {
 	background-color: $running-color;
 	animation-name: running-pulse;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
     }
-    
+
     &.failure, &.error {
 	background-color: $brand-danger;
     }
@@ -84,7 +84,7 @@ $running-color: $brand-info;
     &.success {
 	background-color: $brand-success;
     }
-    
+
     border-radius: 3px;
     box-sizing: border-box;
     display: inline-block;
@@ -102,14 +102,17 @@ $running-color: $brand-info;
 
 
 .tooltipster-error-preview {
-    border-radius: 5px; 
+    border-radius: 5px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
     background: $brand-danger;
     color: white;
+    .tooltipster-content {
+	font-size: xx-small !important;
+    }
 }
 
 .tooltipster-skip-reason {
-    border-radius: 5px; 
+    border-radius: 5px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
     background: $brand-warning;
     color: white;
