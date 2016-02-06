@@ -1,7 +1,7 @@
 - name: untar to temporary location
   shell: cd /tmp/ && rm -rf {{webapp_archive_location}}.untarred && mkdir {{webapp_archive_location}}.untarred && cd {{webapp_archive_location}}.untarred && tar xzf {{webapp_archive_location}}
-- name: rsync to src dir
-  shell: rsync -avP --delete {{webapp_archive_location}}.untarred/ {{src_root}}/
+- synchronize: src="{{webapp_archive_location}}.untarred/" dest="{{src_root}}/"
+  delegate_to: "{{ inventory_hostname }}"
 - name: bootstrap
   shell: python {{src_root}}/manage.py bootstrap --app
 - name: ensure private config
@@ -9,7 +9,7 @@
 - name: migrate db
   shell: cd {{src_root}} && python manage.py db upgrade
 - name: fix permissions
-  shell: chown -R {{user_name}}:{{group_name}} {{deploy_root}}
+  file: path={{deploy_root}} owner={{user_name}} group={{group_name}} recurse=true
 - name: fix permissions of static folder
   file: path={{src_root}}/static owner={{nginx_user}} group={{nginx_group}} recurse=true state=directory
 - name: ensure that nginx sites directory exists
