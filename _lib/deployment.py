@@ -1,10 +1,9 @@
 import os
-import sys
 from multiprocessing import cpu_count
 
 import click
 
-from .bootstrapping import from_env, from_env_bin, requires_env, from_project_root
+from .bootstrapping import from_env_bin, requires_env, from_project_root
 from .params import APP_NAME
 
 _UNIX_SOCKET_NAME = "/var/run/{}/wsgi.sock".format(APP_NAME)
