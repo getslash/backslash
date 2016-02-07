@@ -75,16 +75,16 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     investigated = db.Column(db.Boolean(), server_default='false')
 
     tests = db.relationship(
-        'Test', backref=backref('session'), cascade='all, delete, delete-orphan')
+        'Test', backref=backref('session', lazy='joined'), cascade='all, delete, delete-orphan')
     errors = db.relationship(
-        'Error', backref=backref('session'))
+        'Error', backref=backref('session', lazy='joined'))
     comments = db.relationship(
-        'Comment', primaryjoin='Comment.session_id==Session.id', backref=backref('session'))
+        'Comment', primaryjoin='Comment.session_id==Session.id')
     metadata_items = db.relationship(
-        'SessionMetadata', backref='session', lazy='dynamic', cascade='all, delete, delete-orphan')
+        'SessionMetadata', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     subject_instances = db.relationship(
-        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='joined'), lazy=False)
+        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='subquery'), lazy='subquery')
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
@@ -184,7 +184,7 @@ class Product(db.Model):
     name = db.Column(db.String(256), nullable=False)
 
     versions = db.relationship(
-        'ProductVersion', backref=backref('product'), cascade='all, delete, delete-orphan')
+        'ProductVersion', backref=backref('product', lazy='joined'), cascade='all, delete, delete-orphan')
 
 
 class ProductVersion(db.Model):
@@ -198,13 +198,14 @@ class ProductVersion(db.Model):
     )
 
     revisions = db.relationship(
-        'ProductRevision', backref=backref('product_version'), cascade='all, delete, delete-orphan')
+        'ProductRevision', cascade='all, delete, delete-orphan')
 
 
 class ProductRevision(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     product_version_id = db.Column(db.Integer, db.ForeignKey('product_version.id'), nullable=False, index=True)
+    product_version = db.relationship(ProductVersion, lazy='joined')
     revision = db.Column(db.String(256))
 
     __table_args__ = (
@@ -259,11 +260,9 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     logical_id = db.Column(db.String(256), index=True)
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None)
-                             
-    errors = db.relationship(
-        'Error', backref=backref('test'))
-    comments = db.relationship(
-        'Comment', primaryjoin='Comment.test_id==Test.id', backref=backref('test'))
+
+    errors = db.relationship('Error')
+    comments = db.relationship('Comment', primaryjoin='Comment.test_id==Test.id')
 
     first_error_obj = db.relationship(lambda: Error,
                                   primaryjoin=lambda: and_(
@@ -283,7 +282,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)
-    
+
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)
