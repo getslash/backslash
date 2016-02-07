@@ -329,6 +329,7 @@ class SessionMetadata(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
+    session = db.relationship('Session', lazy='joined')
     key = db.Column(_METADATA_KEY_TYPE, nullable=False)
     metadata_item = db.Column(JSONB)
 

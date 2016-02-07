@@ -102,7 +102,7 @@ def ended_test(started_session, test_info):
 @pytest.fixture
 def nonexistent_test(client, started_session):
     from backslash.test import Test
-    return Test(client, {'id': 6666, 'session_id': started_session.id, 'logical_id': '6677'})
+    return Test(client, {'id': 98666602928, 'session_id': started_session.id, 'logical_id': '667738397839--84444'})
 
 
 @pytest.fixture
