@@ -40,7 +40,6 @@ export default Ember.Component.extend({
         let self = this;
         this.$().on('error', function() {
             let fallback = self.get('fallback_img_url');
-            console.log('setting fallback img', fallback);
             this.set('src', fallback);
         }.bind(this));
     },
