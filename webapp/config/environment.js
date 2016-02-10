@@ -17,8 +17,11 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+
+        avatars: {
+            fallback_image_url: null,
+        },
+
     },
 
     torii: {
@@ -71,6 +74,6 @@ module.exports = function(environment) {
     }
     ENV.app_version = result.stdout.toString().trim();
   }
-  
+
   return ENV;
 };

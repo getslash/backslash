@@ -33,7 +33,7 @@
         </form>
 
         <p class="navbar-text navbar-right">
-          {{#link-to "user.preferences" u.email tagName="span" class="clickable"}}<img class="img-circle" src="{{gravatar-url u.email}}?s=20"> {{u.name}} {{/link-to}}
+          {{#link-to "user.preferences" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.name}} {{/link-to}}
         </p>
       {{/if}}
     {{/with}}

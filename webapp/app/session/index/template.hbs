@@ -42,7 +42,7 @@
 <div class="container-fluid session-details">
   <div class="col-md-2">
     {{#link-to "user.sessions" session_model.user_email}}
-      {{users/user-avatar user=user}}
+      {{users/user-avatar user=user real_email=session_model.real_email large=true}}
     {{/link-to}}
   </div>
   <div class="col-md-8">

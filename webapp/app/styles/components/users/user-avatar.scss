@@ -3,13 +3,13 @@
     display: inline-block;
     text-decoration: none;
     z-index: 1;
-    
+
     i {
 	&.admin {
 	    color: gold;
 	    text-shadow: 1px 1px 1px red;
 	}
-	
+
 	&.moderator {
 	    color: $gray-lighter;
 	    text-shadow: 1px 1px 1px black;
@@ -18,6 +18,18 @@
 	position: absolute;
 	bottom: 0;
 	right: 0;
+    }
+
+    img {
+	height: 20px;
+	margin-left: 2px;
+	margin-right: 2px;
+    }
+
+    &.large {
+	img {
+	    height: 75px;
+	}
     }
 
     &.small {
@@ -29,7 +41,6 @@
 	}
     }
 
-    
     img.real-user {
 	position: absolute;
 	z-index: -1;
@@ -39,7 +50,7 @@
 	opacity: 0;
 
     }
-    
+
     img.fake-user {
 	box-sizing: content-box;
 	border: 2px solid silver;
@@ -54,13 +65,9 @@
 	transition: left 0.5s, opacity 0.5s;
 	opacity: 1;
     }
-    
+
     img.fake-user {
 	border-color: rgba(0, 0, 0, 0);
 	transition: border 0.5s;
     }
 }
-
-
-
-

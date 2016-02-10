@@ -7,7 +7,7 @@
     Deleted item by {{item.user_email}} ({{moment-time unix=item.timestamp}})
   {{else}}
     <div class="activity-heading">
-      <img src="{{gravatar-url item.user_email}}" class="img-circle avatar small"> On {{moment-time unix=item.timestamp}}, {{item.user_email}} {{action_message}}
+      {{users/user-avatar user=(hash email=item.user_email)}} On {{moment-time unix=item.timestamp}}, {{item.user_email}} {{action_message}}
     </div>
     <div class="activity-content">
       {{linkify item.text}}

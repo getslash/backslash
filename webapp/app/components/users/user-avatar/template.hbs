@@ -1,9 +1,10 @@
 {{#elements/tool-tip content=tooltip}}
 {{#if real_email}}
-  <img class="img-circle real-user" src={{gravatar-url real_email}}>
+  {{users/avatar-image email=real_email}}
 {{/if}}
-<img class="img-circle {{if real_email 'fake-user'}}" src={{gravatar-url user_email}}>
+{{users/avatar-image email=user_email fake=real_email}}
 {{# if (or is_admin is_moderator)}}
-<i class="fa fa-star {{if is_admin 'admin'}} {{if (not is_admin and is_moderator) 'moderator'}}"></i>
+  <i class="fa fa-star {{if is_admin 'admin'}} {{if (not is_admin and is_moderator) 'moderator'}}"></i>
 {{/if}}
+
 {{/elements/tool-tip}}

@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
     classNames: "user-avatar",
-    classNameBindings: ['small'],
+    classNameBindings: ['small', 'large'],
 
     tooltip: function() {
         const real_email = this.get('real_email'), email = this.get('user_email');
@@ -16,8 +16,8 @@ export default Ember.Component.extend({
 
     email: null,
     real_email: null,
-    user: null,
     _false: false,
+
 
     user_email: function() {
         if (this.get('user')) {
