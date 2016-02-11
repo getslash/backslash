@@ -4,7 +4,7 @@ import functools
 import logbook
 
 import requests
-from flask import abort, Blueprint, request, g
+from flask import abort, Blueprint, request, g, current_app
 from flask.ext.simple_api import SimpleAPI
 from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
@@ -429,8 +429,9 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
         obj = Test.query.get_or_404(test_id)
     if timestamp is None:
         timestamp = get_current_time()
-    db.session.add(
-        Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
+    if obj.num_warnings < current_app.config['MAX_WARNINGS_PER_ENTITY']:
+        db.session.add(
+            Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
     obj.num_warnings = type(obj).num_warnings + 1
     if session_id is None:
         obj.session.num_test_warnings = Session.num_test_warnings + 1
