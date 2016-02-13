@@ -7,9 +7,10 @@ export default Ember.Component.extend({
     data: null,
     series_key: null,
     series_name: null,
+    floating_point: false,
 
     formatter: function(v) {
-        return d3.format('d')(v);
+        return d3.format(this.get('floating_point')?'g':'d')(v);
     },
 
     _data: function() {
@@ -35,7 +36,7 @@ export default Ember.Component.extend({
                     bottom: 0,
                 },
                 tick: {
-                    format: this.get('formatter'),
+                    format: this.get('formatter').bind(this),
                 },
             },
             x: {

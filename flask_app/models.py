@@ -467,3 +467,4 @@ class Stat(db.Model):
     ### statistics
     stat_db_size = db.Column(db.BIGINT, server_default="0")
     stat_num_new_sessions = db.Column(db.Integer, server_default="0")
+    stat_system_load_avg = db.Column(db.Float, server_default="0")

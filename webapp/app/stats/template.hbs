@@ -1,3 +1,20 @@
+{{hr-separator title="System Load Avg."}}
+
+<div class="container-fluid">
+
+  <div class="col-md-6">
+    {{c3-chart data=model.load_avg.data gauge=model.load_avg.gauge}}
+  </div>
+
+  <div class="col-md-6">
+    {{stats/admin-stats data=model.history series_key="system_load_avg" series_name="System Load Avg." floating_point=true}}
+  </div>
+
+
+</div>
+
+
+
 {{hr-separator title="Usage Statistics"}}
 
 <div class="container-fluid">

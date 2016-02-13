@@ -1,7 +1,9 @@
 from contextlib import contextmanager
+import os
 import datetime
 import functools
 import logbook
+import multiprocessing
 
 import requests
 from flask import abort, Blueprint, request, g, current_app
@@ -454,10 +456,10 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
 
     returned = Comment(user_id=current_user.id, comment=comment)
     obj.comments.append(returned)
-    
+
     obj.num_comments = type(obj).num_comments + 1
     db.session.add(obj)
-    
+
     db.session.commit()
     return returned
 
@@ -475,7 +477,7 @@ def delete_comment(comment_id: int):
     comment.comment = ''
 
     obj.num_comments = min(type(obj).num_comments - 1, 0)
-    
+
     db.session.add(obj)
     db.session.add(comment)
     db.session.commit()
@@ -502,6 +504,24 @@ def get_user_run_tokens(user_id: int):
 @requires_role('admin')
 def get_admin_stats():
     returned = {}
+    returned['load_avg'] = {
+        'data': {
+            'columns': [
+                ['load', os.getloadavg()[0]]
+            ],
+            'type': 'gauge',
+        },
+        'gauge': {
+            'min': 0,
+            'max': multiprocessing.cpu_count(),
+            'units': '',
+            'label': {
+                'show': False,
+            },
+        },
+    }
+
+
     history = returned['history'] = []
 
     for s in models.Stat.query.order_by('timestamp asc').all():

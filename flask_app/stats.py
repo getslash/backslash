@@ -1,3 +1,5 @@
+import os
+
 import flux
 
 from . import models
@@ -12,6 +14,10 @@ class StatCollectors(object):
     @classmethod
     def db_size(cls):
         return db.session.execute("select pg_database_size('backslash')").scalar()
+
+    @classmethod
+    def system_load_avg(cls):
+        return os.getloadavg()[-1]
 
     @classmethod
     def num_new_sessions(cls):
