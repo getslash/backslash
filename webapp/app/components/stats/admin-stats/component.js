@@ -16,7 +16,7 @@ export default Ember.Component.extend({
     _data: function() {
         let returned = {
             json: this.get('data'),
-            type: 'spline',
+            type: 'area-spline',
             keys: {
                 x: 'timestamp',
                 value: [this.get('series_key')],
