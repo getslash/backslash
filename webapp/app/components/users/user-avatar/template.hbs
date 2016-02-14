@@ -1,8 +1,8 @@
 {{#elements/tool-tip content=tooltip}}
 {{#if real_email}}
-  {{users/avatar-image email=real_email}}
+  {{users/avatar-image email=real_email is_proxy=true}}
 {{/if}}
-{{users/avatar-image email=user_email fake=real_email}}
+{{users/avatar-image email=user_email is_real=real_email}}
 {{# if (or is_admin is_moderator)}}
   <i class="fa fa-star {{if is_admin 'admin'}} {{if (not is_admin and is_moderator) 'moderator'}}"></i>
 {{/if}}

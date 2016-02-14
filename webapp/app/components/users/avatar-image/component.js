@@ -4,18 +4,13 @@ import config from '../../../config/environment';
 export default Ember.Component.extend({
 
     email: null,
+    is_proxy: false,
+    is_real: false,
     tagName: 'img',
 
     attributeBindings: ['src'],
     classNames: ['img-circle'],
-    classBindings: ['is_fake:fake-user'],
-
-    is_fake: function() {
-        if (this.get('real_email')) {
-            return true;
-        }
-        return false;
-    },
+    classNameBindings: ['is_proxy:proxy', 'is_real:real'],
 
     src: function() {
         let fallback_img = this.get('fallback_img_url');

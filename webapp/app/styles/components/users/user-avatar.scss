@@ -41,7 +41,7 @@
 	}
     }
 
-    img.real-user {
+    img.proxy {
 	position: absolute;
 	z-index: -1;
 	left: 0;
@@ -51,7 +51,7 @@
 
     }
 
-    img.fake-user {
+    img.real {
 	box-sizing: content-box;
 	border: 2px solid silver;
 	transition: border 0.5s;
@@ -60,13 +60,13 @@
 }
 
 .query-result:hover {
-    img.real-user {
+    img.proxy {
 	left: -20px;
 	transition: left 0.5s, opacity 0.5s;
 	opacity: 1;
     }
 
-    img.fake-user {
+    img.real {
 	border-color: rgba(0, 0, 0, 0);
 	transition: border 0.5s;
     }
