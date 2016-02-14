@@ -46,7 +46,7 @@
     "ember-linkify": "2.0.0",
     "ember-modal-dialog": "0.8.2",
     "ember-pluralize": "0.2.0",
-    "ember-simple-auth": "^1.0.0",
+    "ember-simple-auth": "1.0.1",
     "ember-truth-helpers": "1.1.0",
     "torii": "^0.6.0"
   }
