@@ -1,0 +1,29 @@
+<h1>Component Proofing Page</h1>
+
+
+<div class="proofing-example">
+  <h3>hr-separator</h3>
+
+  <p>
+  {{hr-separator title="blap"}}
+  </p>
+</div>
+
+<div class="proofing-example">
+  {{#with 'errors/traceback-frame' as |name| }}
+    <h3>{{name}}</h3>
+    <p>
+      {{component name frame=model.traceback_frame}}
+    </p>
+  {{/with}}
+</div>
+
+<div class="proofing-example">
+  {{#with 'errors/traceback-frame' as |name| }}
+    <h3>{{name}} (Test code)</h3>
+
+    <p>
+      {{component name frame=model.traceback_frame_test_code}}
+    </p>
+  {{/with}}
+</div>

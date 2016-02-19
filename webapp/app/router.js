@@ -32,6 +32,7 @@ Router.map(function() {
   this.route('subject', { path: '/subjects/:name' });
   this.route('test_info', { path: '/test_info/:id' });
   this.route('stats');
+  this.route('component-proofing');
 });
 
 export default Router;
