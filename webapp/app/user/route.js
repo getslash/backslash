@@ -6,6 +6,6 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
 
     model: function(params) {
 
-        return this.store.find('user', params.email);
+        return this.store.findRecord('user', params.email, {reload: true});
     }
 });
