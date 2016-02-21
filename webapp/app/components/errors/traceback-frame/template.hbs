@@ -1,4 +1,4 @@
-<div class="traceback-frame">
+<div class="traceback-frame {{if frame.is_in_test_code 'test-code'}}">
   <button class="btn btn-default btn-expand pull-right" {{action "toggle"}}>
     {{#if show_vars }}
     <i class="fa fa-compress"></i> Collapse variables
