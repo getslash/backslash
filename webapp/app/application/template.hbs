@@ -11,11 +11,11 @@
     {{# with session.data.authenticated.user_info as |u|}}
       {{#if u.email }}
         <ul class="nav navbar-nav">
-          {{#nav-link "sessions"}}Sessions{{/nav-link}}
-          {{#nav-link "subjects"}}Subjects{{/nav-link}}
-          {{#nav-link "users"}}Users{{/nav-link}}
+          {{#nav-link to="sessions"}}Sessions{{/nav-link}}
+          {{#nav-link to="subjects"}}Subjects{{/nav-link}}
+          {{#nav-link to="users"}}Users{{/nav-link}}
           {{# if u.can.moderate }}
-            {{#nav-link "stats"}}Stats{{/nav-link}}
+            {{#nav-link to="stats"}}Stats{{/nav-link}}
           {{/if}}
           {{# if u.can.admin }}
             <li class="dropdown">
@@ -32,7 +32,7 @@
                 Debug <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                {{#nav-link "component-proofing"}}Component Proofing Page{{/nav-link}}
+                {{#nav-link to="component-proofing"}}Component Proofing Page{{/nav-link}}
               </ul>
             </li>
           {{/if}}

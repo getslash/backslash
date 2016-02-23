@@ -7,7 +7,6 @@ export default Ember.Component.extend({
     current_path: Ember.computed.oneWay('path_tracker.path'),
 
     classNameBindings: ['is_active:active'],
-    positionalProperties: ['to'],
 
     is_active: function() {
         return this.get('current_path') === this.get('to');
