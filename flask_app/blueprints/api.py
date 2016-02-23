@@ -500,6 +500,9 @@ def get_user_run_tokens(user_id: int):
         abort(requests.codes.forbidden)
     return [t.token for t in User.query.get_or_404(user_id).run_tokens]
 
+################################################################################
+## Stats
+
 @API(require_real_login=True)
 @requires_role('admin')
 def get_admin_stats():
@@ -529,3 +532,13 @@ def get_admin_stats():
         item.update({name: getattr(s, 'stat_' + name) for name in stats.iter_stat_names()})
         history.append(item)
     return returned
+
+
+################################################################################
+## Application Configuration
+
+@API
+def get_app_config():
+    return {
+        'debug': current_app.config['DEBUG'],
+    }
