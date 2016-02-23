@@ -8,7 +8,15 @@ export default Ember.Component.extend({
 
     tooltip_position: "right",
 
-    total_num_tests: Ember.computed.alias('session.total_num_tests'),
+    total_num_tests: function() {
+        let total = this.get('session.total_num_tests');
+
+        if (total === null) {
+            total = this.get('session.num_finished_tests');
+        }
+        return total;
+    }.property('session'),
+
     num_failed_tests: Ember.computed.alias('session.num_failed_tests'),
     num_skipped_tests: Ember.computed.alias('session.num_skipped_tests'),
     num_error_tests: Ember.computed.alias('session.num_error_tests'),
