@@ -10,4 +10,4 @@ addons:
   postgresql: "9.4"
 install:
   - pip install virtualenv
-script: python manage.py travis-test
+script: travis_retry python manage.py travis-test
