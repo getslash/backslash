@@ -1,0 +1,35 @@
+$copyable-text-margin: 2px;
+
+
+.copyable-text {
+  box-sizing: border-box;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-bottom: 1px dashed silver;
+  position: relative;
+
+  margin: -$copyable-text-margin;
+  margin-top: -$copyable-text-margin + 1px;
+  padding: $copyable-text-margin;
+
+  .inner {
+      display: none;
+  }
+
+  &:hover {
+      background: $gray-lighter;
+      //border-radius: 2px;
+      
+      border: 1px dashed silver;
+
+      .inner {
+	  display: inline-block;
+	  position: absolute;
+	  top: $copyable-text-margin;
+	  right: 0;
+	  top: 0;
+	  color: black;
+      }
+  }
+  
+}
