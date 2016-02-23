@@ -70,6 +70,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     end_time = db.Column(db.Float, default=None, index=True)
     hostname = db.Column(db.String(100))
 
+    infrastructure = db.Column(db.String(50), default=None)
 
     archived = db.Column(db.Boolean(), server_default="false", nullable=False) # no sense of indexing this since it's usually False
     investigated = db.Column(db.Boolean(), server_default='false')

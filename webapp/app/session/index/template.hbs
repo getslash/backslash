@@ -69,6 +69,12 @@
           {{/each}}
         </td>
       </tr>
+      {{#if session_model.infrastructure }}
+        <tr>
+          <td class="faint">Infrastructure</td>
+          <td>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}</td>
+        </tr>
+      {{/if}}
       <tr>
         <td colspan="2">
           {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}

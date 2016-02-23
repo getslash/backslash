@@ -58,6 +58,7 @@ def report_session_start(logical_id: str=None,
                          user_email: str=None,
                          keepalive_interval: (NoneType, int)=None,
                          subjects: (list, NoneType)=None,
+                         infrastructure: (str, NoneType)=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -75,6 +76,7 @@ def report_session_start(logical_id: str=None,
     returned = Session(
         hostname=hostname,
         total_num_tests=total_num_tests,
+        infrastructure=infrastructure,
         user_id=user_id,
         real_user_id=real_user_id,
         status=statuses.RUNNING,
