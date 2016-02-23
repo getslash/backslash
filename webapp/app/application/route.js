@@ -11,7 +11,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     setupController(controller, model) {
-        console.log('app config', model);
         controller.setProperties(model);
     },
 
