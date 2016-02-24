@@ -72,7 +72,11 @@
       {{#if session_model.infrastructure }}
         <tr>
           <td class="faint">Infrastructure</td>
-          <td>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}</td>
+          <td>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+            {{#if metadata.slash.version}}
+              ({{metadata.slash.version}})
+            {{/if}}
+          </td>
         </tr>
       {{/if}}
       <tr>
