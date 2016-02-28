@@ -3,11 +3,11 @@
 <div class="container-fluid">
 
   <div class="col-md-6">
-    {{c3-chart data=model.load_avg.data gauge=model.load_avg.gauge}}
+    {{c3-chart data=model.load_avg.data gauge=model.load_avg.gauge color=model.load_avg.color}}
   </div>
 
   <div class="col-md-6">
-    {{stats/admin-stats data=model.history series_key="system_load_avg" series_name="System Load Avg." floating_point=true}}
+    {{stats/admin-stats data=model.history series_key="system_load_avg" series_name="System Load Avg." floating_point=true maxY=model.load_avg.gauge.max}}
   </div>
 
 

@@ -8,6 +8,7 @@ export default Ember.Component.extend({
     series_key: null,
     series_name: null,
     floating_point: false,
+    maxY: null,
 
     formatter: function(v) {
         return d3.format(this.get('floating_point')?'g':'d')(v);
@@ -32,8 +33,10 @@ export default Ember.Component.extend({
         return {
             y: {
                 min: 0,
+                max: this.get('maxY'),
                 padding: {
                     bottom: 0,
+                    top: 0,
                 },
                 tick: {
                     format: this.get('formatter').bind(this),
