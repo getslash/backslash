@@ -44,7 +44,7 @@
         </form>
 
         <p class="navbar-text navbar-right">
-          {{#link-to "user.preferences" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.name}} {{/link-to}}
+          {{#link-to "user.sessions" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.name}} {{/link-to}}
         </p>
       {{/if}}
     {{/with}}
