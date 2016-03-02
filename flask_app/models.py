@@ -12,7 +12,7 @@ from .utils.rendering import rendered_field, render_api_object, rendered_only_on
 from . import activity
 from .capabilities import CAPABILITIES
 
-from sqlalchemy import Index, text
+from sqlalchemy import Index
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 
@@ -377,8 +377,7 @@ class User(db.Model, UserMixin, TypenameMixin):
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users, lazy='joined',
-                            backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users, lazy='joined')
     run_tokens = db.relationship('RunToken', lazy='dynamic')
 
     last_activity = db.Column(db.Float())
