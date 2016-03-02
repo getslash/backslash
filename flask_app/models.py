@@ -10,6 +10,7 @@ from .utils import statuses
 from .utils import get_current_time
 from .utils.rendering import rendered_field, render_api_object, rendered_only_on_single
 from . import activity
+from .capabilities import CAPABILITIES
 
 from sqlalchemy import Index, text
 from sqlalchemy.dialects.postgresql import JSON, JSONB
@@ -385,6 +386,10 @@ class User(db.Model, UserMixin, TypenameMixin):
     @rendered_field
     def user_roles(self):
         return [{'name': role.name} for role in self.roles]
+
+    @rendered_field
+    def capabilities(self):
+        return {cap_name: True for cap_name, cap in CAPABILITIES.items() if cap.enabled_for(self)}
 
 
 class RunToken(db.Model):

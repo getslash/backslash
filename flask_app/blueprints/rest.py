@@ -6,6 +6,7 @@ from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
 
 from flask.ext.simple_api import error_abort
+from flask.ext.security import current_user
 
 from .. import models
 from ..models import Error, Session, Test, User, Subject
@@ -172,6 +173,10 @@ class UserResource(ModelResource):
     MODEL = User
 
     def _get_object_by_id(self, object_id):
+        if object_id == 'self':
+            if not current_user.is_authenticated:
+                abort(requests.codes.not_found)
+            object_id = current_user.id
         try:
             object_id = int(object_id)
         except ValueError:
