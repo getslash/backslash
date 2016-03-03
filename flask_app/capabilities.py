@@ -5,12 +5,12 @@ class Capability(object):
 
 class RoleBasedCapability(Capability):
 
-    def __init__(self, role):
+    def __init__(self, *roles):
         super(RoleBasedCapability, self).__init__()
-        self.role = role
+        self.roles = roles
 
     def enabled_for(self, user):
-        return user.has_role(self.role)
+        return any(user.has_role(role) for role in self.roles)
 
 class AnyUser(Capability):
 
@@ -18,12 +18,17 @@ class AnyUser(Capability):
         return user.is_authenticated
 
 
-_MODERATORS = RoleBasedCapability('moderator')
+_MODERATORS = RoleBasedCapability('moderator', 'admin')
 _ADMINS = RoleBasedCapability('admin')
 _PROXIES = RoleBasedCapability('proxy')
 _ALL = AnyUser()
 
 CAPABILITIES = {
+    'admin': _ADMINS,
+    'archive_session': _MODERATORS,
     'comment_test': _ALL,
     'comment_session': _ALL,
+    'edit_user_roles': _ADMINS,
+    'view_platform_stats': _ADMINS,
+    'view_stats': _MODERATORS,
 }

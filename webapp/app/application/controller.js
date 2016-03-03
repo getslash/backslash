@@ -15,8 +15,14 @@ export default BaseController.extend({
     }.observes('currentPath'),
 
     actions: {
-        invalidateSession: function() {
-            this.get('session').invalidate();
+        logout: function() {
+            let self = this;
+            Ember.$.ajax({
+                url: '/logout',
+                type: 'POST',
+            }).then(function() {
+                self.get('session').invalidate();
+            });
         }
     }
 });

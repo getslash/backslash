@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
+    badge: true,
     classNames: "user-avatar",
     classNameBindings: ['small', 'large'],
 

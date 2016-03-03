@@ -1,12 +1,12 @@
 
 import logbook
 import requests
-from flask import (abort, Blueprint, current_app, jsonify, request,
-                   session)
+from flask import (abort, Blueprint, current_app, jsonify, request)
 from flask.ext.security import SQLAlchemyUserDatastore
 from itsdangerous import BadSignature, TimedSerializer
 
-from flask_security.utils import login_user, verify_and_update_password
+from flask.ext.login import logout_user
+from flask_security.utils import login_user
 
 from .models import db, Role, User
 from .utils.oauth2 import get_oauth2_identity
@@ -56,6 +56,14 @@ def login():
     login_user(user)
 
     return _make_success_login_response(user, user_info)
+
+
+@auth.route("/logout", methods=['POST'])
+def logout():
+    logout_user()
+    return jsonify({})
+
+
 
 def _make_success_login_response(user, user_info):
     token = _generate_token(user, user_info)

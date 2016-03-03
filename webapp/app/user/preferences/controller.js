@@ -23,7 +23,7 @@ export default Ember.Controller.extend({
             if (!self.get('session.data.authenticated.user_info.roles').contains('admin')){
             	return;
             }
-            
+
             if (role === 'admin' && self.get('user.email') === self.get('session.data.authenticated.user_info.email')) {
                 if (!window.confirm('You are about to drop your own admin privileges. Are you sure?')) {
                     return;

@@ -13,6 +13,7 @@ from . import activity
 from .capabilities import CAPABILITIES
 
 from sqlalchemy import Index
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 
@@ -374,6 +375,8 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
+    first_name = db.Column(db.String(255))
+    last_name = db.Column(db.String(255))
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
@@ -381,6 +384,10 @@ class User(db.Model, UserMixin, TypenameMixin):
     run_tokens = db.relationship('RunToken', lazy='dynamic')
 
     last_activity = db.Column(db.Float())
+
+    @hybrid_property
+    def fullname(self):
+        return self.first_name + " " + self.last_name
 
     @rendered_field
     def user_roles(self):

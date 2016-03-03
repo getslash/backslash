@@ -25,7 +25,7 @@
 </div>
 
 
-{{# if session.data.authenticated.user_info.can.admin }}
+{{# if (can "view_platform_stats") }}
 
 {{hr-separator title="Database Statistics"}}
 

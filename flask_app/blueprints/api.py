@@ -32,19 +32,20 @@ api = SimpleAPI(blueprint)
 NoneType = type(None)
 
 
-def API(func=None, require_real_login=False, generates_activity=True):
+def API(func=None, require_real_login=False, generates_activity=True, require_login=True):
     if func is None:
-        return functools.partial(API, require_real_login=require_real_login, generates_activity=generates_activity)
+        return functools.partial(API, require_real_login=require_real_login, generates_activity=generates_activity, require_login=require_login)
 
     returned = auto_render(func)
 
     if generates_activity:
         returned = activity.updates_last_active(returned)
 
-    if require_real_login:
-        returned = requires_login(returned)
-    else:
-        returned = requires_login_or_runtoken(returned)
+    if require_login:
+        if require_real_login:
+            returned = requires_login(returned)
+        else:
+            returned = requires_login_or_runtoken(returned)
     return api.include(returned)
 
 ##########################################################################
@@ -539,7 +540,7 @@ def get_admin_stats():
 ################################################################################
 ## Application Configuration
 
-@API
+@API(generates_activity=False, require_login=False)
 def get_app_config():
     return {
         'debug': current_app.config['DEBUG'],
