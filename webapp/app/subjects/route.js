@@ -3,6 +3,9 @@ import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
+
+    titleToken: 'Subjects',
+
     model(params) {
         return Ember.RSVP.hash({
             subjects: this.store.query('subject', {page: params.page}),

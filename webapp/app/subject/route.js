@@ -5,6 +5,10 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
 
+    titleToken(model) {
+        return model.subject.get('name');
+    },
+
     model(params) {
         return Ember.RSVP.hash({
             subject: this.store.find('subject', params.name),
