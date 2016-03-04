@@ -34,7 +34,7 @@ module.exports = function(defaults) {
   app.import('bower_components/moment/moment.js');
   app.import('bower_components/twix/dist/twix.min.js');
 
-    
+
 
   var mergeTrees = require('broccoli-merge-trees');
   var pickFiles = require('broccoli-static-compiler');
