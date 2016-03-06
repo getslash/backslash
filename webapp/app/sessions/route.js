@@ -4,6 +4,8 @@ import PollingRoute from '../mixins/polling-route';
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, {
 
+    titleToken: 'Sessions',
+
     model(params) {
         let query_params = {page: params.page, filter: params.filter};
 

@@ -1,6 +1,7 @@
 Version 2.1.0 (Unreleased)
 --------------------------
 
+* Update the document title between routes
 * Support highlighting the test code frame in tracebacks (requires Slash 1.0 and above)
 * Support 'intrastructure' field for denoting the tool used to run sessions
 * Misc. fixes to various UI components

@@ -3,6 +3,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
 
+    titleToken: 'Users',
+
     queryParams: {
         sort: {
             refreshModel: true,
