@@ -16,8 +16,8 @@ export default Ember.Component.extend({
 
     email: null,
     real_email: null,
-    _false: false,
-
+    admin: false,
+    moderator: false,
 
     user_email: function() {
         if (this.get('user')) {
@@ -28,11 +28,11 @@ export default Ember.Component.extend({
 
 
     is_admin: function() {
-        return this._has_role('admin');
+        return this._has_role('admin') || this.get('admin');
     }.property('user.user_roles'),
 
     is_moderator: function() {
-        return this._has_role('moderator');
+        return this._has_role('moderator') || this.get('moderator');
     }.property('user.user_roles'),
 
     _has_role: function(role) {

@@ -2,6 +2,51 @@
 
 
 <div class="proofing-example">
+  <h3>query-result (Session)</h3>
+  <p>
+    {{query-result result=model.session_result}}
+  </p>
+  <p>
+    <div class="container">
+      <table class="table table-striped">
+        <tr>
+          <td>Total</td>
+          <td>{{ui-slider value=model.session_result.total_num_tests min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>Errors</td>
+          <td>{{ui-slider value=model.session_result.num_error_tests min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>Failures</td>
+          <td>{{ui-slider value=model.session_result.num_failed_tests min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>Skips</td>
+          <td>{{ui-slider value=model.session_result.num_skipped_tests min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>Finished</td>
+          <td>{{ui-slider value=model.session_result.num_finished_tests min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>num_errors</td>
+          <td>{{ui-slider value=model.session_result.num_errors min=0 max=100}}</td>
+        </tr>
+        <tr>
+          <td>total_num_warnings</td>
+          <td>{{ui-slider value=model.session_result.total_num_warnings min=0 max=100}}</td>
+        </tr>
+
+
+
+      </table>
+    </div>
+  </p>
+</div>
+
+
+<div class="proofing-example">
   <h3>hr-separator</h3>
 
   <p>
@@ -33,6 +78,21 @@
 
     <p>
       {{component name frame=model.traceback_frame_test_code}}
+    </p>
+  {{/with}}
+</div>
+
+<div class="proofing-example">
+  {{#with 'users/user-avatar' as |name| }}
+    <h3>{{name}}</h3>
+    <p class="text-center">
+      {{component name email="vmalloc@gmail.com"}}
+    </p>
+    <p class="text-center query-result">
+      {{component name email="vmalloc@gmail.com" real_email="other@example.com"}}
+    </p>
+    <p class="text-center">
+      {{component name email="vmalloc@gmail.com" admin=true}}
     </p>
   {{/with}}
 </div>
