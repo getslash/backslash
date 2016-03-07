@@ -4,7 +4,9 @@
 <div class="proofing-example">
   <h3>query-result (Session)</h3>
   <p>
-    {{query-result result=model.session_result}}
+    {{#each (range 0 3) as |x|}}
+      {{query-result result=model.session_result}}
+    {{/each}}
   </p>
   <p class="config">
     {{#with model.session_result as |s|}}
@@ -43,6 +45,49 @@
     {{/with}}
   </p>
 </div>
+
+
+<div class="proofing-example">
+  <h3>query-result (Test)</h3>
+  <p>
+    {{#each (range 0 3) as |x|}}
+      {{query-result result=model.test_result}}
+    {{/each}}
+  </p>
+  <p class="config">
+    {{#with model.test_result as |s|}}
+      <table class="table table-condensed">
+        <tbody>
+          <tr>
+            <td>Status</td>
+            <td>
+              {{#each (w "success" "failure" "running") as |status|}}
+                <label>
+                {{radio-button
+                  id=status
+                  name=status
+                  value=status
+                  groupValue=model.test_result.status}}
+                {{status}}</label>
+              {{/each}}
+
+            </td>
+            <td>num_errors</td>
+            <td>
+              <td>{{ui-slider value=model.test_result.num_errors min=0 max=1000}}</td>
+            </td>
+            <td>num_warnings</td>
+            <td>
+              <td>{{ui-slider value=model.test_result.num_warnings min=0 max=1000}}</td>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    {{/with}}
+  </p>
+</div>
+
 
 
 <div class="proofing-example">
