@@ -1,5 +1,9 @@
 .query-result {
-    padding: 1em;
+    padding: 5px;
+
+    &.session {
+	padding: 1em;
+    }
 
     &:hover {
 	background-color: $gray-lighter;
