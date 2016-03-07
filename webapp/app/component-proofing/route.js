@@ -6,7 +6,6 @@ export default Ember.Route.extend({
         return Ember.Object.create({
 
             traceback_frame: this._generate_traceback_frame(),
-            traceback_frame_test_code: this._generate_traceback_frame(true),
 
             session_result: this._create_session_result(),
 
@@ -27,18 +26,20 @@ export default Ember.Route.extend({
             num_errors: 0,
             total_num_warnings: 10,
 
+            is_abandoned: false,
+
             user_email: 'vmalloc@gmail.com',
         });
     },
 
-    _generate_traceback_frame(is_in_test_code=false) {
-        return {
+    _generate_traceback_frame() {
+        return Ember.Object.create({
             filename: '/some/path/to/file.py',
             lineno: 666,
 
             func_name: 'some_func',
 
-            is_in_test_code: is_in_test_code,
+            is_in_test_code: false,
 
             code_string: 'raise Exception("error")',
 
@@ -48,7 +49,7 @@ export default Ember.Route.extend({
             globals: {
                 global_var1: 120,
             },
-        };
+        });
 
     },
 });

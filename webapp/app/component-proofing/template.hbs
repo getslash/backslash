@@ -6,42 +6,41 @@
   <p>
     {{query-result result=model.session_result}}
   </p>
-  <p>
-    <div class="container">
-      <table class="table table-striped">
-        <tr>
-          <td>Total</td>
-          <td>{{ui-slider value=model.session_result.total_num_tests min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>Errors</td>
-          <td>{{ui-slider value=model.session_result.num_error_tests min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>Failures</td>
-          <td>{{ui-slider value=model.session_result.num_failed_tests min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>Skips</td>
-          <td>{{ui-slider value=model.session_result.num_skipped_tests min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>Finished</td>
-          <td>{{ui-slider value=model.session_result.num_finished_tests min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>num_errors</td>
-          <td>{{ui-slider value=model.session_result.num_errors min=0 max=100}}</td>
-        </tr>
-        <tr>
-          <td>total_num_warnings</td>
-          <td>{{ui-slider value=model.session_result.total_num_warnings min=0 max=100}}</td>
-        </tr>
-
-
-
+  <p class="config">
+    {{#with model.session_result as |s|}}
+      <table class="table table-condensed">
+        <tbody>
+          <tr>
+            <td>Total</td>
+            <td>{{ui-slider value=s.total_num_tests min=0 max=100}}</td>
+            <td>Errors</td>
+            <td>{{ui-slider value=s.num_error_tests min=0 max=100}}</td>
+          </tr>
+          <tr>
+            <td>Failures</td>
+            <td>{{ui-slider value=s.num_failed_tests min=0 max=100}}</td>
+            <td>Skips</td>
+            <td>{{ui-slider value=s.num_skipped_tests min=0 max=100}}</td>
+          </tr>
+          <tr>
+            <td>Finished</td>
+            <td>{{ui-slider value=s.num_finished_tests min=0 max=100}}</td>
+            <td>num_errors</td>
+            <td>{{ui-slider value=s.num_errors min=0 max=100}}</td>
+          </tr>
+          <tr>
+            <td>total_num_warnings</td>
+            <td>{{ui-slider value=s.total_num_warnings min=0 max=100}}</td>
+            <td>
+              {{input id="is_abandoned" type="checkbox" checked=s.is_abandoned}} <label for="is_abandoned">Abandoned?</label>
+            </td>
+            <td>
+              {{input id="is_running" type="checkbox" checked=s.is_running}} <label for="is_running">Running?</label>
+            </td>
+          </tr>
+        </tbody>
       </table>
-    </div>
+    {{/with}}
   </p>
 </div>
 
@@ -70,17 +69,11 @@
       {{component name frame=model.traceback_frame}}
     </p>
   {{/with}}
+  <p class="config">
+    {{input id="is_in_test_code" type="checkbox" checked=model.traceback_frame.is_in_test_code}}<label for="is_in_test_code">In Test Code?</label>
+  </p>
 </div>
 
-<div class="proofing-example">
-  {{#with 'errors/traceback-frame' as |name| }}
-    <h3>{{name}} (Test code)</h3>
-
-    <p>
-      {{component name frame=model.traceback_frame_test_code}}
-    </p>
-  {{/with}}
-</div>
 
 <div class="proofing-example">
   {{#with 'users/user-avatar' as |name| }}

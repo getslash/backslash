@@ -25,7 +25,7 @@ export default Ember.Component.extend({
 
     is_running: function() {
         return this.get('session.is_running') && !this.get('is_abandoned');
-    }.property('session'),
+    }.property('session.is_running', 'session.is_abandoned'),
 
     num_successful_tests: function() {
         return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');

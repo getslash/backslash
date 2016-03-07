@@ -52,5 +52,5 @@ export default DS.Model.extend(HasLogicalId, {
         return this.get('status') === 'RUNNING';
     }.property('status')
 
-    
+
 });
