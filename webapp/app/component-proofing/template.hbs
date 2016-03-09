@@ -124,13 +124,21 @@
   {{#with 'users/user-avatar' as |name| }}
     <h3>{{name}}</h3>
     <p class="text-center">
-      {{component name email="vmalloc@gmail.com"}}
-    </p>
-    <p class="text-center query-result">
-      {{component name email="vmalloc@gmail.com" real_email="other@example.com"}}
-    </p>
-    <p class="text-center">
-      {{component name email="vmalloc@gmail.com" admin=true}}
+      <div class="query-result">
+      {{component name email="vmalloc@gmail.com" real_email=real_email admin=admin moderator=moderator large=large}}
+      </div>
     </p>
   {{/with}}
+  <p class="config">
+    {{input id="is_admin" type="checkbox" checked=admin}}<label for="is_admin">Admin?</label>
+
+    {{input id="is_moderator" type="checkbox" checked=moderator}}<label for="is_moderator">Moderator?</label>
+
+
+    {{input id="is_large" type="checkbox" checked=large}}<label for="is_large">Large?</label>
+
+    {{input id="use_real_email" type="checkbox" checked=use_real_email}}<label for="use_real_email">Proxy?</label>
+
+  </p>
+
 </div>

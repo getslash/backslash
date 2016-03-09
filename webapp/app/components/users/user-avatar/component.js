@@ -4,7 +4,7 @@ export default Ember.Component.extend({
 
     badge: true,
     classNames: "user-avatar",
-    classNameBindings: ['small', 'large'],
+    classNameBindings: ['large'],
 
     tooltip: function() {
         const real_email = this.get('real_email'), email = this.get('user_email');
@@ -30,11 +30,11 @@ export default Ember.Component.extend({
 
     is_admin: function() {
         return this._has_role('admin') || this.get('admin');
-    }.property('user.user_roles'),
+    }.property('user.user_roles', 'admin'),
 
     is_moderator: function() {
         return this._has_role('moderator') || this.get('moderator');
-    }.property('user.user_roles'),
+    }.property('user.user_roles', 'moderator'),
 
     _has_role: function(role) {
         let roles = [];

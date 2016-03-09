@@ -5,6 +5,7 @@
     z-index: 1;
 
     i {
+	font-size: 10px !important;
 	&.admin {
 	    color: gold;
 	    text-shadow: 1px 1px 1px red;
@@ -26,20 +27,17 @@
 	margin-right: 2px;
     }
 
+
     &.large {
+	i {
+	    font-size: 25px !important;
+	}
+
 	img {
 	    height: 75px;
 	}
     }
 
-    &.small {
-	img {
-	    height: 2em;
-	}
-	i {
-	    font-size: 0.8em;
-	}
-    }
 
     img.proxy {
 	position: absolute;
@@ -61,7 +59,7 @@
 
 .query-result:hover {
     img.proxy {
-	left: -20px;
+	left: -80%;
 	transition: left 0.5s, opacity 0.5s;
 	opacity: 1;
     }

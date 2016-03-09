@@ -10,8 +10,15 @@
 
     p.config {
 	color: silver;
-	padding: 1em 5em 1em 5em;
 	border: 1px dashed gray;
+
+	input {
+	    margin-left: 2em;
+	}
+
+	label {
+	    margin-left: 1em;
+	}
     }
 
     padding-bottom: 1em;
