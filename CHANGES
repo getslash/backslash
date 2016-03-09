@@ -1,6 +1,7 @@
 Version 2.1.0 (Unreleased)
 --------------------------
 
+* Use full names to refer to users
 * Test rows are now more condensed
 * Update the document title between routes
 * Support highlighting the test code frame in tracebacks (requires Slash 1.0 and above)
