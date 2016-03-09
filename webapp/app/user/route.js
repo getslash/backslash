@@ -11,5 +11,9 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
     model: function(params) {
 
         return this.store.findRecord('user', params.email, {reload: true});
-    }
+    },
+
+    afterModel() {
+        return this.transitionTo('user.sessions');
+    },
 });

@@ -11,6 +11,7 @@ from flask.ext.simple_api import SimpleAPI
 from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
+from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -545,3 +546,24 @@ def get_app_config():
     return {
         'debug': current_app.config['DEBUG'],
     }
+
+################################################################################
+## Search
+
+@API(generates_activity=False)
+def quick_search(term: str):
+    num_hits = 10
+    query = text(
+        """SELECT * from
+             ((select name as key, name, 'subject' as type from subject) UNION
+
+              (select email as key, CASE WHEN first_name is NULL THEN email
+                          ELSE (first_name || ' ' || last_name) END as name, 'user' as type from "user")) u
+        where u.name ilike :term limit :num_hits""").params(
+            term='%{}%'.format(term),
+            num_hits=num_hits,
+        )
+    return [
+        {'type': res['type'], 'key': res['key'], 'name': res['name']}
+        for res in db.session.execute(query)
+        ]

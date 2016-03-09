@@ -1,0 +1,10 @@
+{{#if quick_search_open}}
+  {{#modal-dialog close="cancel_investigating"
+     container-class="quick-jump"
+     targetAttachment="center"
+     translucentOverlay=true}}
+    <div class="input-group">
+      <input type="text" class="form-control" id="goto-input" placeholder="Search for...">
+    </div>
+  {{/modal-dialog}}
+{{/if}}
