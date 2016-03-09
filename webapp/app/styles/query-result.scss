@@ -1,5 +1,10 @@
 .query-result {
-    padding: 5px;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    border: 1px solid $gray-lighter;
+    border-left: 5px solid $brand-success;
+    margin: 3px;
 
     &.session {
 	padding: 1em;

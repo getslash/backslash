@@ -31,6 +31,7 @@ export default Ember.Route.extend({
             is_abandoned: false,
 
             user_email: 'vmalloc@gmail.com',
+            user_display_name: 'Rotem Yaari',
         });
     },
 

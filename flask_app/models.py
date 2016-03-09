@@ -141,6 +141,11 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
         return self.user.email
 
     @rendered_field
+    def user_display_name(self):
+        return self.user.display_name()
+
+
+    @rendered_field
     def real_email(self):
         user = self.real_user
         if user is None:

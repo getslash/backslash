@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
-    classNames: ['container-fluid', 'query-result', 'clickable'],
+    classNames: ['query-result', 'clickable'],
     classNameBindings: ['result.investigated:investigated', 'result.is_abandoned:abandoned', 'result_type'],
     result: null,
 

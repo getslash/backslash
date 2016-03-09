@@ -1,29 +1,21 @@
-<div class="breakdown col-md-2">
-  <div class="row">
-    <div class="col-md-2">
-      {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
-    </div>
-    <div class="col-md-10">
-      {{session-breakdown session=session}}
-    </div>
-  </div>
+<div class="user-info">
+
+{{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
+{{session.user_display_name}}
 </div>
-<div class="col-md-2">
-  {{artifact-counter errors=session.num_errors}}
-  {{artifact-counter warnings=session.total_num_warnings}}
-  {{artifact-counter comments=session.num_comments}}
-</div>
-<div class="col-md-2">
-  {{#each session.subjects as |subject index|}}
-    {{#if index}}
+
+{{artifact-counter errors=session.num_errors}}
+{{artifact-counter warnings=session.total_num_warnings}}
+{{artifact-counter comments=session.num_comments}}
+
+{{#each session.subjects as |subject index|}}
+  {{#if index}}
       ,
-    {{else}}
-      <i class="fa fa-rocket"></i>
-    {{/if}}
-    <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong>
-  {{/each}}
+  {{else}}
+    <i class="fa fa-rocket"></i>
+  {{/if}}
+  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong>
+{{/each}}
   {{session.products_string}}
-</div>
-<div class="col-md-6">
+
   {{humanized-time start_time=session.start_time end_time=session.end_time is_running=session.is_running}}
-</div>

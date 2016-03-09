@@ -43,6 +43,7 @@ export default DS.Model.extend(HasLogicalId, {
 
     user_id: DS.attr(),
     user_email: DS.attr(),
+    user_display_name: DS.attr(),
 
     real_email: DS.attr(),
 
