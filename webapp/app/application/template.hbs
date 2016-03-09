@@ -8,7 +8,7 @@
       <div class="spinner"></div>
 
     </div>
-    {{# with session.data.authenticated.user_info as |u|}}
+    {{# with session.data.authenticated.current_user as |u|}}
       {{#if u.email }}
         <ul class="nav navbar-nav">
           {{#nav-link to="sessions"}}Sessions{{/nav-link}}
@@ -43,7 +43,7 @@
         </form>
 
         <p class="navbar-text navbar-right">
-          {{#link-to "user.sessions" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.name}} {{/link-to}}
+          {{#link-to "user.sessions" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.display_name}} {{/link-to}}
         </p>
       {{/if}}
     {{/with}}

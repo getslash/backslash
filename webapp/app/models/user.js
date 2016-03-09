@@ -5,7 +5,8 @@ export default DS.Model.extend({
     email: DS.attr(),
     user_roles: DS.attr(),
 
-    display_name: Ember.computed.oneWay('email'),
+    display_name: DS.attr(),
+    full_name: DS.attr(),
 
     last_activity: DS.attr(),
 

@@ -114,6 +114,11 @@ def get_or_create_user(user_info):
             email=email)
         user_datastore.db.session.commit()
 
+    if user.first_name is None:
+        user.first_name = user_info.get('given_name', None)
+        user.last_name = user_info.get('family_name', None)
+        user_datastore.db.session.commit()
+
     user_info['user_id'] = user.id
     user_info['roles'] = [role.name for role in user.roles]
     user_info['can'] = {role.name: True for role in user.roles}

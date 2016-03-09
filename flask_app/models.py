@@ -385,9 +385,18 @@ class User(db.Model, UserMixin, TypenameMixin):
 
     last_activity = db.Column(db.Float())
 
-    @hybrid_property
-    def fullname(self):
+    @rendered_field
+    def full_name(self):
+        if self.first_name is None or self.last_name is None:
+            return None
         return self.first_name + " " + self.last_name
+
+    @rendered_field
+    def display_name(self):
+        fullname = self.full_name()
+        if fullname is None:
+            return self.email.split('@')[0]
+        return fullname
 
     @rendered_field
     def user_roles(self):
