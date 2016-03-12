@@ -1,25 +1,80 @@
 .query-result {
     display: flex;
-    align-content: center;
-    align-items: center;
     border: 1px solid $gray-lighter;
-    border-left: 5px solid $brand-success;
     margin: 3px;
 
-    &.session {
+    border-left: 10px solid;
+
+    &.failed {
+	border-left-color: $brand-danger;
+    }
+
+    &.success {
+	border-left-color: $brand-success;
+    }
+
+    &.skipped {
+	border-left-color: $brand-warning;
+    }
+
+    &.running {
+	border-left-color: $gray-lighter;
+    }
+
+
+    .right-marker {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 5px;
+	width: 2em;
+	&.warnings {
+	    background-color: $brand-warning;
+	    color: white;
+	}
+    }
+
+    .details {
 	padding: 1em;
+	display: flex;
+	flex: 1;
+
+	.user-info {
+	    color: $gray-light;
+	    width: 300px;
+	}
+
+	.times {
+	    color: $gray-light;
+	    flex: 1;
+	}
+
+	.subject-info {
+	    flex: 1;
+
+	    .subject-version {
+		background: $gray-lighter;
+		border-radius: 3px;
+		font-size: x-small;
+		margin: 2px;
+		padding: 3px;
+	    }
+	}
+
+
     }
 
     &:hover {
 	background-color: $gray-lighter;
     }
-}
 
-.query-result.investigated
-{
-    opacity: .5;
-}
+    &.investigated {
+	opacity: .5;
+    }
 
-.query-result .user-avatar {
-    top: -3px;
+    .user-avatar {
+	top: -3px;
+    }
+
+
 }

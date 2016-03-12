@@ -1,12 +1,16 @@
-<div class="user-info">
+
+<div class="details">
+  <div class="user-info">
 
 {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
-{{session.user_display_name}}
-</div>
+    <small>Started by {{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
+    {{#if (and session.is_running (not session.is_abandoned))}}
+      <i class="fa fa-spinner fa-spin"></i>
+    {{/if}}
 
-{{artifact-counter errors=session.num_errors}}
-{{artifact-counter warnings=session.total_num_warnings}}
-{{artifact-counter comments=session.num_comments}}
+  </div>
+
+  <div class="subject-info">
 
 {{#each session.subjects as |subject index|}}
   {{#if index}}
@@ -14,8 +18,22 @@
   {{else}}
     <i class="fa fa-rocket"></i>
   {{/if}}
-  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong>
+  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong><span class="subject-version">{{subject.version}}</span>
 {{/each}}
-  {{session.products_string}}
+{{session.products_string}}
 
-  {{humanized-time start_time=session.start_time end_time=session.end_time is_running=session.is_running}}
+  </div>
+
+  <div class="times">
+  {{moment-time unix=session.start_time}} - {{moment-time unix=session.end_time}}
+  </div>
+
+</div>
+
+  <div class="right-marker {{if session.total_num_warnings 'warnings'}}">
+{{# if session.total_num_warnings}}
+  {{#elements/tool-tip content=(concat session.total_num_warnings " warnings" )}}
+    <i class="fa fa-warning"></i>
+  {{/elements/tool-tip}}
+{{/if}}
+  </div>

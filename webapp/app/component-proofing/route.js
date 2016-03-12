@@ -32,6 +32,21 @@ export default Ember.Route.extend({
 
             user_email: 'vmalloc@gmail.com',
             user_display_name: 'Rotem Yaari',
+
+            subjects: [
+                {
+                    name: "micro01",
+                    product: "MicroWave",
+                    revision: "c956b18987c06a9f1f66c7a6dea6f68e9e771cc1",
+                    version: "3.0.0.1-dev"
+                },
+                {
+                    name: "micro02",
+                    product: "MicroWave",
+                    revision: "c956b18987c06a9f1f66c7a6dea6f68e9e771cc1",
+                    version: "2.0"
+                },
+            ],
         });
     },
 
