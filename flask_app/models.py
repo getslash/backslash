@@ -400,7 +400,7 @@ class User(db.Model, UserMixin, TypenameMixin):
     def display_name(self):
         fullname = self.full_name()
         if fullname is None:
-            return self.email.split('@')[0]
+            return self.email
         return fullname
 
     @rendered_field
