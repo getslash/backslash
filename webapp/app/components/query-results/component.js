@@ -9,9 +9,4 @@ export default Ember.Component.extend({
     num_visible: Ember.computed.oneWay('results.meta.page_size'),
     filter_config: Ember.computed.oneWay('results.meta.filter_config'),
 
-    actions: {
-        route_to(...args) {
-            this.sendAction('route_to', ...args);
-        },
-    },
 });

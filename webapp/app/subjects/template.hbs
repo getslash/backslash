@@ -4,7 +4,7 @@
 <div class="container">
 
   {{#each subjects as |subject|}}
-    <div class="container-fluid clickable query-result" {{action "goto_subject" subject}}>
+    <div class="container-fluid clickable item" {{action "goto_subject" subject}}>
       <i class="fa fa-rocket"></i> {{subject.name}}
     </div>
   {{/each}}

@@ -1,0 +1,170 @@
+a.item, a.item:hover {
+    color: black;
+    text-decoration: none !important;
+}
+
+
+@mixin reveal-opacity-later {
+    opacity: 1;
+    transition: opacity 0.5s;
+    transition-delay: 0.2s;
+}
+
+@mixin slide-flex {
+    transition: flex 0.2s;
+}
+
+
+.item {
+
+    display: flex;
+    border: 1px solid $gray-lighter;
+    margin: 3px;
+
+
+    .left-badge {
+	align-items: center;
+	background: silver;
+	border-radius: 2px 0 0 2px;
+	display: flex;
+	flex: 0 0 10px;
+	@include slide-flex;
+	overflow: hidden;
+
+	.summary {
+	    display: inline-block;
+	    font-size: x-small;
+	    color: white;
+	    opacity: 0;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    padding-right: 0.5em;
+	    white-space: nowrap;
+
+	}
+
+    }
+
+    &.failed,&.session.success,&.skipped,&.running {
+
+
+	.left-badge:hover {
+	    flex: 0 0 130px;
+	    padding-left: 1em;
+	    @include slide-flex;
+
+	    .summary {
+		@include reveal-opacity-later;
+	    }
+	}
+
+	&.test.failed .left-badge:hover,&.test.skipped .left-badge:hover {
+	    flex: 0 0 20em;
+	    font-family: monospace;
+	}
+    }
+
+    &.failed .left-badge {
+	background: $brand-danger;
+    }
+
+    &.success .left-badge {
+	background: $brand-success;
+    }
+
+    &.skipped .left-badge {
+	background: $brand-warning;
+    }
+
+    &.running .left-badge {
+	background: $gray-lighter;
+    }
+
+
+    .right-label {
+	visibility: hidden;
+
+	&.visible {
+	    visibility: visible;
+	}
+
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	flex: 0 0 2em;
+	justify-content: flex-start;
+	overflow: hidden;
+	padding-left: 0.5em;
+	white-space: nowrap;
+
+	@include slide-flex;
+
+	.summary {
+	    padding-left: 1em;
+	    opacity: 0;
+	}
+
+	&:hover {
+	    flex: 0 0 10em;
+	    @include slide-flex;
+	}
+
+	&.warnings {
+	    background-color: $brand-warning;
+	    color: white;
+
+	    &:hover .summary {
+		@include reveal-opacity-later;
+	    }
+	}
+    }
+
+    .details {
+	padding: 1em;
+	display: flex;
+	flex: 1;
+
+	.user-info {
+	    color: $gray-light;
+	    width: 300px;
+	    flex: 0 0 15%;
+	}
+
+	.test-name {
+	    flex: 0 0 60%;
+	}
+
+	.times {
+	    color: $gray-light;
+	    flex: 0 0 30%;
+	}
+
+	.subject-info {
+	    flex: 0 0 30%;
+
+	    .subject-version {
+		background: $gray-lighter;
+		border-radius: 3px;
+		font-size: x-small;
+		margin: 2px;
+		padding: 3px;
+	    }
+	}
+
+
+    }
+
+    &:hover {
+	background-color: $gray-lighter;
+    }
+
+    &.investigated {
+	opacity: .5;
+    }
+
+    .user-avatar {
+	top: -3px;
+    }
+
+
+}

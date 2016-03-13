@@ -4,7 +4,7 @@
 
 
 {{#each results as |result|}}
-  {{query-result result=result route_to="route_to"}}
+  {{component (concat result.type "-item") item=result}}
 {{/each}}
 
 {{pagination-nav page=page pages_total=pages_total num_visible=num_visible goto_page=(action this.attrs.goto_page)}}

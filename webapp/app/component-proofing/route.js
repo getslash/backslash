@@ -51,13 +51,40 @@ export default Ember.Route.extend({
     },
 
     _create_test_result() {
-        return Ember.Object.create({
+        let cls = Ember.Object.extend({
+            first_error: function() {
+                let status = this.get('status');
+                if (status === 'error' || status === 'failure') {
+                    return {
+                        exception_type: 'OSError',
+                        message: 'No such file or directory: /very/long/filename/here/should/be/hidden',
+                    };
+                }
+                return null;
+            }.property('status'),
+
+            num_errors: function() {
+                let status = this.get('status');
+                if (status === 'error' || status === 'failure') {
+                    return 20;
+                }
+                return 0;
+            }.property('status'),
+
+            skip_reason: function() {
+                if (this.get('status') === 'skipped') {
+                    return 'Test cannot run now';
+                }
+                return null;
+            }.property('status'),
+        });
+        let returned = cls.create({
             type: 'test',
             info: {
                 file_name: 'some/file/name.py',
                 name: 'test_something',
             },
-            status: 'success',
+            status: 'failure',
             start_time: 1457385114.678091,
             end_time: 1457385314.678091,
             duration: 239,
@@ -67,6 +94,9 @@ export default Ember.Route.extend({
                 param2: "something",
             },
         });
+
+        return returned;
+
     },
 
     _generate_traceback_frame() {

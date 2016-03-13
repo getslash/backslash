@@ -7,11 +7,11 @@ export default DS.Model.extend(HasLogicalId, {
     end_time: DS.attr('number'),
     duration: DS.attr('number'),
     status: DS.attr('string'),
-    
+
     num_errors: DS.attr('number'),
     num_warnings: DS.attr('number'),
     num_comments:DS.attr('number'),
-    
+
     test_info_id: DS.attr('number'),
 
     type: DS.attr(),

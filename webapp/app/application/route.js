@@ -36,9 +36,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     actions: {
-        route_to(route_name, param) {
-            this.transitionTo(route_name, param);
-        },
 
         loading: function(transition) {
             let controller = this.controllerFor('application');

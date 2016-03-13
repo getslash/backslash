@@ -1,0 +1,29 @@
+<div class="left-badge">
+  <div class="summary">
+    {{#if test.first_error}}
+      {{test.first_error.exception_type}}: {{test.first_error.message}}
+      {{#if (gt test.num_errors 1) }}
+        <div>
+          <i class="fa fa-exclamation-circle"></i> +{{sub test.num_errors 1}}
+        </div>
+      {{/if}}
+    {{else}}
+      {{#if (eq status 'skipped')}}
+        Skipped ({{test.skip_reason}})
+      {{/if}}
+    {{/if}}
+
+  </div>
+</div>
+<div class="details">
+  {{tests/test-name info=test.info variation=test.variation}}
+  <div>
+    {{#if is_running}}
+      <i class="fa fa-spinner fa-spin"></i>
+    {{/if}}
+  </div>
+</div>
+
+<div class="right-label warnings {{if test.num_warnings 'visible'}}">
+  <i class="fa fa-warning"></i> <span class="summary">{{test.num_warnings}} warnings</span>
+</div>

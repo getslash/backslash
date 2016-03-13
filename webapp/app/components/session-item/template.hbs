@@ -1,0 +1,59 @@
+
+<div class="left-badge">
+  <div class="summary">
+
+
+    {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
+      <i class="fa fa-check"></i> {{session.num_finished_tests}} successful tests
+    {{else}}
+       {{#if total_num_unsuccessful}}
+         <div>
+           <i class="fa fa-exclamation-circle"></i>
+         {{total_num_unsuccessful}} unsuccessful tests
+         </div>
+       {{/if}}
+       {{#if session.num_skipped_tests}}
+         <div>
+           <i class="fa fa-forward"></i>
+         {{session.num_skipped_tests}} skipped tests
+         </div>
+       {{/if}}
+
+    {{/if}}
+
+  </div>
+</div>
+<div class="details">
+  <div class="user-info">
+
+    {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
+    <small>Started by {{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
+    {{#if (and session.is_running (not session.is_abandoned))}}
+      <i class="fa fa-spinner fa-spin"></i>
+    {{/if}}
+
+  </div>
+
+  <div class="subject-info">
+
+{{#each session.subjects as |subject index|}}
+  {{#if index}}
+      ,
+  {{else}}
+    <i class="fa fa-rocket"></i>
+  {{/if}}
+  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong><span class="subject-version">{{subject.version}}</span>
+{{/each}}
+{{session.products_string}}
+
+  </div>
+
+  <div class="times">
+  {{moment-time unix=session.start_time}} - {{moment-time unix=session.end_time}}
+  </div>
+
+</div>
+
+  <div class="right-label warnings {{if session.total_num_warnings 'visible'}}">
+    <i class="fa fa-warning"></i> <span class="summary">{{session.total_num_warnings}} warnings</span>
+  </div>

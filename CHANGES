@@ -2,7 +2,7 @@ Version 2.1.0 (Unreleased)
 --------------------------
 
 * Use full names to refer to users
-* Test rows are now more condensed
+* Many improvements to session and test views, including hover pop-ups infos for errors, skips and warnings
 * Update the document title between routes
 * Support highlighting the test code frame in tracebacks (requires Slash 1.0 and above)
 * Support 'intrastructure' field for denoting the tool used to run sessions
