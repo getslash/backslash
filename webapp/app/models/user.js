@@ -7,6 +7,8 @@ export default DS.Model.extend({
 
     display_name: Ember.computed.oneWay('email'),
 
-    last_activity: DS.attr()
+    last_activity: DS.attr(),
+
+    capabilities: DS.attr(),
 
 });
