@@ -1,0 +1,14 @@
+.dropdown {
+    li.wide {
+	width: 15em;
+	display: flex;
+	align-items: flex-start;
+	padding: 1em 1em 0 1em;
+	white-space: nowrap;
+
+	.x-toggle-container {
+	    margin-left: 1em;
+	}
+
+    }
+}

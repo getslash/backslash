@@ -1,10 +1,29 @@
 {{#tool-bar}}
+
+
   {{filter-control filter_config=filter_config update_filter=(action this.attrs.update_filter)}}
+
+  <ul class="nav navbar-nav navbar-right filter-control">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="dropdown-display">
+        Display
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="dropdown-display">
+        <li class="wide">
+          Human-friendly times {{x-toggle size='small' toggled=humanize_times}}
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+
+
+
 {{/tool-bar}}
 
-
 {{#each results as |result|}}
-  {{component (concat result.type "-item") item=result}}
+  {{component (concat result.type "-item") item=result humanize_times=humanize_times}}
 {{/each}}
 
 {{pagination-nav page=page pages_total=pages_total num_visible=num_visible goto_page=(action this.attrs.goto_page)}}

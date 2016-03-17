@@ -34,10 +34,12 @@ body {
 @import 'base.scss';
 @import 'elements.scss';
 
+@import 'dropdowns.scss';
+@import 'toggles.scss';
+
 @import 'items.scss';
 
 @import 'sessions.scss';
-@import 'test.scss';
 @import 'users.scss';
 @import 'comments.scss';
 @import 'activity.scss';

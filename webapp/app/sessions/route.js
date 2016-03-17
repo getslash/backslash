@@ -6,6 +6,19 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 
     titleToken: 'Sessions',
 
+    queryParams: {
+        humanize_times: {
+            refreshModel: false,
+        },
+        page: {
+            refreshModel: true
+        },
+        filter: {
+            refreshModel: true,
+        }
+    },
+
+
     model(params) {
         let query_params = {page: params.page, filter: params.filter};
 

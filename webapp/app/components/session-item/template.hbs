@@ -48,10 +48,7 @@
 
   </div>
 
-  <div class="times">
-  {{moment-time unix=session.start_time}} - {{moment-time unix=session.end_time}}
-  </div>
-
+  {{item-times start=session.start_time end=session.end_time humanize=humanize_times}}
 </div>
 
   <div class="right-label warnings {{if session.total_num_warnings 'visible'}}">

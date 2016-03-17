@@ -24,6 +24,7 @@ module.exports = function(environment) {
 
     },
 
+
     torii: {
         sessionServiceName: 'session',
         providers: {
@@ -39,6 +40,11 @@ module.exports = function(environment) {
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
       store: 'session-store:local-storage'
+  };
+
+  ENV['ember-cli-toggle'] = {
+      includedThemes: ['skewed'],
+      defaultTheme: 'skewed',
   };
 
   if (environment === 'development') {
