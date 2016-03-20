@@ -27,6 +27,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         if (user_id !== undefined) {
             query_params.user_id = user_id;
         }
+        query_params.page_size = 50;
         return this.store.query('session', query_params);
     },
 

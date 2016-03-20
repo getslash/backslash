@@ -16,7 +16,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, Refreshabl
                 entity_id: session_id
             }).then(r => r.result),
             'user': this.store.find('user', session.get('user_id')),
-            'tests': this.store.query('test', {session_id: session_id, page: params.page, filter: params.filter}),
+            'tests': this.store.query('test', {session_id: session_id, page: params.page, filter: params.filter, page_size: 50}),
             'activity': this.store.query('activity', {session_id: parseInt(session.id)})
         });
     },
