@@ -126,8 +126,11 @@ a.item, a.item:hover {
 
 	.user-info {
 	    color: $gray-light;
-	    width: 300px;
 	    flex: 0 0 15%;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    width: 300px;
 	}
 
 	.is-running {
