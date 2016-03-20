@@ -52,7 +52,7 @@ a.item, a.item:hover {
 
     }
 
-    &.failed,&.session.success,&.skipped,&.running {
+    &.failed,&.session.success,&.skipped,&.running,&.abandoned {
 
 
 	.left-badge:hover {
@@ -177,5 +177,14 @@ a.item, a.item:hover {
     &.investigated {
 	opacity: .5;
     }
+
+    &.abandoned {
+	.details {
+	    opacity: 0.2;
+	}
+	-webkit-filter: grayscale(80%);
+        filter: grayscale(80%);
+    }
+
 
 }

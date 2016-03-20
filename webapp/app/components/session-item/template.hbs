@@ -1,27 +1,29 @@
 
 <div class="left-badge">
   <div class="summary">
-    {{#if session.total_num_tests}}
-      {{session.total_num_tests}} tests
-    {{/if}}
-
-
-    {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
-      <i class="fa fa-check"></i> {{session.num_finished_tests}} successful tests
+    {{#if session.is_abandoned}}
+      Abandoned
     {{else}}
-       {{#if total_num_unsuccessful}}
-         <div>
-           <i class="fa fa-exclamation-circle"></i>
-         {{total_num_unsuccessful}} unsuccessful tests
-         </div>
-       {{/if}}
-       {{#if session.num_skipped_tests}}
-         <div>
-           <i class="fa fa-forward"></i>
-         {{session.num_skipped_tests}} skipped tests
-         </div>
-       {{/if}}
+      {{#if session.total_num_tests}}
+        {{session.total_num_tests}} tests
+      {{/if}}
+      {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
+        <i class="fa fa-check"></i> {{session.num_finished_tests}} successful tests
+      {{else}}
+        {{#if total_num_unsuccessful}}
+          <div>
+            <i class="fa fa-exclamation-circle"></i>
+            {{total_num_unsuccessful}} unsuccessful tests
+          </div>
+        {{/if}}
+        {{#if session.num_skipped_tests}}
+          <div>
+            <i class="fa fa-forward"></i>
+            {{session.num_skipped_tests}} skipped tests
+          </div>
+        {{/if}}
 
+      {{/if}}
     {{/if}}
 
   </div>
