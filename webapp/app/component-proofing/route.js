@@ -82,7 +82,7 @@ export default Ember.Route.extend({
             type: 'test',
             info: {
                 file_name: 'some/file/name.py',
-                name: 'test_something',
+                name: 'test_something_very_long_test_name_that_takes_most_space',
             },
             status: 'failure',
             start_time: 1457385114.678091,
@@ -92,6 +92,7 @@ export default Ember.Route.extend({
             variation: {
                 param1: 205,
                 param2: "something",
+                param3: "something_very_long_here",
             },
         });
 

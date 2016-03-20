@@ -14,12 +14,19 @@ a.item, a.item:hover {
     transition: flex 0.2s;
 }
 
+@mixin ellipsis-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 
 .item {
 
     display: flex;
     border: 1px solid $gray-lighter;
     margin: 3px;
+    overflow: hidden;
 
 
     .left-badge {
@@ -93,10 +100,8 @@ a.item, a.item:hover {
 	flex-direction: row;
 	flex: 0 0 2em;
 	justify-content: flex-start;
-	overflow: hidden;
 	padding-left: 0.5em;
-	white-space: nowrap;
-
+	@include ellipsis-overflow;
 	@include slide-flex;
 
 	.summary {
@@ -127,10 +132,8 @@ a.item, a.item:hover {
 	.user-info {
 	    color: $gray-light;
 	    flex: 0 0 15%;
-	    overflow: hidden;
-	    text-overflow: ellipsis;
-	    white-space: nowrap;
 	    width: 300px;
+	    @include ellipsis-overflow;
 	}
 
 	.is-running {
@@ -139,10 +142,13 @@ a.item, a.item:hover {
 	}
 
 	.test-name {
-	    flex: 0 0 60%;
+	    flex: 1;
+	    @include ellipsis-overflow;
 	}
 
 	.times {
+	    @extend .hidden-xs;
+	    @extend .hidden-sm;
 	    color: $gray-light;
 	    flex: 0 0 30%;
 	    white-space: nowrap;
