@@ -6,6 +6,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     keyboardShortcuts: {
         '.' : 'open_quick_search',
+        'esc': 'close_box',
     },
 
     close_box() {
@@ -36,6 +37,10 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     }).restartable(),
 
     actions: {
+
+        close_box() {
+            this.close_box();
+        },
 
         open_quick_search() {
             let self = this;
