@@ -59,12 +59,3 @@
 	bacground-color: $mild-green;
     }
 }
-
-ul.test-subjects {
-    list-style: none;
-    li:before {
-	font-family: 'FontAwesome';
-	content: '\f135';
-	margin:0 5px 0 -15px;
-    }
-}

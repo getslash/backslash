@@ -63,13 +63,10 @@
       <tr>
         <td class="faint">Test Subjects:</td>
         <td>
-          <ul class="test-subjects">
           {{#each session_model.subjects as |subject|}}
-            <li>
-              <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
-            </li>
+            <p><i class="fa fa-rocket"></i> <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
+            </p>
           {{/each}}
-          </ul>
         </td>
       </tr>
       {{#if session_model.infrastructure }}
