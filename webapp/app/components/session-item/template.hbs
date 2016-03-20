@@ -1,6 +1,9 @@
 
 <div class="left-badge">
   <div class="summary">
+    {{#if session.total_num_tests}}
+      {{session.total_num_tests}} tests
+    {{/if}}
 
 
     {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
@@ -33,6 +36,7 @@
     {{/if}}
 
   </div>
+
 
   <div class="subject-info">
 
