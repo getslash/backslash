@@ -127,6 +127,7 @@ a.item, a.item:hover {
     .details {
 	padding: 1em;
 	display: flex;
+	overflow: hidden;
 	flex: 1;
 
 	.user-info {
