@@ -16,12 +16,12 @@
   </div>
 </div>
 <div class="details">
-  {{tests/test-name info=test.info variation=test.variation}}
-  <div>
     {{#if is_running}}
-      <i class="fa fa-spinner fa-spin"></i>
+      <div class="is-running">
+        <i class="fa fa-spinner fa-spin"></i>
+      </div>
     {{/if}}
-  </div>
+  {{tests/test-name info=test.info variation=test.variation}}
   {{item-times start=test.start_time end=test.end_time humanize=humanize_times}}
 </div>
 
