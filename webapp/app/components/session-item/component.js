@@ -10,7 +10,7 @@ export default Ember.Component.extend({
 
 
     href: function() {
-        return '/#/sessions/' + this.get('session.id');
+        return '/#/sessions/' + this.get('session.display_id');
     }.property('session.id'),
 
     status: function() {
