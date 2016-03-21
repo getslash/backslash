@@ -1,5 +1,10 @@
 <div class="left-badge">
   <div class="summary">
+    {{#if is_running}}
+      <div>
+        Still running...
+      </div>
+    {{/if}}
     {{#if test.first_error}}
       {{test.first_error.exception_type}}: {{test.first_error.message}}
       {{#if (gt test.num_errors 1) }}
