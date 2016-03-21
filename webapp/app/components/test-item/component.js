@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 
     status: function() {
         let status = this.get('test.status').toLowerCase();
-        if (status === 'failure') {
+        if (status === 'failure' || status === 'error') {
             status = 'failed';
         }
         return status;
