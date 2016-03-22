@@ -6,10 +6,11 @@ addons:
   postgresql: "9.4"
 services:
   - redis-server
-addons:
-  postgresql: "9.4"
 install:
   - pip install virtualenv
-  - python manage.py bootstrap
+  # avoid building frontend since npm is broken on Travis
+  - mkdir static
+  - touch static/index.html
+  - python manage.py bootstrap --develop
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
 script: travis_retry python manage.py travis-test
