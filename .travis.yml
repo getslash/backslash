@@ -10,4 +10,6 @@ addons:
   postgresql: "9.4"
 install:
   - pip install virtualenv
+  - python manage.py bootstrap
+  - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
 script: travis_retry python manage.py travis-test
