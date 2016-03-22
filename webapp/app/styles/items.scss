@@ -52,7 +52,7 @@ a.item, a.item:hover {
 
     }
 
-    &.failed,&.session.success,&.skipped,&.running,&.abandoned {
+    &.failed,&.session.success,&.skipped,&.running,&.abandoned,&.finished {
 
 
 	.left-badge:hover {

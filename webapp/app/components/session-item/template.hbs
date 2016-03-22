@@ -1,8 +1,13 @@
 
 <div class="left-badge">
   <div class="summary">
-    {{#if session.is_abandoned}}
+    {{#if is_abandoned}}
+      <div>
       Abandoned
+      </div>
+      <div>
+        ({{abandoned_reason}})
+      </div>
     {{else}}
       {{#if session.total_num_tests}}
         {{session.total_num_tests}} tests
