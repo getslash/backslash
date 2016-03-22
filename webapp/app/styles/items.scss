@@ -87,6 +87,13 @@ a.item, a.item:hover {
 	background: $gray-light;
     }
 
+    &.pdb .left-badge {
+	position: relative;
+	background: none;
+	animation-name: pdb-pulse;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+    }
 
     .right-label {
 	visibility: hidden;
@@ -187,4 +194,10 @@ a.item, a.item:hover {
     }
 
 
+}
+
+@keyframes pdb-pulse {
+  from { background-color: $brand-danger}
+  50% { background-color: $brand-warning}
+  to { background-color: $brand-danger}
 }

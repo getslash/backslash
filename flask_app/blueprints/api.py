@@ -108,6 +108,22 @@ def report_session_start(logical_id: str=None,
     return returned
 
 @API
+def report_in_pdb(session_id: int):
+    s = Session.query.get_or_404(session_id)
+    s.in_pdb = True
+    db.session.add(s)
+    db.session.commit()
+
+
+@API
+def report_not_in_pdb(session_id: int):
+    s = Session.query.get_or_404(session_id)
+    s.in_pdb = False
+    db.session.add(s)
+    db.session.commit()
+
+
+@API
 def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
     s.next_keepalive = get_current_time() + s.keepalive_interval
@@ -161,6 +177,7 @@ def report_session_end(id: int, duration: (int, NoneType)=None):
         session.status = statuses.FAILURE
     else:
         session.status = statuses.SUCCESS
+    session.in_pdb = False
     db.session.add(session)
     db.session.commit()
 

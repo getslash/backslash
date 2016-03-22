@@ -4,7 +4,7 @@ export default Ember.Component.extend({
     tagName: 'a',
     attributeBindings: ['href'],
     classNames: ['item', 'session', 'clickable'],
-    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status'],
+    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb'],
 
     session: Ember.computed.oneWay('item'),
 
@@ -13,6 +13,8 @@ export default Ember.Component.extend({
         return '/#/sessions/' + this.get('session.display_id');
     }.property('session.id'),
 
+    in_pdb: Ember.computed.oneWay('session.in_pdb'),
+    
     status: function() {
         let item = this.get('item');
 

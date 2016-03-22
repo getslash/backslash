@@ -11,6 +11,9 @@ export default DS.Model.extend(HasLogicalId, {
     end_time: DS.attr('number'),
 
     is_abandoned: DS.attr('boolean'),
+
+    in_pdb: DS.attr('boolean'),
+    
     infrastructure: DS.attr(),
 
     num_error_tests: DS.attr('number'),

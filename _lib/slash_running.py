@@ -8,10 +8,11 @@ _logger = logbook.Logger(__name__)
 
 @click.command()
 @click.option('--interactive', default=False, is_flag=True)
+@click.option('--debug', default=False, is_flag=True)
 @click.argument('name')
 @click.argument('args', nargs=-1)
 @requires_env('app', 'develop')
-def suite(name, args, interactive=False):
+def suite(name, args, interactive=False, debug=False):
     import slash
     import gossip
 
@@ -29,4 +30,6 @@ def suite(name, args, interactive=False):
     args = list(args)
     if interactive:
         args.append('-i')
+    if debug:
+        args.append('--pdb')
     slash_run([from_project_root('_sample_suites', name)] + args)

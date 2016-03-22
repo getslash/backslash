@@ -1,6 +1,11 @@
 
 <div class="left-badge">
   <div class="summary">
+    {{#if in_pdb}}
+      <div>
+        (In Debugger)
+      </div>
+    {{/if}}
     {{#if is_abandoned}}
       <div>
       Abandoned
