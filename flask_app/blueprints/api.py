@@ -19,8 +19,7 @@ from .. import stats
 from .. import models
 from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
 from ..utils import get_current_time, statuses
-from ..utils.api_utils import API_SUCCESS, auto_render, requires_login_or_runtoken, requires_login, requires_role
-from ..utils.rendering import render_api_object
+from ..utils.api_utils import auto_render, requires_login_or_runtoken, requires_login, requires_role
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 from ..utils.users import get_user_id_by_email, has_role
@@ -145,12 +144,13 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
 
 @API
 def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=None):
+    #pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
 
     db.session.add(RelatedEntity(
-        test_id = test_id,
-        session_id = session_id,
+        test_id=test_id,
+        session_id=session_id,
         type=type,
         name=name
         ))
@@ -301,7 +301,7 @@ def toggle_archived(session_id: int):
 
 @API(require_real_login=True)
 def toggle_investigated(session_id: int):
-    returned = _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
+    _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
     db.session.commit()
 
 def _toggle_session_attribute(session_id, attr, on_action, off_action):
@@ -310,6 +310,7 @@ def _toggle_session_attribute(session_id, attr, on_action, off_action):
     setattr(session, attr, new_value)
     db.session.add(session)
     activity.register_user_activity(on_action if new_value else off_action, session_id=session_id)
+    return new_value
 
 
 
@@ -400,6 +401,7 @@ def add_session_metadata(id: int, metadata: dict):
 
 @API
 def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
+    #pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
 
@@ -449,6 +451,7 @@ def _normalize_traceback(traceback_json):
 
 @API
 def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
+    # pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either session_id or test_id required')
     if session_id is not None:
@@ -488,25 +491,6 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
 
     db.session.commit()
     return returned
-
-
-
-@API(require_real_login=True)
-def delete_comment(comment_id: int):
-
-    comment = Comment.query.get_or_404(comment_id)
-
-    if not comment.can()['delete']:
-        abort(requests.codes.forbidden)
-
-    comment.deleted = True
-    comment.comment = ''
-
-    obj.num_comments = min(type(obj).num_comments - 1, 0)
-
-    db.session.add(obj)
-    db.session.add(comment)
-    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('admin')
