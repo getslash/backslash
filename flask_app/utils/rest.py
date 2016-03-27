@@ -1,6 +1,6 @@
 import math
 import logbook
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 
 from flask_restful import reqparse, Resource
 from flask.ext.simple_api import error_abort
@@ -102,10 +102,14 @@ class ModelResource(RestResource):
 
     def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
+        page_size = metadata['page_size'] = args.page_size
+        max_page_size = current_app.config['MAX_QUERY_PAGE_SIZE']
+        if page_size > max_page_size:
+            error_abort('Query attempted to fetch more than the maximum number of results per page ({})'.format(max_page_size))
+
         metadata['total'] = query.count()
         metadata['pages_total'] = int(math.ceil(metadata['total'] / args.page_size)) or 1
         metadata['page'] = args.page
-        metadata['page_size'] = args.page_size
         return query.offset((args.page - 1) * args.page_size).limit(args.page_size)
 
     def _get_collection_key_for_object(self, obj):
@@ -124,4 +128,3 @@ pagination_parser = reqparse.RequestParser()
 pagination_parser.add_argument(
     'page_size', type=int, location='args', default=10)
 pagination_parser.add_argument('page', type=int, location='args', default=1)
-
