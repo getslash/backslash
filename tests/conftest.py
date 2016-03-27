@@ -364,6 +364,14 @@ def variation(request):
     return request.param
 
 
+@pytest.fixture(params=[
+    {'x': '\x00'},
+])
+def invalid_variation(request):
+    return request.param
+
+
+
 
 @pytest.fixture
 def test_info(file_name, test_name, class_name):

@@ -162,3 +162,10 @@ def test_test_variation(started_session, variation, test_name, class_name):
     else:
         expected_variation = variation
     assert test.refresh().variation == expected_variation
+
+
+def test_test_variation_invalid_values(started_session, invalid_variation, test_name, class_name):
+    test = started_session.report_test_start(
+        name=test_name, class_name=class_name, variation=invalid_variation)
+    assert test.refresh().variation != invalid_variation
+    assert test.variation # make sure it is not empty

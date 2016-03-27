@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 import os
-import datetime
 import functools
 import logbook
 import multiprocessing
@@ -12,7 +11,7 @@ from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
 from sqlalchemy.sql import text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .. import activity
@@ -25,6 +24,7 @@ from ..utils.rendering import render_api_object
 from ..utils.subjects import get_or_create_subject_instance
 from ..utils.test_information import get_or_create_test_information_id
 from ..utils.users import get_user_id_by_email, has_role
+from ..utils.json import sanitize_json
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
@@ -218,9 +218,14 @@ def report_test_start(
         file_hash=file_hash,
     )
     if variation is not None:
-        returned.test_variation = TestVariation(variation=variation)
-    db.session.add(returned)
-    db.session.commit()
+        returned.test_variation = TestVariation(variation=sanitize_json(variation))
+    try:
+        db.session.add(returned)
+        db.session.commit()
+    except DataError:
+        returned.test_variation.variation = sanitize_json(variation)
+        db.session.add(returned)
+        db.session.commit()
     return returned
 
 
