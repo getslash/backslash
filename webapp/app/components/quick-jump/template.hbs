@@ -1,10 +1,37 @@
 {{#if quick_search_open}}
-  {{#modal-dialog close="cancel_investigating"
+  {{#modal-dialog
+     close="close_box"
      container-class="quick-jump"
      targetAttachment="center"
      translucentOverlay=true}}
     <div class="input-group">
       <input type="text" class="form-control" id="goto-input" placeholder="Quick jump to...">
+    </div>
+  {{/modal-dialog}}
+{{/if}}
+
+
+{{#if help_displayed}}
+  {{#modal-dialog close="close_box" targetAttachment='center' translucentOverlay=true}}
+    <div class="container">
+      <h3>Keyboard Shortcuts Help</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Shortcut</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each keys as |k|}}
+            {{#if k.description}}
+              <tr>
+                <td><code>{{k.key}}</code></td>
+                <td>{{k.description}}</td>
+              </tr>
+            {{/if}}
+          {{/each}}
+        </tbody>
+      </table>
     </div>
   {{/modal-dialog}}
 {{/if}}
