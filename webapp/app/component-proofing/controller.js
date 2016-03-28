@@ -13,17 +13,18 @@ export default Ember.Controller.extend({
 
     toggle_visible: function() {
         let term = this.get('search');
-        Ember.$('.proofing-example h3').each(function() {
-            let heading = Ember.$(this);
-            console.log('text is', heading.text());
-            if ((!term) || (heading.text().indexOf(term) !== -1)) {
-                heading.parent().css('display', 'block');
-            } else {
-                heading.parent().css('display', 'none');
-            }
+        Ember.run.later(function() {
+            Ember.$('.proofing-example h3').each(function() {
+                let heading = Ember.$(this);
+                if ((!term) || (heading.text().indexOf(term) !== -1)) {
+                    heading.parent().css('display', 'block');
+                } else {
+                    heading.parent().css('display', 'none');
+                }
+            });
         });
 
-    }.observes('search').on('init'),
+    }.observes('search').on('didInsertElement'),
 
     use_real_email: false,
 
