@@ -564,7 +564,7 @@ def quick_search(term: str):
              ((select name as key, name, 'subject' as type from subject) UNION
 
               (select email as key, CASE WHEN first_name is NULL THEN email
-                          ELSE (first_name || ' ' || last_name) END as name, 'user' as type from "user")) u
+                          ELSE (first_name || ' ' || last_name || ' (' || email || ')') END as name, 'user' as type from "user")) u
         where u.name ilike :term limit :num_hits""").params(
             term='%{}%'.format(term),
             num_hits=num_hits,
