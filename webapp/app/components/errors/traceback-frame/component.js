@@ -4,23 +4,8 @@ export default Ember.Component.extend({
     frame: null,
     show_vars: false,
 
-    has_locals: function() {
-        return this._is_not_empty('frame.locals');
-    }.property('frame'),
-
-    has_globals: function() {
-        return this._is_not_empty('frame.globals');
-    }.property('frame'),
-
-    _is_not_empty: function(attr) {
-        const obj = this.get(attr);
-        for (var key in obj) {
-            if (obj.hasOwnProperty(key) && key[0] !== '_') {
-                return true;
-            }
-        }
-        return false;
-    },
+    has_locals: Ember.computed.notEmpty('frame.locals'),
+    has_globals: Ember.computed.notEmpty('frame.globals'),
 
     actions: {
         toggle: function() {

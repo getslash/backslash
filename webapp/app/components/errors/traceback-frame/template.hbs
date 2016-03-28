@@ -1,4 +1,5 @@
 <div class="traceback-frame {{if frame.is_in_test_code 'test-code'}}">
+  {{#if (or has_globals has_locals)}}
   <button class="btn btn-default btn-expand pull-right" {{action "toggle"}}>
     {{#if show_vars }}
     <i class="fa fa-compress"></i> Collapse variables
@@ -6,6 +7,9 @@
     <i class="fa fa-expand"></i> Expand variables
     {{/if}}
   </button>
+  {{else}}
+  <span class="pull-right pad-small faint"> <i class="fa fa-warning"></i> Frame variable information unavailable</span>
+  {{/if}}
 
   <div class="frame-info">
 

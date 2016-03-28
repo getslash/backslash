@@ -111,12 +111,8 @@ export default Ember.Route.extend({
 
             code_string: 'raise Exception("error")',
 
-            locals: {
-                local_var1: "Some string",
-            },
-            globals: {
-                global_var1: 120,
-            },
+            locals: null,
+            globals: null,
         });
 
     },
