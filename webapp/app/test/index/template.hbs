@@ -4,71 +4,133 @@
 
 {{/tool-bar}}
 
-{{hr-separator title="Test Information"}}
 
-<div class="container">
-
-  <table class="table table-hover">
-    <tbody>
-      <tr>
-        <td>Test</td>
-        <td>
-          {{#link-to 'test_info' test.test_info_id}}
-            {{tests/test-name info=test.info show_file=true}}
-          {{/link-to}}
-        </td>
-      </tr>
-      {{#each-in test_details as |name value|}}
-        <tr>
-          <td>{{name}}</td><td class="test-detail-value">{{value}}</td>
-        </tr>
-      {{/each-in}}
-
-      {{#each-in scm_details as |name value|}}
-        <tr>
-          <td><i class="fa fa-git-square"></i> {{name}}</td>
-          <td class="test-detail-value">{{elements/copyable-text value=value}}</td>
-        </tr>
-      {{/each-in}}
-
-      {{#if test.scm_dirty }}
-        <tr>
-          <td colspan="2">
-            <i class="fa fa-exclamation-triangle warning"></i> Working directory contained uncommitted changes when this test was run
-          </td>
-        </tr>
-      {{/if}}
-
-      {{#if test.num_errors }}
-        <tr>
-          <td colspan="2">
-            <span class="danger">
-              <i class="fa fa-times-circle"></i>
-              {{#link-to "test.errors"}} {{test.num_errors}} Errors {{/link-to}}
-            </span>
-          </td>
-        </tr>
-      {{/if}}
-
-      {{#if test.num_warnings }}
-        <tr>
-          <td colspan="2">
-            <span class="warning">
-              <i class="fa fa-warning"></i>
-              {{#link-to "test.warnings"}} {{test.num_warnings}} Warnings {{/link-to}}
-            </span>
-          </td>
-        </tr>
-      {{/if}}
-
-
-    </tbody>
-  </table>
-
+<div class="container-fluid">
+  <h3>
+    {{tests/test-name info=test.info show_file=true}}
+  </h3>
 </div>
 
 
+{{hr-separator title="Result"}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="list-group">
+
+        {{#if test.is_success}}
+          <div class="list-group-item list-group-item-success">
+            <h4>
+              <i class="fa fa-check-circle"></i> Success
+            </h4>
+          </div>
+
+        {{/if}}
+
+        {{#if test.is_skipped}}
+          <div class="list-group-item list-group-item-warning">
+            <h4>
+              <i class="fa fa-forward"></i> Skipped
+            </h4>
+            <div class="skip-reason">{{test.skip_reason}}</div>
+          </div>
+
+        {{/if}}
+
+        {{#if test.is_unsuccessful }}
+          <div class="list-group-item list-group-item-danger">
+            <h4>
+              <i class="fa fa-exclamation-circle"></i>
+              {{test.status}}
+              {{#if (gt test.num_errors 1) }}
+                ( +{{sub test.num_errors 1}})
+              {{/if}}
+            </h4>
+            {{#link-to 'test.errors' test.display_id}}
+              More information...
+            {{/link-to}}
+
+            {{#if test.first_error}}
+              <pre>{{test.first_error.message}}</pre>
+            {{/if}}
+
+
+          </div>
+        {{/if}}
+
+        {{#if test.is_running}}
+          <div class="list-group-item">
+            <h4> <i class="fa fa-refresh fa-spin"></i> Still running...</h4>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if test.num_warnings }}
+  <div class="container">
+    <div class="list-group">
+      <div class="list-group-item list-group-item-warning">
+        {{#link-to 'test.warnings' test.display_id}}
+          <h4><i class="fa fa-warning"></i> {{test.num_warnings}} warnings</h4>
+        {{/link-to}}
+      </div>
+    </div>
+  </div>
+{{/if}}
+
 {{hr-separator title="Test Information"}}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <dl>
+        <dt>File name</dt>
+        <dd>{{test.info.file_name}}</dd>
+        <dt>{{if test.info.class_name 'Method' 'Function'}} name</dt>
+        <dd>{{test.info.name}}</dd>
+
+      </dl>
+    </div>
+    <div class="col-sm-6">
+      <dl>
+        <dt>Start Time</dt>
+        <dd>{{moment-time unix=test.start_time}}</dd>
+        <dt>End Time</dt>
+        {{#if is_ended}}
+          <dd>{{moment-time unix=test.end_time}}</dd>
+          <dt>Duration</dt>
+        <dd>{{duration_string}}</dd>
+        {{else}}
+        <dd>Still running...</dd>
+        {{/if}}
+      </dl>
+    </div>
+  </div>
+</div>
+{{hr-separator title="SCM Information"}}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <dl>
+        {{#each-in scm_details as |name value|}}
+          <dt><i class="fa fa-git-square"></i> {{name}}</dt>
+          <dd>{{elements/copyable-text value=value}}</dd>
+        {{/each-in}}
+      </dl>
+      {{#if test.scm_dirty }}
+        <p>
+          <i class="fa fa-exclamation-triangle warning"></i> Working directory contained uncommitted changes when this test was run
+        </p>
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+
+{{hr-separator title="Additional Metadata"}}
 
 {{metadata/metadata-table metadata=metadata}}
 

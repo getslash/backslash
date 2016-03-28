@@ -16,6 +16,22 @@
     }
 }
 
+.skip-reason {
+
+    &:before {
+	content: "Skip reason: ";
+	font-family: sans-serif;
+	opacity: 0.5;
+	margin-right: 1em;
+    }
+    background-color: lighten($state-warning-bg, 1%);
+    font-family: monospace;
+    white-space: pre;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 /* Separators */
 .sub-section-heading
 {
