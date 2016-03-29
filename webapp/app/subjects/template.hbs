@@ -4,10 +4,13 @@
 <div class="container">
 
   {{#each subjects as |subject|}}
-    <div class="container-fluid clickable item" {{action "goto_subject" subject}}>
-      <i class="fa fa-rocket"></i> {{subject.name}}
-    </div>
+    {{#link-to 'subject' subject.name classNames="item subject"}}
+      <div class="name" title="{{subject.name}}">
+        {{subject.name}}
+      </div>
+    {{/link-to}}
   {{/each}}
+
+  {{infinity-loader infinityModel=subjects loadingText="Loading..." loadedText=""}}
 </div>
 
-{{pagination-nav page=page pages_total=subjects.meta.pages_total num_visible=subjects.meta.page_size next_page="next_page" prev_page="prev_page" goto_page="goto_page"}}

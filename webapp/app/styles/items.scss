@@ -201,3 +201,12 @@ a.item, a.item:hover {
   50% { background-color: $brand-warning}
   to { background-color: $brand-danger}
 }
+
+.item.subject {
+    @extend .pad-large;
+    .name {
+	@extend .overflow-ellipsis;
+	flex: 0 0 50%;
+	font-size: x-large;
+    }
+}

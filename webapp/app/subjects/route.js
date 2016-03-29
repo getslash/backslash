@@ -1,14 +1,19 @@
 import Ember from 'ember';
-import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import InfinityRoute from 'ember-infinity/mixins/route';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
+
+export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, {
 
     titleToken: 'Subjects',
 
-    model(params) {
+    perPageParam: "page_size",
+    pageParam: "page",
+    totalPagesParam: "meta.pages_total",
+
+    model() {
         return Ember.RSVP.hash({
-            subjects: this.store.query('subject', {page: params.page}),
+            subjects: this.infinityModel("subject", { perPage: 50, startingPage: 1, modelPath: 'controller.subjects'}),
         });
     },
 

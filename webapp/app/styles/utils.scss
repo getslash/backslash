@@ -1,3 +1,13 @@
 .pad-small {
     padding: 3px;
 }
+
+.pad-large {
+    padding: 1em;
+}
+
+.overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

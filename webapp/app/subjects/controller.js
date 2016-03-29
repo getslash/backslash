@@ -1,9 +1,4 @@
-import PaginatedFilteredController from '../controllers/paginated_filtered_controller';
+import Ember from 'ember';
 
-export default PaginatedFilteredController.extend({
-    actions: {
-        goto_subject(subject) {
-            this.transitionToRoute('subject', subject.get('name'));
-        },
-    },
+export default Ember.Controller.extend({
 });
