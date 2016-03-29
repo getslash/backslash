@@ -19,7 +19,7 @@ _keys.forEach(function(k) {
 
 
 export default Ember.Component.extend(KeyboardShortcuts, {
-    help_displayed: true,
+    help_displayed: false,
 
     keyboardShortcuts: _shortcuts,
     keys: _keys,
