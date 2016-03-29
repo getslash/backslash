@@ -21,7 +21,7 @@ export function initialize(/* application */) {
 
     for (let img of images) {
         let image = new Image();
-        image.src = "/static/assets/img/" + img;
+        image.src = "/static/img/" + img;
     }
 }
 
