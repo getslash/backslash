@@ -186,6 +186,7 @@ class Subject(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), nullable=False, index=True, unique=True)
+    last_activity = db.Column(db.Float(), index=True)
 
 
 class Product(db.Model):

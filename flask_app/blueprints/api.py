@@ -97,6 +97,8 @@ def report_session_start(logical_id: str=None,
                 version=subject_data.get('version', None),
                 revision=subject_data.get('revision', None))
             returned.subject_instances.append(subject)
+            subject.subject.last_activity = get_current_time()
+            db.session.add(subject)
 
     if metadata is not None:
         for key, value in metadata.items():
@@ -137,6 +139,7 @@ def add_subject(session_id: int, name: str, product: (str, NoneType)=None, versi
         product=product,
         version=version,
         revision=revision)
+    subject.subject.last_activity = get_current_time()
     session.subject_instances.append(subject)
     db.session.add(session)
     db.session.commit()

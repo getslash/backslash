@@ -1,7 +1,9 @@
+import flux
 import functools
-import requests
 import pytest
+import requests
 
+from flask_app import models
 from .utils import model_for
 
 
@@ -28,6 +30,16 @@ def test_product_rendered_field(started_session, subjects):
     started_session.add_subject(**subjects[0])
     started_session.refresh()
     assert started_session.subjects == [subjects[0]]
+
+
+def test_subject_activity(client, subjects, flask_app):
+    current_time = flux.current_timeline.time()
+    client.report_session_start(subjects=subjects)
+    with flask_app.app_context():
+        for subject in subjects:
+            s = models.Subject.query.filter_by(name=subject.name).one()
+            assert s.last_activity == current_time
+
 
 
 @pytest.mark.parametrize('field_name', ['product', 'version', 'revision'])
