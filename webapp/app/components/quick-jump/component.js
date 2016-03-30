@@ -25,14 +25,19 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     keys: _keys,
 
 
-    search(query, _, callback) {
-        this.get('async_search').perform(query, callback);
+    search(query, sync_callback, async_callback) {
+        if (query.length > 3) {
+            sync_callback([
+                {type: 'session', name: 'Go to session ' + query, key: query},
+                {type: 'test', name: 'Go to test ' + query, key: query},
+            ]);
+        }
+        this.get('async_search').perform(query, async_callback);
 
     },
 
     select(obj) {
         let self = this;
-        console.log('selecting', obj);
 
         self.sendAction('close_boxes');
         self._close_boxes();
@@ -43,7 +48,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     async_search: task(function * (query, callback) {
         yield timeout(400);
         let res = yield this.api.call('quick_search', {term: query});
-        callback(res.result);
+        res = res.result;
+        console.log('got result: ', res);
+        callback(res);
     }).restartable(),
 
     _close_boxes() {
@@ -83,7 +90,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                     highlight: true,
                     minLength: 1,
                 }, {
-                    name: 'Users',
+                    name: 'Suggestions',
                     source: self.search.bind(self),
                     display: 'name',
                     templates: {
