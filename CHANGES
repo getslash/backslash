@@ -5,6 +5,8 @@ Version 2.1.0 (Unreleased)
 * Add ability to control timestamp formats in session/test view
 * Use full names to refer to users
 * Many improvements to session and test views, including hover pop-ups infos for errors, skips and warnings
+* Added last activity for test subjects
+* Improved subject view with infinite scroll and ability to control sorting
 * Added quick-jump dialog to quickly jump to test subjects and users. The dialog opens by pressing '.'
 * Update the document title between routes
 * Support highlighting the test code frame in tracebacks (requires Slash 1.0 and above)
