@@ -12,6 +12,7 @@ from .. import models
 from ..models import Error, Session, Test, User, Subject
 from .. import activity
 from ..utils.rest import ModelResource
+from ..filters import filter_by_statuses
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
@@ -36,7 +37,6 @@ class SessionResource(ModelResource):
 
     MODEL = Session
     DEFAULT_SORT = (Session.start_time.desc(),)
-    from .filter_configs import SESSION_FILTERS as FILTER_CONFIG
 
     def _get_object_by_id(self, object_id):
         return _get_object_by_id_or_logical_id(self.MODEL, object_id)
@@ -53,6 +53,8 @@ class SessionResource(ModelResource):
 
         if args.user_id is not None:
             returned = returned.filter(Session.user_id == args.user_id)
+
+        returned = filter_by_statuses(returned, self.MODEL)
 
         return returned
 
@@ -89,6 +91,8 @@ class TestResource(ModelResource):
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
+
+        returned = filter_by_statuses(returned, Test)
 
         return returned
 

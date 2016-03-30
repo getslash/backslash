@@ -11,4 +11,21 @@
 	}
 
     }
+
+    li.menu-toggle {
+	@extend .pad-medium;
+	display: flex;
+	width: 20em;
+
+	.menu-toggle-label {
+	    @extend .overflow-ellipsis;
+	    flex: 0 1 10em;
+	    margin-left: 2em;
+	}
+
+	.x-toggle-container {
+	    margin-right: 1em;
+	    margin-left: auto;
+	}
+    }
 }

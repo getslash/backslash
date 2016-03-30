@@ -3,6 +3,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
+
     is_method: Ember.computed.notEmpty('info.class_name'),
 
     duration_string: function() {

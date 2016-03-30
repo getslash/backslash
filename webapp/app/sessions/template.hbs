@@ -1,2 +1,7 @@
 
-{{query-results results=sessions update_filter=(action "update_filter") goto_page=(action "goto_page") humanize_times=humanize_times}}
+{{query-results results=sessions update_filter=(action "update_filter") goto_page=(action "goto_page")
+  humanize_times=humanize_times
+  show_successful=(mut show_successful)
+  show_unsuccessful=(mut show_unsuccessful)
+  show_abandoned=(mut show_abandoned)
+  show_skipped=(mut show_skipped) }}

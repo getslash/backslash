@@ -1,14 +1,8 @@
-<ul class="nav navbar-nav navbar-right">
-  <li class="dropdown">
-  <a class="dropdown-toggle {{if f.selected 'selected'}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="{{dropdown_id}}">{{yield}}
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" aria-labelledby="{{dropdown_id}}">
-    {{#each options as |option|}}
-      <li><a class="clickable" {{action "select" option}}>
-        <i class="fa fa-fw {{if (eq option value) 'fa-check'}}"></i>
-        {{capitalize (undasherize option)}}</a> </li>
-    {{/each}}
-  </ul>
-  </li>
-</ul>
+{{#dropdown-menu title=title}}
+  {{#each options as |option|}}
+    <li><a class="clickable" {{action "select" option}}>
+      <i class="fa fa-fw {{if (eq option value) 'fa-check'}}"></i>
+      {{capitalize (undasherize option)}}</a>
+    </li>
+  {{/each}}
+{{/dropdown-menu}}

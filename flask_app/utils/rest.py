@@ -4,8 +4,6 @@ from flask import jsonify, request, current_app
 
 from flask_restful import reqparse, Resource
 from flask.ext.simple_api import error_abort
-from sqlalchemy.orm import class_mapper
-from sqlalchemy import text
 
 from .rendering import render_api_object
 from .english import plural_noun
@@ -16,7 +14,7 @@ class RestResource(Resource):
 
     FILTER_CONFIG = None
 
-    def get(self, **kw):
+    def get(self, **_):
         object_id = request.view_args.get('object_id')
         metadata = {}
         if object_id is not None:

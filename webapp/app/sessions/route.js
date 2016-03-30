@@ -16,12 +16,29 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         },
         filter: {
             refreshModel: true,
-        }
+        },
+        show_successful: {
+            refreshModel: true,
+        },
+        show_unsuccessful: {
+            refreshModel: true,
+        },
+        show_abandoned: {
+            refreshModel: true,
+        },
+        show_skipped: {
+            refreshModel: true,
+        },
     },
 
 
     model(params) {
         let query_params = {page: params.page, filter: params.filter};
+        for (let key in params) {
+            if (key.startsWith('show_')) {
+                query_params[key] = params[key];
+            }
+        }
 
         let user_id = this.get_user_id_parameter();
 
