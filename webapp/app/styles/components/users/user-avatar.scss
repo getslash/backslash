@@ -38,34 +38,9 @@
 	}
     }
 
-
-    img.proxy {
-	position: absolute;
-	z-index: -1;
-	left: 0;
-	top: 0;
-	transition: left 0.5s, opacity 0.5s;
-	opacity: 0;
-
-    }
-
     img.real {
-	box-sizing: content-box;
-	border: 2px solid silver;
-	transition: border 0.5s;
-	margin: -2px;
+	border: inset $backslash-orange;
     }
+
 }
 
-.item:hover {
-    img.proxy {
-	left: -80%;
-	transition: left 0.5s, opacity 0.5s;
-	opacity: 1;
-    }
-
-    img.real {
-	border-color: rgba(0, 0, 0, 0);
-	transition: border 0.5s;
-    }
-}
