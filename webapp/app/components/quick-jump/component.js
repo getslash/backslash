@@ -35,6 +35,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         console.log('selecting', obj);
 
         self.sendAction('close_boxes');
+        self._close_boxes();
         self.router.transitionTo(obj.type, obj.key);
 
     },
@@ -45,14 +46,18 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         callback(res.result);
     }).restartable(),
 
+    _close_boxes() {
+        let element = Ember.$('#goto-input');
+        element.typeahead('destroy');
+        element.off();
+        this.set('quick_search_open', false);
+        this.set('help_displayed', false);
+    },
+
     actions: {
 
         close_boxes() {
-            let element = Ember.$('#goto-input');
-            element.typeahead('destroy');
-            element.off();
-            this.set('quick_search_open', false);
-            this.set('help_displayed', false);
+            this._close_boxes();
         },
 
         display_help() {
