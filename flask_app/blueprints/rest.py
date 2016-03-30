@@ -100,10 +100,11 @@ class TestInfoResource(ModelResource):
 
 
 @_resource('/subjects', '/subjects/<object_id>')
-class SubjetInstanceResource(ModelResource):
+class SubjectResource(ModelResource):
 
     MODEL = models.Subject
-    ONLY_FIELDS = ['id', 'name']
+    ONLY_FIELDS = ['id', 'name', 'last_activity']
+    SORTABLE_FIELDS = ['last_activity', 'name']
 
     def _get_object_by_id(self, object_id):
         try:

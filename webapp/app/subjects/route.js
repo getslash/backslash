@@ -11,9 +11,17 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, {
     pageParam: "page",
     totalPagesParam: "meta.pages_total",
 
-    model() {
+    queryParams: {
+        sort: {
+            refreshModel: true,
+        },
+    },
+
+    model(params) {
         return Ember.RSVP.hash({
-            subjects: this.infinityModel("subject", { perPage: 50, startingPage: 1, modelPath: 'controller.subjects'}),
+            subjects: this.infinityModel(
+                "subject",
+                {perPage: 50, startingPage: 1, modelPath: 'controller.subjects', sort: params.sort}),
         });
     },
 

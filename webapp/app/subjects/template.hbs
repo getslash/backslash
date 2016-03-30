@@ -1,4 +1,8 @@
 {{#tool-bar}}
+
+  {{#dropdown-select value=(mut sort) options=sort_options}}
+    Sort
+  {{/dropdown-select}}
 {{/tool-bar}}
 
 <div class="container">
@@ -7,6 +11,13 @@
     {{#link-to 'subject' subject.name classNames="item subject"}}
       <div class="name" title="{{subject.name}}">
         {{subject.name}}
+      </div>
+      <div class="faint vertical-center-flex">
+        {{#if subject.last_activity}}
+        Last active {{moment-time ago=subject.last_activity}}
+        {{else}}
+        Last active: N/A
+        {{/if}}
       </div>
     {{/link-to}}
   {{/each}}

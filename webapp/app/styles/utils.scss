@@ -11,3 +11,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.vertical-center-flex {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
