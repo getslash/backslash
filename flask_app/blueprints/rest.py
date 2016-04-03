@@ -43,6 +43,7 @@ class SessionResource(ModelResource):
 
     def _get_iterator(self):
         returned = super(SessionResource, self)._get_iterator()
+        returned = returned.filter_by(archived=False)
         args = session_parser.parse_args()
         if args.subject_name is not None:
             returned = (
