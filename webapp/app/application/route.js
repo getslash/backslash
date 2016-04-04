@@ -27,7 +27,12 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
         if (self.get('session.data.authenticated')) {
             return self.store.find('user', 'self').then(function(u) {
                 self.set('session.data.authenticated.current_user', u);
-            }).catch(() => this.get('session').invalidate());
+            }).catch(function() {
+                let s = self.get('session');
+                if (s !== undefined && s.get('isAuthenticated')) {
+                    s.invalidate();
+                }
+            });
         }
     },
 
