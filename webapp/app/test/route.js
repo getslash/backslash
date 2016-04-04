@@ -1,7 +1,8 @@
 import BaseRoute from '../routes/base';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import ScrollToTopMixin from '../mixins/scroll-top';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, {
+export default BaseRoute.extend(AuthenticatedRouteMixin, ScrollToTopMixin, {
 
     title: 'Test Details',
 

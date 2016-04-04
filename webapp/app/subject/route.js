@@ -2,8 +2,9 @@ import Ember from 'ember';
 
 import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import ScrollToTopMixin from '../mixins/scroll-top';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ScrollToTopMixin, {
 
     titleToken(model) {
         return model.subject.get('name');
