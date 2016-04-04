@@ -20,7 +20,7 @@ export default Ember.Component.extend({
     is_running: Ember.computed.equal('status', 'running'),
 
     href: function() {
-        return '/#/tests/' + this.get('test.id');
+        return '/#/tests/' + this.get('test.display_id');
     }.property('test.id'),
 
 
