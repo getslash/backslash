@@ -26,12 +26,6 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
 
     search(query, sync_callback, async_callback) {
-        if (query.length > 3) {
-            sync_callback([
-                {type: 'session', name: 'Go to session ' + query, key: query},
-                {type: 'test', name: 'Go to test ' + query, key: query},
-            ]);
-        }
         this.get('async_search').perform(query, async_callback);
 
     },
@@ -49,7 +43,12 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         yield timeout(400);
         let res = yield this.api.call('quick_search', {term: query});
         res = res.result;
-        console.log('got result: ', res);
+        console.log('Result is:', res);
+        if (res.length === 0) {
+            res.push({type: 'session', name: 'Go to session ' + query, key: query});
+            res.push({type: 'test', name: 'Go to test ' + query, key: query});
+        }
+        console.log('completing', res);
         callback(res);
     }).restartable(),
 
