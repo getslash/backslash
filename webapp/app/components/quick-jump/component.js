@@ -5,7 +5,7 @@ import {timeout, task} from 'ember-concurrency';
 
 let _keys = [
     {key: '.', action: 'open_quick_search', description: 'Opens quick jump'},
-    {key: 'esc', action: 'close_boxes'},
+    {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
     {key: '?', action: 'display_help', description: 'Show this help message'},
@@ -62,8 +62,13 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     actions: {
 
-        close_boxes() {
-            this._close_boxes();
+        close_boxes_or_home() {
+            if (this.get('quick_search_open') || this.get('help_displayed')) {
+                this._close_boxes();
+            }
+            else {
+                this.router.transitionTo('sessions');
+            }
         },
 
         display_help() {
