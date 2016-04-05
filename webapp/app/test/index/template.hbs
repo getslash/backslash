@@ -2,6 +2,12 @@
 
   <p class="navbar-text">{{#link-to 'session' test.session.display_id}} Session {{test.session.display_id}}{{/link-to}} / Test {{elements/copyable-text value=test.display_id}}</p>
 
+  <div class="navbar-text pull-right">
+    {{#link-to 'test_info' test.test_info_id}}
+      <i class="fa fa-history"></i> Previous executions...
+    {{/link-to}}
+  </div>
+
 {{/tool-bar}}
 
 
