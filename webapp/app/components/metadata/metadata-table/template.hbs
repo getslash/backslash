@@ -5,7 +5,7 @@
       {{#each-in all_metadata as |name value|}}
         {{#if (not (eq name "slash"))}}
           <tr>
-            <td>{{name}}</td>
+            <td>{{capitalize (undasherize name)}}</td>
             <td>{{elements/copyable-text value=value}}</td>
           </tr>
         {{/if}}
