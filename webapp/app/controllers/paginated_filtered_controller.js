@@ -10,9 +10,24 @@ export default Ember.Controller.extend({
                   }],
 
     page: 1,
-    pages_total: null,
     filter: undefined,
     collection: null,
+
+
+    check_paging: function() {
+        let self = this;
+        Ember.run.later(function() {
+            let page = self.get('page');
+            let pages_total = self.get('collection.meta.pages_total');
+            console.log('page', page, 'total', pages_total);
+            if (page > pages_total) {
+                self.set('page', pages_total);
+            }
+            if (!page) {
+                self.set('page', 1);
+            }
+        });
+    }.observes('page', 'collection.meta.pages_total'),
 
     filter_config: function() {
 
