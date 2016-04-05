@@ -55,6 +55,10 @@ export default Ember.Component.extend({
                 p = self.get('has_next')?(p + 1):p;
             } else if (page === "prev") {
                 p = self.get('has_prev')?(p - 1):p;
+            } else if (page === 'last') {
+                p = self.get('pages_total');
+            } else if (page === 'first') {
+                p = 1;
             } else {
                 p = page;
             }

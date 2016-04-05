@@ -19,7 +19,6 @@ export default Ember.Controller.extend({
         Ember.run.later(function() {
             let page = self.get('page');
             let pages_total = self.get('collection.meta.pages_total');
-            console.log('page', page, 'total', pages_total);
             if (page > pages_total) {
                 self.set('page', pages_total);
             }

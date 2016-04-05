@@ -4,8 +4,11 @@
     <ul class="pagination">
       <li>
         {{# if has_prev }}
+        <a {{action "goto" "first"}} aria-label="Previous" class="clickable">
+          <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
+        </a>
         <a {{action "goto" "prev"}} aria-label="Previous" class="clickable">
-          <span aria-hidden="true"><i class="fa fa-chevron-left"></i></span>
+          <span aria-hidden="true"><i class="fa fa-backward"></i></span>
         </a>
         {{/if}}
       </li>
@@ -15,7 +18,10 @@
       <li>
         {{# if has_next }}
         <a {{action "goto" "next"}} aria-label="Next" class="clickable">
-          <span aria-hidden="true"><i class="fa fa-chevron-right"></i></span>
+          <span aria-hidden="true"><i class="fa fa-forward"></i></span>
+        </a>
+        <a {{action "goto" "last"}} aria-label="Previous" class="clickable">
+          <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
         </a>
         {{/if}}
       </li>
