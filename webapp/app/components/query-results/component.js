@@ -4,6 +4,7 @@ export default Ember.Component.extend({
 
     results: null,
     humanize_times: true,
+    show_subjects: true,
 
     page: Ember.computed.oneWay('results.meta.page'),
     pages_total: Ember.computed.oneWay('results.meta.pages_total'),

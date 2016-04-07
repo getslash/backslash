@@ -1,0 +1,9 @@
+{{#each subjects as |subject index|}}
+  {{#if index}}
+    ,
+  {{else}}
+    <i class="fa fa-rocket"></i>
+  {{/if}}
+  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong><span class="subject-version">{{subject.version}}</span>
+{{/each}}
+

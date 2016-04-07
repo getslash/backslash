@@ -29,6 +29,7 @@ export default DS.Model.extend(HasLogicalId, {
     session_id: DS.attr('number'),
 
     variation: DS.attr(),
+    subjects: DS.attr(),
 
     is_success: function() {
         return (this.get('status') === 'SUCCESS');

@@ -51,20 +51,9 @@
 
   </div>
 
-
-  <div class="subject-info">
-
-{{#each session.subjects as |subject index|}}
-  {{#if index}}
-      ,
-  {{else}}
-    <i class="fa fa-rocket"></i>
+  {{#if show_subjects}}
+    {{subject-info subjects=session.subjects}}
   {{/if}}
-  <strong>{{#link-to 'subject' subject.name bubbles=false}}{{subject.name}}{{/link-to}}</strong><span class="subject-version">{{subject.version}}</span>
-{{/each}}
-{{session.products_string}}
-
-  </div>
 
   {{item-times start=session.start_time end=session.end_time humanize=humanize_times}}
 </div>
