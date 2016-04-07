@@ -121,6 +121,14 @@ def test_get_status_failure(started_test):
     assert started_test.status == 'FAILURE'
 
 
+def test_first_error(started_test):
+    for i in range(3):
+        flux.current_timeline.sleep(1)
+        started_test.add_error(str(i))
+    started_test.refresh()
+    assert started_test.first_error['message'] == '0'
+
+
 def test_get_status_skipped(started_test):
     started_test.mark_skipped()
     started_test.report_end()

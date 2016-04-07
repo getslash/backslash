@@ -278,7 +278,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
     first_error_obj = db.relationship(lambda: Error,
                                   primaryjoin=lambda: and_(
                                       Test.id == Error.test_id,
-                                      Error.timestamp == select([func.max(Error.timestamp)]).
+                                      Error.timestamp == select([func.min(Error.timestamp)]).
                                       where(Error.test_id==Test.id).
                                       correlate(Test.__table__)
                                   ),
