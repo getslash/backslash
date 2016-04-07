@@ -356,6 +356,11 @@ class Error(db.Model, TypenameMixin):
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
+    __table_args__ = (
+        Index('ix_error_timestamp', timestamp),
+    )
+
+
 
 class Warning(db.Model, TypenameMixin):
 
