@@ -13,7 +13,6 @@ from . import activity
 from .capabilities import CAPABILITIES
 
 from sqlalchemy import Index
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 
