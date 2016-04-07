@@ -33,6 +33,16 @@ class HasRelatedMixin(object):
     def related(self):
         return [{'name': obj.name, 'type': obj.type} for obj in self.related_entities]
 
+class HasSubjectsMixin(object):
+
+    @rendered_field
+    def subjects(self):
+        return [
+            {'name': s.subject.name, 'product': s.revision.product_version.product.name,
+             'version': s.revision.product_version.version, 'revision': s.revision.revision}
+            for s in self.subject_instances]
+
+
 
 class StatusPredicatesMixin(object):
 
@@ -65,7 +75,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
@@ -155,13 +165,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
             return None
         return user.email
 
-    @rendered_field
-    def subjects(self):
-        return [
-            {'name': s.subject.name, 'product': s.revision.product_version.product.name,
-             'version': s.revision.product_version.version, 'revision': s.revision.revision}
-            for s in self.subject_instances]
-
 
 class SubjectInstance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -244,7 +247,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -253,6 +256,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
 
     test_variation_id = db.Column(db.Integer, db.ForeignKey('test_variation.id', ondelete='CASCADE'), index=True)
     test_variation = db.relationship('TestVariation', lazy='joined')
+
+    subject_instances = db.relationship(
+        'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined')
+
 
     @rendered_field
     def variation(self):
@@ -286,6 +293,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
                                   uselist=False,
                                   lazy='joined'
                               )
+
 
     related_entities = db.relationship('RelatedEntity')
 
