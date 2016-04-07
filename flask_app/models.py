@@ -58,6 +58,7 @@ session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
                                      db.ForeignKey('session.id', ondelete='CASCADE')),
+                           db.Index('ix_session_subject_session_id', 'session_id'),
                            db.Column('subject_id',
                                      db.Integer,
                                      db.ForeignKey('subject_instance.id', ondelete='CASCADE')))
@@ -89,7 +90,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin):
         'SessionMetadata', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     subject_instances = db.relationship(
-        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='subquery'), lazy='subquery')
+        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined')
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
