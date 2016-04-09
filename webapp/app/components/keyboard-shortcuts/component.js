@@ -1,10 +1,15 @@
 import Ember from 'ember';
+const {
+  getOwner
+} = Ember;
 import KeyboardShortcuts from 'ember-keyboard-shortcuts/mixins/component';
 import {timeout, task} from 'ember-concurrency';
 
 
 let _keys = [
     {key: '.', action: 'open_quick_search', description: 'Opens quick jump'},
+    {key: 'h', action: 'toggle_human_times', description: 'Toggles human-readable times'},
+    {key: 'F', action: 'toggle_only_failed', description: 'Hide all entities except failed'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -43,12 +48,10 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         yield timeout(400);
         let res = yield this.api.call('quick_search', {term: query});
         res = res.result;
-        console.log('Result is:', res);
         if (res.length === 0) {
             res.push({type: 'session', name: 'Go to session ' + query, key: query});
             res.push({type: 'test', name: 'Go to test ' + query, key: query});
         }
-        console.log('completing', res);
         callback(res);
     }).restartable(),
 
@@ -59,6 +62,18 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         this.set('quick_search_open', false);
         this.set('help_displayed', false);
     },
+
+
+    _do_if_in(paths, callback) {
+        let approute = getOwner(this).lookup('route:application');
+        let appcontroller = getOwner(this).lookup('controller:application');
+        let path = appcontroller.currentPath;
+        if (paths.indexOf(path) !== -1) {
+            let controller = approute.controllerFor(path);
+            callback(controller);
+        }
+    },
+
 
     actions: {
 
@@ -82,6 +97,22 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         goto_users() {
             this.router.transitionTo('users');
         },
+
+        toggle_human_times() {
+            this._do_if_in(['sessions', 'session.index'], function(controller) {
+                controller.toggleProperty('humanize_times');
+            });
+        },
+
+
+        toggle_only_failed() {
+            this._do_if_in(['sessions', 'session.index'], function(controller) {
+                controller.set('show_successful', false);
+                controller.set('show_skipped', false);
+                controller.set('show_abandoned', false);
+            });
+        },
+
 
 
         open_quick_search() {
