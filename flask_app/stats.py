@@ -1,6 +1,7 @@
 import os
 
 import flux
+import redis
 
 from . import models
 from .models import db
@@ -14,6 +15,15 @@ class StatCollectors(object):
     @classmethod
     def db_size(cls):
         return db.session.execute("select pg_database_size('backslash')").scalar()
+
+    @classmethod
+    def num_redis_keys(cls):
+        client = redis.Redis()
+        return client.dbsize()
+
+    @classmethod
+    def redis_memory_usage(cls):
+        return redis.Redis().info()['used_memory']
 
     @classmethod
     def system_load_avg(cls):

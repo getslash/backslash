@@ -12,6 +12,14 @@ def test_admin_num_new_sessions(chart, client, active_db_context):
     assert chart[-1]['num_new_sessions'] >= 0
 
 
+def test_admin_num_redis_keys(chart, client, active_db_context):
+    assert chart[-1]['num_redis_keys'] >= 0
+
+
+def test_admin_redis_memory_usage(chart, client, active_db_context):
+    assert chart[-1]['redis_memory_usage'] >= 0
+
+
 def test_admin_num_new_sessions_no_previous(real_login, admin_role, active_db_context, client):
     models.Stat.query.delete()
     assert models.Stat.query.count() == 0

@@ -510,3 +510,5 @@ class Stat(db.Model):
     stat_db_size = db.Column(db.BIGINT, server_default="0")
     stat_num_new_sessions = db.Column(db.Integer, server_default="0")
     stat_system_load_avg = db.Column(db.Float, server_default="0")
+    stat_num_redis_keys = db.Column(db.Integer, server_default="0")
+    stat_redis_memory_usage = db.Column(db.Integer, server_default="0")
