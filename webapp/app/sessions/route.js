@@ -33,7 +33,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 
 
     model(params) {
-        let query_params = {page: params.page, filter: params.filter};
+        let query_params = {page: params.page, filter: params.filter, page_size: params.page_size};
         for (let key in params) {
             if (key.startsWith('show_')) {
                 query_params[key] = params[key];
@@ -45,7 +45,6 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         if (user_id !== undefined) {
             query_params.user_id = user_id;
         }
-        query_params.page_size = 50;
         return this.store.query('session', query_params);
     },
 

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-    queryParams: ['page',
+    queryParams: ['page', 'page_size',
                   {
                       filter: {
                           scope: "controller"
@@ -10,9 +10,10 @@ export default Ember.Controller.extend({
                   }],
 
     page: 1,
+    page_size: 25,
+
     filter: undefined,
     collection: null,
-
 
     check_paging: function() {
         let self = this;

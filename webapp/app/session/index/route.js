@@ -38,8 +38,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
         let query_params = {
                 session_id: session_id,
                 page: params.page,
-                filter: params.filter,
-                page_size: 50
+                page_size: params.page_size,
         };
 
         for (let key in params) {

@@ -5,7 +5,10 @@ import RefreshableRouteMixin from '../mixins/refreshable-route';
 export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, {
     queryParams: {
         page: {
-            refreshModel: true
+            refreshModel: true,
+        },
+        page_size: {
+            refreshModel: true,
         },
         filter: {
             refreshModel: true,
