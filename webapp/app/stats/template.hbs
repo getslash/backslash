@@ -3,7 +3,7 @@
 
   <div class="stats-panel">
     <h3>System load avg.</h3>
-    {{c3-chart data=model.load_avg.data gauge=model.load_avg.gauge color=model.load_avg.color}}
+    {{c3-chart data=load_avg_gauge_data gauge=load_avg_gauge_settings color=load_avg_gauge_color}}
   </div>
 
   <div class="stats-panel">
@@ -18,6 +18,15 @@
   </div>
 
 
+  <div class="stats-panel">
+    <h3>Redis Key Count</h3>
+    {{stats/admin-stats data=model.history series_key="num_redis_keys" series_name="Number of Redis Keys"}}
+  </div>
+
+  <div class="stats-panel">
+    <h3>Redis Memory Usage</h3>
+    {{stats/admin-stats data=model.history series_key="redis_memory_usage" series_name="Redis Memory Usage" formatter=format_bytes}}
+  </div>
 
   {{# if (can "view_platform_stats") }}
 

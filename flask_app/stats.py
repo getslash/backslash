@@ -46,13 +46,13 @@ def iter_stat_names():
 ################################################################################
 
 def collect_stats():
-    stat_dict = _get_stats_dict()
+    stat_dict = get_current_stats_dict()
     db.session.add(models.Stat(**stat_dict))
     db.session.flush()
     _cleanup_oldest_samples()
     db.session.commit()
 
-def _get_stats_dict():
+def get_current_stats_dict():
     returned = {}
     for stat_name in iter_stat_names():
         if stat_name.startswith('_'):

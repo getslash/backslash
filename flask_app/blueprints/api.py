@@ -519,31 +519,16 @@ def get_user_run_tokens(user_id: int):
 @API(require_real_login=True)
 @requires_role('admin')
 def get_admin_stats():
-    returned = {}
-    returned['load_avg'] = {
-        'data': {
-            'columns': [
-                ['load', os.getloadavg()[0]]
-            ],
-            'type': 'gauge',
-        },
-        'gauge': {
-            'min': 0,
-            'max': multiprocessing.cpu_count(),
-            'units': '',
-            'label': {
-                'show': False,
-            },
-        },
-    }
-
-
-    history = returned['history'] = []
-
-    for s in models.Stat.query.order_by('timestamp asc').all():
-        item = {'timestamp': s.timestamp}
-        item.update({name: getattr(s, 'stat_' + name) for name in stats.iter_stat_names()})
+    history = []
+    for stat in models.Stat.query.order_by('timestamp asc').all():
+        item = {'timestamp': stat.timestamp}
+        item.update({name: getattr(stat, 'stat_' + name) for name in stats.iter_stat_names()})
         history.append(item)
+    returned = {
+        'current': stats.get_current_stats_dict(),
+        'history': history,
+        'cpu_count': multiprocessing.cpu_count(),
+    }
     return returned
 
 
