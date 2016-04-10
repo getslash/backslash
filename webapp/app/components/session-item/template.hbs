@@ -14,8 +14,11 @@
         ({{abandoned_reason}})
       </div>
     {{else}}
-      {{#if session.total_num_tests}}
-        {{session.total_num_tests}} tests
+      {{#if session.num_finished_tests}}
+        {{session.num_finished_tests}} tests
+        {{#if (and session.total_num_tests (gt session.total_num_tests session.num_finished_tests))}}
+          / {{session.total_num_tests}}
+        {{/if}}
       {{/if}}
       {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
         <div>
