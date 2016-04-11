@@ -22,6 +22,13 @@ _keys.forEach(function(k) {
     _shortcuts[k.key] = k.action;
 });
 
+let _FILTERABLE_VIEWS = [
+    'sessions',
+    'session.index',
+    'user.sessions',
+    'subject',
+];
+
 
 export default Ember.Component.extend(KeyboardShortcuts, {
     help_displayed: false,
@@ -99,14 +106,14 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         toggle_human_times() {
-            this._do_if_in(['sessions', 'session.index'], function(controller) {
+            this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
                 controller.toggleProperty('humanize_times');
             });
         },
 
 
         toggle_only_failed() {
-            this._do_if_in(['sessions', 'session.index'], function(controller) {
+            this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
                 controller.set('show_successful', false);
                 controller.set('show_skipped', false);
                 controller.set('show_abandoned', false);

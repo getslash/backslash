@@ -1,34 +1,11 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import RefreshableRouteMixin from '../../mixins/refreshable-route';
+import StatusFilterableRoute from '../../mixins/status-filterable/route';
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, StatusFilterableRoute, {
 
     title: 'Session Details',
-
-    queryParams: {
-        humanize_times: {
-            refreshModel: false,
-        },
-        page: {
-            refreshModel: true
-        },
-        filter: {
-            refreshModel: true,
-        },
-        show_successful: {
-            refreshModel: true,
-        },
-        show_unsuccessful: {
-            refreshModel: true,
-        },
-        show_abandoned: {
-            refreshModel: true,
-        },
-        show_skipped: {
-            refreshModel: true,
-        },
-    },
 
 
     model: function(params) {

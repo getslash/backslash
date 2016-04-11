@@ -1,16 +1,8 @@
 import Ember from 'ember';
 import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
+import StatusFilterableController from '../../mixins/status-filterable/controller';
 
-export default PaginatedFilteredController.extend({
-
-    queryParams: ['humanize_times', 'show_successful', 'show_unsuccessful', 'show_abandoned', 'show_skipped'],
-
-    humanize_times: true,
-    show_successful: true,
-    show_unsuccessful: true,
-    show_abandoned: true,
-    show_skipped: true,
-
+export default PaginatedFilteredController.extend(StatusFilterableController, {
 
 
     investigating: false,
