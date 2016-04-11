@@ -9,7 +9,8 @@ import {timeout, task} from 'ember-concurrency';
 let _keys = [
     {key: '.', action: 'open_quick_search', description: 'Opens quick jump'},
     {key: 'h', action: 'toggle_human_times', description: 'Toggles human-readable times'},
-    {key: 'F', action: 'toggle_only_failed', description: 'Hide all entities except failed'},
+    {key: 'A', action: 'filter_none', description: 'Show all entities'},
+    {key: 'F', action: 'filter_only_failed', description: 'Hide all entities except failed'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -112,15 +113,17 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
 
-        toggle_only_failed() {
+        filter_only_failed() {
             this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
-                controller.set('show_successful', false);
-                controller.set('show_skipped', false);
-                controller.set('show_abandoned', false);
+                controller.filter_all_except('unsuccessful');
             });
         },
 
-
+        filter_none() {
+            this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
+                controller.filter_none();
+            });
+        },
 
         open_quick_search() {
             let self = this;
