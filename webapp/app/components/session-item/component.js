@@ -14,12 +14,14 @@ export default Ember.Component.extend({
     }.property('session.id'),
 
     in_pdb: Ember.computed.oneWay('session.in_pdb'),
-    
+
     status: function() {
         let item = this.get('item');
 
         if (!item.get('is_abandoned')) {
             if (item.get('num_error_tests') || item.get('num_failed_tests')) {
+                return 'failed';
+            } else if (['error', 'failure'].indexOf(item.get('status').toLowerCase()) !== -1) {
                 return 'failed';
             } else if (item.get('num_skipped_tests')) {
                 return 'skipped';
@@ -31,7 +33,7 @@ export default Ember.Component.extend({
                 return 'finished';
             }
         }
-    }.property('item.num_skipped_tests', 'item.num_error_tests', 'item.num_failed_tests', 'item.is_running'),
+    }.property('item.num_skipped_tests', 'item.num_error_tests', 'item.num_failed_tests', 'item.is_running', 'item.status'),
 
     result_type: Ember.computed.oneWay('item.type'),
 

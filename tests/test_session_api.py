@@ -113,4 +113,3 @@ def test_session_query_tests(started_session_with_ended_test):
     assert queried_test.id == test.id
     test.refresh()  # need to update end_time
     assert queried_test == without_single_rendered_fields(test)
-
