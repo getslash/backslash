@@ -155,11 +155,24 @@ a.item, a.item:hover {
 	}
 
 	.times {
+	    flex: 0;
 	    @extend .hidden-xs;
 	    @extend .hidden-sm;
 	    color: $gray-light;
 	    flex: 0 0 30%;
 	    white-space: nowrap;
+	}
+
+	.duration {
+	    @extend .hidden-xs;
+	    @extend .hidden-sm;
+	    @extend .overflow-ellipsis;
+	    color: $gray-light;
+	    display: flex;
+	    flex: 0 0 8em;
+	    justify-content: flex-end;
+	    font-size: xx-small;
+	    align-items: center;
 	}
 
 	.subject-info {
