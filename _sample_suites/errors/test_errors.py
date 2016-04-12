@@ -11,6 +11,9 @@ def test_3():
     for i in range(30):
         slash.add_error('sample error #{}'.format(i))
 
+def test_4():
+    raise Exception('this is a very long message ' * 100)
+
 def f():
     var = 2
     g()

@@ -40,6 +40,14 @@
     margin: 0.5em;
     border: 1px solid $gray-light;
     color: $gray-light;
+
+    tr.variable {
+	td {
+	    white-space: pre;
+	    max-width: 1em;
+	    overflow: scroll;
+	}
+    }
 }
 
 .vars-heading {
