@@ -49,19 +49,7 @@
             <h4>
               <i class="fa fa-exclamation-circle"></i>
               {{test.status}}
-              {{#if (gt test.num_errors 1) }}
-                ( +{{sub test.num_errors 1}})
-              {{/if}}
             </h4>
-            {{#link-to 'test.errors' test.display_id}}
-              More information...
-            {{/link-to}}
-
-            {{#if test.first_error}}
-              <pre>{{test.first_error.message}}</pre>
-            {{/if}}
-
-
           </div>
         {{/if}}
 
@@ -70,7 +58,26 @@
             <h4> <i class="fa fa-refresh fa-spin"></i> Still running...</h4>
           </div>
         {{/if}}
+
+        {{#if test.num_errors}}
+          <div class="list-group-item list-group-item-danger">
+
+            <h4>
+            {{pluralize-word test.num_errors 'Error'}} Encountered
+            </h4>
+
+
+            {{#if test.first_error}}
+              <pre>{{test.first_error.message}}</pre>
+            {{/if}}
+
+            {{#link-to 'test.errors' test.display_id}}
+              More information...
+            {{/link-to}}
+          </div>
+        {{/if}}
       </div>
+
     </div>
   </div>
 </div>
