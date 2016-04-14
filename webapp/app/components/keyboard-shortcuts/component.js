@@ -20,7 +20,10 @@ let _keys = [
 let _shortcuts = {};
 
 _keys.forEach(function(k) {
-    _shortcuts[k.key] = k.action;
+    _shortcuts[k.key] = {
+        action: k.action,
+        global: false,
+    };
 });
 
 let _FILTERABLE_VIEWS = [
