@@ -1,26 +1,7 @@
 import BaseRoute from '../../routes/base';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import ErrorsRouteMixin from '../../mixins/errors-route';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, {
-
-    model: function() {
-        let session = this.modelFor('session');
-        return this.store.query('error', {session_id: session.id});
-    },
-
-    setupController: function(controller, model) {
-        this._super(controller, model);
-        controller.set('session', this.modelFor('session'));
-        controller.set('errors', model);
-    },
-
-    renderTemplate: function() {
-        this.render('errors');
-    },
-
-    afterModel(model) {
-        if (model.get('meta.total') === 1) {
-          this.transitionTo('session.single_error', 1);
-        }
-    }
+export default BaseRoute.extend(AuthenticatedRouteMixin, ErrorsRouteMixin, {
+    parent_model_name: 'session',
 });
