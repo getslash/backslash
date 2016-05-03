@@ -102,6 +102,10 @@
       <dl>
         <dt>File name</dt>
         <dd>{{test.info.file_name}}</dd>
+        {{#if test.info.class_name}}
+          <dt>Class name</dt>
+          <dd>{{test.info.class_name}}</dd>
+        {{/if}}
         <dt>{{if test.info.class_name 'Method' 'Function'}} name</dt>
         <dd>{{test.info.name}}</dd>
 
