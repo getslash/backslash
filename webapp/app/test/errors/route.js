@@ -1,7 +1,7 @@
 import BaseRoute from '../../routes/base';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import ErrorsRouteMixin from '../../mixins/errors-route';
+import ErrorsWarningsRouteMixin from '../../mixins/errors-warnings-route';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, ErrorsRouteMixin, {
+export default BaseRoute.extend(AuthenticatedRouteMixin, ErrorsWarningsRouteMixin, {
     parent_model_name: 'test',
 });

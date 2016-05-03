@@ -8,6 +8,7 @@ export default Ember.Mixin.create(InfinityRoute, {
     perPageParam: "page_size",
     pageParam: "page",
     totalPagesParam: "meta.pages_total",
+    type: 'error',
 
     model: function() {
         const parent_model_name = this.get('parent_model_name');
@@ -19,11 +20,10 @@ export default Ember.Mixin.create(InfinityRoute, {
             query_params['test_id'] = parent.id;
         }
 
-        query_params['modelPath'] = 'controller.errors';
+        query_params['modelPath'] = `controller.${this.get('type').pluralize()}`;
 
-        let props = {
-            errors: this.infinityModel("error", query_params),
-        };
+        let props = {};
+        props[this.get('type').pluralize()] = this.infinityModel(this.get('type'), query_params);
         props[parent_model_name] = parent;
 
         if (parent_model_name === 'test') {
@@ -40,11 +40,12 @@ export default Ember.Mixin.create(InfinityRoute, {
     },
 
     renderTemplate: function() {
-        this.render('errors');
+        this.render(this.get('type').pluralize());
     },
 
     afterModel(model) {
-        if (model.errors.get('meta.total') === 1) {
+
+        if (this.get('type') === 'error' && model.errors.get('meta.total') === 1) {
           this.transitionTo(`${this.get('parent_model_name')}.single_error`, 1);
         }
     }
