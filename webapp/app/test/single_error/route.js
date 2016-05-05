@@ -8,7 +8,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
         return Ember.RSVP.hash({
             'index': params.index,
-            'error': this.store.queryRecord('error', {test_id: test.id, page: parseInt(params.index) + 1, page_size: 1}),
+            'error': this.store.queryRecord('error', {test_id: test.id, page: params.index, page_size: 1}),
             'test': test,
             'session': this.store.find('session', test.get('session_id'))
         });

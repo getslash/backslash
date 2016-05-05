@@ -30,6 +30,9 @@ export default Ember.Mixin.create(InfinityRoute, {
 
         if (parent_model_name === 'test') {
             props['session'] = this.store.find('session', parent.get('session_id'));
+            props['test'] = this.store.find('test', parent.id);
+        } else {
+            props['session'] = this.store.find('session', parent.id);
         }
 
         return Ember.RSVP.hash(props);
