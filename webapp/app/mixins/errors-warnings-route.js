@@ -24,7 +24,9 @@ export default Ember.Mixin.create(InfinityRoute, {
 
         let props = {};
         props[this.get('type').pluralize()] = this.infinityModel(this.get('type'), query_params);
-        props[parent_model_name] = parent;
+
+        props['single_error_route'] = `${parent_model_name}.single_error`;
+        props['parent_id'] = parent.get('display_id');
 
         if (parent_model_name === 'test') {
             props['session'] = this.store.find('session', parent.get('session_id'));

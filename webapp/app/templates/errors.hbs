@@ -13,7 +13,7 @@
 
   {{#each errors as |error index|}}
 
-    {{#link-to single_error_route_name (paginated-index index errors.meta.page errors.meta.page_size) classNames="clickable nodecoration"}}
+    {{#link-to single_error_route parent_id index classNames="clickable nodecoration"}}
       <div class="box error">
         <div class="info">
           {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})
