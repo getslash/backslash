@@ -54,7 +54,7 @@
           <strong>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</strong>
         </td>
       </tr>
-      {{#if (not session_model.is_finished)}}
+      {{#if (and session_model.finished_running session_model.has_tests_left_to_run)}}
         <tr>
           <td colspan="2">
             <div class="list-group">

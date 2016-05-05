@@ -26,7 +26,7 @@ export default DS.Model.extend(HasLogicalId, {
         if (this.get('total_num_tests') === null) {
             return true;
         }
-        return this.get('num_finished_tests') === this.get('total_num_tests');
+        return parseInt(this.get('num_finished_tests')) === parseInt(this.get('total_num_tests'));
     }.property('num_finished_tests', 'total_num_tests'),
 
     has_tests_left_to_run: Ember.computed.not('ran_all_tests'),
