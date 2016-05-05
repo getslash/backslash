@@ -54,6 +54,18 @@
           <strong>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</strong>
         </td>
       </tr>
+      {{#if (not session_model.is_finished)}}
+        <tr>
+          <td colspan="2">
+            <div class="list-group">
+              <div class="list-group-item list-group-item-danger">
+                <i class="fa fa-exclamation-circle"></i>
+                Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
+              </div>
+            </div>
+          </td>
+        </tr>
+      {{/if}}
       <tr>
         <td class="faint">Duration: </td>
         <td>

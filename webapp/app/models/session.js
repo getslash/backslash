@@ -13,7 +13,7 @@ export default DS.Model.extend(HasLogicalId, {
     is_abandoned: DS.attr('boolean'),
 
     in_pdb: DS.attr('boolean'),
-    
+
     infrastructure: DS.attr(),
 
     num_error_tests: DS.attr('number'),
@@ -21,6 +21,16 @@ export default DS.Model.extend(HasLogicalId, {
     num_failed_tests: DS.attr('number'),
     num_finished_tests: DS.attr('number'),
     num_skipped_tests: DS.attr('number'),
+
+    is_finished: function() {
+        if (this.get('total_num_tests') === null) {
+            return true;
+        }
+        return this.get('num_finished_tests') === this.get('total_num_tests');
+    }.property('num_finished_tests', 'total_num_tests'),
+
+    is_not_finished: Ember.computed.not('is_finished'),
+
 
     total_num_tests: DS.attr('number'),
     hostname: DS.attr(),
