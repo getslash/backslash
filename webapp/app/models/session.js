@@ -22,14 +22,14 @@ export default DS.Model.extend(HasLogicalId, {
     num_finished_tests: DS.attr('number'),
     num_skipped_tests: DS.attr('number'),
 
-    is_finished: function() {
+    ran_all_tests: function() {
         if (this.get('total_num_tests') === null) {
             return true;
         }
         return this.get('num_finished_tests') === this.get('total_num_tests');
     }.property('num_finished_tests', 'total_num_tests'),
 
-    is_not_finished: Ember.computed.not('is_finished'),
+    has_tests_left_to_run: Ember.computed.not('ran_all_tests'),
 
 
     total_num_tests: DS.attr('number'),
@@ -64,7 +64,9 @@ export default DS.Model.extend(HasLogicalId, {
 
     is_running: function() {
         return this.get('status') === 'RUNNING';
-    }.property('status')
+    }.property('status'),
+
+    finished_running: Ember.computed.not('is_running'),
 
 
 });

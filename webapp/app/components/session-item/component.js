@@ -4,7 +4,7 @@ export default Ember.Component.extend({
     tagName: 'a',
     attributeBindings: ['href'],
     classNames: ['item', 'session', 'clickable'],
-    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb', 'item.is_not_finished:interrupted'],
+    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb', 'interrupted:interrupted'],
 
     session: Ember.computed.oneWay('item'),
 
@@ -14,6 +14,8 @@ export default Ember.Component.extend({
     }.property('session.id'),
 
     in_pdb: Ember.computed.oneWay('session.in_pdb'),
+
+    interrupted: Ember.computed.and('item.finished_running', 'item.has_tests_left_to_run'),
 
 
     status: function() {
