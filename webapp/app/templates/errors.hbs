@@ -10,9 +10,10 @@
 {{/tool-bar}}
 
 <div class="container">
+
   {{#each errors as |error index|}}
 
-    {{#link-to single_error_route_name (paginated-index index errors.meta.page errors.meta.page_size) classNames="clickable nodecoration"}}
+    {{#link-to single_error_route parent_id (add index 1) classNames="clickable nodecoration"}}
       <div class="box error">
         <div class="info">
           {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})
@@ -23,9 +24,7 @@
       </div>
     {{/link-to}}
   {{/each}}
-</div>
 
-{{#with errors.meta as |meta|}}
-{{pagination-nav
-  page=meta.page pages_total=meta.pages_total goto_page="goto_page"}}
-{{/with}}
+  {{infinity-loader infinityModel=errors loadingText="Loading..." loadedText=""}}
+
+</div>

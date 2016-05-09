@@ -1,5 +1,4 @@
-{{#if show_file}}{{info.file_name}}:{{/if}}{{info.name}} {{#if variation}}<ul class="params">
-  {{#each-in variation as |name value|}}
+{{#if show_file}}{{info.file_name}}:{{/if}}{{#if (and info.class_name is_valid_class_name)}}{{info.class_name}}.{{/if}}{{info.name}}{{#if variation}}<ul class="params"> {{#each-in variation as |name value|}}
     <li>{{name}}=<code>{{value}}</code></li>
   {{/each-in}}
 </ul>{{/if}}

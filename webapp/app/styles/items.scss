@@ -71,6 +71,20 @@ a.item, a.item:hover {
 	}
     }
 
+    &.session.interrupted {
+
+	.left-badge {
+	    background: repeating-linear-gradient(0deg, $brand-danger, lighten($brand-danger, 10%));
+	    background: repeating-linear-gradient(
+				45deg,
+				$brand-danger,
+				$brand-danger 10px,
+				lighten($brand-danger, 10%) 10px,
+				lighten($brand-danger, 10%) 20px);
+	}
+    }
+
+
     &.failed .left-badge {
 	background: $brand-danger;
     }

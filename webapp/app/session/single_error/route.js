@@ -5,10 +5,10 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
     model: function(params) {
         let session = this.modelFor('session');
-        
+
         return Ember.RSVP.hash({
-        	'index': params.index,
-            'error': this.store.queryRecord('error', {session_id:session.id, page:params.index, page_size:1}),
+            'index': params.index,
+            'error': this.store.queryRecord('error', {session_id:session.id, page: params.index, page_size:1}),
             'session': this.store.find('session', session.id)
         });
     },

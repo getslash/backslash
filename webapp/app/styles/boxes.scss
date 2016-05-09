@@ -1,5 +1,5 @@
 .box {
-    
+
     border: 1px solid;
     margin: 1em;
 
@@ -17,6 +17,11 @@
 
 	.info {
 	    background-color: $brand-danger;
+	}
+
+	.message {
+	    overflow: scroll;
+	    white-space: pre;
 	}
     }
 
