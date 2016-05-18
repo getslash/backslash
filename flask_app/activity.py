@@ -41,28 +41,30 @@ def get_activity_query(user_id=None, session_id=None, test_id=None):
     _filter = functools.partial(_apply_filters, user_id=user_id, session_id=session_id, test_id=test_id)
 
     comments = select([
-            literal_column("('comment:' || comment.id)").label('id'),
-            literal_column(str(ACTION_COMMENTED)).label('action'),
-            Comment.user_id.label('user_id'),
-            Comment.session_id.label('session_id'),
-            Comment.test_id.label('test_id'),
-            Comment.timestamp.label('timestamp'),
-            Comment.comment.label('text'),
-            User.email.label('user_email'),
-        ]).select_from(Comment.__table__.join(User, User.id == Comment.user_id))
+        literal_column("('comment:' || comment.id)").label('id'),
+        literal_column(str(ACTION_COMMENTED)).label('action'),
+        Comment.user_id.label('user_id'),
+        Comment.session_id.label('session_id'),
+        Comment.test_id.label('test_id'),
+        Comment.timestamp.label('timestamp'),
+        Comment.comment.label('text'),
+        (User.first_name + ' ' + User.last_name).label('user_name'),
+        User.email.label('user_email'),
+    ]).select_from(Comment.__table__.join(User, User.id == Comment.user_id))
 
     comments = _filter(Comment, comments)
 
     activity = select([
-            literal_column("('activity:' || activity.id)").label('id'),
-            Activity.action.label('action'),
-            Activity.user_id.label('user_id'),
-            Activity.session_id.label('session_id'),
-            Activity.test_id.label('test_id'),
-            Activity.timestamp.label('timestamp'),
-            literal_column("NULL").label('text'),
-            User.email.label('user_email'),
-        ]).select_from(Activity.__table__.join(User, User.id == Activity.user_id))
+        literal_column("('activity:' || activity.id)").label('id'),
+        Activity.action.label('action'),
+        Activity.user_id.label('user_id'),
+        Activity.session_id.label('session_id'),
+        Activity.test_id.label('test_id'),
+        Activity.timestamp.label('timestamp'),
+        literal_column("NULL").label('text'),
+        (User.first_name + ' ' + User.last_name).label('user_name'),
+        User.email.label('user_email'),
+    ]).select_from(Activity.__table__.join(User, User.id == Activity.user_id))
 
     activity = _filter(Activity, activity)
 
