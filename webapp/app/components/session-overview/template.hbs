@@ -1,0 +1,85 @@
+{{#if show_breakdown}}
+  {{session-breakdown session=session_model tooltip_position="bottom"}}
+{{/if}}
+
+{{#if link}}
+  <div class="row">
+    <div class="col-sm-12">
+      <dl class="spaced">
+        <dt>Session</dt>
+        <dd>{{#link-to 'session.index' session_model.display_id}}{{session_model.display_id}}{{/link-to}}</dd>
+      </dl>
+    </div>
+  </div>
+{{/if}}
+
+
+{{#if user}}
+  <div class="row">
+    <div class="col-sm-12">
+      <dl class="spaced">
+        <dt>Started By</dt>
+        <dd>
+          {{#link-to "user.sessions" session_model.user_email}}
+            {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
+          {{/link-to}}
+        </dd>
+      </dl>
+    </div>
+  </div>
+{{/if}}
+
+
+
+<div class="row margin-bottom-large">
+  <div class="col-sm-6">
+    <dl class="spaced">
+
+      <dt>Run Time</dt>
+      <dd>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</dd>
+      <dt>Test Subjects</dt>
+      <dd>
+        {{#each session_model.subjects as |subject|}}
+          <p><i class="fa fa-rocket"></i>
+            {{#link-to 'subject' subject.name}}
+              <strong>{{subject.name}}</strong>
+            {{/link-to}}
+            ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
+          </p>
+        {{/each}}
+      </dd>
+    </dl>
+  </div>
+  <div class="col-sm-6">
+    <dl class="spaced">
+      <dt>Duration</dt>
+      <dd>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</dd>
+
+      {{#if session_model.infrastructure }}
+        <dt>Infrastructure</dt>
+        <dd>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+          {{#if metadata.slash.version}}
+            ({{metadata.slash.version}})
+          {{/if}}
+        </dd>
+      {{/if}}
+
+    </dl>
+  </div>
+
+</div>
+
+<div class="row">
+  {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
+  {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
+  {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
+
+  {{#if (and session_model.finished_running session_model.has_tests_left_to_run)}}
+    <div class="list-group">
+      <div class="list-group-item list-group-item-danger">
+        <i class="fa fa-exclamation-circle"></i>
+        Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
+      </div>
+    </div>
+  {{/if}}
+</div>

@@ -4,6 +4,8 @@ var everything = ['num_failed_tests', 'num_error_tests', 'num_skipped_tests', 'n
 
 export default Ember.Component.extend({
 
+    classNames: ['margin-bottom-large'],
+
     session: null,
 
     tooltip_position: "right",
