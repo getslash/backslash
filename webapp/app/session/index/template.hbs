@@ -76,7 +76,11 @@
         <td class="faint">Test Subjects:</td>
         <td>
           {{#each session_model.subjects as |subject|}}
-            <p><i class="fa fa-rocket"></i> <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
+            <p><i class="fa fa-rocket"></i>
+              {{#link-to 'subject' subject.name}}
+              <strong>{{subject.name}}</strong>
+              {{/link-to}}
+              ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
             </p>
           {{/each}}
         </td>
