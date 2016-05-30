@@ -11,7 +11,8 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, 
         return Ember.RSVP.hash({
             test: test,
             activity: this.store.query('activity', {test_id: test.get('id')}),
-            'metadata': this.api.call('get_metadata', {
+
+            metadata: this.api.call('get_metadata', {
                 entity_type: 'test',
                 entity_id: parseInt(test.get('id'))
             }).then(r => r.result),

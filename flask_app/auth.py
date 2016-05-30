@@ -13,7 +13,7 @@ from .utils.oauth2 import get_oauth2_identity
 
 _logger = logbook.Logger(__name__)
 
-_MAX_TOKEN_AGE = 60 * 60 * 24 * 7  # one week
+_MAX_TOKEN_AGE = 60 * 60 * 24 * 30  # one month
 
 auth = Blueprint("auth", __name__, template_folder="templates")
 

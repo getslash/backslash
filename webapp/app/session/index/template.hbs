@@ -39,70 +39,7 @@
 
 
 {{hr-separator title="Overview"}}
-<div class="container-fluid session-details">
-  <div class="col-md-2">
-    {{#link-to "user.sessions" session_model.user_email}}
-      {{users/user-avatar user=user real_email=session_model.real_email large=true}}
-    {{/link-to}}
-  </div>
-  <div class="col-md-8">
-    {{session-breakdown session=session_model tooltip_position="bottom"}}
-    <table class="table details">
-      <tr>
-        <td class="faint">Run time: </td>
-        <td>
-          <strong>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</strong>
-        </td>
-      </tr>
-      {{#if (and session_model.finished_running session_model.has_tests_left_to_run)}}
-        <tr>
-          <td colspan="2">
-            <div class="list-group">
-              <div class="list-group-item list-group-item-danger">
-                <i class="fa fa-exclamation-circle"></i>
-                Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
-              </div>
-            </div>
-          </td>
-        </tr>
-      {{/if}}
-      <tr>
-        <td class="faint">Duration: </td>
-        <td>
-          <strong>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</strong>
-        </td>
-      </tr>
-      <tr>
-        <td class="faint">Test Subjects:</td>
-        <td>
-          {{#each session_model.subjects as |subject|}}
-            <p><i class="fa fa-rocket"></i> <strong>{{subject.name}}</strong> ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
-            </p>
-          {{/each}}
-        </td>
-      </tr>
-      {{#if session_model.infrastructure }}
-        <tr>
-          <td class="faint">Infrastructure</td>
-          <td>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-            {{#if metadata.slash.version}}
-              ({{metadata.slash.version}})
-            {{/if}}
-          </td>
-        </tr>
-      {{/if}}
-      <tr>
-        <td colspan="2">
-          {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
-          {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
-          {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
-        </td>
-      </tr>
-
-    </table>
-
-  </div>
-</div>
+{{session-overview session_model=session_model user=user}}
 
 {{hr-separator title="Tests"}}
 
