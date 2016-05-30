@@ -69,17 +69,20 @@
 
 </div>
 
-<div class="row">
-  {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
-  {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
-  {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
-
-  {{#if (and session_model.finished_running session_model.has_tests_left_to_run)}}
-    <div class="list-group">
-      <div class="list-group-item list-group-item-danger">
-        <i class="fa fa-exclamation-circle"></i>
-        Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
+{{#if (or session_model.num_warnings session_model.num_test_warnings session_model.num_errors not_complete)}}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="list-group">
+        <div class="list-group-item list-group-item-{{if (or session_model.not_complete session_model.num_errors) 'danger' 'warning'}}">
+          {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
+          {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
+          {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
+          {{#if not_complete}}
+            <i class="fa fa-exclamation-circle"></i>
+            Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
+          {{/if}}
+        </div>
       </div>
     </div>
-  {{/if}}
-</div>
+  </div>
+{{/if}}
