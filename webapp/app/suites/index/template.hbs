@@ -1,0 +1,24 @@
+{{#tool-bar}}
+  <form class="navbar-form navbar-right">
+    {{#link-to 'suites.new' tagName='button' classNames='btn btn-success'}}
+      <i class="fa fa-plus"></i> New Suite...
+    {{/link-to}}
+  </form>
+
+{{/tool-bar}}
+
+<div class="container">
+
+  {{#each suites as |suite|}}
+    {{#link-to 'suite.index' suite.id classNames="item suite"}}
+      <div class="name" title="{{suite.name}}">
+	{{suite.name}}
+	<div class="inline-label">
+	  {{if suite.is_public 'public' 'private'}}
+	</div>
+      </div>
+    {{/link-to}}
+  {{/each}}
+
+  {{infinity-loader infinityModel=suites loadingText="Loading..." loadedText=""}}
+</div>

@@ -4,7 +4,7 @@ import flux
 
 from flask import g
 
-from sqlalchemy.sql import select, union_all, literal_column, text
+from sqlalchemy.sql import select, union_all, literal_column
 from sqlalchemy import and_
 
 from flask.ext.security import current_user

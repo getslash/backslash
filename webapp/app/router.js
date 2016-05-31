@@ -35,6 +35,12 @@ Router.map(function() {
   this.route('stats');
   this.route('component-proofing');
   this.route('setup');
+  this.route('suites', function() {
+    this.route('new');
+  });
+  this.route('suite', { path: '/suites/:id' }, function() {
+    this.route('edit');
+  });
 });
 
 export default Router;

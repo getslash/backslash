@@ -1,0 +1,31 @@
+{{#tool-bar}}
+  <div class="navbar-text">
+    New Suite
+  </div>
+{{/tool-bar}}
+
+<form class="form-horizontal">
+  <fieldset>
+
+    <!-- Text input-->
+    <div class="form-group {{if error 'has-error'}}">
+      <label class="col-md-4 control-label" for="suite-name">Suite Name</label>
+      <div class="col-md-4">
+	{{input id="suite-name" name="suite-name" type="text" placeholder="My Suite" classNames="form-control input-md" value=suite_name}}
+	{{#if error}}
+	<span class="help-block">{{error}}</span>
+	{{/if}}
+      </div>
+
+    </div>
+
+    <!-- Button -->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="singlebutton"></label>
+      <div class="col-md-4">
+	<button class="btn btn-primary {{if (not is_valid) 'disabled'}}" {{action 'create'}}>Create</button>
+      </div>
+    </div>
+
+  </fieldset>
+</form>

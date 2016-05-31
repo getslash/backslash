@@ -193,11 +193,7 @@ a.item, a.item:hover {
 	    flex: 0 0 30%;
 
 	    .subject-version {
-		background: $gray-lighter;
-		border-radius: 3px;
-		font-size: x-small;
-		margin: 2px;
-		padding: 3px;
+		@extend .inline-label;
 	    }
 	}
 
@@ -244,5 +240,8 @@ a.item, a.item:hover {
     .name {
 	@extend .pad-small;
     }
+}
 
+.item.suite {
+    @extend .pad-medium;
 }

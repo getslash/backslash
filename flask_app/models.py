@@ -19,6 +19,9 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB
 db = SQLAlchemy()
 
 
+Filename = db.String(1024)
+
+
 class TypenameMixin(object):
 
     @classmethod
@@ -230,7 +233,7 @@ class ProductRevision(db.Model):
 class TestInformation(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    file_name = db.Column(db.String(1024), nullable=True, index=True)
+    file_name = db.Column(Filename, nullable=True, index=True)
     class_name = db.Column(db.String(256), nullable=True, index=True)
     name = db.Column(db.String(256), nullable=False, index=True)
 
@@ -530,3 +533,35 @@ class AppConfig(db.Model):
 
     key = db.Column(db.String(256), primary_key=True)
     value = db.Column(JSONB, nullable=False)
+
+
+class Suite(db.Model, TypenameMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1024), index=True)
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
+    owner = db.relationship('User', lazy='joined', foreign_keys=owner_id)
+    is_public = db.Column(db.Boolean, server_default='FALSE')
+
+    __table_args__ = (
+        Index('ix_unique_name_for_owner', owner_id, name, postgresql_where=(is_public == False), unique=True), # pylint: disable=singleton-comparison
+        Index('ix_unique_name_for_public', name, postgresql_where=(is_public == True), unique=True), # pylint: disable=singleton-comparison
+    )
+
+
+class SuiteItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    suite_id = db.Column(
+        db.Integer, db.ForeignKey('suite.id', ondelete='CASCADE'), nullable=False, index=True)
+    position = db.Column(db.Integer, nullable=False, index=True)
+
+    #elements can be either:
+
+    #tests
+    test_id = db.Column(
+        db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), nullable=True)
+    test = db.relationship(TestInformation, lazy='joined')
+
+    #files
+    filename = db.Column(Filename, nullable=True)

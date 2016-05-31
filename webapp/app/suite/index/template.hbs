@@ -1,0 +1,13 @@
+{{#tool-bar}}
+  <div class="navbar-text">
+    Suites / {{suite.name}}
+  </div>
+
+  <div class="navbar-form pull-right">
+    {{#link-to "suite.edit" suite.id tagName="button" classNames="btn"}}
+      <i class="fa fa-edit"></i> Edit suite...
+    {{/link-to}}
+  </div>
+{{/tool-bar}}
+
+{{outlet}}

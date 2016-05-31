@@ -11,7 +11,7 @@ from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
 from .. import models
-from ..models import Error, Session, Test, User, Subject
+from ..models import Error, Session, Test, User, Subject, Suite
 from .. import activity
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
@@ -211,6 +211,13 @@ class UserResource(ModelResource):
             except NoResultFound:
                 abort(requests.codes.not_found)
         return User.query.get_or_404(int(object_id))
+
+
+@_resource('/suites', '/suites/<object_id>')
+class SuitesResource(ModelResource):
+
+    MODEL = Suite
+
 
 
 @blueprint.route('/activities')
