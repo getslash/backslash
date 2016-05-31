@@ -284,9 +284,9 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     first_error_obj = db.relationship(lambda: Error,
                                   primaryjoin=lambda: and_(
-                                      Test.id == Error.test_id,
+                                      Test.id == Error.test_id, # pylint: disable=undefined-variable
                                       Error.timestamp == select([func.min(Error.timestamp)]).
-                                      where(Error.test_id==Test.id).
+                                      where(Error.test_id == Test.id).
                                       correlate(Test.__table__)
                                   ),
                                   uselist=False,
