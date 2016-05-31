@@ -44,8 +44,11 @@
     tr.variable {
 	td {
 	    white-space: pre;
-	    max-width: 1em;
 	    overflow: scroll;
+
+	    &:nth-child(1) {
+		width: 15em;
+	    }
 	}
     }
 }
