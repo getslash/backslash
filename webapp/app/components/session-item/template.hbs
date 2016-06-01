@@ -49,7 +49,7 @@
     {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
     <small>Started by {{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
     {{#if (and session.is_running (not session.is_abandoned))}}
-      <img src="/static/img/running-indicator.gif" alt="running"/>
+      <img src="/static/assets/img/running-indicator.gif" alt="running"/>
     {{/if}}
 
   </div>
