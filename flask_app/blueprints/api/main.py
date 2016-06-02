@@ -1,12 +1,9 @@
 from contextlib import contextmanager
-import os
-import functools
 import logbook
 import multiprocessing
 
 import requests
-from flask import abort, Blueprint, request, g, current_app
-from flask.ext.simple_api import SimpleAPI
+from flask import abort, current_app
 from flask.ext.simple_api import error_abort
 from flask.ext.security import current_user
 
@@ -14,122 +11,27 @@ from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import NoResultFound
 
+from .blueprint import API
 from ... import activity
 from ... import stats
 from ... import models
 from ...models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
 from ...utils import get_current_time, statuses
-from ...utils.api_utils import auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.test_information import get_or_create_test_information_id
-from ...utils.users import get_user_id_by_email, has_role
+from ...utils.users import has_role
 from ...utils.json import sanitize_json
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
-
-api = SimpleAPI(blueprint)
-
-NoneType = type(None)
-
-
-def API(func=None, require_real_login=False, generates_activity=True, require_login=True):
-    if func is None:
-        return functools.partial(API, require_real_login=require_real_login, generates_activity=generates_activity, require_login=require_login)
-
-    returned = auto_render(func)
-
-    if generates_activity:
-        returned = activity.updates_last_active(returned)
-
-    if require_login:
-        if require_real_login:
-            returned = requires_login(returned)
-        else:
-            returned = requires_login_or_runtoken(returned)
-    return api.include(returned)
 
 ##########################################################################
 
-
-@API
-def report_session_start(logical_id: str=None,
-                         hostname: str=None,
-                         total_num_tests: int=None,
-                         metadata: dict=None,
-                         user_email: str=None,
-                         keepalive_interval: (NoneType, int)=None,
-                         subjects: (list, NoneType)=None,
-                         infrastructure: (str, NoneType)=None,
-                         ):
-    if hostname is None:
-        hostname = request.remote_addr
-
-    # fix user identification
-    if user_email is not None and user_email != g.token_user.email:
-        if not has_role(g.token_user.id, 'proxy'):
-            error_abort('User is not authorized to run tests on others behalf', code=requests.codes.forbidden)
-        real_user_id = g.token_user.id
-        user_id = get_user_id_by_email(user_email)
-    else:
-        user_id = g.token_user.id
-        real_user_id = None
-
-    returned = Session(
-        hostname=hostname,
-        total_num_tests=total_num_tests,
-        infrastructure=infrastructure,
-        user_id=user_id,
-        real_user_id=real_user_id,
-        status=statuses.RUNNING,
-        logical_id=logical_id,
-        keepalive_interval=keepalive_interval,
-        next_keepalive=None if keepalive_interval is None else get_current_time() + keepalive_interval,
-    )
-
-    if subjects:
-        for subject_data in subjects:
-            subject_name = subject_data.get('name', None)
-            if subject_name is None:
-                error_abort('Missing subject name')
-            subject = get_or_create_subject_instance(
-                name=subject_name,
-                product=subject_data.get('product', None),
-                version=subject_data.get('version', None),
-                revision=subject_data.get('revision', None))
-            returned.subject_instances.append(subject)
-            subject.subject.last_activity = get_current_time()
-            db.session.add(subject)
-
-    if metadata is not None:
-        for key, value in metadata.items():
-            returned.metadata_items.append(SessionMetadata(session=returned, key=key, metadata_item=value))
-
-    db.session.add(returned)
-    db.session.commit()
-    return returned
-
-@API
-def report_in_pdb(session_id: int):
-    s = Session.query.get_or_404(session_id)
-    s.in_pdb = True
-    db.session.add(s)
-    db.session.commit()
+from . import sessions # pylint: disable=unused-import
+from .blueprint import blueprint # pylint: disable=unused-import
 
 
-@API
-def report_not_in_pdb(session_id: int):
-    s = Session.query.get_or_404(session_id)
-    s.in_pdb = False
-    db.session.add(s)
-    db.session.commit()
+NoneType = type(None)
 
-
-@API
-def send_keepalive(session_id: int):
-    s = Session.query.get_or_404(session_id)
-    s.next_keepalive = get_current_time() + s.keepalive_interval
-    db.session.add(s)
-    db.session.commit()
 
 @API
 def add_subject(session_id: int, name: str, product: (str, NoneType)=None, version: (str, NoneType)=None, revision: (str, NoneType)=None):
