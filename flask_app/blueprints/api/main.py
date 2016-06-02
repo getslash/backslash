@@ -14,16 +14,16 @@ from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import NoResultFound
 
-from .. import activity
-from .. import stats
-from .. import models
-from ..models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
-from ..utils import get_current_time, statuses
-from ..utils.api_utils import auto_render, requires_login_or_runtoken, requires_login, requires_role
-from ..utils.subjects import get_or_create_subject_instance
-from ..utils.test_information import get_or_create_test_information_id
-from ..utils.users import get_user_id_by_email, has_role
-from ..utils.json import sanitize_json
+from ... import activity
+from ... import stats
+from ... import models
+from ...models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
+from ...utils import get_current_time, statuses
+from ...utils.api_utils import auto_render, requires_login_or_runtoken, requires_login, requires_role
+from ...utils.subjects import get_or_create_subject_instance
+from ...utils.test_information import get_or_create_test_information_id
+from ...utils.users import get_user_id_by_email, has_role
+from ...utils.json import sanitize_json
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
