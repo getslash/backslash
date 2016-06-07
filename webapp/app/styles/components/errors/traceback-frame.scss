@@ -37,28 +37,26 @@
 
 .traceback-frame-vars {
 
+    @extend .row;
     margin: 0.5em;
-    border: 1px solid $gray-light;
+    border: 1px solid $gray-lighter;
     color: $gray-light;
 
-    tr.variable {
-	td {
-	    white-space: pre;
-	    overflow: scroll;
+    .variable {
+	@extend .col-sm-12;
+	@extend .row;
 
-	    &:nth-child(1) {
-		width: 15em;
-	    }
+	.name {
+	    @extend .mono;
+	    @extend .col-sm-2;
+	    @extend .pad-medium;
+	}
+	.value {
+	    background: lighten($gray-lighter, 20%);
+	    @extend .pad-medium;
+	    @extend .col-sm-10;
+	    @extend .pre;
+	    @extend .mono;
 	}
     }
-}
-
-.vars-heading {
-    background: $gray-lighter;
-
-    font-size: small;
-}
-
-tr.variable {
-    @extend .mono;
 }

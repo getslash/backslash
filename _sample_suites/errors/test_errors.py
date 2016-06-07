@@ -12,6 +12,7 @@ def test_3():
         slash.add_error('sample error #{}'.format(i))
 
 def test_4():
+    long_variable = "this is a very long variable" * 100
     raise Exception('this is a very long message ' * 100)
 
 def f():

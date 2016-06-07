@@ -21,22 +21,18 @@
   {{#if show_vars}}
     {{#if (or has_globals has_locals)}}
       <div class="traceback-frame-vars">
-        <table class="table">
-          <tbody>
-            {{#if has_locals}}
-              <tr><td colspan="2" class="vars-heading">Locals</td></tr>
-              {{#each-in frame.locals as |name value|}}
-                <tr class="variable"><td>{{name}}</td><td>{{value.value}}</td></tr>
-              {{/each-in}}
-            {{/if}}
-            {{#if has_globals}}
-              <tr><td colspan="2" class="vars-heading">Globals</td></tr>
-              {{#each-in frame.globals as |name value|}}
-                <tr class="variable"><td>{{name}}</td><td>{{value.value}}</td></tr>
-              {{/each-in}}
-            {{/if}}
-          </tbody>
-        </table>
+        {{#each-in frame.locals as |name value|}}
+	  <div class="variable">
+	    <div class="name">{{name}}</div>
+	    <div class="value">{{value.value}}</div>
+	  </div>
+        {{/each-in}}
+	{{#each-in frame.globals as |name value|}}
+	  <div class="variable">
+	    <div class="name">{{name}}</div>
+	    <div class="value">{{value.value}}</div>
+	  </div>
+        {{/each-in}}
       </div>
     {{/if}}
   {{/if}}

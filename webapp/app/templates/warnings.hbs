@@ -15,9 +15,7 @@
       <div class="info">
         {{moment-time unix=w.timestamp}} - From <strong>{{w.filename}}</strong>, line <strong>{{w.lineno}}</strong>
       </div>
-      <div class="message">
-        {{w.message}}
-      </div>
+      <div class="message">{{w.message}}</div>
     </div>
   {{/each}}
 

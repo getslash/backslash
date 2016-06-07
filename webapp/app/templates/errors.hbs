@@ -18,9 +18,7 @@
         <div class="info">
           {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})
         </div>
-        <div class="message">
-          {{error.full_message}}
-        </div>
+        <div class="message">{{error.full_message}}</div>
       </div>
     {{/link-to}}
   {{/each}}
