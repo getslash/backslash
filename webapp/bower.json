@@ -17,6 +17,8 @@
     "seiyria-bootstrap-slider": "~6.0.6",
     "tooltipster": "~3.3.0",
     "twix": "~0.8.1",
-    "typeahead.js": "typehead.js#~0.11.1"
+    "typeahead.js": "typehead.js#~0.11.1",
+    "pretender": "~1.1.0",
+    "Faker": "~3.1.0"
   }
 }
