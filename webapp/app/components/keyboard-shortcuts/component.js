@@ -88,6 +88,10 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     actions: {
 
+	close_box() {
+	    this._close_boxes();
+	},
+
         close_boxes_or_home() {
             if (this.get('quick_search_open') || this.get('help_displayed')) {
                 this._close_boxes();
@@ -155,8 +159,11 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                         },
                     },
                 });
-                element.on('focusout', function() {
-                    self.sendAction('close_boxes');
+                element.on('keyup', function(e) {
+		    console.log('key up', e);
+		    if (e.keyCode === 27) {
+			self._close_boxes();
+		    }
                 }).on('typeahead:selected', function(evt, obj) {
                     self.select(obj);
                 }).on('typeahead:render', function() {
