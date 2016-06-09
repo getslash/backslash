@@ -6,6 +6,6 @@ export default Ember.Controller.extend({
 
     sort: 'last_activity',
 
-    sort_options: ['last_activity', 'name'].sort(),
+    sort_options: ['last_activity', 'name'],
 
 });

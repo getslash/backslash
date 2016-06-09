@@ -18,10 +18,15 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, {
     },
 
     model(params) {
+	let sort_order = params.sort;
+
+	if (sort_order === 'last_activity') {
+	    sort_order = '-' + sort_order;
+	}
         return Ember.RSVP.hash({
             subjects: this.infinityModel(
                 "subject",
-                {perPage: 50, startingPage: 1, modelPath: 'controller.subjects', sort: params.sort}),
+                {perPage: 50, startingPage: 1, modelPath: 'controller.subjects', sort: sort_order}),
         });
     },
 

@@ -86,17 +86,30 @@ class ModelResource(RestResource):
         return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=not in_collection)
 
     def _sort(self, iterator, metadata):
-        sort_fields = request.args.get('sort', None)
-        if sort_fields:
-            sort_fields = sort_fields.split(',')
-            if not all(sort_field in self.SORTABLE_FIELDS for sort_field in sort_fields):
+        sort_fields_expr = request.args.get('sort', None)
+        if sort_fields_expr:
+            sort_fields = []
+            for sort_field in sort_fields_expr.split(','):
+                desc = sort_field.startswith('-')
+                if desc:
+                    sort_field = sort_field[1:]
+                sort_fields.append((not desc, sort_field))
+            if not all((sort_field in self.SORTABLE_FIELDS) for _, sort_field in sort_fields):
                 error_abort('Cannot sort according to given criteria - can only sort by {}'.format(', '.join(self.SORTABLE_FIELDS)))
 
 
-            iterator = iterator.order_by(*[getattr(self.MODEL, f) for f in sort_fields])
+            iterator = iterator.order_by(*[self._build_sort_expr(self.MODEL, f, asc) for asc, f in sort_fields])
         elif self.DEFAULT_SORT is not None:
-            iterator = iterator.order_by(*self.DEFAULT_SORT)
+            iterator = iterator.order_by(*self.DEFAULT_SORT) # pylint: disable=not-an-iterable
         return iterator
+
+    def _build_sort_expr(self, model, field_name, asc):
+        returned = getattr(model, field_name)
+        if asc:
+            returned = returned.asc()
+        else:
+            returned = returned.desc()
+        return returned
 
     def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
