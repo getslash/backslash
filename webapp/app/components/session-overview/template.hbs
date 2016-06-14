@@ -76,7 +76,7 @@
         <div class="list-group-item list-group-item-{{if (or session_model.not_complete session_model.num_errors) 'danger' 'warning'}}">
           {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
           {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
-          {{#link-to 'session.errors'}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
+          {{#link-to 'session.errors' session_model.display_id}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
           {{#if not_complete}}
             <i class="fa fa-exclamation-circle"></i>
             Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.

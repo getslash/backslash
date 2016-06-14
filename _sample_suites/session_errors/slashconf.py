@@ -1,5 +1,5 @@
 import slash
 
-@slash.hooks.after_session_start.register
+@slash.hooks.session_end.register
 def callback(**_):
     raise Exception()
