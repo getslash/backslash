@@ -9,8 +9,8 @@ import {timeout, task} from 'ember-concurrency';
 let _keys = [
     {key: '.', action: 'open_quick_search', description: 'Opens quick jump'},
     {key: 'h', action: 'toggle_human_times', description: 'Toggles human-readable times'},
-    {key: 'A', action: 'filter_none', description: 'Show all entities'},
-    {key: 'F', action: 'filter_only_failed', description: 'Hide all entities except failed'},
+    {key: 'a', action: 'filter_none', description: 'Show all entities'},
+    {key: 'f', action: 'filter_only_failed', description: 'Hide all entities except failed'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
