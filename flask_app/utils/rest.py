@@ -5,6 +5,8 @@ from flask import jsonify, request, current_app
 from flask_restful import reqparse, Resource
 from flask.ext.simple_api import error_abort
 
+from sqlalchemy.sql.expression import nullslast
+
 from .rendering import render_api_object
 from .english import plural_noun
 _logger = logbook.Logger(__name__)
@@ -72,6 +74,7 @@ class ModelResource(RestResource):
     EXTRA_FIELDS = None
     DEFAULT_SORT = None
     SORTABLE_FIELDS = []
+    INVERSE_SORTS = frozenset()
 
     def _get_iterator(self):
         assert self.MODEL is not None
@@ -88,27 +91,22 @@ class ModelResource(RestResource):
     def _sort(self, iterator, metadata):
         sort_fields_expr = request.args.get('sort', None)
         if sort_fields_expr:
-            sort_fields = []
-            for sort_field in sort_fields_expr.split(','):
-                desc = sort_field.startswith('-')
-                if desc:
-                    sort_field = sort_field[1:]
-                sort_fields.append((not desc, sort_field))
-            if not all((sort_field in self.SORTABLE_FIELDS) for _, sort_field in sort_fields):
+            sort_fields = sort_fields_expr.split(',')
+            if not all((sort_field in self.SORTABLE_FIELDS) for sort_field in sort_fields):
                 error_abort('Cannot sort according to given criteria - can only sort by {}'.format(', '.join(self.SORTABLE_FIELDS)))
 
 
-            iterator = iterator.order_by(*[self._build_sort_expr(self.MODEL, f, asc) for asc, f in sort_fields])
+            iterator = iterator.order_by(*[self._build_sort_expr(self.MODEL, f) for f in sort_fields])
         elif self.DEFAULT_SORT is not None:
             iterator = iterator.order_by(*self.DEFAULT_SORT) # pylint: disable=not-an-iterable
         return iterator
 
-    def _build_sort_expr(self, model, field_name, asc):
+    def _build_sort_expr(self, model, field_name):
         returned = getattr(model, field_name)
-        if asc:
-            returned = returned.asc()
+        if field_name in self.INVERSE_SORTS:
+            returned = nullslast(returned.desc())
         else:
-            returned = returned.desc()
+            returned = returned.asc()
         return returned
 
     def _paginate(self, query, metadata):

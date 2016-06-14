@@ -110,6 +110,7 @@ class SubjectResource(ModelResource):
     MODEL = models.Subject
     ONLY_FIELDS = ['id', 'name', 'last_activity']
     SORTABLE_FIELDS = ['last_activity', 'name']
+    INVERSE_SORTS = ['last_activity']
 
     def _get_object_by_id(self, object_id):
         try:
@@ -176,6 +177,7 @@ class UserResource(ModelResource):
 
     ONLY_FIELDS = ['id', 'email', 'last_activity']
     SORTABLE_FIELDS = ['last_activity', 'email', 'first_name', 'last_name']
+    INVERSE_SORTS = ['last_activity']
     MODEL = User
 
     def _get_object_by_id(self, object_id):
