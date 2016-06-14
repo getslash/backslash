@@ -1,16 +1,12 @@
-import PaginatedFilteredController from '../controllers/paginated_filtered_controller';
+import Ember from 'ember';
 
-export default PaginatedFilteredController.extend({
+export default Ember.Controller.extend({
 
     queryParams: ['sort'],
 
-    sort: 'email',
+    sort: 'last_activity',
 
-    actions: {
-
-        set_sort(field_name) {
-            this.set('sort', field_name);
-        },
-    },
+    sort_options: ['last_activity', 'first_name', 'last_name'],
 
 });
+

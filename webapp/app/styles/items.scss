@@ -237,3 +237,12 @@ a.item, a.item:hover {
 	font-size: x-large;
     }
 }
+
+.item.user {
+    @extend .pad-large;
+
+    .name {
+	@extend .pad-small;
+    }
+
+}

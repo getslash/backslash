@@ -10,17 +10,34 @@
     padding: 1em;
 }
 
-.margin-bottom-large {
-    margin-bottom: 0.5em;
+$margin-small: 0.5em;
+$margin-medium: 1em;
+$margin-large: 2em;
+
+.margin-bottom-small {
+    margin-bottom: $margin-small;
 }
 
 .margin-bottom-medium {
-    margin-bottom: 1em;
+    margin-bottom: $margin-medium;
 }
 
 .margin-bottom-large {
-    margin-bottom: 2em;
+    margin-bottom: $margin-medium;
 }
+
+.margin-left-small {
+    margin-left: $margin-small;
+}
+
+.margin-left-medium {
+    margin-left: $margin-medium;
+}
+
+.margin-left-large {
+    margin-left: $margin-medium;;
+}
+
 
 .overflow-ellipsis {
     overflow: hidden;
@@ -36,6 +53,10 @@
 
 .vw-50 {
     width: 50vw;
+}
+
+.small {
+    font-size: x-small;
 }
 
 .pre {
