@@ -15,6 +15,11 @@ export default BaseController.extend({
     }.observes('currentPath'),
 
     actions: {
+
+	authenticateSession() {
+	    console.log("!!!");
+	},
+	
         logout: function() {
             let self = this;
             Ember.$.ajax({
