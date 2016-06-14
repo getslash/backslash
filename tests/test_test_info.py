@@ -26,7 +26,7 @@ def test_tests_by_info(client, started_session, file_name, class_name, test_name
 def test_get_info_directly(client, started_session, file_name, class_name, test_name):
     test = started_session.report_test_start(file_name=file_name, class_name=class_name, name=test_name)
 
-    info = client.api.get('rest/test_infos/{}'.format(test.test_info_id))['test_info']
+    info = client.api.get('rest/test_infos/{}'.format(test.test_info_id))
     assert info['file_name'] == file_name
     assert info['class_name'] == class_name
     assert info['name'] == test_name
