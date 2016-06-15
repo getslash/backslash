@@ -16,10 +16,6 @@ export default BaseController.extend({
 
     actions: {
 
-	authenticateSession() {
-	    console.log("!!!");
-	},
-	
         logout: function() {
             let self = this;
             Ember.$.ajax({

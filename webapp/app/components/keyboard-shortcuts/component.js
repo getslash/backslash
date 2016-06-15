@@ -160,7 +160,6 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                     },
                 });
                 element.on('keyup', function(e) {
-		    console.log('key up', e);
 		    if (e.keyCode === 27) {
 			self._close_boxes();
 		    }
