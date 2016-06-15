@@ -1,10 +1,13 @@
+- apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+- apt_key: keyserver=pgpkeys.mit.edu id=7FCC7D46ACCC4CF8
+- apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main 9.5' state=present
 - name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
   with_items:
     - sudo
-    - postgresql-client-9.4
-    - postgresql-9.4
-    - postgresql-server-dev-9.4
+    - postgresql-client-{{postgres_version}}
+    - postgresql-{{postgres_version}}
+    - postgresql-server-dev-{{postgres_version}}
     - python-dev
     - python-psycopg2
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
