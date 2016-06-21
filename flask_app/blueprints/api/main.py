@@ -4,8 +4,8 @@ import multiprocessing
 
 import requests
 from flask import abort, current_app
-from flask.ext.simple_api import error_abort
-from flask.ext.security import current_user
+from flask_simple_api import error_abort
+from flask_security import current_user
 
 from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError, DataError
