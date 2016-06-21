@@ -512,3 +512,12 @@ class Stat(db.Model):
     stat_system_load_avg = db.Column(db.Float, server_default="0")
     stat_num_redis_keys = db.Column(db.Integer, server_default="0")
     stat_redis_memory_usage = db.Column(db.Integer, server_default="0")
+
+
+class UserPreference(db.Model):
+
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True)
+    preference = db.Column(db.String(256), nullable=False, primary_key=True)
+
+    value = db.Column(JSONB, nullable=False, default=lambda: {'value': None})
