@@ -1,7 +1,7 @@
 pytest
 pytest-cov
 Flask-Loopback
-backslash>=2.7.0
+backslash>=2.15.0
 tmuxp
 livereload
 ipython
