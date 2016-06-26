@@ -186,44 +186,6 @@ def _run_fulltest(extra_args=()):
                           + list(extra_args), cwd=from_project_root())
 
 
-@cli.command('travis-test')
-@requires_env('app')
-def travis_test():
-    with _temporary_db():
-        _run_unittest()
-
-@contextmanager
-def _temporary_db():
-    from flask_app.app import create_app
-    from flask_app import models
-    from _lib.db import _migrate_context
-
-    subprocess.check_call('createdb {0}'.format(APP_NAME), shell=True)
-
-    app = create_app()
-
-    with _migrate_context(app) as migrate:
-        migrate.upgrade()
-    yield
-    with app.app_context():
-        models.db.drop_all()
-
-
-def _wait_for_travis_availability():
-    click.echo(
-        click.style("Waiting for service to become available on travis", fg='magenta'))
-    time.sleep(10)
-    for _ in range(10):
-        click.echo("Checking service...")
-        resp = requests.get("http://localhost/")
-        click.echo("Request returned {0}".format(resp.status_code))
-        if resp.status_code == 200:
-            break
-        time.sleep(5)
-    else:
-        raise RuntimeError("Web service did not become responsive")
-    click.echo(click.style("Service is up", fg='green'))
-
 
 @cli.command()
 @requires_env("app", "develop")
