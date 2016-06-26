@@ -43,6 +43,9 @@ def create_app(config=None):
     del app.logger.handlers[:]
     redirect_logging()
 
+    if app.config['TESTING']:
+        app.config['TRACEBACK_DIR'] = '/tmp/backslash_tracebacks'
+
     app.logger.info("Started")
 
     Mail(app)

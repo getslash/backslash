@@ -35,6 +35,7 @@
   with_items:
     - "{{deploy_root}}"
     - "{{deploy_root}}/conf.d"
+    - /opt/backslash/tracebacks
 - service: name=redis-server state=started enabled=yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 - service: name=redis state=started enabled=yes

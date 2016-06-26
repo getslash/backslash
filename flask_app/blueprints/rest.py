@@ -1,7 +1,9 @@
 # pylint: disable=no-member
+import os
+
 import requests
 
-from flask import Blueprint, abort, request, jsonify
+from flask import Blueprint, abort, request, jsonify, current_app, send_file, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -170,6 +172,22 @@ class ErrorResource(ModelResource):
         elif args.test_id is not None:
             return Error.query.filter_by(test_id=args.test_id)
         abort(requests.codes.bad_request)
+
+@blueprint.route('/tracebacks/<uuid>')
+def get_traceback(uuid):
+    if not current_app.config['DEBUG'] and not current_app.config['TESTING']:
+        abort(requests.codes.not_found)
+    path = os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid[2:4], uuid + '.gz')
+    if not os.path.isfile(path):
+        abort(requests.codes.not_found)
+    def sender():
+        with open(path, 'rb') as f:
+            while True:
+                buff = f.read(4096)
+                if not buff:
+                    break
+                yield buff
+    return Response(sender(), headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/json'})
 
 
 @_resource('/users', '/users/<object_id>')

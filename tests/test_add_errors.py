@@ -1,9 +1,11 @@
+import requests
+
 import flux
 
 from .utils import raises_not_found
 
 
-def test_add_error(error_container, error_data):
+def test_add_error(error_container, error_data, webapp):
     timestamp = flux.current_timeline.time()
     error_container.add_error(error_data['exception'],
                               error_data['exception_type'],
@@ -14,7 +16,10 @@ def test_add_error(error_container, error_data):
     assert first_error.message == error_data['exception']
     assert first_error.exception_type == error_data['exception_type']
     assert first_error.timestamp == timestamp
-    assert first_error.traceback == error_data['traceback']
+    assert first_error.traceback is None
+    resp = requests.get(webapp.url.add_path(first_error.traceback_url))
+    resp.raise_for_status()
+    assert resp.json() == error_data['traceback']
 
 
 def test_add_error_just_msg(error_container):
@@ -64,7 +69,7 @@ def test_add_error_no_timestamp(error_container, error_data):
     assert first_error.message == error_data['exception']
     assert first_error.exception_type == error_data['exception_type']
     assert first_error.timestamp == flux.current_timeline.time()
-    assert first_error.traceback == error_data['traceback']
+    assert requests.get(first_error.traceback_url).json() == error_data['traceback']
 
 
 def test_add_error_nonexistent(nonexistent_error_container, error_data):

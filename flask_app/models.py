@@ -357,6 +357,7 @@ class Error(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
+    traceback_url = db.Column(db.String(2048))
     exception_type = db.Column(db.String(256), index=True)
     message = db.Column(db.Text())
     timestamp = db.Column(db.Float, default=get_current_time)

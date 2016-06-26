@@ -15,7 +15,7 @@ from .blueprint import API
 from ... import activity
 from ... import stats
 from ... import models
-from ...models import db, Error, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
+from ...models import db, Session, SessionMetadata, Test, TestMetadata, Comment, User, Role, Warning, RelatedEntity, TestVariation
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -28,6 +28,7 @@ from ...utils.json import sanitize_json
 
 from . import sessions # pylint: disable=unused-import
 from . import preferences # pylint: disable=unused-import
+from . import errors # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
 
 
@@ -305,55 +306,6 @@ def add_session_metadata(id: int, metadata: dict):
     db.session.commit()
 
 
-@API
-def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False):
-    #pylint: disable=superfluous-parens
-    if not ((test_id is not None) ^ (session_id is not None)):
-        error_abort('Either test_id or session_id required')
-
-    if timestamp is None:
-        timestamp = get_current_time()
-    if test_id is not None:
-        cls = Test
-        object_id = test_id
-    else:
-        cls = Session
-        object_id = session_id
-
-    try:
-        obj = cls.query.filter(cls.id == object_id).one()
-        increment_field = cls.num_failures if is_failure else cls.num_errors
-        cls.query.filter(cls.id == object_id).update(
-            {increment_field: increment_field + 1})
-        obj.errors.append(Error(message=message,
-                                exception_type=exception_type,
-                                traceback=_normalize_traceback(traceback),
-                                is_failure=is_failure,
-                                timestamp=timestamp))
-        if obj.end_time is not None:
-            if cls is Test:
-                if is_failure and obj.status not in (statuses.FAILURE, statuses.ERROR):
-                    obj.status = statuses.FAILURE
-                    obj.session.num_failed_tests = Session.num_failed_tests + 1
-                elif not is_failure and obj.status != statuses.ERROR:
-                    if obj.status == statuses.FAILURE:
-                        db.session.num_failed_tests = Session.num_failed_tests - 1
-                    obj.status = statuses.ERROR
-                    obj.session.num_error_tests = Session.num_error_tests + 1
-        db.session.add(obj)
-
-    except NoResultFound:
-        abort(requests.codes.not_found)
-    db.session.commit()
-
-def _normalize_traceback(traceback_json):
-    if traceback_json:
-        for frame in traceback_json:
-            code_string = frame['code_string']
-            if code_string:
-                code_string = code_string.splitlines()[-1]
-            frame['code_string'] = code_string
-    return traceback_json
 
 @API
 def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
