@@ -1,16 +1,31 @@
 language: python
-sudo: false
+sudo: true
+env:
+  global:
+  - PGPORT=5433
+  - PGHOST=localhost
+
 python:
   - 3.5
 addons:
-  postgresql: "9.5"
+  apt:
+    sources:
+    - precise-pgdg-9.5
+    packages:
+    - postgresql-9.5
+    - postgresql-contrib-9.5
+  postgresql: 9.5
+
 services:
   - redis-server
 install:
+  - sudo cp /etc/postgresql/9.4/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+  - sudo /etc/init.d/postgresql restart
+  - psql -c 'create database backslash;' -U postgres
   - pip install virtualenv
-  # avoid building frontend since npm is broken on Travis
   - mkdir static
   - touch static/index.html
   - python manage.py bootstrap --develop
+  - python manage.py db upgrade
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
-script: travis_retry python manage.py travis-test
+script: travis_retry .env/bin/py.test tests
