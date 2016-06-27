@@ -60,7 +60,7 @@ def test_add_error_status(error_container):
 
 
 
-def test_add_error_no_timestamp(error_container, error_data):
+def test_add_error_no_timestamp(error_container, error_data, webapp):
     error_container.add_error(error_data['exception'],
                            error_data['exception_type'],
                            error_data['traceback'])
@@ -69,7 +69,7 @@ def test_add_error_no_timestamp(error_container, error_data):
     assert first_error.message == error_data['exception']
     assert first_error.exception_type == error_data['exception_type']
     assert first_error.timestamp == flux.current_timeline.time()
-    assert requests.get(first_error.traceback_url).json() == error_data['traceback']
+    assert requests.get(webapp.url.add_path(first_error.traceback_url)).json() == error_data['traceback']
 
 
 def test_add_error_nonexistent(nonexistent_error_container, error_data):
