@@ -19,30 +19,30 @@
         <tbody>
           <tr>
             <td>Total</td>
-            <td>{{ui-slider value=s.total_num_tests min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.total_num_tests) min=0 max=100}}</td>
             <td>Errors</td>
-            <td>{{ui-slider value=s.num_error_tests min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.num_error_tests) min=0 max=100}}</td>
           </tr>
           <tr>
             <td>Failures</td>
-            <td>{{ui-slider value=s.num_failed_tests min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.num_failed_tests) min=0 max=100}}</td>
             <td>Skips</td>
-            <td>{{ui-slider value=s.num_skipped_tests min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.num_skipped_tests) min=0 max=100}}</td>
           </tr>
           <tr>
             <td>Finished</td>
-            <td>{{ui-slider value=s.num_finished_tests min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.num_finished_tests) min=0 max=100}}</td>
             <td>num_errors</td>
-            <td>{{ui-slider value=s.num_errors min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.num_errors) min=0 max=100}}</td>
           </tr>
           <tr>
             <td>total_num_warnings</td>
-            <td>{{ui-slider value=s.total_num_warnings min=0 max=100}}</td>
+            <td>{{ui-slider value=(mut s.total_num_warnings) min=0 max=100}}</td>
             <td>
-              {{input id="is_abandoned" type="checkbox" checked=s.is_abandoned}} <label for="is_abandoned">Abandoned?</label>
+              {{input id="is_abandoned" type="checkbox" checked=(mut s.is_abandoned)}} <label for="is_abandoned">Abandoned?</label>
             </td>
             <td>
-              {{input id="is_running" type="checkbox" checked=s.is_running}} <label for="is_running">Running?</label>
+              {{input id="is_running" type="checkbox" checked=(mut s.is_running)}} <label for="is_running">Running?</label>
             </td>
           </tr>
         </tbody>
