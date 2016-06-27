@@ -6,6 +6,12 @@
         (In Debugger)
       </div>
     {{/if}}
+    {{#if session.num_errors}}
+      <div>
+	<i class="fa fa-exclamation-circle"></i>
+	{{session.num_errors}} session {{pluralize-word session.num_errors "error" omitCount=true}}
+      </div>
+    {{/if}}
     {{#if is_abandoned}}
       <div>
       Abandoned
@@ -38,7 +44,9 @@
           </div>
         {{/if}}
 
+	
       {{/if}}
+
     {{/if}}
 
   </div>

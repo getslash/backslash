@@ -22,7 +22,7 @@ export default Ember.Component.extend({
         let item = this.get('item');
 
         if (!item.get('is_abandoned')) {
-            if (item.get('num_error_tests') || item.get('num_failed_tests')) {
+            if (item.get('num_error_tests') || item.get('num_failed_tests') || item.get('num_errors')) {
                 return 'failed';
             } else if (['error', 'failure'].indexOf(item.get('status').toLowerCase()) !== -1) {
                 return 'failed';
