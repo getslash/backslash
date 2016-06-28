@@ -3,13 +3,9 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
-    api: Ember.inject.service(),
-    needs: 'user',
+    user_prefs: Ember.inject.service(),
 
     model: function() {
-        return new Ember.RSVP.hash({
-            'user': this.modelFor('user'),
-            'tokens': this.get('api').call('get_user_run_tokens', {user_id: parseInt(this.modelFor('user').id)})
-        });
+	return this.get('user_prefs').get_all();
     }
 });

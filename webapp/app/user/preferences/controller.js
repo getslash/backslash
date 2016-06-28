@@ -1,42 +1,43 @@
 import Ember from 'ember';
 
+/* global moment */
+
 export default Ember.Controller.extend({
 
-    api: Ember.inject.service(),
-    user: Ember.computed.oneWay('model.user'),
-    tokens: Ember.computed.oneWay('model.tokens'),
-    session: Ember.inject.service(),
+    user_prefs: Ember.inject.service(),
+    saving: false,
 
-    roles: function() {
-        let user_roles = [];
-        this.get('user.user_roles').forEach(role => user_roles.push(role.name));
-        let returned = [];
+    time_format: Ember.computed.oneWay('model.time_format'),
 
-        ['admin', 'moderator', 'proxy'].forEach(function (name) {
-            returned.push({name: name, enabled: user_roles.indexOf(name) !== -1});
-        });
-        return returned;
-    }.property('model.user_roles'),
+    time_formats: [
+	'D/M/YYYY HH:mm:ss',
+	'D/M/YYYY HH:mm',
+	'YYYY-M-D HH:mm:ss',
+    ],
+
+    display_time_formats: function() {
+	let returned = [];
+	let formats = this.get('time_formats');
+
+	let now = moment();
+
+	for (let fmt of formats) {
+	    returned.push(now.format(fmt));
+	}
+
+	return returned;
+    }.property('time_formats'),
 
     actions: {
-        toggle: function(role) {
-            let self = this;
-            if (!self.get('session.data.authenticated.user_info.roles').contains('admin')){
-            	return;
-            }
+	choose_option: function(option_name, value) {
+	    let self = this;
 
-            if (role === 'admin' && self.get('user.email') === self.get('session.data.authenticated.user_info.email')) {
-                if (!window.confirm('You are about to drop your own admin privileges. Are you sure?')) {
-                    return;
-                }
-            }
-            self.get('api').call('toggle_user_role', {
-                user_id: parseInt(this.get('user.id')),
-                role: role}).then(function() {
-                	self.get('user').reload().then(function(){
-                		self.send('refreshRoute');
-                	});
-                });
-        }
-    }
+	    self.set('saving', true);
+	    self.get('user_prefs').set_pref(option_name, value).then(function(new_value) {
+		self.set(option_name, new_value);
+	    }).always(function() {
+		self.set('saving', false);
+	    });
+	},
+    },
 });

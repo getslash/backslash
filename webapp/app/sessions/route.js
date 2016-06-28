@@ -1,3 +1,5 @@
+import Ember from 'ember';
+
 import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import PollingRoute from '../mixins/polling-route';
@@ -8,6 +10,8 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 
     titleToken: 'Sessions',
 
+    user_prefs: Ember.inject.service(),
+
     model(params) {
         let query_params = {page: params.page, filter: params.filter, page_size: params.page_size};
         this.transfer_filter_params(params, query_params);
@@ -17,11 +21,14 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         if (user_id !== undefined) {
             query_params.user_id = user_id;
         }
-        return this.store.query('session', query_params);
+	return Ember.RSVP.hash({
+	    sessions: this.store.query('session', query_params),
+	    prefs: this.get('user_prefs').get_all(),
+	});
     },
 
     setupController(controller, model) {
-        controller.set('sessions', model);
+        controller.set('sessions', model.sessions);
     },
 
     get_user_id_parameter: function() {

@@ -12,8 +12,6 @@ export default Ember.Component.extend({
 	let display = this.get('display');
 	let options = this.get('options');
 
-	console.log('display:', display, ', options:', options);
-
 	if (!display) {
 	    display = options;
 	}
@@ -23,7 +21,6 @@ export default Ember.Component.extend({
 	for (let i = 0; i < options.length; ++i) {
 	    returned[options[i]] = display[i];
 	}
-	console.log(returned);
 	return returned;
     }.property('options', 'display'),
 

@@ -53,7 +53,7 @@ def _unset_pref(client, preference):
 
 @pytest.fixture
 def preference():
-    return 'date_format'
+    return 'time_format'
 
 
 @pytest.fixture

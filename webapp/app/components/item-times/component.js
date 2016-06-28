@@ -4,6 +4,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
+    user_prefs: Ember.inject.service(),
+
     classNames: ['times'],
 
     start: null,
@@ -47,6 +49,7 @@ export default Ember.Component.extend({
     },
 
     _format(t) {
-        return moment.unix(t).format('L LTS');
+	const format = this.get('user_prefs').get_cached('time_format');
+        return moment.unix(t).format(format);
     },
 });

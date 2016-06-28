@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="row-fluid">
+    <div class="col-md-6">
+      <div class="frame">
+        <h4>User Roles</h4>
+        {{#each roles as |role|}}
+          {{boolean-toggle name=role.name value=role.enabled enabled=(can "edit_user_roles") action=(action "toggle" role.name)}}
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
