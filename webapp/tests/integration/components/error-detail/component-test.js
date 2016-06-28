@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -8,17 +9,11 @@ moduleForComponent('error-detail', 'Integration | Component | error detail', {
 test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
+    let exception_type = 'SomeError';
+    this.set('error', Ember.Object.create({exception_type: exception_type}));
 
-  this.render(hbs`{{error-detail}}`);
+    this.render(hbs`{{error-detail error=error}}`);
+    let component = this.$('>:first-child');
 
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#error-detail}}
-      template block text
-    {{/error-detail}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+    assert.equal(component.find('table td:eq(1)').text(), exception_type);
 });
