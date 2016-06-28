@@ -3,6 +3,7 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 
 export default Ember.Route.extend(ApplicationRouteMixin, {
 
+    api: Ember.inject.service(),
     session: Ember.inject.service(),
 
     title(tokens) {
@@ -11,7 +12,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
 
     model() {
         return Ember.RSVP.hash({
-            app_config: this.api.call('get_app_config').then(r => r.result),
+            app_config: this.get('api').call('get_app_config').then(r => r.result),
         });
     },
 

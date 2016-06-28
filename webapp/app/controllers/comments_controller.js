@@ -1,6 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+
+    api: Ember.inject.service(),
+
     createNewComment: function() {
         this.set('new_comment', this.store.createRecord('comment', {edited: true}));
     },
@@ -9,7 +12,7 @@ export default Ember.Controller.extend({
         saveComment: function(comment) {
             let self = this;
             let params = this.getSaveCommentParams(comment);
-            self.api.call('post_comment', params)
+            self.get('api').call('post_comment', params)
                 .then(function() {
                     self.send('refreshRoute');
                 });
@@ -18,7 +21,7 @@ export default Ember.Controller.extend({
         deleteComment: function(comment) {
             let self = this;
 
-            self.api.call('delete_comment', {comment_id: parseInt(comment.id)}).then(
+            self.get('api').call('delete_comment', {comment_id: parseInt(comment.id)}).then(
                 function() {
                     comment.set('deleted', true);
                 });

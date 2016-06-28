@@ -5,6 +5,7 @@ import StatusFilterableRoute from '../../mixins/status-filterable/route';
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, StatusFilterableRoute, {
 
+    api: Ember.inject.service(),
     title: 'Session Details',
 
 
@@ -26,7 +27,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
 
 
         return Ember.RSVP.hash({
-            'metadata': this.api.call('get_metadata', {
+            'metadata': this.get('api').call('get_metadata', {
                 entity_type: 'session',
                 entity_id: session_id
             }).then(r => r.result),

@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
+    api: Ember.inject.service(),
     user: Ember.computed.oneWay('model.user'),
     tokens: Ember.computed.oneWay('model.tokens'),
     session: Ember.inject.service(),
@@ -29,7 +30,7 @@ export default Ember.Controller.extend({
                     return;
                 }
             }
-            self.api.call('toggle_user_role', {
+            self.get('api').call('toggle_user_role', {
                 user_id: parseInt(this.get('user.id')),
                 role: role}).then(function() {
                 	self.get('user').reload().then(function(){

@@ -4,7 +4,7 @@ import StatusFilterableController from '../../mixins/status-filterable/controlle
 
 export default PaginatedFilteredController.extend(StatusFilterableController, {
 
-
+    api: Ember.inject.service(),
     investigating: false,
 
     collection: Ember.computed.oneWay('tests'),
@@ -15,7 +15,7 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
 
     toggle: function(attr) {
         let self = this;
-        self.api.call('toggle_' + attr, {session_id: parseInt(self.get('session_model.id'))}).then(function() {
+        self.get('api').call('toggle_' + attr, {session_id: parseInt(self.get('session_model.id'))}).then(function() {
             self.set('session_model.' + attr, !self.get('session_model.' + attr));
         }).then(function() {
             self.send('refreshRoute');
@@ -40,11 +40,11 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
             let self = this;
             const sid = parseInt(self.get('session_model.id'));
 
-            self.api.call('post_comment', {
+            self.get('api').call('post_comment', {
                 comment: self.get('investigate_conclusion'),
                 session_id: sid
             }).then(function() {
-                self.api.call('toggle_investigated', {
+                self.get('api').call('toggle_investigated', {
                     session_id: sid
                 }).then(function() {
                     self.set('investigating', false);

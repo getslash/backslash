@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+    api: Ember.inject.service(),
     classNames: ['container', 'activity-timeline'],
     parent: null,
     items: [],
@@ -12,7 +13,7 @@ export default Ember.Component.extend({
     post_new_comment: function() {
         let self = this;
         let params = this.get_comment_params();
-        self.api.call('post_comment', params)
+        self.get('api').call('post_comment', params)
             .then(function() {
                 self.sendAction('comment_added');
             });

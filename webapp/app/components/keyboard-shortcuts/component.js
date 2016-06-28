@@ -40,6 +40,8 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     keyboardShortcuts: _shortcuts,
     keys: _keys,
 
+    api: Ember.inject.service(),
+
 
     search(query, sync_callback, async_callback) {
         this.get('async_search').perform(query, async_callback);
@@ -57,7 +59,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     async_search: task(function * (query, callback) {
         yield timeout(400);
-        let res = yield this.api.call('quick_search', {term: query});
+        let res = yield this.get('api').call('quick_search', {term: query});
         res = res.result;
         if (res.length === 0) {
             res.push({type: 'session', name: 'Go to session ' + query, key: query});

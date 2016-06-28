@@ -1,17 +1,18 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+    api: Ember.inject.service(),
     conclusion: '',
 
     actions: {
         submit: function() {
             var self = this;
             const sid = parseInt(self.get('model.id'));
-            self.api.call('post_comment', {
+            self.get('api').call('post_comment', {
                 comment: self.get('conclusion'),
                 session_id: sid
             }).then(function() {
-                self.api.call('toggle_investigated', {
+                self.get('api').call('toggle_investigated', {
                     session_id: sid
                 });
             }).then(function() {
