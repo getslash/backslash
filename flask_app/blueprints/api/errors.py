@@ -79,9 +79,8 @@ def _normalize_traceback_get_url(traceback_json):
 
 def _get_new_traceback_save_location():
     uuid = str(uuid4()).replace('-', '')
-    prefix1 = uuid[:2]
-    prefix2 = uuid[2:4]
-    location = os.path.join(current_app.config['TRACEBACK_DIR'], prefix1, prefix2, uuid)
+    prefix = uuid[:2]
+    location = os.path.join(current_app.config['TRACEBACK_DIR'], prefix, uuid)
     location += '.gz'
     url = '/rest/tracebacks/{}'.format(uuid)
     return url, location

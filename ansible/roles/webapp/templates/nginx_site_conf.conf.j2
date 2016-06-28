@@ -16,11 +16,11 @@ server {
        gzip_static on;
     }
 
-    location ~ /rest/tracebacks/(..)(..)(.*) {
+    location ~ /rest/tracebacks/(..)(.*) {
     	add_header Content-Type application/json;
         add_header Content-Encoding gzip;
         gzip off;
-        alias /opt/backslash/tracebacks/$1/$2/$1$2$3.gz;
+        alias /opt/backslash/tracebacks/$1/$1$2.gz;
     }
 
     location = / {

@@ -177,7 +177,7 @@ class ErrorResource(ModelResource):
 def get_traceback(uuid):
     if not current_app.config['DEBUG'] and not current_app.config['TESTING']:
         abort(requests.codes.not_found)
-    path = os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid[2:4], uuid + '.gz')
+    path = os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
     if not os.path.isfile(path):
         abort(requests.codes.not_found)
     def sender():
