@@ -1,0 +1,7 @@
+<div class="btn-group" role="group">
+  {{#each options as |option|}}
+  <button type="button" class="btn btn-default {{if (eq option value) 'btn-success' ''}}" {{action "choose" option}} disabled={{saving}}>
+    {{option}}
+  </button>
+  {{/each}}
+</div>
