@@ -35,7 +35,8 @@ def _get_pref(client, preference):
 
 
 def _set_pref(client, preference, value):
-    client.api.call.set_preference(preference=preference, value=value)
+    res = client.api.call.set_preference(preference=preference, value=value)
+    assert res == value
 
 
 def _unset_pref(client, preference):

@@ -33,6 +33,7 @@ def set_preference(preference: str, value: (str, Number)):
         'value': json.dumps({'value': value})
     })
     db.session.commit()
+    return value
 
 
 @API(require_real_login=True)
