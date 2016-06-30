@@ -1,7 +1,7 @@
 <div class="btn-group" role="group">
-  {{#each options as |option|}}
+  {{#each-in options_and_display as |option display|}}
   <button type="button" class="btn btn-default {{if (eq option value) 'btn-success' ''}}" {{action "choose" option}} disabled={{saving}}>
-    {{option}}
+    {{display}}
   </button>
-  {{/each}}
+  {{/each-in}}
 </div>
