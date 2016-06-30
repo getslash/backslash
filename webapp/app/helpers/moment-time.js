@@ -4,6 +4,11 @@ import Ember from 'ember';
 
 export function momentTime(params, opts) {
 
+    let format = opts.format;
+    if (format === undefined) {
+	format = 'L LTS';
+    }
+
     if (opts.ago !== undefined) {
         let value = moment.unix(opts.ago);
         let now = moment();
@@ -22,7 +27,7 @@ export function momentTime(params, opts) {
     if (opts.unix === null) {
         return '-';
     }
-    return moment.unix(opts.unix).format('L LTS');
+    return moment.unix(opts.unix).format(format);
 }
 
 export default Ember.Helper.helper(momentTime);
