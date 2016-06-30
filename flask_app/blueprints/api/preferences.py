@@ -3,6 +3,7 @@ from numbers import Number
 
 from flask import current_app
 from flask_security import current_user
+from flask_simple_api import error_abort
 
 from ...models import UserPreference, db
 from .blueprint import API
@@ -22,6 +23,9 @@ def get_preferences():
 @API(require_real_login=True)
 def set_preference(preference: str, value: (str, Number)):
     user_id = current_user.id
+
+    if preference not in current_app.config['DEFAULT_PREFERENCES']:
+        error_abort('Unknown preference specified: {}'.format(preference))
 
     db.session.execute('''
     INSERT INTO user_preference (user_id, preference, value)

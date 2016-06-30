@@ -1,6 +1,8 @@
 # pylint: disable=unused-argument,protected-access
 from uuid import uuid4
 
+import requests
+
 import pytest
 
 
@@ -28,6 +30,11 @@ def test_unset_preference(client, real_login, preference, orig_value, new_value)
     _set_pref(client, preference, new_value)
     _unset_pref(client, preference)
     assert _get_pref(client, preference) == orig_value
+
+def test_set_unknown_preference(client, real_login):
+    with pytest.raises(requests.HTTPError) as caught:
+        _set_pref(client, 'unknown_pref', 'value')
+    assert caught.value.response.status_code == requests.codes.bad_request
 
 
 def _get_pref(client, preference):
