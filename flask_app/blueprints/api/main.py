@@ -26,6 +26,7 @@ from ...utils.json import sanitize_json
 
 ##########################################################################
 
+from . import app_config # pylint: disable=unused-import
 from . import sessions # pylint: disable=unused-import
 from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
@@ -386,15 +387,6 @@ def get_admin_stats():
     }
     return returned
 
-
-################################################################################
-## Application Configuration
-
-@API(generates_activity=False, require_login=False)
-def get_app_config():
-    return {
-        'debug': current_app.config['DEBUG'],
-    }
 
 ################################################################################
 ## Search
