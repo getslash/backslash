@@ -30,7 +30,7 @@ module.exports = function(environment) {
         providers: {
             'google-oauth2': {
                 // redirectUri is assigned in app.js...
-                apiKey: '705802534104-f01f9db07j8dvl4l9tp6nhc7keciamer.apps.googleusercontent.com',
+                apiKey: null,
                 scope: 'email profile'
             }
         }

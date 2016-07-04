@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
+import config from '../config/environment';
 
 export default Ember.Route.extend(ApplicationRouteMixin, {
 
@@ -14,6 +15,11 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
         return Ember.RSVP.hash({
             app_config: this.get('api').call('get_app_config').then(r => r.result),
         });
+    },
+
+    afterModel(model) {
+	let cfg = config.torii;
+	cfg.providers["google-oauth2"].apiKey = model.app_config.oauth2_client_id;
     },
 
     beforeModel() {
