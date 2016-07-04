@@ -10,9 +10,9 @@ export default Ember.Controller.extend({
     time_format: Ember.computed.oneWay('model.time_format'),
 
     time_formats: [
-	'D/M/YYYY HH:mm:ss',
-	'D/M/YYYY HH:mm',
-	'YYYY-M-D HH:mm:ss',
+	'DD/MM/YYYY HH:mm:ss',
+	'DD/MM/YYYY HH:mm',
+	'YYYY-MM-DD HH:mm:ss',
     ],
 
     display_time_formats: function() {

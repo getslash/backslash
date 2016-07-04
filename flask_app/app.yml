@@ -15,4 +15,4 @@ JSON_SORT_KEYS: false
 TRACEBACK_DIR: /opt/backslash/tracebacks
 
 DEFAULT_PREFERENCES:
-  time_format: "D/M/YYYY HH:mm:ss"
+  time_format: "DD/MM/YYYY HH:mm:ss"
