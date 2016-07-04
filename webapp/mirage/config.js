@@ -1,6 +1,7 @@
 export default function config() {
     this.passthrough('/reauth');
     this.passthrough('/login');
+    this.passthrough('/logout');
     this.passthrough('/rest/**');
     this.passthrough('/api/**');
 }
