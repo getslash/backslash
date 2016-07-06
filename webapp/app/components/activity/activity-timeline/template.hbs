@@ -7,9 +7,9 @@
     </div>
     <div class="container-fluid add-margin-top">
       {{#if new_comment}}
-        <button class="btn btn-default pull-right add-margin-left" {{action "finish_commenting"}}>Submit</button>
+        <button class="btn btn-success pull-right add-margin-left" {{action "finish_commenting"}}>Submit</button>
       {{/if}}
-      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_commenting"}}>Cancel</button>
+      <button class="btn btn-cancel pull-right add-margin-left" {{action "cancel_commenting"}}>Cancel</button>
     </div>
   {{/modal-dialog}}
 {{/if}}
