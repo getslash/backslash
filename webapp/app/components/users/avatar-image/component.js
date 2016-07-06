@@ -12,10 +12,25 @@ export default Ember.Component.extend({
     classNames: ['img-circle'],
     classNameBindings: ['is_proxy:proxy', 'is_real:real'],
 
+    _fallback_marker_name: function() {
+        return 'cached-avatar:use-fallback:' + this.get('email');
+    }.property('email'),
+
+    _remember_fallback() {
+	localStorage.setItem(this.get('fallback_marker_name'), true);
+    },
+
+    _is_fallback_needed() {
+	return localStorage.getItem(this.get('fallback_marker_name'));
+    },
+
     src: function() {
         let fallback_img = this.get('fallback_img_url');
-        let returned = 'http://www.gravatar.com/avatar/' + window.md5(this.get('email'));
-        if (fallback_img) {
+        let returned = 'https://www.gravatar.com/avatar/' + window.md5(this.get('email'));
+
+	if (fallback_img && this._is_fallback_needed()) {
+	    return fallback_img;
+	} else if (fallback_img) {
             returned += '?d=404';
         } else {
             returned += '?d=mm';
@@ -35,6 +50,9 @@ export default Ember.Component.extend({
         let self = this;
         this.$().on('error', function() {
             let fallback = self.get('fallback_img_url');
+            if (fallback) {
+		this._remember_fallback();
+            }
             this.set('src', fallback);
         }.bind(this));
     },
