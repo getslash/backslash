@@ -1,0 +1,11 @@
+.module {
+    margin: 1em;
+    background: $gray-lighter;
+    padding: 0.5em;
+    .title {
+	background: $gray-lighter;
+	color: $gray;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+    }
+}
