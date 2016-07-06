@@ -127,6 +127,16 @@
     </div>
   </div>
 </div>
+
+
+{{#if test.variation }}
+  {{hr-separator title="Parameters"}}
+
+  <div class="container-fluid">
+    {{key-value-data data=test.variation}}
+  </div>
+{{/if}}
+
 {{hr-separator title="SCM Information"}}
 <div class="container-fluid">
   <div class="row">
