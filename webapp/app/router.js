@@ -34,6 +34,7 @@ Router.map(function() {
   this.route('test_info', { path: '/test_info/:id' });
   this.route('stats');
   this.route('component-proofing');
+  this.route('setup');
 });
 
 export default Router;

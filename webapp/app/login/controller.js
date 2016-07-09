@@ -10,14 +10,26 @@ export default Ember.Controller.extend(UnauthenticatedRouteMixin, {
 
     actions: {
 
-        googleLogin: function() {
+	login() {
+	    let self = this;
+	    self.set('login_error', null);
+	    const credentials = this.getProperties(['username', 'password']);
+	    self.get('session').authenticate('authenticator:token', credentials).then(function(data) {
+		console.log('authenticated', data);
+	    }, function() {
+		self.set('login_error', 'Invalid username and/or password');
+	    });
+	},
+
+        login_google() {
             let self = this;
             self.set('loading', true);
+	    self.set('login_error', null);
             self.get('torii').open('google-oauth2').then(function(auth) {
                 return self.get('session').authenticate('authenticator:token', auth).then(
                     function(data) {return data;},
                     function(error) {
-                        self.controllerFor('application').send('login_error', error);
+                        self.set('login_error', error.error);
                     });
             }).finally(function() {
                 self.set('loading', false);

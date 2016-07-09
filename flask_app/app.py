@@ -59,8 +59,7 @@ def create_app(config=None):
     from . import auth
     Security(app, auth.user_datastore, register_blueprint=False)
 
-    from .setup import setup
-    blueprints = [auth.auth, views.blueprint, setup, api_blueprint, rest.blueprint, runtoken.blueprint]
+    blueprints = [auth.auth, views.blueprint, api_blueprint, rest.blueprint, runtoken.blueprint]
 
     from .errors import errors
 

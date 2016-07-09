@@ -4,13 +4,44 @@
 
 {{else}}
 
-<div class="container">
+  <div class="container">
 
-  <h1>Sign in Required</h1>
+    <div class="col-md-4 col-md-offset-4">
+      <h1>Sign in Required</h1>
 
-  <p>You must be logged in to use Backslash</p>
+      <p>You must be logged in to use Backslash</p>
 
-  <button class="btn btn-danger" {{action "googleLogin"}}><i class="fa fa-google"></i> Sign in with Google</button>
+      <form>
+	<div class="form-group {{if login_error 'has-error'}}">
+	  <label class="control-label" for="username">Username/Email</label>
+	  {{input type="username" class="form-control" id="username" value=username required=true}}
+	</div>
 
-</div>
+	<div class="form-group {{if login_error 'has-error'}}">
+	  <label class="control-label" for="password">Password</label>
+	  {{input type="password" class="form-control" id="password" value=password required=true}}
+	  {{#if login_error}}
+	    <p class="help-block">Login failed - {{login_error}}</p>
+	  {{/if}}
+	</div>
+
+	<div class="form-group">
+	  <button class="btn btn-success btn-lg full-width" {{action "login"}}>Sign In</button>
+	</div>
+
+
+      </form>
+      <p class="text-center">
+	Or
+      </p>
+      {{#if runtime_config.google_oauth2_enabled}}
+	<div class="form-group">
+	  <button class="btn btn-lg btn-default full-width" {{action "login_google"}}>
+	    <i class="fa fa-google"></i> Sign in with Google
+	  </button>
+	</div>
+      {{/if}}
+
+    </div>
+  </div>
 {{/if}}

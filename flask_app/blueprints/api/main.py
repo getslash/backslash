@@ -26,7 +26,7 @@ from ...utils.json import sanitize_json
 
 ##########################################################################
 
-from . import app_config # pylint: disable=unused-import
+from . import setup # pylint: disable=unused-import
 from . import sessions # pylint: disable=unused-import
 from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import

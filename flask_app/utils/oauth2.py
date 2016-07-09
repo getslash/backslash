@@ -5,14 +5,17 @@ from httplib2 import Http
 from apiclient.discovery import build
 from oauth2client.client import OAuth2WebServerFlow
 
+from .. import config
+
 
 _logger = logbook.Logger(__name__)
 
 
 def get_oauth2_identity(auth_code):
 
-    client_id = current_app.config.get('OAUTH2_CLIENT_ID')
-    client_secret = current_app.config.get('OAUTH2_CLIENT_SECRET')
+    config_dict = config.get_runtime_config_private_dict()
+    client_id = config_dict['google_oauth2_client_id']
+    client_secret = config_dict['google_oauth2_client_secret']
     if not client_id:
         _logger.error('No OAuth2 client id configured')
         return

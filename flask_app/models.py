@@ -385,7 +385,10 @@ class Warning(db.Model, TypenameMixin):
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE')),
-                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE')))
+                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE')),
+                       db.Index('ix_roles_users_user_id', 'user_id'),
+                       UniqueConstraint('user_id', 'role_id'),
+)
 
 
 class Role(db.Model, RoleMixin):
@@ -522,3 +525,8 @@ class UserPreference(db.Model):
     preference = db.Column(db.String(256), nullable=False, primary_key=True)
 
     value = db.Column(JSONB, nullable=False, default=lambda: {'value': None})
+
+class AppConfig(db.Model):
+
+    key = db.Column(db.String(256), primary_key=True)
+    value = db.Column(JSONB, nullable=False)

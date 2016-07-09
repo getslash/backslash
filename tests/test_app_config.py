@@ -10,4 +10,4 @@ def test_oauth_client_id(app_config):
 
 @pytest.fixture
 def app_config(client):
-    return client.api.call_function('get_app_config')
+    return client.api.call.get_app_config()

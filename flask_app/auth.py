@@ -6,7 +6,7 @@ from flask.ext.security import SQLAlchemyUserDatastore
 from itsdangerous import BadSignature, TimedSerializer
 
 from flask.ext.login import logout_user
-from flask_security.utils import login_user
+from flask_security.utils import login_user, verify_password
 
 from .models import db, Role, User
 from .utils.oauth2 import get_oauth2_identity
@@ -37,13 +37,35 @@ def testing_login():
     user_info = {}
     return _make_success_login_response(user, user_info)
 
+
 @auth.route("/login", methods=['POST'])
 def login():
 
-    auth_code = (request.json or {}).get('authorizationCode')
-    if auth_code is None:
-        abort(requests.codes.unauthorized)
+    credentials = request.get_json(silent=True)
+    if not isinstance(credentials, dict):
+        abort(requests.codes.bad_request)
 
+    if credentials.get('username'):
+        return _login_with_credentials(credentials)
+
+    auth_code = credentials.get('authorizationCode')
+    if auth_code:
+        return _login_with_google_oauth2(auth_code)
+
+    abort(requests.codes.unauthorized)
+
+
+def _login_with_credentials(credentials):
+    username = credentials.get('username')
+    password = credentials.get('password')
+    user = User.query.filter_by(email=username).first()
+    if user is not None and verify_password(password, user.password):
+        login_user(user)
+        return _make_success_login_response(user)
+    abort(requests.codes.unauthorized)
+
+
+def _login_with_google_oauth2(auth_code):
     user_info = get_oauth2_identity(auth_code)
     if not user_info:
         abort(requests.codes.unauthorized)
@@ -51,8 +73,6 @@ def login():
     _check_alowed_email_domain(user_info)
 
     user = get_or_create_user(user_info)
-    _fix_first_user_role(user)
-
     login_user(user)
 
     return _make_success_login_response(user, user_info)
@@ -64,8 +84,9 @@ def logout():
     return jsonify({})
 
 
-
-def _make_success_login_response(user, user_info):
+def _make_success_login_response(user, user_info=None):
+    if user_info is None:
+        user_info = {'email': user.email, 'given_name': user.first_name, 'last_name': user.last_name}
     token = _generate_token(user, user_info)
     _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
 
@@ -129,12 +150,6 @@ def get_or_create_user(user_info):
     return user
 
 
-def _fix_first_user_role(user):
-    if User.query.count() == 1:
-        user_datastore.add_role_to_user(user, 'admin')
-        user_datastore.db.session.commit()
-
-
 def _check_alowed_email_domain(user_info):
     email = user_info['email']
     domain = email.split('@', 1)
@@ -144,4 +159,3 @@ def _check_alowed_email_domain(user_info):
     if domain not in allowed:
         _logger.error('User {} has a disallowed email domain!', email)
         abort(requests.codes.unauthorized)
-

@@ -3,10 +3,19 @@ import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-
 
 export default Ember.Route.extend(UnauthenticatedRouteMixin, {
 
-    setupController: function(controller) {
-        this._super(controller);
+    runtime_config: Ember.inject.service(),
+
+    model() {
+	return Ember.RSVP.hash({
+	    runtime_config: this.get('runtime_config').get_all(),
+	});
+    },
+
+    setupController(controller, model) {
+        this._super(controller, model, ...arguments);
         controller.set('loading', false);
         controller.set('torii', this.get('torii'));
+	controller.setProperties(model);
     }
 
 });

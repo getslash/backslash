@@ -6,24 +6,29 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
 
     api: Ember.inject.service(),
     session: Ember.inject.service(),
+    runtime_config: Ember.inject.service(),
 
     title(tokens) {
         return tokens.join(' - ') + ' - Backslash';
     },
 
     model() {
+	console.log('getting app config');
         return Ember.RSVP.hash({
-            app_config: this.get('api').call('get_app_config').then(r => r.result),
+            runtime_config: this.get('runtime_config').get_all(),
         });
     },
 
     afterModel(model) {
-	let cfg = config.torii;
-	cfg.providers["google-oauth2"].apiKey = model.app_config.oauth2_client_id;
-    },
 
-    beforeModel() {
-        this.load_current_user();
+	if (model.runtime_config.setup_needed) {
+	    console.log('Transitioning to setup');
+	    this.transitionTo('setup');
+	} else {
+	    let cfg = config.torii;
+	    cfg.providers["google-oauth2"].apiKey = model.runtime_config.google_oauth2_client_id;
+	    this.load_current_user();
+	}
     },
 
     sessionAuthenticated() {
