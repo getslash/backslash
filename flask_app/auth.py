@@ -1,4 +1,4 @@
-
+import ldap
 import logbook
 import requests
 from flask import (abort, Blueprint, current_app, jsonify, request)
@@ -8,6 +8,7 @@ from itsdangerous import BadSignature, TimedSerializer
 from flask.ext.login import logout_user
 from flask_security.utils import login_user, verify_password
 
+from .config import get_runtime_config_private_dict
 from .models import db, Role, User
 from .utils.oauth2 import get_oauth2_identity
 
@@ -59,10 +60,32 @@ def _login_with_credentials(credentials):
     username = credentials.get('username')
     password = credentials.get('password')
     user = User.query.filter_by(email=username).first()
+
     if user is not None and verify_password(password, user.password):
         login_user(user)
         return _make_success_login_response(user)
-    abort(requests.codes.unauthorized)
+    return _login_with_ldap(username, password)
+
+
+def _login_with_ldap(username, password):
+    config = get_runtime_config_private_dict()
+    if not config['ldap_login_enabled'] or not username or not password:
+        abort(requests.codes.unauthorized)
+
+    ldap_obj = ldap.initialize(config['ldap_uri'])
+    ldap_obj.bind_s(username, password)
+    ldap_infos = ldap_obj.search_s(config['ldap_base_dn'], ldap.SCOPE_SUBTREE, 'userPrincipalName={}'.format(username))
+    if not ldap_infos:
+        abort(requests.codes.unauthorized)
+    ldap_info = ldap_infos[0][1]
+    user_info = {
+        'email': ldap_info['mail'][0].decode('utf-8'),
+        'given_name': ldap_info['givenName'][0].decode('utf-8'),
+        'family_name': ldap_info['sn'][0].decode('utf-8'),
+    }
+    user = get_or_create_user(user_info)
+    login_user(user)
+    return _make_success_login_response(user, user_info)
 
 
 def _login_with_google_oauth2(auth_code):

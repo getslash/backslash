@@ -22,6 +22,9 @@ _DEFAULTS = {
     'google_oauth2_enabled': False,
     'google_oauth2_client_id': None,
     'google_oauth2_client_secret': None,
+    'ldap_login_enabled': False,
+    'ldap_uri': None,
+    'ldap_base_dn': None,
 }
 
 @API(generates_activity=False, require_login=False)

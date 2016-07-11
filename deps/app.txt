@@ -22,3 +22,6 @@ watchdog
 #for oauth2
 google-api-python-client
 oauth2client
+
+#for LDAP
+pyldap
