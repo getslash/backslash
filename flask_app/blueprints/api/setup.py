@@ -19,6 +19,7 @@ def get_app_config():
     return get_runtime_config_public_dict()
 
 _DEFAULTS = {
+    'default_domain': None,
     'google_oauth2_enabled': False,
     'google_oauth2_client_id': None,
     'google_oauth2_client_secret': None,

@@ -41,6 +41,15 @@
       <h2>Authentication</h2>
 
       <div class="form-group">
+	<label class="control-label" for="default-domain">Default Email Domain</label>
+	{{input class="form-control" id="default-domain" value=config.default_domain placeholder="yourcompany.com"}}
+	<p class="help-block">This will be appended to usernames to form the lookup email to authenticate</p>
+	{{#if config.default_domain}}
+	  <p class="help-block">Will turn <strong>username</strong> into <strong>{{concat "username@" config.default_domain}})</strong></p>
+	{{/if}}
+      </div>
+
+      <div class="form-group">
 
 	<div class="checkbox">
 	  <label>
