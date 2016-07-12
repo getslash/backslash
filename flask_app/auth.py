@@ -64,7 +64,7 @@ def _login_with_credentials(credentials):
     email = _fix_email(username, config)
     user = User.query.filter_by(email=email).first()
 
-    if user is not None and verify_password(password, user.password):
+    if user is not None and user.password and verify_password(password, user.password):
         login_user(user)
         return _make_success_login_response(user)
     _logger.debug('Could not login user locally (no user or password mismatch)')
