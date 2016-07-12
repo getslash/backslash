@@ -1,3 +1,4 @@
+import requests
 from uuid import uuid4
 
 import pytest
@@ -57,10 +58,18 @@ def test_admin_user_no_users(client, with_clean_install, request, db_context):  
             assert models.User.query.filter(
                 models.User.roles.any(models.Role.name == 'admin')).count()
 
-    client.api.call.setup(config={
-        'admin_user_email': admin_email,
-        'admin_user_password': admin_password,
-    })
+    def func():
+        client.api.call.setup(config={
+            'admin_user_email': admin_email,
+            'admin_user_password': admin_password,
+        })
+
+    if with_clean_install:
+        func()
+    else:
+        with pytest.raises(requests.HTTPError) as caught:
+            func()
+        assert caught.value.response.status_code == requests.codes.conflict
 
     with db_context():
         query = models.User.query.filter_by(email=admin_email)

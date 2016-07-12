@@ -1,12 +1,14 @@
 import json
+import requests
 
+from flask import abort
 from flask_security.utils import encrypt_password
 import logbook
 from sqlalchemy.exc import IntegrityError
 
 from .blueprint import API
 from ... import models
-from ...config import get_runtime_config_public_dict
+from ...config import get_runtime_config_public_dict, get_runtime_config_private_dict
 from ...auth import user_datastore
 from ...models import db
 
@@ -30,6 +32,9 @@ _DEFAULTS = {
 
 @API(generates_activity=False, require_login=False)
 def setup(config: dict):
+    if not get_runtime_config_private_dict()['setup_needed']:
+        abort(requests.codes.conflict)
+
     unified_config = _DEFAULTS.copy()
     unified_config.update({key: value for key, value in config.items() if key in _DEFAULTS})
     unified_config['setup_needed'] = False
