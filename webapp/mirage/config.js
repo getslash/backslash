@@ -1,4 +1,5 @@
 export default function config() {
+    this.passthrough('/runtoken/**');
     this.passthrough('/reauth');
     this.passthrough('/login');
     this.passthrough('/logout');
