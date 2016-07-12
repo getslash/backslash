@@ -24,6 +24,9 @@ required_apt_packages:
     - redis-server
     - gcc
     - sudo
+    - libsasl2-dev
+    - libldap2-dev
+    - libssl-dev
 required_yum_packages:
     - rsync
     - python34u
