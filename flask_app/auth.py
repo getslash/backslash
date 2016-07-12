@@ -138,7 +138,7 @@ def _make_success_login_response(user, user_info=None):
 def reauth():
     token = (request.json or {}).get('auth_token')
     if token is None:
-        abort(requests.codes.unauthorized)
+        abort(requests.codes.bad_request)
     try:
         token_data = _get_token_serializer().loads(
             token, max_age=_MAX_TOKEN_AGE)
