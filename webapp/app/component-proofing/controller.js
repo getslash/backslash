@@ -28,6 +28,8 @@ export default Ember.Controller.extend({
 
     use_real_email: false,
 
+    avatar_email: 'vmalloc@gmail.com',
+
     real_email: function() {
         if (this.get('use_real_email')) {
             return 'spatz@psybear.com';

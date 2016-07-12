@@ -17,11 +17,17 @@ export default Ember.Component.extend({
     }.property('email'),
 
     _remember_fallback() {
-	localStorage.setItem(this.get('fallback_marker_name'), true);
+	localStorage.setItem(this.get('_fallback_marker_name'), true);
     },
 
     _is_fallback_needed() {
-	return localStorage.getItem(this.get('fallback_marker_name'));
+	return localStorage.getItem(this.get('_fallback_marker_name'));
+    },
+
+    src_change: 0,
+
+    refresh_src() {
+	this.incrementProperty('src_change');
     },
 
     src: function() {
@@ -36,24 +42,26 @@ export default Ember.Component.extend({
             returned += '?d=mm';
         }
         return returned;
-    }.property('email'),
+    }.property('email', 'src_change'),
 
     fallback_img_url: function() {
         let fallback = config.APP.avatars.fallback_image_url;
         if (!fallback) {
             return null;
         }
-        return fallback.replace('__EMAIL__', this.get('email'));
-    }.property(),
+        fallback = fallback.replace('__EMAIL__', this.get('email'));
+        return fallback;
+
+    }.property('email'),
 
     didInsertElement: function() {
         let self = this;
         this.$().on('error', function() {
             let fallback = self.get('fallback_img_url');
             if (fallback) {
-		this._remember_fallback();
+		self._remember_fallback();
+		self.refresh_src();
             }
-            this.set('src', fallback);
         }.bind(this));
     },
 

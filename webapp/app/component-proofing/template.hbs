@@ -130,7 +130,7 @@
     <h3>{{name}}</h3>
     <p class="text-center">
       <div class="item session text-center" style="padding: 2em; padding-left: 10em">
-      {{component name email="vmalloc@gmail.com" real_email=real_email admin=admin moderator=moderator large=large}}
+      {{component name email=avatar_email real_email=real_email admin=admin moderator=moderator large=large}}
       </div>
     </p>
   {{/with}}
@@ -144,6 +144,11 @@
 
     {{input id="use_real_email" type="checkbox" checked=use_real_email}}<label for="use_real_email">Proxy?</label>
 
+  </p>
+  <p class="config">
+    <div class="form-group">
+      {{input type="text" value=avatar_email}}
+    </div>
   </p>
 
 </div>
