@@ -7,6 +7,14 @@
 {{hr-separator title="Tests"}}
 
 <div class="container-fluid">
-  {{query-results results=tests update_filter=(action "update_filter") goto_page=(action "goto_page")}}
+  {{query-results results=tests
+    goto_page=(action "goto_page")
+    page_size=(mut page_size)
+    humanize_times=humanize_times
+    show_successful=(mut show_successful)
+    show_unsuccessful=(mut show_unsuccessful)
+    show_abandoned=(mut show_abandoned)
+    show_skipped=(mut show_skipped)
+  }}
 </div>
 
