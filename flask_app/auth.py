@@ -86,21 +86,26 @@ def _login_with_ldap(email, password, config):
         _logger.debug('Rejecting login because LDAP is disabled or no username/password')
         abort(requests.codes.unauthorized)
 
-    ldap_obj = ldap.initialize(config['ldap_uri'])
-    ldap_obj.bind_s(email, password)
-    ldap_infos = ldap_obj.search_s(config['ldap_base_dn'], ldap.SCOPE_SUBTREE, 'userPrincipalName={}'.format(email))
-    if not ldap_infos:
-        _logger.error('Could not authenticate via LDAP - no records found')
+    try:
+
+        ldap_obj = ldap.initialize(config['ldap_uri'])
+        ldap_obj.bind_s(email, password)
+        ldap_infos = ldap_obj.search_s(config['ldap_base_dn'], ldap.SCOPE_SUBTREE, 'userPrincipalName={}'.format(email))
+        if not ldap_infos:
+            _logger.error('Could not authenticate via LDAP - no records found')
+            abort(requests.codes.unauthorized)
+        ldap_info = ldap_infos[0][1]
+        user_info = {
+            'email': ldap_info['mail'][0].decode('utf-8'),
+            'given_name': ldap_info['givenName'][0].decode('utf-8'),
+            'family_name': ldap_info['sn'][0].decode('utf-8'),
+        }
+        user = get_or_create_user(user_info)
+        login_user(user)
+        return _make_success_login_response(user, user_info)
+    except ldap.INVALID_CREDENTIALS:
+        _logger.error('LDAP Invalid credentials', exc_info=True)
         abort(requests.codes.unauthorized)
-    ldap_info = ldap_infos[0][1]
-    user_info = {
-        'email': ldap_info['mail'][0].decode('utf-8'),
-        'given_name': ldap_info['givenName'][0].decode('utf-8'),
-        'family_name': ldap_info['sn'][0].decode('utf-8'),
-    }
-    user = get_or_create_user(user_info)
-    login_user(user)
-    return _make_success_login_response(user, user_info)
 
 
 def _login_with_google_oauth2(auth_code):
