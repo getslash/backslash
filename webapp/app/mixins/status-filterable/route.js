@@ -8,6 +8,9 @@ export default Ember.Mixin.create({
         page: {
             refreshModel: true
         },
+	page_size: {
+	    refreshModel: true,
+	},
         filter: {
             refreshModel: true,
         },
