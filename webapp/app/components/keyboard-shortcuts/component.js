@@ -53,7 +53,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         self.sendAction('close_boxes');
         self._close_boxes();
-        self.router.transitionTo(obj.type, obj.key);
+        self.router.transitionTo(obj.route, obj.key);
 
     },
 

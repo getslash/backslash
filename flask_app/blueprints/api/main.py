@@ -7,7 +7,6 @@ from flask import abort, current_app
 from flask_simple_api import error_abort
 from flask_security import current_user
 
-from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -30,6 +29,7 @@ from . import setup # pylint: disable=unused-import
 from . import sessions # pylint: disable=unused-import
 from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
+from . import quick_search # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
 
 
@@ -390,21 +390,3 @@ def get_admin_stats():
 
 ################################################################################
 ## Search
-
-@API(generates_activity=False)
-def quick_search(term: str):
-    num_hits = 10
-    query = text(
-        """SELECT * from
-             ((select name as key, name, 'subject' as type from subject) UNION
-
-              (select email as key, CASE WHEN first_name is NULL THEN email
-                          ELSE (first_name || ' ' || last_name || ' (' || email || ')') END as name, 'user' as type from "user")) u
-        where u.name ilike :term limit :num_hits""").params(
-            term='%{}%'.format(term),
-            num_hits=num_hits,
-        )
-    return [
-        {'type': res['type'], 'key': res['key'], 'name': res['name']}
-        for res in db.session.execute(query)
-        ]
