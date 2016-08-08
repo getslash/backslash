@@ -1,6 +1,3 @@
-{{#if show_breakdown}}
-  {{session-breakdown session=session_model tooltip_position="bottom"}}
-{{/if}}
 
 {{#if link}}
   <div class="row">
@@ -14,29 +11,25 @@
 {{/if}}
 
 
-{{#if user}}
-  <div class="row">
-    <div class="col-sm-12">
-      <dl class="spaced">
-        <dt>Started By</dt>
-        <dd>
-          {{#link-to "user.sessions" session_model.user_email}}
-            {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
-          {{/link-to}}
-        </dd>
-      </dl>
-    </div>
-  </div>
-{{/if}}
-
-
-
 <div class="row margin-bottom-large">
   <div class="col-sm-6">
     <dl class="spaced">
 
+      {{#if user}}
+	<dt>Started By</dt>
+	<dd>
+          {{#link-to "user.sessions" session_model.user_email}}
+            {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
+          {{/link-to}}
+	</dd>
+      {{/if}}
+
       <dt>Run Time</dt>
       <dd>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</dd>
+ 
+      <dt>Duration</dt>
+      <dd>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</dd>
+
       <dt>Test Subjects</dt>
       <dd>
         {{#each session_model.subjects as |subject|}}
@@ -48,12 +41,6 @@
           </p>
         {{/each}}
       </dd>
-    </dl>
-  </div>
-  <div class="col-sm-6">
-    <dl class="spaced">
-      <dt>Duration</dt>
-      <dd>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</dd>
 
       {{#if session_model.infrastructure }}
         <dt>Infrastructure</dt>
@@ -63,8 +50,12 @@
           {{/if}}
         </dd>
       {{/if}}
-
     </dl>
+  </div>
+  <div class="col-sm-6">
+    {{#if show_breakdown}}
+      {{session-breakdown session=session_model tooltip_position="bottom"}}
+    {{/if}}
   </div>
 
 </div>
