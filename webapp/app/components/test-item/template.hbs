@@ -39,7 +39,11 @@
   </div>
 </div>
 
+<div class="right-label fainter {{if test.num_comments 'visible'}}">
+  <i class="fa fa-comment"></i>
+</div>
 
-<div class="right-label warnings {{if test.num_warnings 'visible'}}">
+
+<div class="right-label expand-on-hover warnings {{if test.num_warnings 'visible'}}">
   <i class="fa fa-warning"></i> <span class="summary">{{pluralize-word test.num_warnings "Warning"}}</span>
 </div>

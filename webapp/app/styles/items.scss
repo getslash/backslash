@@ -130,7 +130,7 @@ a.item, a.item:hover {
 	    opacity: 0;
 	}
 
-	&:hover {
+	&.expand-on-hover:hover {
 	    flex: 0 0 10em;
 	    @include slide-flex;
 	}

@@ -150,6 +150,11 @@ span {
     color: $gray-light;
 }
 
+.fainter
+{
+    color: lighten($gray-light, 10%);
+}
+
 .list-group-item-warning a {
     color: $backslash-orange;
 }
