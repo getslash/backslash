@@ -259,6 +259,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined')
 
+    metadatas = db.relationship('TestMetadata', lazy='dynamic')
 
     @rendered_field
     def variation(self):

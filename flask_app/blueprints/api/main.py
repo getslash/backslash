@@ -91,7 +91,7 @@ def report_session_end(id: int, duration: (int, NoneType)=None):
     db.session.commit()
 
 
-@API
+@API(version=2)
 def report_test_start(
         session_id: int,
         name: str,
@@ -104,6 +104,7 @@ def report_test_start(
         scm_dirty: bool=False,
         is_interactive: bool=False,
         variation: (dict, NoneType)=None,
+        metadata: (dict, NoneType)=None,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -128,6 +129,11 @@ def report_test_start(
     )
     if variation is not None:
         returned.test_variation = TestVariation(variation=sanitize_json(variation))
+
+    if metadata is not None:
+        for key, value in metadata.items():
+            returned.metadatas.append(TestMetadata(key=key, metadata_item=value))
+
     try:
         db.session.add(returned)
         db.session.commit()

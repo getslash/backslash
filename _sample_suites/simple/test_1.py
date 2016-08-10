@@ -5,10 +5,12 @@ def test_1():
     pass
 
 
+@slash.tag('tag_without_value')
 def test_2():
     slash.logger.warning('This is a warning')
 
 
+@slash.tag('tag_with_value', 'some_value')
 def test_3():
     slash.skip_test('skipped')
 

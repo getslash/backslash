@@ -18,6 +18,9 @@ def test_test_information_name(started_test, test_name):
     assert started_test.info['name'] == test_name
 
 
+
+
+
 def test_report_test_start_logical_id(started_session, test_name):
     test = started_session.report_test_start(
         name=test_name, test_logical_id='11')
@@ -177,3 +180,11 @@ def test_test_variation_invalid_values(started_session, invalid_variation, test_
         name=test_name, class_name=class_name, variation=invalid_variation)
     assert test.refresh().variation != invalid_variation
     assert test.variation # make sure it is not empty
+
+
+def test_test_start_with_metadata(started_session, test_name, class_name):
+    metadata = {'metadata_key1': 'metadata_value1',
+                'metadata_key2': 'metadata_value2'}
+    test = started_session.report_test_start(
+        name=test_name, class_name=class_name, metadata=metadata)
+    assert test.refresh().get_metadata() == metadata
