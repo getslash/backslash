@@ -28,7 +28,7 @@ export default Ember.Component.extend({
 		['skipped', s.get('num_skipped_tests')],
 		['successful', this.get('num_successful_tests')],
 	    ];
-	let returned = []
+	let returned = [];
 	for (let item of all) {
 	    if (item[1]) {
 		returned.push(item);
