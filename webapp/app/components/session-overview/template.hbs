@@ -45,8 +45,8 @@
       {{#if session_model.infrastructure }}
         <dt>Infrastructure</dt>
         <dd>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-          {{#if metadata.slash.version}}
-            ({{metadata.slash.version}})
+          {{#if slash_version}}
+            ({{slash_version}})
           {{/if}}
         </dd>
       {{/if}}

@@ -14,6 +14,36 @@ export default Ember.Component.extend({
             }
         });
         return returned;
-    }.property('additional', 'metadata')
+    }.property('additional', 'metadata'),
+
+    slash_commandline: function() {
+	let returned = this.get('metadata.slash.commandline');
+
+	if (returned === undefined) {
+	    returned = this.get('metadata')['slash::commandline'];
+	}
+	return returned;
+    }.property('metadata'),
+
+
+    slash_tags: function() {
+	let metadata = this.get('metadata');
+
+	let returned = metadata['slash::tags'];
+	console.log('Got', returned);
+	return returned;
+    }.property('metadata'),
+
+    slash_tags_without_values: function() {
+	let tags = this.get('slash_tags');
+	let returned = [];
+
+	for (let tag of tags.names) {
+	    if (!tags.values.hasOwnProperty(tag)) {
+		returned.push(tag);
+	    }
+	}
+	return returned;
+    }.property('slash_tags'),
 
 });

@@ -14,7 +14,7 @@ from .blueprint import API
 from ... import activity
 from ... import stats
 from ... import models
-from ...models import db, Session, Test, Comment, User, Role, Warning, RelatedEntity, TestVariation
+from ...models import db, Session, Test, Comment, User, Role, Warning, RelatedEntity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
