@@ -7,7 +7,7 @@ from flask import g
 from sqlalchemy.sql import select, union_all, literal_column, text
 from sqlalchemy import and_
 
-from flask.ext.security import current_user
+from flask_security import current_user
 
 
 

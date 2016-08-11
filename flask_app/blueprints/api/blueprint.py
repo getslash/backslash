@@ -1,7 +1,7 @@
 import functools
 
 from flask import Blueprint
-from flask.ext.simple_api import SimpleAPI
+from flask_simple_api import SimpleAPI
 
 from ... import activity
 from ...utils.api_utils import (auto_render, requires_login,

@@ -2,7 +2,7 @@ import functools
 
 import requests
 from flask import request, abort, g
-from flask.ext.login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
 

@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from flask.ext.security.utils import encrypt_password, verify_password
+from flask_security.utils import encrypt_password, verify_password
 
 def test_verify_password_independent_of_salt(webapp):
     app = webapp.app

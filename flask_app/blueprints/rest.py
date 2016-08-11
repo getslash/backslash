@@ -7,8 +7,8 @@ from flask import Blueprint, abort, request, jsonify, current_app, send_file, Re
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
 
-from flask.ext.simple_api import error_abort
-from flask.ext.security import current_user
+from flask_simple_api import error_abort
+from flask_security import current_user
 
 from .. import models
 from ..models import Error, Session, Test, User, Subject

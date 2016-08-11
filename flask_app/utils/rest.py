@@ -3,7 +3,7 @@ import logbook
 from flask import jsonify, request, current_app
 
 from flask_restful import reqparse, Resource
-from flask.ext.simple_api import error_abort
+from flask_simple_api import error_abort
 
 from sqlalchemy.sql.expression import nullslast
 

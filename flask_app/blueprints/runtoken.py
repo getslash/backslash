@@ -3,8 +3,8 @@ from uuid import uuid4
 import requests
 
 from flask import Blueprint, abort, jsonify, request, url_for
-from flask.ext.security.core import current_user
-from flask.ext.security.decorators import login_required
+from flask_security.core import current_user
+from flask_security.decorators import login_required
 from redis import Redis
 from urlobject import URLObject as URL
 

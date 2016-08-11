@@ -9,7 +9,7 @@ import requests
 import flux
 import pytest
 from backslash import Backslash as BackslashClient
-from flask.ext.loopback import FlaskLoopback
+from flask_loopback import FlaskLoopback
 from flask_app import app, auth, models
 from flask_app.utils.caching import cache
 from munch import Munch

@@ -1,8 +1,8 @@
 import flask
 import os
 import yaml
-from flask.ext.security import Security
-from flask.ext.mail import Mail
+from flask_security import Security
+from flask_mail import Mail
 import logbook
 from logbook.compat import redirect_logging
 

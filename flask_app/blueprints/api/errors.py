@@ -7,7 +7,7 @@ from uuid import uuid4
 import requests
 
 from flask import current_app, request
-from flask.ext.simple_api import error_abort
+from flask_simple_api import error_abort
 from sqlalchemy.orm.exc import NoResultFound
 from urlobject import URLObject as URL
 

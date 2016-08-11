@@ -1,7 +1,7 @@
 import requests
 
 from flask import g, request
-from flask.ext.simple_api import error_abort
+from flask_simple_api import error_abort
 
 from ...models import Session, db, SessionMetadata
 from ...utils import get_current_time, statuses
