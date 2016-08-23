@@ -15,7 +15,6 @@ export default Ember.Component.extend({
 		successful: '#5cb85c',
 	    }
 	};
-	console.table(returned.columns);
 	return returned;
     }.property('session'),
 
