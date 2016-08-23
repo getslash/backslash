@@ -8,7 +8,7 @@
     "ember": "~2.7.0",
     "ember-cli-shims": "0.1.1",
     "ember-qunit-notifications": "0.1.0",
-    "fontawesome": "~4.2.0",
+    "fontawesome": "~4.4.0",
     "js-md5": "~1.1.0",
     "loader.js": "ember-cli/loader.js#3.4.0",
     "moment": "~2.10.3",
