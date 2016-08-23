@@ -1,31 +1,5 @@
-{{#tool-bar}}
-
-  {{#if page_size}}
-    {{#dropdown-menu title=(concat page_size " results")}}
-      {{#each available_page_sizes as |size|}}
-        <li class="pad-medium clickable">
-          <a {{action "set_page_size" size}}>{{size}}</a>
-        </li>
-      {{/each}}
-    {{/dropdown-menu}}
-  {{/if}}
-
-  {{#dropdown-menu title="Display"}}
-    {{menu-toggle title="Human-friendly times" toggled=(mut humanize_times)}}
-  {{/dropdown-menu}}
-
-  {{#dropdown-menu title="Filter"}}
-    {{menu-toggle title="Show Successful" toggled=(mut show_successful)}}
-    {{menu-toggle title="Show Unsuccessful" toggled=(mut show_unsuccessful)}}
-    {{menu-toggle title="Show Abandoned" toggled=(mut show_abandoned)}}
-    {{menu-toggle title="Show Skipped" toggled=(mut show_skipped)}}
-
-  {{/dropdown-menu}}
-
-{{/tool-bar}}
-
 {{#each results as |result|}}
-  {{component (concat result.type "-item") item=result humanize_times=humanize_times show_subjects=show_subjects}}
+  {{component (concat result.type "-item") item=result humanize_times=humanize_times show_subjects=show_subjects session_model=session_model}}
 {{/each}}
 
 {{pagination-nav page=page pages_total=pages_total goto_page=(action this.attrs.goto_page)}}

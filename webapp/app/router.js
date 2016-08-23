@@ -12,12 +12,15 @@ Router.map(function() {
     this.route('errors');
     this.route('single_error', { path: "/errors/:index" });
     this.route('warnings');
+    this.route('activity');
+    this.route('info');
+    this.route('test', {path: "/tests/:test_id"}, function() {
+      this.route('errors');
+      this.route('warnings');
+    });
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
-    this.route('errors');
-    this.route('single_error', { path: "/errors/:index" });
-    this.route('warnings');
   });
 
   this.route('login', function() {});

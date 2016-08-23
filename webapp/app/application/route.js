@@ -13,7 +13,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     model() {
-	console.log('getting app config');
         return Ember.RSVP.hash({
             runtime_config: this.get('runtime_config').get_all(),
         });
@@ -22,7 +21,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     afterModel(model) {
 
 	if (model.runtime_config.setup_needed) {
-	    console.log('Transitioning to setup');
 	    this.transitionTo('setup');
 	} else {
 	    let cfg = config.torii;

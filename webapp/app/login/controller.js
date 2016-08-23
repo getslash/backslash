@@ -14,8 +14,7 @@ export default Ember.Controller.extend(UnauthenticatedRouteMixin, {
 	    let self = this;
 	    self.set('login_error', null);
 	    const credentials = this.getProperties(['username', 'password']);
-	    self.get('session').authenticate('authenticator:token', credentials).then(function(data) {
-		console.log('authenticated', data);
+	    self.get('session').authenticate('authenticator:token', credentials).then(function() {
 	    }, function() {
 		self.set('login_error', 'Invalid username and/or password');
 	    });

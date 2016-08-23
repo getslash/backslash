@@ -1,79 +1,43 @@
-
-{{#if link}}
-  <div class="row">
-    <div class="col-sm-12">
-      <dl class="spaced">
-        <dt>Session</dt>
-        <dd>{{#link-to 'session.index' session_model.display_id}}{{session_model.display_id}}{{/link-to}}</dd>
-      </dl>
-    </div>
-  </div>
+{{#if user}}
+  <p>
+    By {{#link-to "user.sessions" session_model.user_email}}
+    {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
+    {{/link-to}}
+  </p>
 {{/if}}
 
+<p>
+  {{status-label status=session_model.status}}
+</p>
 
-<div class="row margin-bottom-large">
-  <div class="col-sm-6">
-    <dl class="spaced">
+<p>
+  <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+</p>
 
-      {{#if user}}
-	<dt>Started By</dt>
-	<dd>
-          {{#link-to "user.sessions" session_model.user_email}}
-            {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
-          {{/link-to}}
-	</dd>
-      {{/if}}
+<p>
+  <i class="fa fa-hourglass-1"></i> {{moment-time unix=session_model.start_time}}
+</p>
 
-      <dt>Run Time</dt>
-      <dd>{{moment-range start_time=session_model.start_time end_time=session_model.end_time expanded=true}}</dd>
- 
-      <dt>Duration</dt>
-      <dd>{{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}</dd>
+<p>
+  <i class="fa fa-hourglass-3"></i> {{moment-time unix=session_model.end_time}}
+</p>
 
-      <dt>Test Subjects</dt>
-      <dd>
-        {{#each session_model.subjects as |subject|}}
-          <p><i class="fa fa-rocket"></i>
-            {{#link-to 'subject' subject.name}}
-              <strong>{{subject.name}}</strong>
-            {{/link-to}}
-            ({{subject.product}} v{{subject.version}}, r{{subject.revision}})
-          </p>
-        {{/each}}
-      </dd>
+{{#each session_model.subjects as |subject|}}
+  <p>
+    <i class="fa fa-rocket"></i>
+    {{#link-to 'subject' subject.name}}
+      <strong>{{subject.name}}</strong>
+    {{/link-to}}
+    <span class="label-fine">{{subject.version}}</span>
+  </p>
+{{/each}}
 
-      {{#if session_model.infrastructure }}
-        <dt>Infrastructure</dt>
-        <dd>{{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-          {{#if slash_version}}
-            ({{slash_version}})
-          {{/if}}
-        </dd>
-      {{/if}}
-    </dl>
-  </div>
-  <div class="col-sm-6">
-    {{#if show_breakdown}}
-      {{session-breakdown session=session_model tooltip_position="bottom"}}
-    {{/if}}
-  </div>
+{{#if session_model.infrastructure }}
+  <p>
+  {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+  </p>
+{{/if}}
 
-</div>
-
-{{#if (or session_model.num_warnings session_model.num_test_warnings session_model.num_errors not_complete)}}
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="list-group">
-        <div class="list-group-item list-group-item-{{if (or session_model.not_complete session_model.num_errors) 'danger' 'warning'}}">
-          {{#link-to 'session.warnings'}}{{artifact-counter warnings=session_model.num_warnings caption="Session Warnings"}}{{/link-to}}
-          {{artifact-counter warnings=session_model.num_test_warnings caption="Test Warnings"}}
-          {{#link-to 'session.errors' session_model.display_id}}{{artifact-counter errors=session_model.num_errors caption="Session Errors"}}{{/link-to}}
-          {{#if not_complete}}
-            <i class="fa fa-exclamation-circle"></i>
-            Session has not completed! {{sub session_model.total_num_tests session_model.num_finished_tests}} tests were not run.
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
+{{#if show_breakdown}}
+  {{session-breakdown session=session_model tooltip_position="bottom"}}
 {{/if}}

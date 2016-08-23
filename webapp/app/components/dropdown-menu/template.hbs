@@ -3,6 +3,13 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" aria-labelledby="{{dropdown_id}}">
+    {{#if options}}
+       {{#each options as |opt|}}
+	 <li class="pad-medium clickable">
+	   <a {{action "set_value" opt}}>{{opt}}</a>
+	 </li>
+       {{/each}}
+    {{/if}}
     {{yield}}
   </ul>
 </li>

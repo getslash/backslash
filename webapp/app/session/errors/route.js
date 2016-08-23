@@ -1,7 +1,19 @@
-import BaseRoute from '../../routes/base';
+import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import ErrorsWarningsRouteMixin from '../../mixins/errors-warnings-route';
+import InfinityRoute from '../../mixins/infinity-route';
+import ComplexModelRoute from '../../mixins/complex-model-route';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, ErrorsWarningsRouteMixin, {
-    parent_model_name: 'session',
+export default Ember.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexModelRoute, {
+
+    model: function() {
+	const parent = this.modelFor('session').session_model;
+	return Ember.RSVP.hash({
+	    session: this.modelFor('session').session_model,
+	    errors: this.infinityModel('error', {
+		session_id: parent.id,
+		modelPath: 'errors',
+	    }),
+	});
+    },
+
 });

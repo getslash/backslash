@@ -1,25 +1,18 @@
-import BaseRoute from '../routes/base';
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import ScrollToTopMixin from '../mixins/scroll-top';
+import Ember from 'ember';
 
-export default BaseRoute.extend(AuthenticatedRouteMixin, ScrollToTopMixin, {
-
-    title: 'Test Details',
-
-    model: function(params) {
-        return this.store.find('test', params.test_id);
+export default Ember.Route.extend({
+    model(params) {
+	let self = this;
+	return self.store.find('test', params.test_id).then(function(test) {
+	    return Ember.RSVP.hash({
+		test: test,
+		session: self.store.find('session', test.get('session_id')),
+	    });
+	});
     },
 
-    setupController: function(controller, model) {
-        this._super(controller, model);
-        controller.set('test', model);
-
-        this.store.find('session', model.get('session_id')).then(
-            function(session) {
-                model.set('session', session);
-            }
-        );
-    }
-
+    afterModel(model) {
+	this.transitionTo('session.test', model.session.get('display_id'), model.test.get('display_id'));
+    },
 
 });

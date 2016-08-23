@@ -27,14 +27,19 @@
 	  <dd></dd>
 	{{/each}}
 	{{#each-in slash_tags.values as |name value|}}
-	    <dt>{{name}}</dt>
-	    <dd>{{value}}</dd>
+	  <dt>{{name}}</dt>
+	  <dd>{{value}}</dd>
 	{{/each-in}}
       </dl>
     </div>
   </div>
 {{/if}}
 
+{{#if slash_version}}
+  <div class="module">
+    <div class="content"><img src="/static/assets/img/slash-icon-black.svg" class="text-height"> {{slash_version}}</div>
+  </div>
+{{/if}}
 
 {{#if slash_commandline}}
   <div class="module">

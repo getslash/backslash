@@ -8,5 +8,12 @@ export default Ember.Component.extend({
         return `dropdown-${this.elementId}`;
     }.property(),
 
+    options: null,
+
+    actions: {
+	set_value(value) {
+	    this.set('value', value);
+	},
+    },
 
 });

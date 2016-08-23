@@ -75,3 +75,12 @@
 	bacground-color: $mild-green;
     }
 }
+
+.label-fine {
+    background: $gray-lighter;
+    border-radius: 3px;
+    color: black;
+    font-size: x-small;
+    margin: 2px;
+    padding: 3px;
+}

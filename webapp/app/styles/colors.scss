@@ -10,3 +10,7 @@ $backslash-orange-lighter: lighten($backslash-orange, 20%);
 /* Component-specific */
 $console-bg: lighten($navbar-inverse-bg, 15%);
 $sub-section-heading-color: darken($navbar-default-bg, 20%);
+
+.bg-gray-lighter {
+    background: $gray-lighter;
+}

@@ -4,6 +4,8 @@ export default Ember.Component.extend({
 
     session: null,
 
+    classNames: ['session-breakdown'],
+
     data: function() {
 	const returned = {
 	    columns: this._get_columns(),
@@ -13,7 +15,9 @@ export default Ember.Component.extend({
 		errored: 'red',
 		skipped: '#f0ad4e',
 		successful: '#5cb85c',
-	    }
+		'not run': 'silver',
+	    },
+	    labels: true,
 	};
 	return returned;
     }.property('session'),
@@ -26,6 +30,7 @@ export default Ember.Component.extend({
 		['errored', s.get('num_error_tests')],
 		['skipped', s.get('num_skipped_tests')],
 		['successful', this.get('num_successful_tests')],
+	        ['not run', this.get('num_not_run_tests')],
 	    ];
 	let returned = [];
 	for (let item of all) {
@@ -40,8 +45,23 @@ export default Ember.Component.extend({
         return this.get('session.num_finished_tests') - this.get('session.num_error_tests') - this.get('session.num_failed_tests') - this.get('session.num_skipped_tests');
     }.property('session'),
 
+    size: {
+	width: 400,
+    },
+
+    num_not_run_tests: function() {
+	let total = this.get('session.total_num_tests');
+	if (!total) {
+	    return null;
+	}
+	return total - this.get('session.num_finished_tests');
+    }.property('session'),
+
     donut: {
-	title: 'Session breakdown',
+	width: 8,
+	label: {
+	    show: false,
+	},
     },
 
     tooltip: {

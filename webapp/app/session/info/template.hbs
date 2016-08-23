@@ -1,0 +1,31 @@
+{{#if session_model.subjects}}
+  <div class="container-fluid">
+    <table class="table data">
+      <tbody>
+	<tr>
+	  <td>Ran on</td>
+	  <td>
+	    {{#each session_model.subjects as |s|}}
+	      <div>
+		<i class="fa fa-rocket"></i> {{#link-to 'subject' s.name}}{{s.name}}{{/link-to}} <span class="label label-fine">{{s.version}}</span>
+	      </div>
+	      <dl class="dl-horitontal-left-aligned">
+		<dt>Product</dt>
+		<dd>{{s.product}}</dd>
+		<dt>Revision</dt>
+		<dd>{{elements/copyable-text value=s.revision}}</dd>
+	      </dl>
+	    {{/each}}
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+  </div>
+{{/if}}
+
+{{#if session_model.related}}
+  {{metadata/related-entities related=session_model.related}}
+{{/if}}
+
+
+{{metadata/metadata-table metadata=metadata additional=additional_metadata }}

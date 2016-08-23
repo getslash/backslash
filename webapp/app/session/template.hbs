@@ -1,1 +1,100 @@
-{{outlet}}
+{{#tool-bar}}
+  <form class="navbar-form navbar-right">
+    {{# if (can "archive_session") }}
+      <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
+
+      {{# if needs_investigation }}
+	<button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as Investigated</button>
+
+      {{else}}
+	{{# if session_model.investigated }}
+	  <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
+	{{/if}}
+      {{/if}}
+    {{/if}}
+  </form>
+  <p class="navbar-text">Session {{elements/copyable-text value=session_model.display_id}}</p>
+
+{{/tool-bar}}
+
+<div class="container-fluid">
+
+  <div class="col-md-3 col-sm-12">
+    {{session-overview session_model=session_model metadata=metadata user=user}}
+  </div>
+
+  <div class="col-md-9 col-sm-12">
+
+    <div class="navigation">
+
+      <div class="tabs">
+	<ul class="nav nav-tabs">
+	  {{#link-to 'session.index' tagName='li'}}
+	    <a href>Tests </a>
+	  {{/link-to}}
+
+	  {{#if session_model.num_errors}}
+	    {{#link-to 'session.errors' tagName='li'}}
+	      <a href>Session Errors <span class="label label-danger">{{session_model.num_errors}}</span></a>
+	    {{/link-to}}
+	  {{/if}}
+
+	  {{#with session_model.num_warnings as |num_warnings|}}
+	    {{#if num_warnings}}
+	      {{#link-to 'session.warnings' tagName='li'}}
+		<a href>Session Warnings <span class="label label-warning">{{num_warnings}}</span></a>
+	      {{/link-to}}
+	    {{/if}}
+	  {{/with}}
+
+	  {{#link-to 'session.info' tagName='li'}}
+	    <a href>Info
+	    </a>
+	  {{/link-to}}
+
+
+	  {{#link-to 'session.activity' tagName='li'}}
+	    <a href>Activity
+	      {{#if session_model.num_comments}}
+		<span class="label label-default"> {{session_model.num_comments}} </span>
+	      {{/if}}
+	    </a>
+	  {{/link-to}}
+
+	  {{#if current_test}}
+	    <li class="active">
+	      <a href>
+		Test #{{current_test.ordinal}}
+	      </a>
+	    </li>
+	  {{/if}}
+
+	</ul>
+      </div>
+      <div class="filter-controls">
+	{{outlet "filter-controls"}}
+      </div>
+    </div>
+
+    {{outlet}}
+  </div>
+
+</div>
+
+
+{{#if investigating}}
+  {{#modal-dialog close="cancel_investigating"
+     targetAttachment="center"
+     translucentOverlay=true}}
+    <p>You are marking this session as <strong>investigted</strong></p>
+    <div class="container-fluid">
+      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
+    </div>
+    <div class="container-fluid add-margin-top">
+      {{#if investigate_conclusion}}
+	<button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
+      {{/if}}
+      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
+    </div>
+  {{/modal-dialog}}
+{{/if}}

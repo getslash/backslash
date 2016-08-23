@@ -9,6 +9,8 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
 
     collection: Ember.computed.oneWay('tests'),
 
+    available_page_sizes: [25, 50, 100, 200],
+
     needs_investigation: function() {
         return this.get('session_model.investigated') !== true && this.get('session_model.status') !== 'SUCCESS';
     }.property('session_model.investigated', 'session_model.status'),
@@ -21,10 +23,6 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
             self.send('refreshRoute');
         });
     },
-
-    additional_metadata: function() {
-        return {'Ran from': this.get('session_model.hostname')};
-    }.property('session_model.hostname'),
 
     actions: {
 

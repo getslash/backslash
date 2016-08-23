@@ -5,12 +5,11 @@ import StatusFilterableRoute from '../../mixins/status-filterable/route';
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, StatusFilterableRoute, {
 
-    api: Ember.inject.service(),
-    title: 'Session Details',
+    title: 'Session',
 
 
     model: function(params) {
-        let session = this.modelFor('session');
+        let session = this.modelFor('session').session_model;
         const session_id = parseInt(session.id);
 
         let query_params = {
@@ -25,22 +24,24 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
             }
         }
 
+	return Ember.RSVP.hash({
+	    'session_model': session,
+	    'tests': this.store.query('test', query_params),
+	});
 
-        return Ember.RSVP.hash({
-            'metadata': this.get('api').call('get_metadata', {
-                entity_type: 'session',
-                entity_id: session_id
-            }).then(r => r.result),
-            'user': this.store.find('user', session.get('user_id')),
-            'tests': this.store.query('test', query_params),
-            'activity': this.store.query('activity', {session_id: parseInt(session.id)})
-        });
+    },
+
+    renderTemplate() {
+	this._super(...arguments);
+	this.render('filter-controls', {
+	    into: 'session',
+	    outlet: 'filter-controls',
+	});
     },
 
     setupController: function(controller, model) {
       this._super(controller, model);
       controller.setProperties(model);
-      controller.set('session_model', this.modelFor('session'));
     }
 
 });

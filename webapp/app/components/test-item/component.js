@@ -8,6 +8,7 @@ export default Ember.Component.extend({
     classNameBindings: ['status'],
 
     test: Ember.computed.oneWay('item'),
+    session_model: null,
 
     status: function() {
         let status = this.get('test.status').toLowerCase();
@@ -20,8 +21,8 @@ export default Ember.Component.extend({
     is_running: Ember.computed.equal('status', 'running'),
 
     href: function() {
-        return '/#/tests/' + this.get('test.display_id');
-    }.property('test.id'),
+	return `/#/sessions/${this.get('session_model.display_id')}/tests/${this.get('test.display_id')}`;
+    }.property('test'),
 
 
 });

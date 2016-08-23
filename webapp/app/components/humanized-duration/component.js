@@ -21,10 +21,6 @@ export default Ember.Component.extend({
 
     duration_milliseconds: function() {
 
-        if (!this.get('end_time')) {
-            return null;
-        }
-
         return moment.unix(this.get('corrected_end_time')).diff(moment.unix(this.get('start_time')));
     }.property('start_time', 'corrected_end_time'),
 
@@ -39,9 +35,6 @@ export default Ember.Component.extend({
     }.property('duration_milliseconds'),
 
     duration: function() {
-        if (!this.get('end_time')) {
-            return null;
-        }
         return moment.duration(this.get('duration_milliseconds'));
     }.property('duration_milliseconds'),
 
@@ -55,7 +48,11 @@ export default Ember.Component.extend({
         if (d < 60) {
             return d + ' seconds';
         }
-        return this.get('duration').humanize();
+        let returned = this.get('duration').humanize();
+	if (!this.get('end_time')) {
+	    returned += ' (not finished)';
+	}
+	return returned;
     }.property('duration','duration_seconds'),
 
 });

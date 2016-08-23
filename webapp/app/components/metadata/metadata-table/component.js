@@ -25,12 +25,20 @@ export default Ember.Component.extend({
 	return returned;
     }.property('metadata'),
 
+    slash_version: function() {
+	let metadata = this.get('metadata') || {};
+	let returned = metadata['slash::version'];
+	if (!returned && metadata.slash !== undefined) {
+	    returned = metadata.slash.version;
+	}
+	return returned;
+    }.property('metadata'),
+
 
     slash_tags: function() {
 	let metadata = this.get('metadata');
 
 	let returned = metadata['slash::tags'];
-	console.log('Got', returned);
 	return returned;
     }.property('metadata'),
 

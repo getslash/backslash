@@ -1,0 +1,20 @@
+.navigation {
+    display: flex;
+
+    .tabs {
+	flex: 2 0 0;
+
+    }
+
+    .filter-controls {
+	flex: 1 0 0;
+    }
+}
+
+.nav-pills {
+
+    a {
+	color: black;
+    }
+
+}

@@ -1,0 +1,17 @@
+
+.table.data {
+    border: none;
+    tr {
+	td, th {
+	    border: none;
+	}
+	td:nth-child(1) {
+	    font-weight: bold;
+	    width: 250px;
+	}
+
+	td:nth-child(2) {
+	    @extend .mono;
+	}
+    }
+}

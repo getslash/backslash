@@ -1,69 +1,10 @@
-{{#tool-bar}}
-  <form class="navbar-form navbar-right">
-    {{# if (can "archive_session") }}
-      <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
-
-      {{# if needs_investigation }}
-        <button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as Investigated</button>
-
-      {{else}}
-        {{# if session_model.investigated }}
-          <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
-        {{/if}}
-      {{/if}}
-    {{/if}}
-
-
-  </form>
-  <p class="navbar-text">Session {{elements/copyable-text value=session_model.display_id}}</p>
-
-{{/tool-bar}}
-
-
-{{#if investigating}}
-  {{#modal-dialog close="cancel_investigating"
-     targetAttachment="center"
-     translucentOverlay=true}}
-    <p>You are marking this session as <strong>investigted</strong></p>
-    <div class="container-fluid">
-      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
-    </div>
-    <div class="container-fluid add-margin-top">
-      {{#if investigate_conclusion}}
-        <button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
-      {{/if}}
-      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
-    </div>
-  {{/modal-dialog}}
-{{/if}}
-
-
-{{hr-separator title="Overview"}}
-{{session-overview session_model=session_model metadata=metadata user=user}}
-
-{{hr-separator title="Tests"}}
-
-<div class="container-fluid">
-  {{query-results results=tests goto_page=(action "goto_page")
-    page_size=(mut page_size)
-    show_subjects=false
-    humanize_times=humanize_times
-    show_successful=(mut show_successful)
-    show_unsuccessful=(mut show_unsuccessful)
-    show_abandoned=(mut show_abandoned)
-    show_skipped=(mut show_skipped)
-  }}
-</div>
-
-{{hr-separator title="Additional Information"}}
-
-{{metadata/metadata-table metadata=metadata additional=additional_metadata }}
-
-{{#if session_model.related}}
-  {{hr-separator title="Related Entities"}}
-  {{metadata/related-entities related=session_model.related}}
-{{/if}}
-
-{{hr-separator title="Activity"}}
-
-{{activity/activity-timeline items=activity parent=session_model comment_added="refreshRoute"}}
+{{query-results results=tests goto_page=(action "goto_page")
+  page_size=(mut page_size)
+  show_subjects=false
+  humanize_times=humanize_times
+  show_successful=show_successful
+  show_unsuccessful=show_unsuccessful
+  show_abandoned=show_abandoned
+  show_skipped=show_skipped
+  session_model=session_model
+}}

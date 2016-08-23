@@ -3,6 +3,17 @@ import HasLogicalId from '../mixins/has-logical-id';
 
 export default DS.Model.extend(HasLogicalId, {
 
+    ordinal: function() {
+	let id = this.get('display_id');
+	let parts = id.split('_');
+
+	if (parts.length > 1) {
+	    return parseInt(parts[parts.length - 1]);
+	}
+
+	return null;
+    }.property('display_id'),
+
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
     duration: DS.attr('number'),

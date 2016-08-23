@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <h3>
+    {{tests/test-name info=test_model.info show_file=true}}
+  </h3>
+
+  <table class="table data">
+    <tbody>
+      <tr>
+	<td>Test id</td>
+	<td>{{elements/copyable-text value=test_model.display_id}}</td>
+      </tr>
+      <tr>
+	<td>Status</td>
+	<td>{{status-label status=test_model.status}}</td>
+      </tr>
+      <tr>
+	<td></td>
+	<td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="navigation">
+  <div class="tabs">
+    <ul class="nav nav-tabs">
+
+      {{#link-to 'session.test.index' tagName='li'}}
+	<a href>
+	  Test Info
+	</a>
+      {{/link-to}}
+
+      {{#if test_model.num_errors}}
+	{{#link-to 'session.test.errors' tagName='li'}}
+	  <a href>Errors <span class="label label-danger">{{test_model.num_errors}}</span></a>
+	{{/link-to}}
+      {{/if}}
+
+      {{#with test_model.num_warnings as |num_warnings|}}
+	{{#if num_warnings}}
+	  {{#link-to 'session.test.warnings' tagName='li'}}
+	    <a href>Warnings <span class="label label-warning">{{num_warnings}}</span></a>
+	  {{/link-to}}
+	{{/if}}
+      {{/with}}
+
+
+    </ul>
+  </div>
+</div>
+
+
+{{outlet}}

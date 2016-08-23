@@ -1,37 +1,43 @@
+@mixin colorize-box ($color) {
+    border-color: $color;
+
+    .info {
+	background-color: $color;
+	color: white;
+    }
+
+    &.expanded .info {
+	color: $color;
+	background-color: white;
+    }
+}
+
+
 .box {
 
     border: 1px solid;
     margin: 1em;
 
-    &.warning {
-	border-color: $backslash-orange;
-
-	.info {
-	    background-color: $backslash-orange;
-	}
-
-    }
-
-    &.error {
-	border-color: $brand-danger;
-
-	.info {
-	    background-color: $brand-danger;
-	}
-
-	.message {
-	    overflow: auto;
-	    white-space: pre;
-	}
-    }
-
     .info {
 	padding: 0.5em;
-	color: white;
+    }
+
+    .details {
     }
 
     .message {
 	@extend .mono;
+	overflow: auto;
 	padding: 0.5em;
+	white-space: pre;
+    }
+
+    &.warning {
+	@include colorize-box($backslash-orange);
+    }
+
+    &.error {
+	@include colorize-box($brand-danger);
+
     }
 }

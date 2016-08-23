@@ -10,7 +10,12 @@ export default Ember.Mixin.create({
         let self = this;
         while (true) {
             yield timeout(self.get('INTERVAL_SECONDS') * 1000);
-            self.refresh();
+	    let pred = self.should_auto_refresh;
+
+	    if (pred !== undefined && pred.bind(self)()) {
+		self.refresh();
+	    }
         }
     }).on('init'),
+
 });

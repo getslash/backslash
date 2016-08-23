@@ -5,8 +5,7 @@ export default Ember.Component.extend({
     results: null,
     humanize_times: true,
     show_subjects: true,
-
-    available_page_sizes: [25, 50, 100, 200],
+    session_model: null,
 
 
     page: Ember.computed.oneWay('results.meta.page'),
