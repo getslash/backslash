@@ -13,6 +13,12 @@ export default DS.Model.extend({
       return this.get('message');
   }.property('exception_type', 'message'),
 
+  abbreviated_message: function() {
+      let returned = this.get('full_message');
+      returned = returned.split(/\n\s*\n/, 1)[0];
+      return returned;
+  }.property('full_message'),
+
   timestamp: DS.attr(),
   traceback: DS.attr(),
   traceback_url: DS.attr(),

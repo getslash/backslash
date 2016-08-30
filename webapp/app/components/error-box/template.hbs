@@ -4,4 +4,4 @@
   {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}})
 </div>
 
-{{#liquid-if expanded class="slide"}}{{error-detail error=error}}{{else}}<div class="message">{{error.full_message}}</div>{{/liquid-if}}
+{{#liquid-if expanded class="slide"}}{{error-detail error=error}}{{else}}<div class="message">{{error.abbreviated_message}}</div>{{/liquid-if}}
