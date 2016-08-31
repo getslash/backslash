@@ -3,12 +3,37 @@
     By {{#link-to "user.sessions" session_model.user_email}}
     {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
     {{/link-to}}
+
+    {{#if (not (eq session_model.real_email user.email)) }}
+      <div class="faint">
+	Run through <strong>{{session_model.real_email}}</strong> {{users/user-avatar email=session_model.real_email}}
+      </div>
+    {{/if}}
   </p>
 {{/if}}
 
 <p>
   {{status-label status=session_model.status}}
 </p>
+
+<p>
+  {{#if session_model.num_warnings}}
+    <div class="label label-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      {{session_model.num_warnings}} Session Warnings
+    </div>
+  {{/if}}
+</p>
+
+<p>
+  {{#if session_model.num_test_warnings}}
+    <div class="label label-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      {{session_model.num_test_warnings}} Test Warnings
+    </div>
+  {{/if}}
+</p>
+
 
 <p>
   <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}

@@ -6,14 +6,7 @@ export default Ember.Component.extend({
     classNames: "user-avatar",
     classNameBindings: ['large'],
 
-    tooltip: function() {
-        const real_email = this.get('real_email'), email = this.get('user_email');
-
-        if (real_email) {
-            return email + ' (through ' + real_email + ')';
-        }
-        return email;
-    }.property('user_email', 'real_email'),
+    expanded: true,
 
     email: null,
     real_email: null,
