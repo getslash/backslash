@@ -4,7 +4,7 @@
     {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
     {{/link-to}}
 
-    {{#if (not (eq session_model.real_email user.email)) }}
+    {{#if (and session_model.real_email (not (eq session_model.real_email user.email))) }}
       <div class="faint">
 	Run through <strong>{{session_model.real_email}}</strong> {{users/user-avatar email=session_model.real_email}}
       </div>
@@ -15,6 +15,16 @@
 <p>
   {{status-label status=session_model.status}}
 </p>
+
+<p>
+  {{#if session_model.num_errors}}
+    <div class="label label-danger">
+      <i class="fa fa-exclamation-circle"></i>
+      {{session_model.num_errors}} Session Errors
+    </div>
+  {{/if}}
+</p>
+
 
 <p>
   {{#if session_model.num_warnings}}

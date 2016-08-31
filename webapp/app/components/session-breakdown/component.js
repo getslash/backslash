@@ -6,6 +6,13 @@ export default Ember.Component.extend({
 
     classNames: ['session-breakdown'],
 
+    classNameBindings: ['ghost'],
+
+
+    ghost: function() {
+	return this.get('session.num_errors') > 0;
+    }.property('session'),
+
     data: function() {
 	const returned = {
 	    columns: this._get_columns(),
