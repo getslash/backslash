@@ -57,12 +57,16 @@ export default Ember.Component.extend({
 	return total - this.get('session.num_finished_tests');
     }.property('session'),
 
-    donut: {
-	width: 8,
-	label: {
-	    show: false,
-	},
-    },
+    donut: function() {
+	let session = this.get('session');
+	return {
+	    width: 8,
+	    label: {
+		show: false,
+	    },
+	    title: `${session.get('total_num_tests')} tests`,
+	};
+    }.property('session'),
 
     tooltip: {
 	format: {
