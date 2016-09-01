@@ -19,6 +19,7 @@ export default Ember.Route.extend(ComplexModelRoute, {
 
     model(params) {
 	return Ember.RSVP.hash({
+	    session_model: this.modelFor('session').session_model,
 	    test_model: this.store.find('test', params.test_id),
 	});
     },

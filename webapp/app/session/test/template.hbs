@@ -3,19 +3,16 @@
     {{tests/test-name info=test_model.info show_file=true}}
   </h3>
 
+  <p>
+    Status:
+    {{status-label status=(if (and (eq test_model.status "RUNNING") (eq session_model.computed_status "ABANDONED")) "ABANDONED" test_model.status)}}
+  </p>
+
   <table class="table data">
     <tbody>
       <tr>
 	<td>Test id</td>
 	<td>{{elements/copyable-text value=test_model.display_id}}</td>
-      </tr>
-      <tr>
-	<td>Status</td>
-	<td>{{status-label status=test_model.status}}</td>
-      </tr>
-      <tr>
-	<td></td>
-	<td></td>
       </tr>
     </tbody>
   </table>
