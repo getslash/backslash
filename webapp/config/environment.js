@@ -22,6 +22,8 @@ module.exports = function(environment) {
             fallback_image_url: null,
         },
 
+	available_page_sizes: [25, 50, 100, 200],
+
     },
 
 

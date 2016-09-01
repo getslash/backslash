@@ -2,6 +2,8 @@ import Ember from 'ember';
 import PaginatedFilteredController from '../../controllers/paginated_filtered_controller';
 import StatusFilterableController from '../../mixins/status-filterable/controller';
 
+import config from '../../config/environment';
+
 export default PaginatedFilteredController.extend(StatusFilterableController, {
 
     api: Ember.inject.service(),
@@ -9,7 +11,7 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
 
     collection: Ember.computed.oneWay('tests'),
 
-    available_page_sizes: [25, 50, 100, 200],
+    available_page_sizes: config.APP.available_page_sizes,
 
     needs_investigation: function() {
         return this.get('session_model.investigated') !== true && this.get('session_model.status') !== 'SUCCESS';
