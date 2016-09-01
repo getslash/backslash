@@ -13,8 +13,14 @@
 {{/if}}
 
 <p>
-  {{status-label status=session_model.status}}
+  {{status-label status=session_model.computed_status}}
 </p>
+
+{{#if session_model.is_abandoned}}
+  <p class="faint">
+    The session stopped sending keepalive signals to Backslash and therefore considered defunct.
+  </p>
+{{/if}}
 
 <p>
   {{#if session_model.num_errors}}
@@ -46,7 +52,11 @@
 
 
 <p>
-  <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+  {{#if session_model.is_abandoned}}
+    <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped)
+  {{else}}
+    <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+  {{/if}}
 </p>
 
 <p>

@@ -18,7 +18,13 @@ export default Ember.Component.extend({
         return status;
     }.property('test.status'),
 
-    is_running: Ember.computed.equal('status', 'running'),
+    is_running: function() {
+	let session = this.get('session_model');
+	if (session.get('is_abandoned')) {
+	    return false;
+	}
+	return this.get('status') === 'running';
+    }.property('session_model', 'status'),
 
     href: function() {
 	return `/#/sessions/${this.get('session_model.display_id')}/tests/${this.get('test.display_id')}`;

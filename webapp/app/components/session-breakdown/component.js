@@ -10,7 +10,7 @@ export default Ember.Component.extend({
 
 
     ghost: function() {
-	return this.get('session.num_errors') > 0;
+	return this.get('session.num_errors') > 0 || this.get('session.is_abandoned');
     }.property('session'),
 
     data: function() {

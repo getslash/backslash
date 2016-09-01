@@ -39,6 +39,7 @@ export default DS.Model.extend(HasLogicalId, {
     num_test_warnings: DS.attr('number'),
     num_comments:DS.attr('number'),
 
+    next_keepalive: DS.attr('number'),
     related: DS.attr(),
 
     total_num_warnings: function() {
@@ -49,6 +50,13 @@ export default DS.Model.extend(HasLogicalId, {
     status_lower: function() {
         return this.get('status').toLowerCase();
     }.property('status'),
+
+    computed_status: function() {
+	if (this.get('is_abandoned')) {
+	    return 'ABANDONED';
+	}
+	return this.get('status');
+    }.property('status', 'is_abandoned'),
 
     subjects: DS.attr(),
 
