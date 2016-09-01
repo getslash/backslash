@@ -8,12 +8,21 @@ export default Ember.Service.extend({
 	this.set('_cache', Ember.Object.create());
     },
 
+    _cache_populated: false,
+
+    ensure_cache_populated() {
+	if (!this.get('_cache_populated')) {
+	    return this.get_all();
+	}
+    },
+
     get_all() {
 	let self = this;
 	return this.get('api').call('get_preferences').then(function(r) {
 	    for (let attr in r.result) {
 		if (r.result.hasOwnProperty(attr)) {
 		    self.set(`_cache.${attr}`, r.result[attr]);
+		    self.set('_cache_populated', true);
 		}
 	    }
 	    return r.result;

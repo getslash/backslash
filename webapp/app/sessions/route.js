@@ -23,7 +23,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         }
 	return Ember.RSVP.hash({
 	    sessions: this.store.query('session', query_params),
-	    prefs: this.get('user_prefs').get_all(),
+	    __prefs: this.get('user_prefs').ensure_cache_populated(),
 	});
     },
 
