@@ -11,7 +11,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexM
 	return Ember.RSVP.hash({
 	    warnings: this.infinityModel('warning', {
 		session_id: parent.id,
-		modelPath: 'warnings',
+		modelPath: 'controller.warnings',
 	    }),
 	});
     },

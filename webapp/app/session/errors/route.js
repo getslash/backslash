@@ -3,7 +3,7 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import InfinityRoute from '../../mixins/infinity-route';
 import ComplexModelRoute from '../../mixins/complex-model-route';
 
-export default Ember.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexModelRoute, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexModelRoute, {
 
     model: function() {
 	const parent = this.modelFor('session').session_model;
@@ -11,7 +11,7 @@ export default Ember.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexModel
 	    session: this.modelFor('session').session_model,
 	    errors: this.infinityModel('error', {
 		session_id: parent.id,
-		modelPath: 'errors',
+		modelPath: 'controller.errors',
 	    }),
 	});
     },
