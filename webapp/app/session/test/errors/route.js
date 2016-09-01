@@ -6,7 +6,7 @@ import ComplexModelRoute from '../../../mixins/complex-model-route';
 export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, ComplexModelRoute, {
 
 
-    model: function(params) {
+    model: function() {
 	const parent = this.modelFor('session.test').test_model;
 	return Ember.RSVP.hash({
 	    errors: this.infinityModel('error', {

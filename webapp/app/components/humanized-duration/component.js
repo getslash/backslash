@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import momentRange from '../../helpers/moment-range';
 
 /* global moment */
 
