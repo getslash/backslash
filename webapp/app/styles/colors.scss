@@ -14,3 +14,7 @@ $sub-section-heading-color: darken($navbar-default-bg, 20%);
 .bg-gray-lighter {
     background: $gray-lighter;
 }
+
+$brand-success-faint: lighten($brand-success, 40%);
+$brand-danger-faint: lighten($brand-danger, 40%);
+$brand-warning-faint: lighten($brand-warning, 35%);

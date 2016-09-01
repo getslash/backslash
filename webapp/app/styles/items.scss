@@ -199,6 +199,15 @@ a.item, a.item:hover {
 
     &:hover {
 	background-color: $gray-lighter;
+	&.success {
+	    background-color: $brand-success-faint;
+	}
+	&.failed {
+	    background-color: $brand-danger-faint;
+	}
+	&.skipped {
+	    background-color: $brand-warning-faint;
+	}
     }
 
     &.investigated {
