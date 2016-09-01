@@ -26,17 +26,23 @@
           / {{session.total_num_tests}}
         {{/if}}
       {{/if}}
-      {{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
-        <div>
-          <i class="fa fa-check"></i> {{session.num_finished_tests}} successful
-        </div>
+      {{#if session.is_interrupted}}
+	<div>
+	  Interrupted
+	</div>
       {{else}}
-        {{#if total_num_unsuccessful}}
+	{{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
           <div>
-            <i class="fa fa-exclamation-circle"></i>
-            {{total_num_unsuccessful}} unsuccessful tests
+            <i class="fa fa-check"></i> {{session.num_finished_tests}} successful
           </div>
-        {{/if}}
+	{{else}}
+          {{#if total_num_unsuccessful}}
+            <div>
+              <i class="fa fa-exclamation-circle"></i>
+              {{total_num_unsuccessful}} unsuccessful tests
+            </div>
+          {{/if}}
+	{{/if}}
         {{#if session.num_skipped_tests}}
           <div>
             <i class="fa fa-forward"></i>

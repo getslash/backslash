@@ -55,8 +55,15 @@ export default DS.Model.extend(HasLogicalId, {
 	if (this.get('is_abandoned')) {
 	    return 'ABANDONED';
 	}
+	if (this.get('is_interrupted')) {
+	    return 'INTERRUPTED';
+	}
 	return this.get('status');
-    }.property('status', 'is_abandoned'),
+    }.property('status', 'is_abandoned', 'is_interrupted'),
+
+    is_interrupted: function() {
+	return this.get('end_time') != null && this.get('has_tests_left_to_run');
+    }.property('end_time', 'has_tests_left_to_run'),
 
     subjects: DS.attr(),
 
