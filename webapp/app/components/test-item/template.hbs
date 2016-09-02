@@ -22,14 +22,9 @@
 </div>
 
 
-
 <div class="details">
-  {{#if is_running}}
-    <div class="is-running">
-      <i class="fa fa-spinner fa-spin"></i>
-    </div>
-  {{/if}}
-  {{tests/test-name info=test.info variation=test.variation}}
+  {{status-icon status=status}}
+    {{tests/test-name info=test.info variation=test.variation}}
   {{#if show_subjects}}
     {{subject-info subjects=test.subjects}}
   {{/if}}
