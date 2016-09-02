@@ -65,14 +65,21 @@ export default Ember.Component.extend({
     }.property('session'),
 
     donut: function() {
-	let session = this.get('session');
 	return {
 	    width: 8,
 	    label: {
 		show: false,
 	    },
-	    title: `${session.get('total_num_tests')} tests`,
+	    title: `${this.get('total_num_tests')} tests`,
 	};
+    }.property('session'),
+
+    total_num_tests: function() {
+	let num_tests = this.get('session.total_num_tests');
+	if (num_tests === null) {
+	    num_tests = this.get('session.num_finished_tests');
+	}
+	return num_tests;
     }.property('session'),
 
     tooltip: {
