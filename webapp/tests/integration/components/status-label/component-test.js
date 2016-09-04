@@ -9,16 +9,9 @@ test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{status-label}}`);
+  this.set('status', 'success');
 
-  assert.equal(this.$().text().trim(), '');
+  this.render(hbs`{{status-label status=status}}`);
 
-  // Template block usage:
-  this.render(hbs`
-    {{#status-label}}
-      template block text
-    {{/status-label}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.ok(this.$().find('.label').hasClass('label-success'));
 });

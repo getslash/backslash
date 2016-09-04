@@ -5,20 +5,13 @@ moduleForComponent('status-icon', 'Integration | Component | status icon', {
   integration: true
 });
 
-test('it renders', function(assert) {
+test('status icon correct', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{status-icon}}`);
+  this.set('status', 'success');
+  this.render(hbs`{{status-icon status=status}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$().find('.fa').hasClass('fa-check'));
 
-  // Template block usage:
-  this.render(hbs`
-    {{#status-icon}}
-      template block text
-    {{/status-icon}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
 });

@@ -9,16 +9,12 @@ test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{error-box}}`);
+  this.set('error', {
+      timestamp: 1472973960,
+      message: 'message',
+  });
+  this.render(hbs`{{error-box error=error}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.equal(this.$().text().trim().split('(')[0].trim(), '09/04/2016 10:26:00 AM');
 
-  // Template block usage:
-  this.render(hbs`
-    {{#error-box}}
-      template block text
-    {{/error-box}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
 });

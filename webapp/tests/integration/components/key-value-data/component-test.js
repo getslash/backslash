@@ -9,16 +9,9 @@ test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{key-value-data}}`);
+    this.set('data', {key: 'value'});
+    this.render(hbs`{{key-value-data data=data}}`);
 
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#key-value-data}}
-      template block text
-    {{/key-value-data}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+    assert.equal(this.$().find('tr td:eq(0)').text().trim(), 'key');
+    assert.equal(this.$().find('tr td:eq(1)').text().trim(), 'value');
 });

@@ -6,19 +6,9 @@ moduleForComponent('moment-time', 'Integration | Component | moment time', {
 });
 
 test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+    this.set('unix', 1472973960);
 
-  this.render(hbs`{{moment-time}}`);
+  this.render(hbs`{{moment-time unix=unix}}`);
 
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#moment-time}}
-      template block text
-    {{/moment-time}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$().text().trim(), '09/04/2016 10:26:00 AM');
 });
