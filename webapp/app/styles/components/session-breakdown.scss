@@ -1,7 +1,8 @@
 .session-breakdown {
-    &.failure {
+    &.failure, &.error {
 	.c3-chart-arc path {
 	    stroke: $brand-danger;
+	    stroke-width: 3px;
 	}
 	.c3-chart-arcs-title {
 	    fill: $brand-danger;

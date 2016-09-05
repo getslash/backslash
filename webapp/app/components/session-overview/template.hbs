@@ -53,18 +53,18 @@
 
 <p>
   {{#if session_model.is_abandoned}}
-    <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped)
+    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped)
   {{else}}
-    <i class="fa fa-clock"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
   {{/if}}
 </p>
 
 <p>
-  <i class="fa fa-hourglass-1"></i> {{moment-time unix=session_model.start_time}}
+  <i class="fa fa-fw fa-hourglass-1"></i> {{moment-time unix=session_model.start_time}}
 </p>
 
 <p>
-  <i class="fa fa-hourglass-3"></i> {{moment-time unix=session_model.end_time}}
+  <i class="fa fa-fw fa-hourglass-3"></i> {{moment-time unix=session_model.end_time}}
 </p>
 
 {{#each session_model.subjects as |subject|}}
