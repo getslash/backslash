@@ -1,0 +1,10 @@
+.session-breakdown {
+    &.failure {
+	.c3-chart-arc path {
+	    stroke: $brand-danger;
+	}
+	.c3-chart-arcs-title {
+	    fill: $brand-danger;
+	}
+    }
+}

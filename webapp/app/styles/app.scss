@@ -65,6 +65,8 @@ body {
 @import 'components/errors/traceback-frame.scss';
 @import 'components/warnings/warnings.scss';
 
+@import 'components/session-breakdown.scss';
+
 
 @import "ember-modal-dialog/ember-modal-structure";
 @import "ember-modal-dialog/ember-modal-appearance";
