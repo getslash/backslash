@@ -12,6 +12,8 @@ export default Ember.Controller.extend({
     time_formats: [
 	'DD/MM/YYYY HH:mm:ss',
 	'DD/MM/YYYY HH:mm',
+	'DD.MM.YYYY HH:mm:ss',
+	'DD.MM.YYYY HH:mm',
 	'YYYY-MM-DD HH:mm:ss',
     ],
 
