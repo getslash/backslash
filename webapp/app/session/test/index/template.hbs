@@ -29,6 +29,11 @@
       <p>
 	<i class="fa fa-arrow-circle-o-right"></i> {{elements/copyable-text value=test_model.info.name}}
       </p>
+      <p>
+	{{#link-to 'test_info' test_model.test_info_id}}
+	  <i class="fa fa-history"></i> Previous executions...
+	{{/link-to}}
+      </p>
     </div>
   </div>
 </div>

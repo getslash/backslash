@@ -20,7 +20,7 @@ export default Ember.Component.extend({
 
     is_running: function() {
 	let session = this.get('session_model');
-	if (session.get('is_abandoned')) {
+	if (session && session.get('is_abandoned')) {
 	    return false;
 	}
 	return this.get('status') === 'running';
