@@ -22,7 +22,7 @@ export default Ember.Component.extend({
 	    type: 'donut',
 	    colors: {
 		failed: '#d9534f',
-		errored: 'red',
+		errored: '#d9534f',
 		skipped: '#f0ad4e',
 		successful: '#5cb85c',
 		'not run': 'silver',
