@@ -4,7 +4,7 @@
       <tbody>
 	<tr>
 	  <td>Ran on</td>
-	  <td>
+	  <td class="no-fixed-width">
 	    {{#each session_model.subjects as |s|}}
 	      <div>
 		<i class="fa fa-rocket"></i> {{#link-to 'subject' s.name}}{{s.name}}{{/link-to}} <span class="label label-fine">{{s.version}}</span>
