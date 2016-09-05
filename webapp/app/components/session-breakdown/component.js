@@ -6,12 +6,15 @@ export default Ember.Component.extend({
 
     classNames: ['session-breakdown'],
 
-    classNameBindings: ['ghost'],
-
+    classNameBindings: ['ghost', 'status'],
 
     ghost: function() {
 	return this.get('session.num_errors') > 0 || this.get('session.is_abandoned');
     }.property('session'),
+
+    status: function() {
+	return this.get('session.status').toLowerCase();
+    }.property('session.status'),
 
     data: function() {
 	const returned = {
