@@ -4,7 +4,7 @@ export default Ember.Component.extend({
     tagName: 'a',
     attributeBindings: ['href'],
     classNames: ['item', 'session', 'clickable'],
-    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb', 'interrupted:interrupted'],
+    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb', 'interrupted:interrupted', 'has_any_error:unsuccessful'],
 
     session: Ember.computed.alias('item'),
 
@@ -17,6 +17,12 @@ export default Ember.Component.extend({
 
     interrupted: Ember.computed.and('item.finished_running', 'item.has_tests_left_to_run'),
 
+    has_any_error: function() {
+	let item = this.get('item');
+
+	return item.get('num_error_tests') || item.get('num_failed_tests') || item.get('num_errors');
+    }.property('item.num_failed_tests', 'item.num_error_tests', 'item.num_errors'),
+
 
     status: function() {
         let item = this.get('item');
@@ -27,7 +33,7 @@ export default Ember.Component.extend({
 	}
 
         if (!item.get('is_abandoned')) {
-            if (item.get('num_error_tests') || item.get('num_failed_tests') || item.get('num_errors')) {
+            if (!item.get('is_running') && this.get('has_any_error')) {
                 return 'failed';
             } else if (['error', 'failure'].indexOf(status) !== -1) {
                 return 'failed';
@@ -43,7 +49,7 @@ export default Ember.Component.extend({
                 return 'finished';
             }
         }
-    }.property('item.num_skipped_tests', 'item.num_error_tests', 'item.num_failed_tests', 'item.is_running', 'item.status', 'item.num_errors'),
+    }.property('item.num_skipped_tests', 'has_any_error', 'item.is_running', 'item.status'),
 
     result_type: Ember.computed.oneWay('item.type'),
 

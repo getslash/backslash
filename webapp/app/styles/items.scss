@@ -109,6 +109,15 @@ a.item, a.item:hover {
 	animation-iteration-count: infinite;
     }
 
+    &.running.unsuccessful .left-badge {
+	position: relative;
+	background: none;
+	animation-name: running-unsuccessful-pulse;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+    }
+
+
     .right-label {
 	visibility: hidden;
 
@@ -230,6 +239,13 @@ a.item, a.item:hover {
   50% { background-color: $brand-warning}
   to { background-color: $brand-danger}
 }
+
+@keyframes running-unsuccessful-pulse {
+  from { background-color: $brand-danger}
+  50% { background-color: $gray-light}
+  to { background-color: $brand-danger}
+}
+
 
 .item.subject {
     @extend .pad-large;
