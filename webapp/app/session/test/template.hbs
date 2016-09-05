@@ -4,7 +4,6 @@
   </h3>
 
   <p>
-    Status:
     {{status-label status=(if (and (eq test_model.status "RUNNING") (eq session_model.computed_status "ABANDONED")) "ABANDONED" test_model.status)}}
   </p>
 

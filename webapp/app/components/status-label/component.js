@@ -2,8 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
     tagName: 'span',
-    classNames: ['label'],
-    classNameBindings: ['label_class'],
+    classNames: ['status-label'],
+    //classNameBindings: ['label_class'],
 
     status: null,
 
