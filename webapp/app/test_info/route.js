@@ -31,4 +31,13 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, StatusFilt
         controller.setProperties(model);
     },
 
+    renderTemplate() {
+	this._super(...arguments);
+	this.render('filter-controls', {
+	    into: 'test_info',
+	    outlet: 'filter-controls',
+	});
+    },
+
+
 });
