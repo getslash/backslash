@@ -1,11 +1,13 @@
 <div class="container-fluid">
   <h3>
-    {{tests/test-name info=test_model.info show_file=true}}
+    {{status-icon status=test_model.status spaced=false}} {{tests/test-name info=test_model.info show_file=true}}
   </h3>
 
-  <p>
-    {{status-label status=(if (and (eq test_model.status "RUNNING") (eq session_model.computed_status "ABANDONED")) "ABANDONED" test_model.status)}}
-  </p>
+  {{#if (eq test_model.status "SKIPPED")}}
+    <p>
+      <strong>Skipped:</strong> {{test_model.skip_reason}}
+    </p>
+  {{/if}}
 
   <table class="table data">
     <tbody>

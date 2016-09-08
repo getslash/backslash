@@ -1,1 +1,39 @@
-{{c3-chart donut=donut data=data tooltip=tooltip size=(hash width=200 height=200) legend=(hash show=false)}}
+<div class="success">
+{{#elements/tool-tip title=(concat session.num_successful_tests " successful tests")}}
+  <i class="fa fa-check"></i> {{session.num_successful_tests}}
+{{/elements/tool-tip}}
+</div>
+
+{{# with (add session.num_failed_tests session.num_error_tests) as |num_errors|}}
+  <div class="failed">
+    {{#elements/tool-tip title=(concat num_errors " unsuccessful tests")}}
+    <i class="fa fa-times"></i> {{num_errors}}
+    {{/elements/tool-tip}}
+  </div>
+{{/with}}
+
+{{#if session.num_skipped_tests}}
+  <div class="skipped">
+    {{#elements/tool-tip title=(concat session.num_skipped_tests " skipped tests")}}
+    <i class="fa fa-share"></i> {{session.num_skipped_tests}}
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}
+
+
+{{#if session.num_errors}}
+  <div class="errors">
+    {{#elements/tool-tip title=(concat session.num_errors " session errors")}}
+    <i class="fa fa-exclamation-circle"></i> {{session.num_errors}}
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}
+
+
+{{#if session.total_num_warnings}}
+  <div class="warning">
+    {{#elements/tool-tip title=(concat session.total_num_warnings " total warnings")}}
+    <i class="fa fa-exclamation-triangle"></i> {{session.total_num_warnings}}
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}

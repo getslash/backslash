@@ -57,7 +57,6 @@ body {
 
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
-@import 'components/artifact-counter.scss';
 @import 'components/tests/test-name.scss';
 @import 'components/elements/copyable-text.scss';
 
@@ -66,8 +65,7 @@ body {
 @import 'components/warnings/warnings.scss';
 
 @import 'components/session-breakdown.scss';
-@import 'components/status-label.scss';
-
+@import 'components/status-icon.scss';
 
 @import "ember-modal-dialog/ember-modal-structure";
 @import "ember-modal-dialog/ember-modal-appearance";

@@ -265,18 +265,3 @@ a.item, a.item:hover {
 
 }
 
-.status-icon {
-    min-width: 1em;
-    margin-right: 1em;
-    .success & {
-	color: $brand-success;
-    }
-
-    .skipped & {
-	color: $brand-warning;
-    }
-
-    .failed & {
-	color: $brand-danger;
-    }
-}

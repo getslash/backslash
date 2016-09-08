@@ -22,6 +22,10 @@ export default DS.Model.extend(HasLogicalId, {
     num_finished_tests: DS.attr('number'),
     num_skipped_tests: DS.attr('number'),
 
+    num_successful_tests: function() {
+        return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');
+    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests'),
+
     ran_all_tests: function() {
         if (this.get('total_num_tests') === null) {
             return true;

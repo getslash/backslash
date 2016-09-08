@@ -14,7 +14,7 @@
     "moment": "~2.10.3",
     "mousetrap": "~1.5.2",
     "seiyria-bootstrap-slider": "~6.0.6",
-    "tooltipster": "~3.3.0",
+    "tooltipster": "~4.1.0",
     "twix": "~0.8.1",
     "typeahead.js": "typehead.js#~0.11.1",
     "pretender": "~1.1.0",

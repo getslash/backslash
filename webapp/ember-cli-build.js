@@ -7,7 +7,7 @@ module.exports = function(defaults) {
           'quiet': true
       },
       'ember-cli-tooltipster': {
-          importTooltipsterShadow: true
+          importTooltipsterBorderless: true
       },
       vendorFiles: {
           'handlebars.js': null

@@ -15,7 +15,13 @@ export default Ember.Route.extend({
     },
 
     _create_session_result() {
-        return Ember.Object.create({
+        return Ember.Object.extend({
+	    num_successful_tests: function() {
+		return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');
+	    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests'),
+
+
+	}).create({
             type: 'session',
             start_time: 1457385114.678091,
             end_time: 1457385814.678091,

@@ -12,9 +12,10 @@
   </p>
 {{/if}}
 
-<p>
+<p class="add-margin-bottom">
   {{status-label status=session_model.computed_status}}
 </p>
+
 
 {{#if session_model.is_abandoned}}
   <p class="faint">
@@ -22,34 +23,9 @@
   </p>
 {{/if}}
 
-<p>
-  {{#if session_model.num_errors}}
-    <div class="label label-danger">
-      <i class="fa fa-exclamation-circle"></i>
-      {{session_model.num_errors}} Session Errors
-    </div>
-  {{/if}}
+<p class="add-margin-bottom">
+  {{session-breakdown session=session_model}}
 </p>
-
-
-<p>
-  {{#if session_model.num_warnings}}
-    <div class="label label-warning">
-      <i class="fa fa-exclamation-triangle"></i>
-      {{session_model.num_warnings}} Session Warnings
-    </div>
-  {{/if}}
-</p>
-
-<p>
-  {{#if session_model.num_test_warnings}}
-    <div class="label label-warning">
-      <i class="fa fa-exclamation-triangle"></i>
-      {{session_model.num_test_warnings}} Test Warnings
-    </div>
-  {{/if}}
-</p>
-
 
 <p>
   {{#if session_model.is_abandoned}}
@@ -81,8 +57,4 @@
   <p>
   {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
   </p>
-{{/if}}
-
-{{#if show_breakdown}}
-  {{session-breakdown session=session_model tooltip_position="bottom"}}
 {{/if}}

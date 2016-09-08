@@ -1,0 +1,17 @@
+.status-icon {
+    &.spaced {
+	min-width: 1em;
+	margin-right: 1em;
+    }
+    &.success {
+	color: $brand-success !important;
+    }
+
+    &.skipped {
+	color: $brand-warning !important;
+    }
+
+    &.failed {
+	color: $brand-danger !important;
+    }
+}
