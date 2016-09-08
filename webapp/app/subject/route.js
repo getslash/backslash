@@ -28,4 +28,13 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ScrollToTo
         controller.setProperties(model);
     },
 
+    renderTemplate() {
+	this._super(...arguments);
+	this.render('filter-controls', {
+	    into: 'subject',
+	    outlet: 'filter-controls',
+	});
+    },
+
+
 });
