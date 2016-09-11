@@ -39,10 +39,10 @@ export default Ember.Component.extend({
                 return 'failed';
 	    } else if (item.get('is_interrupted')) {
 		return 'interrupted';
-            } else if (item.get('num_skipped_tests')) {
-                return 'skipped';
             } else if (item.get('is_running')) {
                 return 'running';
+            } else if (item.get('num_skipped_tests')) {
+                return 'skipped';
             } else if (item.get('num_finished_tests')) {
                 return 'success';
             } else {
