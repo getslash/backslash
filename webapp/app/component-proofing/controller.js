@@ -37,5 +37,10 @@ export default Ember.Controller.extend({
         return null;
     }.property('use_real_email'),
 
+    actions: {
+	set_test_status(status) {
+	    this.set('model.test_result.status', status);
+	},
+    },
 
 });

@@ -74,13 +74,9 @@
             <td>Status</td>
             <td>
               {{#each (w "success" "failure" "running" "skipped") as |status|}}
-                <label>
-                {{radio-button
-                  id=status
-                  name=status
-                  value=status
-                  groupValue=model.test_result.status}}
-                {{status}}</label>
+		<button class="btn {{if (eq status model.test_result.status) 'btn-success' 'btn-default'}}"
+		  {{action "set_test_status" status}}
+		>{{status}}</button>
               {{/each}}
 
             </td>

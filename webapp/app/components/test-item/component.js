@@ -5,10 +5,17 @@ export default Ember.Component.extend({
     tagName: 'a',
     classNames: ['item', 'test', 'clickable'],
 
-    classNameBindings: ['status'],
+    classNameBindings: ['status', 'has_any_error:unsuccessful'],
 
     test: Ember.computed.oneWay('item'),
     session_model: null,
+
+    has_any_error: function() {
+	let item = this.get('item');
+
+	return item.get('num_errors') || item.get('num_failures');
+    }.property('item.num_errors', 'item.num_failures'),
+
 
     status: function() {
         let status = this.get('test.status').toLowerCase();
