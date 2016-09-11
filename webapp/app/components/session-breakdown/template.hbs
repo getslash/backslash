@@ -1,3 +1,6 @@
+<p class="faint">{{or session.total_num_tests session.num_finished_tests}} total tests</p>
+<div class="inner">
+
 <div class="success">
 {{#elements/tool-tip title=(concat session.num_successful_tests " successful tests")}}
   <i class="fa fa-check"></i> {{session.num_successful_tests}}
@@ -20,6 +23,15 @@
   </div>
 {{/if}}
 
+{{#with (sub (or session.total_num_tests session.num_finished_tests) session.num_finished_tests) as |num_not_run|}}
+  <div class="not-run">
+    {{#elements/tool-tip title=(concat num_not_run " tests not run")}}
+      <i class="fa fa-minus"></i> {{num_not_run}}
+    {{/elements/tool-tip}}
+  </div>
+
+{{/with}}
+
 
 {{#if session.num_errors}}
   <div class="errors">
@@ -37,3 +49,4 @@
     {{/elements/tool-tip}}
   </div>
 {{/if}}
+</div>
