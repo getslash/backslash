@@ -17,6 +17,7 @@ Router.map(function() {
     this.route('test', {path: "/tests/:test_id"}, function() {
       this.route('errors');
       this.route('warnings');
+      this.route('activity');
     });
   });
 

@@ -44,6 +44,14 @@
 	{{/if}}
       {{/with}}
 
+      {{#link-to 'session.test.activity' tagName='li'}}
+	<a href>Activity
+	  {{#if test_model.num_comments}}
+	    <span class="label label-default"> {{test_model.num_comments}} </span>
+	  {{/if}}
+	</a>
+      {{/link-to}}
+
 
     </ul>
   </div>
