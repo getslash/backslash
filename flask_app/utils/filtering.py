@@ -18,7 +18,6 @@ class FilterConfig(object):
 
     def filter(self, iterator, metadata):
         filter_json = self._get_filter_json()
-        filter_config = metadata['filter_config'] = self._create_filter_config_dict(filter_json)
         for filter_name, f in self._cfg.items():
             if f.default is not None and filter_name not in filter_json:
                 filter_json[filter_name] = f.default
@@ -40,27 +39,6 @@ class FilterConfig(object):
             except ValueError:
                 filter_json = {}
         return filter_json
-
-
-    def _create_filter_config_dict(self, filter_json):
-        returned = []
-
-        for name, f in sorted(self._cfg.items()):
-            is_toggle = isinstance(f, ToggleFilter)
-            cfg = {
-                'name': name,
-                'selected': name in filter_json or self._cfg[name].default,
-                'value': filter_json.get(name) or self._cfg[name].default,
-                'is_toggle': is_toggle,
-                'default': f.default,
-            }
-            if not is_toggle:
-                cfg['options'] = [
-                    {'name': opt_name, 'selected': filter_json.get(name, None) == opt_name}
-                    for opt_name in f.options
-                ]
-            returned.append(cfg)
-        return returned
 
 
 class ConstFilter(object):
