@@ -53,6 +53,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         self.sendAction('close_boxes');
         self._close_boxes();
+	console.log('Transitioning to', obj.route, obj.key);
         self.router.transitionTo(obj.route, obj.key);
 
     },
@@ -62,8 +63,8 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         let res = yield this.get('api').call('quick_search', {term: query});
         res = res.result;
         if (res.length === 0) {
-            res.push({type: 'session', name: 'Go to session ' + query, key: query});
-            res.push({type: 'test', name: 'Go to test ' + query, key: query});
+            res.push({type: 'session', name: 'Go to session ' + query, key: query, route: 'session'});
+            res.push({type: 'test', name: 'Go to test ' + query, key: query, route: 'test'});
         }
         callback(res);
     }).restartable(),
