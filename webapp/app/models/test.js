@@ -16,6 +16,12 @@ export default DS.Model.extend(HasLogicalId, {
 
     session_display_id: DS.attr(),
 
+    has_any_error: function() {
+
+	return this.get('num_errors') || this.get('num_failures');
+    }.property('num_failures', 'num_errors'),
+
+
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
     duration: DS.attr('number'),

@@ -26,7 +26,11 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ScrollToTopMixin, Pol
     setupController: function(controller, model) {
       this._super(controller, model);
       controller.setProperties(model);
-    }
+    },
+
+    resetController(controller) {
+	controller.set('current_test', null);
+    },
 
 
 });

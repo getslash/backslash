@@ -10,13 +10,6 @@ export default Ember.Component.extend({
     test: Ember.computed.oneWay('item'),
     session_model: null,
 
-    has_any_error: function() {
-	let item = this.get('item');
-
-	return item.get('num_errors') || item.get('num_failures');
-    }.property('item.num_errors', 'item.num_failures'),
-
-
     status: function() {
         let status = this.get('test.status').toLowerCase();
         if (status === 'failure' || status === 'error') {
@@ -35,7 +28,7 @@ export default Ember.Component.extend({
 
     href: function() {
 	let returned = `/#/sessions/${this.get('test.session_display_id')}/tests/${this.get('test.display_id')}`;
-	if (this.get('has_any_error')) {
+	if (this.get('test.has_any_error')) {
 	    returned += '/errors';
 	}
 	return returned;

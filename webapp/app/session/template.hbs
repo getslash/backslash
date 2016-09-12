@@ -56,17 +56,25 @@
 	  {{#link-to 'session.activity' tagName='li'}}
 	    <a href>Activity
 	      {{#if session_model.num_comments}}
-		<span class="label label-default"> {{session_model.num_comments}} </span>
+		<span class="label label-default"> {{session_model.num_comments}}  </span>
 	      {{/if}}
 	    </a>
 	  {{/link-to}}
 
-	  {{#if current_test}}
+	  {{#if current_test }}
+	    {{#if (s-starts-with router.currentRouteName 'session.test') }}
 	    <li class="active">
 	      <a>
 		Test #{{current_test.ordinal}}
 	      </a>
 	    </li>
+	    {{else}}
+	    <li>
+	      {{#link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
+		Test #{{current_test.ordinal}}
+	      {{/link-to}}
+	    </li>
+	    {{/if}}
 	  {{/if}}
 
 	</ul>

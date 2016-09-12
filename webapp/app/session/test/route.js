@@ -13,10 +13,6 @@ export default Ember.Route.extend(ComplexModelRoute, {
 	this.get('parent_controller').set('current_test', model.test_model);
     },
 
-    deactivate() {
-	this.get('parent_controller').set('current_test', null);
-    },
-
     model(params) {
 	return Ember.RSVP.hash({
 	    session_model: this.modelFor('session').session_model,
