@@ -9,14 +9,12 @@
     </p>
   {{/if}}
 
-  <table class="table data">
-    <tbody>
-      <tr>
-	<td>Test id</td>
-	<td>{{elements/copyable-text value=test_model.display_id}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row add-margin-top add-margin-bottom">
+    <div class="col-sm-12"><strong>Test ID</strong>: {{elements/copyable-text value=test_model.display_id}} {{#link-to 'test_info' test_model.test_info_id classNames="add-margin-left"}}
+      <i class="fa fa-history"></i> Previous executions...
+    {{/link-to}}</div>
+  </div>
+
 </div>
 
 
