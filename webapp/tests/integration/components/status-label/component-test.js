@@ -13,5 +13,5 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{status-label status=status}}`);
 
-  assert.ok(this.$().find('.label').hasClass('label-success'));
+  assert.ok(this.$().find('i').hasClass('fa-check'));
 });

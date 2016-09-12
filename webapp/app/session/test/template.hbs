@@ -1,7 +1,10 @@
 <div class="container-fluid">
   <h3>
-    {{status-icon status=test_model.status spaced=false}} {{tests/test-name info=test_model.info show_file=true}}
+    {{status-icon status=test_model.status spaced=false}} {{elements/copyable-text
+							     copy_value=(format-test-name test_model.info)
+							     value=(format-test-name test_model.info with_filename=false)}}
   </h3>
+  <small>from <strong>{{test_model.info.file_name}}</strong></small>
 
   {{#if (eq test_model.status "SKIPPED")}}
     <p>
