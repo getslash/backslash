@@ -34,7 +34,7 @@ export default Ember.Component.extend({
     }.property('session_model', 'status'),
 
     href: function() {
-	let returned = `/#/sessions/${this.get('session_model.display_id')}/tests/${this.get('test.display_id')}`;
+	let returned = `/#/sessions/${this.get('test.session_display_id')}/tests/${this.get('test.display_id')}`;
 	if (this.get('has_any_error')) {
 	    returned += '/errors';
 	}

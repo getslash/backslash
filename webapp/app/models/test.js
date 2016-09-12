@@ -14,6 +14,8 @@ export default DS.Model.extend(HasLogicalId, {
 	return null;
     }.property('display_id'),
 
+    session_display_id: DS.attr(),
+
     start_time: DS.attr('number'),
     end_time: DS.attr('number'),
     duration: DS.attr('number'),

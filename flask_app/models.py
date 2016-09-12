@@ -268,6 +268,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
             return None
         return v.variation
 
+    @rendered_field
+    def session_display_id(self):
+        return self.session.logical_id or self.session.id
+
     scm = db.Column(db.String(5), default=None)
     scm_dirty = db.Column(db.Boolean, server_default='false')
     scm_revision = db.Column(db.String(40), default=None)
