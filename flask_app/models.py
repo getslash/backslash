@@ -62,7 +62,6 @@ class StatusPredicatesMixin(object):
         return self.status == statuses.ERROR
 
 
-
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -135,6 +134,25 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
         Index('ix_session_start_time', start_time.desc()),
     )
 
+
+    last_comment_obj = db.relationship(lambda: Comment,
+                                  primaryjoin=lambda: and_(
+                                      Session.id == Comment.session_id,
+                                      Comment.timestamp == select([func.max(Comment.timestamp)]).
+                                      where(Comment.session_id==Session.id).
+                                      correlate(Session.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
+
+    @rendered_field
+    def last_comment(self):
+        comment = self.last_comment_obj
+        if comment is None:
+            return None
+
+        return {'comment': comment.comment, 'user_email': comment.user.email}
 
 
     @rendered_field
@@ -298,6 +316,32 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
                                   lazy='joined'
                               )
 
+    @rendered_field
+    def first_error(self):
+        if self.first_error_obj is None:
+            return None
+        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
+
+    last_comment_obj = db.relationship(lambda: Comment,
+                                  primaryjoin=lambda: and_(
+                                      Test.id == Comment.test_id,
+                                      Comment.timestamp == select([func.max(Comment.timestamp)]).
+                                      where(Comment.test_id==Test.id).
+                                      correlate(Test.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
+
+
+    @rendered_field
+    def last_comment(self):
+        comment = self.last_comment_obj
+        if comment is None:
+            return None
+
+        return {'comment': comment.comment, 'user_email': comment.user.email}
+
 
     related_entities = db.relationship('RelatedEntity')
 
@@ -321,12 +365,6 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
         if self.end_time is None or self.start_time is None:
             return None
         return self.end_time - self.start_time
-
-    @rendered_field
-    def first_error(self):
-        if self.first_error_obj is None:
-            return None
-        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
 
 
     @rendered_field

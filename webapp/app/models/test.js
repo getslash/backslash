@@ -36,6 +36,7 @@ export default DS.Model.extend(HasLogicalId, {
     type: DS.attr(),
 
     first_error: DS.attr(),
+    last_comment: DS.attr(),
 
     scm: DS.attr(),
     scm_revision: DS.attr(),

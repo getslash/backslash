@@ -28,7 +28,6 @@ a.item, a.item:hover {
     margin: 3px;
     overflow: hidden;
 
-
     .left-badge {
 	align-items: center;
 	background: silver;
@@ -137,20 +136,26 @@ a.item, a.item:hover {
 	.summary {
 	    padding-left: 1em;
 	    opacity: 0;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
 	}
 
 	&.expand-on-hover:hover {
 	    flex: 0 0 10em;
+
+	    &.comments {
+		flex: 0 0 20em;
+	    }
 	    @include slide-flex;
+
+	    .summary {
+		@include reveal-opacity-later;
+	    }
 	}
 
 	&.warnings {
 	    background-color: $brand-warning;
 	    color: white;
-
-	    &:hover .summary {
-		@include reveal-opacity-later;
-	    }
 	}
     }
 
