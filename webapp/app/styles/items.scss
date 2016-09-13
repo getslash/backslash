@@ -204,8 +204,8 @@ a.item, a.item:hover {
 	}
 
 	.subject-info {
+	    @extend .overflow-ellipsis;
 	    flex: 0 0 30%;
-
 	}
 
 
