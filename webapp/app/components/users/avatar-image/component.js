@@ -9,7 +9,7 @@ export default Ember.Component.extend({
     tagName: 'img',
 
     attributeBindings: ['src'],
-    classNames: ['img-circle'],
+    classNames: ['img-circle', 'avatar-image'],
     classNameBindings: ['is_proxy:proxy', 'is_real:real'],
 
     _fallback_marker_name: function() {
