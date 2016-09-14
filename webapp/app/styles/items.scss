@@ -140,7 +140,7 @@ a.item, a.item:hover {
 	    text-overflow: ellipsis;
 	}
 
-	&.expand-on-hover:hover {
+	&.expand-on-hover:hover, &.expand-on-hover.expanded {
 	    flex: 0 0 10em;
 
 	    &.comments {
