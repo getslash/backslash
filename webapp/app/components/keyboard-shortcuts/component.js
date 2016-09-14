@@ -11,6 +11,7 @@ let _keys = [
     {key: 'h', action: 'toggle_human_times', description: 'Toggles human-readable times'},
     {key: 'a', action: 'filter_none', description: 'Show all entities'},
     {key: 'f', action: 'filter_only_failed', description: 'Hide all entities except failed'},
+    {key: 'c', action: 'toggle_inline_comment', description: 'Toggle comment preview for items'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -32,6 +33,8 @@ let _FILTERABLE_VIEWS = [
     'user.sessions',
     'subject',
 ];
+
+let _COMMENT_OVERVIEW_VIEWS = _FILTERABLE_VIEWS;
 
 
 export default Ember.Component.extend(KeyboardShortcuts, {
@@ -134,6 +137,12 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                 controller.filter_none();
             });
         },
+
+	toggle_inline_comment() {
+	    this._do_if_in(_COMMENT_OVERVIEW_VIEWS, function(controller) {
+		controller.toggleProperty('comments_expanded');
+	    });
+	},
 
         open_quick_search() {
             let self = this;

@@ -70,9 +70,7 @@
   {{item-times start=session.start_time end=session.end_time humanize=humanize_times}}
 </div>
 
-<div class="right-label fainter {{if session.num_comments 'visible'}}">
-  <i class="fa fa-comment"></i>
-</div>
+{{item-comment-overview item=session expanded=comments_expanded}}
 
 
 <div class="right-label warnings expand-on-hover {{if session.total_num_warnings 'visible'}}">

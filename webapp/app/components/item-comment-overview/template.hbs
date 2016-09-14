@@ -1,0 +1,7 @@
+<i class="fa fa-comment"></i>
+<span class="summary">
+  {{#with item.last_comment as |c|}}
+    {{#elements/tool-tip title=c.user_email}}
+      {{users/avatar-image email=c.user_email small=true}}{{/elements/tool-tip}} {{c.comment}}
+  {{/with}}
+</span>

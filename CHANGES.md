@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 2.3.0
+
+* Sessions and tests now have a preview of the latest comment made on them, when you hover over them. You can also hit `c` to toggle showing the latest comment on all items in view
+
 # Version 2.2.0
 
 * Major overhaul of UI
