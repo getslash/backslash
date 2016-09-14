@@ -68,6 +68,10 @@
   {{/if}}
 
   {{item-times start=session.start_time end=session.end_time humanize=humanize_times}}
+
+  <div class="duration">
+    {{humanize-duration start=session.start_time end=session.end_time}}
+  </div>
 </div>
 
 {{item-comment-overview item=session expanded=comments_expanded}}
