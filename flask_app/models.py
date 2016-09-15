@@ -290,6 +290,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     def session_display_id(self):
         return self.session.logical_id or self.session.id
 
+    @rendered_field
+    def is_session_abandoned(self):
+        return self.session.is_abandoned()
+
     scm = db.Column(db.String(5), default=None)
     scm_dirty = db.Column(db.Boolean, server_default='false')
     scm_revision = db.Column(db.String(40), default=None)

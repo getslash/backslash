@@ -1,8 +1,10 @@
 import DS from 'ember-data';
 import Ember from 'ember';
 import HasLogicalId from '../mixins/has-logical-id';
+import HasComputedStatus from '../mixins/has-computed-status';
 
-export default DS.Model.extend(HasLogicalId, {
+
+export default DS.Model.extend(HasLogicalId, HasLogicalId, {{
 
     archived: DS.attr('boolean'),
     investigated: DS.attr('boolean'),
@@ -53,19 +55,6 @@ export default DS.Model.extend(HasLogicalId, {
     }.property('num_warnings', 'num_test_warnings'),
 
     status: DS.attr('string'),
-    status_lower: function() {
-        return this.get('status').toLowerCase();
-    }.property('status'),
-
-    computed_status: function() {
-	if (this.get('is_abandoned')) {
-	    return 'ABANDONED';
-	}
-	if (this.get('is_interrupted')) {
-	    return 'INTERRUPTED';
-	}
-	return this.get('status');
-    }.property('status', 'is_abandoned', 'is_interrupted'),
 
     is_interrupted: function() {
 	return this.get('end_time') != null && this.get('has_tests_left_to_run');

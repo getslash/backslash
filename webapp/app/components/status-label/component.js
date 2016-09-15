@@ -8,7 +8,7 @@ export default Ember.Component.extend({
     status: null,
 
     label_class: function() {
-	switch(this.get('status').toLowerCase()) {
+	switch(this.get('status')) {
 	case 'success':
 	    return 'label-success';
 	case 'error':

@@ -1,7 +1,8 @@
 import DS from 'ember-data';
 import HasLogicalId from '../mixins/has-logical-id';
+import HasComputedStatus from '../mixins/has-computed-status';
 
-export default DS.Model.extend(HasLogicalId, {
+export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
     ordinal: function() {
 	let id = this.get('display_id');
@@ -75,6 +76,8 @@ export default DS.Model.extend(HasLogicalId, {
 
     is_running: function() {
         return this.get('status') === 'RUNNING';
-    }.property('status')
+    }.property('status'),
+
+    is_session_abandoned: DS.attr('boolean'),
 
 });
