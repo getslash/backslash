@@ -4,6 +4,8 @@
 
 * Session view now displays durations
 * Sessions and tests now have a preview of the latest comment made on them, when you hover over them. You can also hit `c` to toggle showing the latest comment on all items in view
+* Many bugs fixed
+  * Status display for tests inside abandoned sessions
 
 # Version 2.2.0
 
