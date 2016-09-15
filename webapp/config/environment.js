@@ -27,6 +27,7 @@ module.exports = function(environment) {
         },
 
 	available_page_sizes: [25, 50, 100, 200],
+	default_page_size: 25,
 
     },
 

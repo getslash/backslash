@@ -41,7 +41,8 @@ Router.map(function() {
   this.route('stats');
   this.route('component-proofing');
   this.route('setup');
-    this.route('not-found', { path: '/*:unknown' });
+  this.route('not-found', { path: '/*:unknown' });
+  this.route('tests');
 });
 
 export default Router;

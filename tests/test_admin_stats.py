@@ -39,12 +39,6 @@ def test_max_num_stats(active_db_context, request):
     assert models.Stat.query.count() == stats.NUM_SAMPLES  # pylint: disable=no-member
 
 
-@pytest.yield_fixture
-def active_db_context(db_context):
-    with db_context():
-        yield
-
-
 @pytest.fixture
 def chart(client, real_login, admin_role, active_db_context):  # pylint: disable=unused-argumen
     stats.collect_stats()
