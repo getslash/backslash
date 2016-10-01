@@ -12,7 +12,7 @@ export default Ember.Route.extend({
     },
 
     afterModel(model) {
-	this.transitionTo('session.test', model.session.get('display_id'), model.test.get('display_id'));
+	this.replaceWith('session.test', model.session.get('display_id'), model.test.get('display_id'));
     },
 
 });
