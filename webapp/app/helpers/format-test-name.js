@@ -12,7 +12,7 @@ export function formatTestName(params, hash) {
 	returned += info.file_name + ':';
     }
     let class_name = info.class_name;
-    if (class_name && class_name.indexOf('(') === -1 || class_name.endsWith(')')) {
+    if (class_name && (class_name.indexOf('(') === -1 || class_name.endsWith(')'))) {
 	returned += info.class_name + '.';
     }
     returned += info.name;
