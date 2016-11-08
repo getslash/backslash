@@ -7,7 +7,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'webapp',
     environment: environment,
-    rootURL: '/',
+    rootURL: null,
     locationType: 'hash',
     EmberENV: {
       FEATURES: {

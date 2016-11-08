@@ -7,6 +7,7 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('index', { path: '/' });
   this.route("sessions", { path: "/sessions" });
   this.route("session", { path: "/sessions/:id" }, function() {
     this.route('errors');
@@ -40,6 +41,7 @@ Router.map(function() {
   this.route('stats');
   this.route('component-proofing');
   this.route('setup');
+    this.route('not-found', { path: '/*:unknown' });
 });
 
 export default Router;
