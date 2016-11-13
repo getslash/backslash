@@ -13,18 +13,18 @@
   when: ansible_distribution == 'CentOS'
 - name: set up apt packages
   action: apt pkg={{item}} state=latest update_cache=yes
-  with_items: required_apt_packages
+  with_items: "{{required_apt_packages}}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 - name: install EPEL
   action: yum pkg=epel-release state=latest
   when: ansible_distribution == 'CentOS'
 - name: set up yum packages
   action: yum pkg={{item}} state=latest update_cache=yes
-  with_items: required_yum_packages
+  with_items: "{{required_yum_packages}}"
   when: ansible_distribution == 'CentOS'
 - name: set up pacman packages
   action: pacman pkg={{item}} state=latest update_cache=yes
-  with_items: required_pacman_packages
+  with_items: "{{required_pacman_packages}}"
   when: ansible_distribution == 'Archlinux'
 - name: set up virtualenv
   pip: name=virtualenv state=latest executable={{pip_executable}}
