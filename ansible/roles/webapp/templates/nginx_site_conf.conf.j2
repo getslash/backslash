@@ -10,16 +10,17 @@ server {
 server {
     listen 80;
     server_name {{inventory_hostname}};
-    
+
+    gzip on;
+    gzip_proxied any;
+    gzip_types text/plain text/xml text/css application/x-javascript application/javascript;
+    gzip_vary on;
+    gzip_disable "MSIE [1-6]\.(?!.*SV1)";
+
     location /static {
        alias {{static_root}};
     }
 
-    location = / {
-       rewrite ^/$ /static/index.html;
-    }
-
-    
     location / {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
