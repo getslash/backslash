@@ -3,9 +3,10 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
     results: null,
-    humanize_times: true,
     show_subjects: true,
     session_model: null,
+
+    display: Ember.inject.service(),
 
 
     page: Ember.computed.oneWay('results.meta.page'),

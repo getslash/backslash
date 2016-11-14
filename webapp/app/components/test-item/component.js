@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+    display: Ember.inject.service(),
     attributeBindings: ['href'],
     tagName: 'a',
     classNames: ['item', 'test', 'clickable'],

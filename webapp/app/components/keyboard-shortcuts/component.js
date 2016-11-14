@@ -44,6 +44,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     keys: _keys,
 
     api: Ember.inject.service(),
+    display: Ember.inject.service(),
 
 
     search(query, sync_callback, async_callback) {
@@ -120,9 +121,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         toggle_human_times() {
-            this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
-                controller.toggleProperty('humanize_times');
-            });
+	    this.get('display').toggleProperty('humanize_times');
         },
 
 
@@ -139,9 +138,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
 	toggle_inline_comment() {
-	    this._do_if_in(_COMMENT_OVERVIEW_VIEWS, function(controller) {
-		controller.toggleProperty('comments_expanded');
-	    });
+	    this.get('display').toggleProperty('comments_expanded');
 	},
 
         open_quick_search() {
