@@ -21,6 +21,10 @@ server {
        alias {{static_root}};
     }
 
+    location = / {
+       rewrite ^/$ /static/index.html;
+    }
+
     location / {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
