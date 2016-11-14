@@ -34,8 +34,6 @@ let _FILTERABLE_VIEWS = [
     'subject',
 ];
 
-let _COMMENT_OVERVIEW_VIEWS = _FILTERABLE_VIEWS;
-
 
 export default Ember.Component.extend(KeyboardShortcuts, {
     help_displayed: false,
