@@ -198,7 +198,7 @@ class SubjectInstance(db.Model):
 class RelatedEntity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(256), nullable=False)
-    name = db.Column(db.Text(), nullable=False)
+    name = db.Column(db.Text(), nullable=False, index=True)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
