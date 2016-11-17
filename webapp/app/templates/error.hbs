@@ -1,5 +1,5 @@
-<div class="app-error">
-
+<div class="container">
+  <div class="text-center">
   {{#if model.not_found}}
     <img src="/static/assets/img/backslash-notfound.svg" style="height: 400px"/>
     <div class="error-details">
@@ -15,11 +15,18 @@
     <h2>Something went horribly wrong. We're terribly sorry.</h2>
     <p>This is probably due to our usage of some cutting-edge, non-comprimising web technologies which are too hot to handle. We get this often.</p>
     <p class="additional-details">
-      <p>{{model.message}}</p>
       {{#each model.errors as |error|}}
         <p>{{error.title}}</p>
       {{/each}}
     </p>
   </div>
   {{/if}}
+  </div>
+
+  {{#if (not model.not_found)}}
+    <pre class="small faint">{{model.message}}</pre>
+  {{/if}}
+
 </div>
+
+

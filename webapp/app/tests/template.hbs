@@ -1,0 +1,25 @@
+{{#tool-bar}}
+  {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
+  <form class="navbar-form" role="search">
+    <div class="input-group col-xs-6 {{if error 'has-error'}}">
+      {{input class="form-control search-bar" placeholder="Search for..." value=entered_search}}
+    </div>
+    <div class="input-group">
+      <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
+    </div>
+    {{search-help}}
+  </form>
+
+{{/tool-bar}}
+
+{{#if error}}
+  <div class="container">
+    <div class="alert alert-danger text-center">
+      {{error}}
+    </div>
+  </div>
+{{else}}
+  {{#each tests as |result|}}
+     {{test-item item=result show_subjects=true}}
+  {{/each}}
+{{/if}}
