@@ -20,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
+    "broccoli-merge-trees": "^0.2.1",
     "broccoli-static-compiler": "^0.2.2",
     "ember-ajax": "^2.4.1",
     "ember-c3": "0.2.3",
@@ -56,6 +57,8 @@
     "ember-math-helpers": "1.2.3",
     "ember-modal-dialog": "0.9.0",
     "ember-pluralize": "0.2.0",
+    "ember-disable-proxy-controllers": "^1.0.1",
+    "ember-load-initializers": "^0.5.0",
     "ember-resolver": "^2.0.3",
     "ember-simple-auth": "^1.1.0",
     "ember-toggle-helper": "0.1.1",
