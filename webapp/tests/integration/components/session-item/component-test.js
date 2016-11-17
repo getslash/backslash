@@ -14,14 +14,13 @@ test('Regular session rendering', function(assert) {
     assert.ok(this.$('>:first-child').hasClass('success'), 'has success class');
 });
 
-test('Session with errors has error class', function(assert) {
+test('Session with errors has unsuccessful class', function(assert) {
 
     this.set('item', _normal_session());
     this.set('item.num_errors', 10);
 
     this.render(hbs`{{session-item item=item}}`);
-    assert.notOk(this.$('>:first-child').hasClass('success'), 'has success class');
-    assert.ok(this.$('>:first-child').hasClass('failed'), 'does not have failed class');
+    assert.ok(this.$('>:first-child').hasClass('unsuccessful'), 'does not have unsuccessful class');
 });
 
 
@@ -33,7 +32,7 @@ function _normal_session() {
 	total_num_tests: 10,
 	start_time: 100,
 	end_time: 100,
-	status: 'success',
+	computed_status: 'success',
 	num_errors: 0,
     });
 }
