@@ -1,4 +1,3 @@
-import datetime
 import operator
 from uuid import uuid4
 
@@ -33,7 +32,7 @@ def test_search_functions(q):
     '12/1/2016',
     ])
 def test_date_parser(date):
-    assert isinstance(parse_date(date), datetime.datetime)
+    assert isinstance(parse_date(date), float)
 
 
 @pytest.mark.parametrize('q', [
