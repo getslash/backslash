@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 2.4.0
+
+
 # Version 2.3.0
 
 * Added basic support for searching tests and sessions using a query syntax
