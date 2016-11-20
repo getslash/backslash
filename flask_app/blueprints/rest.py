@@ -15,6 +15,7 @@ from ..models import Error, Session, Test, User, Subject
 from .. import activity
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
+from ..search import get_orm_query_from_search_string
 
 blueprint = Blueprint('rest', __name__, url_prefix='/rest')
 
@@ -64,6 +65,7 @@ class SessionResource(ModelResource):
 test_query_parser = reqparse.RequestParser()
 test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
+test_query_parser.add_argument('search', type=str, default=None)
 
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
@@ -82,7 +84,10 @@ class TestResource(ModelResource):
         if args.session_id is None:
             args.session_id = request.view_args.get('session_id')
 
-        returned = super(TestResource, self)._get_iterator()
+        if args.search:
+            returned = get_orm_query_from_search_string('test', args.search, abort_on_syntax_error=True)
+        else:
+            returned = super(TestResource, self)._get_iterator()
 
         if args.session_id is not None:
             try:

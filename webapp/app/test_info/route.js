@@ -23,7 +23,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, StatusFilt
 
         return Ember.RSVP.hash({
             tests: this.store.query('test', query_params),
-            test_info: this.store.find('test-info', params.id),
+            test_info: this.store.find('test-info', params.id).then(o => o.getProperties(['file_name', 'class_name', 'name'])),
         });
     },
 

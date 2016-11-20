@@ -2,6 +2,8 @@
 @import 'bootstrap';
 @import 'colors.scss';
 
+@import "pod-styles";
+
 // Fonts
 
 body {
@@ -65,7 +67,6 @@ body {
 @import 'components/warnings/warnings.scss';
 
 @import 'components/session-breakdown.scss';
-@import 'components/status-icon.scss';
 
 @import "ember-modal-dialog/ember-modal-structure";
 @import "ember-modal-dialog/ember-modal-appearance";

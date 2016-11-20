@@ -62,7 +62,6 @@ class StatusPredicatesMixin(object):
         return self.status == statuses.ERROR
 
 
-
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -136,6 +135,25 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     )
 
 
+    last_comment_obj = db.relationship(lambda: Comment,
+                                  primaryjoin=lambda: and_(
+                                      Session.id == Comment.session_id,
+                                      Comment.timestamp == select([func.max(Comment.timestamp)]).
+                                      where(Comment.session_id==Session.id).
+                                      correlate(Session.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
+
+    @rendered_field
+    def last_comment(self):
+        comment = self.last_comment_obj
+        if comment is None:
+            return None
+
+        return {'comment': comment.comment, 'user_email': comment.user.email}
+
 
     @rendered_field
     def is_abandoned(self):
@@ -180,7 +198,7 @@ class SubjectInstance(db.Model):
 class RelatedEntity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(256), nullable=False)
-    name = db.Column(db.Text(), nullable=False)
+    name = db.Column(db.Text(), nullable=False, index=True)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
@@ -272,6 +290,10 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     def session_display_id(self):
         return self.session.logical_id or self.session.id
 
+    @rendered_field
+    def is_session_abandoned(self):
+        return self.session.is_abandoned()
+
     scm = db.Column(db.String(5), default=None)
     scm_dirty = db.Column(db.Boolean, server_default='false')
     scm_revision = db.Column(db.String(40), default=None)
@@ -281,8 +303,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
 
     logical_id = db.Column(db.String(256), index=True)
-    start_time = db.Column(db.Float, default=get_current_time)
-    end_time = db.Column(db.Float, default=None)
+    start_time = db.Column(db.Float, default=get_current_time, index=True)
+    end_time = db.Column(db.Float, default=None, index=True)
 
     errors = db.relationship('Error')
     comments = db.relationship('Comment', primaryjoin='Comment.test_id==Test.id')
@@ -297,6 +319,32 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
                                   uselist=False,
                                   lazy='joined'
                               )
+
+    @rendered_field
+    def first_error(self):
+        if self.first_error_obj is None:
+            return None
+        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
+
+    last_comment_obj = db.relationship(lambda: Comment,
+                                  primaryjoin=lambda: and_(
+                                      Test.id == Comment.test_id,
+                                      Comment.timestamp == select([func.max(Comment.timestamp)]).
+                                      where(Comment.test_id==Test.id).
+                                      correlate(Test.__table__)
+                                  ),
+                                  uselist=False,
+                                  lazy='joined'
+                              )
+
+
+    @rendered_field
+    def last_comment(self):
+        comment = self.last_comment_obj
+        if comment is None:
+            return None
+
+        return {'comment': comment.comment, 'user_email': comment.user.email}
 
 
     related_entities = db.relationship('RelatedEntity')
@@ -321,12 +369,6 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
         if self.end_time is None or self.start_time is None:
             return None
         return self.end_time - self.start_time
-
-    @rendered_field
-    def first_error(self):
-        if self.first_error_obj is None:
-            return None
-        return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
 
 
     @rendered_field

@@ -1,10 +1,12 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+
+    display: Ember.inject.service(),
     tagName: 'a',
     attributeBindings: ['href'],
     classNames: ['item', 'session', 'clickable'],
-    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'status', 'in_pdb:pdb', 'interrupted:interrupted', 'has_any_error:unsuccessful'],
+    classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'session.computed_status', 'in_pdb:pdb', 'interrupted:interrupted', 'has_any_error:unsuccessful'],
 
     session: Ember.computed.alias('item'),
 
@@ -23,33 +25,6 @@ export default Ember.Component.extend({
 	return item.get('num_error_tests') || item.get('num_failed_tests') || item.get('num_errors');
     }.property('item.num_failed_tests', 'item.num_error_tests', 'item.num_errors'),
 
-
-    status: function() {
-        let item = this.get('item');
-	let status = item.get('status');
-
-	if (status) {
-	    status = status.toLowerCase();
-	}
-
-        if (!item.get('is_abandoned')) {
-            if (!item.get('is_running') && this.get('has_any_error')) {
-                return 'failed';
-            } else if (['error', 'failure'].indexOf(status) !== -1) {
-                return 'failed';
-	    } else if (item.get('is_interrupted')) {
-		return 'interrupted';
-            } else if (item.get('is_running')) {
-                return 'running';
-            } else if (item.get('num_skipped_tests')) {
-                return 'skipped';
-            } else if (item.get('num_finished_tests')) {
-                return 'success';
-            } else {
-                return 'finished';
-            }
-        }
-    }.property('item.num_skipped_tests', 'has_any_error', 'item.is_running', 'item.status'),
 
     result_type: Ember.computed.oneWay('item.type'),
 

@@ -1,11 +1,11 @@
-{{#elements/tool-tip title=status_lower}}
-{{#if (eq status_lower "success")}}
+{{#elements/tool-tip title=status}}
+{{#if (eq status "success")}}
   <i class="fa fa-check"></i>
 {{else}}
-  {{#if (eq status_lower "skipped")}}
+  {{#if (eq status "skipped")}}
     <i class="fa fa-share"></i>
   {{else}}
-    {{#if (eq status_lower "running")}}
+    {{#if (eq status "running")}}
       <i class="fa fa-spin fa-circle-o-notch faint"></i>
     {{else}}
       <i class="fa fa-times"></i>

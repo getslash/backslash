@@ -64,7 +64,7 @@ def _get_runtoken_request_status(request_id):
     if value is None:
         abort(requests.codes.not_found) # pylint: disable=no-member
     return jsonify({
-        'token': value,
+        'token': value.decode('utf-8'),
         'url': URL(request.host_url).add_path(url_for('runtoken.runtoken_request', request_id=request_id)),
         'complete': request.host_url + '#/runtoken/' + request_id + '/authorize',
     })

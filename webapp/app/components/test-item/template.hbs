@@ -23,21 +23,18 @@
 
 
 <div class="details">
-  {{status-icon status=status}}
+  {{status-icon status=test.computed_status}}
     {{tests/test-name info=test.info variation=test.variation}}
   {{#if show_subjects}}
     {{subject-info subjects=test.subjects}}
   {{/if}}
-  {{item-times start=test.start_time end=test.end_time humanize=humanize_times}}
+  {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
   <div class="duration">
     {{humanize-duration start=test.start_time end=test.end_time}}
   </div>
 </div>
 
-<div class="right-label fainter {{if test.num_comments 'visible'}}">
-  <i class="fa fa-comment"></i>
-</div>
-
+{{item-comment-overview item=test}}
 
 <div class="right-label expand-on-hover warnings {{if test.num_warnings 'visible'}}">
   <i class="fa fa-warning"></i> <span class="summary">{{pluralize-word test.num_warnings "Warning"}}</span>

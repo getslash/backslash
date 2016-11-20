@@ -54,7 +54,7 @@
   </div>
 </div>
 <div class="details">
-  {{status-icon status=status}}
+  {{status-icon status=session.computed_status}}
   <div class="user-info">
 
     {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
@@ -67,12 +67,14 @@
     {{subject-info subjects=session.subjects}}
   {{/if}}
 
-  {{item-times start=session.start_time end=session.end_time humanize=humanize_times}}
+  {{item-times start=session.start_time end=session.end_time humanize=display.humanize_times}}
+
+  <div class="duration">
+    {{humanize-duration start=session.start_time end=session.end_time}}
+  </div>
 </div>
 
-<div class="right-label fainter {{if session.num_comments 'visible'}}">
-  <i class="fa fa-comment"></i>
-</div>
+{{item-comment-overview item=session}}
 
 
 <div class="right-label warnings expand-on-hover {{if session.total_num_warnings 'visible'}}">

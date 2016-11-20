@@ -172,6 +172,11 @@ def pytest_addoption(parser):
 def redirect_logging():
     logbook.compat.redirect_logging()
 
+@pytest.fixture(scope='session', autouse=True)
+def logs_to_stderr():
+    logbook.StderrHandler(level=logbook.TRACE).push_application()
+
+
 
 @pytest.fixture
 def client(webapp_without_login, runtoken, testuser_id):
@@ -291,7 +296,7 @@ def users_to_delete(request):
     returned = set()
 
     @request.addfinalizer
-    def cleanup():
+    def cleanup():              # pylint: disable=unused-variable
         with _create_flask_app().app_context():
             models.User.query.filter(models.User.id.in_(
                 list(returned))).delete(synchronize_session=False)
@@ -339,6 +344,11 @@ def otheruser_tuple(db_context, users_to_delete):
 def db_context(webapp_without_login):
     return webapp_without_login.app.app_context
 
+
+@pytest.yield_fixture
+def active_db_context(db_context):
+    with db_context():
+        yield
 
 @pytest.fixture
 def file_name():

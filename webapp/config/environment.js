@@ -7,12 +7,16 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'webapp',
     environment: environment,
-    rootURL: '/',
+    rootURL: null,
     locationType: 'hash',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
       }
     },
 
@@ -23,6 +27,7 @@ module.exports = function(environment) {
         },
 
 	available_page_sizes: [25, 50, 100, 200],
+	default_page_size: 25,
 
     },
 

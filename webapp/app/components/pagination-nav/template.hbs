@@ -12,16 +12,11 @@
         </a>
         {{/if}}
       </li>
-      {{#each pages as |page|}}
-        <li class="{{if page.active 'active'}}"><a class="clickable" {{action "goto" page.number}}>{{page.number}}</a></li>
-      {{/each}}
+      <li class="active"><a class="clickable">{{page}}</a></li>
       <li>
         {{# if has_next }}
         <a {{action "goto" "next"}} aria-label="Next" class="clickable">
           <span aria-hidden="true"><i class="fa fa-forward"></i></span>
-        </a>
-        <a {{action "goto" "last"}} aria-label="Previous" class="clickable">
-          <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
         </a>
         {{/if}}
       </li>

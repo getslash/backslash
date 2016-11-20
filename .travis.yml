@@ -4,7 +4,6 @@ env:
   global:
   - PGPORT=5433
   - PGHOST=localhost
-
 python:
   - 3.5
 addons:
@@ -18,6 +17,8 @@ addons:
 
 services:
   - redis-server
+before_install:
+  - nvm install node
 install:
   - sudo cp /etc/postgresql/9.4/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
   - sudo /etc/init.d/postgresql restart
@@ -28,4 +29,6 @@ install:
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
-script: travis_retry .env/bin/py.test tests
+script:
+  - python manage.py ember test
+  - travis_retry .env/bin/py.test tests

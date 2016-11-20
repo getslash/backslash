@@ -1,5 +1,5 @@
 {{#each results as |result|}}
-  {{component (concat result.type "-item") item=result humanize_times=humanize_times show_subjects=show_subjects session_model=session_model}}
+  {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model }}
 {{/each}}
 
-{{pagination-nav page=page pages_total=pages_total goto_page=(action this.attrs.goto_page)}}
+{{pagination-nav page=page has_next=results.meta.has_more goto_page=(action this.attrs.goto_page) }}

@@ -197,7 +197,6 @@ def shell():
 
     with app.app_context():
         interact({
-            'db': db,
             'app': app,
             'models': models,
             'db': models.db,

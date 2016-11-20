@@ -15,6 +15,6 @@ test('it renders', function(assert) {
   });
   this.render(hbs`{{error-box error=error}}`);
 
-  assert.equal(this.$().text().trim().split('(')[0].trim(), '09/04/2016 10:26:00 AM');
+  assert.ok(this.$().text().trim().split('(')[0].trim().startsWith('09/04/2016'));
 
 });

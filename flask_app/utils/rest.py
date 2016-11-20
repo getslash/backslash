@@ -116,10 +116,15 @@ class ModelResource(RestResource):
         if page_size > max_page_size:
             error_abort('Query attempted to fetch more than the maximum number of results per page ({})'.format(max_page_size))
 
-        metadata['total'] = query.count()
-        metadata['pages_total'] = int(math.ceil(metadata['total'] / args.page_size)) or 1
+        returned = query.offset((args.page - 1) * args.page_size).limit(args.page_size + 1).all()
         metadata['page'] = args.page
-        return query.offset((args.page - 1) * args.page_size).limit(args.page_size)
+        if len(returned) > args.page_size:
+            metadata['has_more'] = True
+            returned.pop(-1)
+        else:
+            metadata['has_more'] = False
+
+        return returned
 
     def _get_collection_key_for_object(self, obj):
         return plural_noun(obj.get_typename())
