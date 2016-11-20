@@ -67,12 +67,18 @@
     - "{{app_name}}-wsgi"
     - "{{app_name}}-celery-worker"
     - "{{app_name}}-celery-beat"
+- name: shut down nginx gracefully if code changes
+  shell: systemctl stop nginx
+  when: sources.changed or configuration.changed
 - name: restart the service if code changes
   shell: systemctl restart {{item}}
   with_items:
     - "{{app_name}}-wsgi"
     - "{{app_name}}-celery-worker"
     - "{{app_name}}-celery-beat"
+  when: sources.changed or configuration.changed
+- name: start nginx again if code has changed
+  shell: systemctl start nginx
   when: sources.changed or configuration.changed
 - name: try to get local page
   shell: curl http://localhost/
