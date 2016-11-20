@@ -39,6 +39,8 @@ class SearchContext(object):
 
 _TEST_SPECIAL_SEARCH_FIELDS = {
     'name': TestInformation.name,
+    'file': TestInformation.file_name,
+    'class': TestInformation.class_name,
     'user': Either([User.email, User.first_name, User.last_name]),
     'status': func.lower(Test.status),
 }
