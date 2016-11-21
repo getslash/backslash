@@ -70,12 +70,11 @@ class TestSearchContext(SearchContext):
         return Test.query\
                    .join(Session, Session.id == Test.session_id)\
                    .join(User, Session.user_id == User.id)\
-                   .join(TestInformation)\
-                   .join(RelatedEntity, RelatedEntity.session_id == Test.session_id, isouter=True)
+                   .join(TestInformation)
 
 
 def with_(entity_name):
-    returned = exists().where((RelatedEntity.session_id == Test.session_id) & (RelatedEntity.name == entity_name)).correlate(Test)
+    returned = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
     returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
         (session_subject.c.session_id == Test.session_id) &
         (Subject.name == entity_name)).exists().correlate(Test)
