@@ -5,4 +5,6 @@ import StatusFilterableController from '../mixins/status-filterable/controller';
 
 export default PaginatedFilteredController.extend(StatusFilterableController, {
     collection: Ember.computed.oneWay('sessions'),
+
+    display: Ember.inject.service(),
 });

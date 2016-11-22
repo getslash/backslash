@@ -13,6 +13,8 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
 
     available_page_sizes: config.APP.available_page_sizes,
 
+    display: Ember.inject.service(),
+
     needs_investigation: function() {
         return this.get('session_model.investigated') !== true && this.get('session_model.status') !== 'SUCCESS';
     }.property('session_model.investigated', 'session_model.status'),
