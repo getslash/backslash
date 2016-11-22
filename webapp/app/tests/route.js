@@ -28,8 +28,16 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
 		return {tests: tests, error: null};
 	    }
 	).catch(
-	    function() {
-		return {error: 'Invalid search syntax'};
+	    function(exception) {
+		let message = null;
+		exception.errors.forEach(function(e) {
+		    message = e.detail;
+		});
+
+		if (message) {
+		    return {error: message};
+		}
+		throw exception; // reraise
 	    }
 	);
     },

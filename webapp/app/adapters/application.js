@@ -18,5 +18,5 @@ export default DS.RESTAdapter.extend({
     	});
     	throw error;
     });
-  }
+  },
 });

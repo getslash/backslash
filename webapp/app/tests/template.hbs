@@ -7,7 +7,29 @@
     <div class="input-group">
       <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
     </div>
-    {{search-help}}
+    {{#search-help}}
+      <table class="table table-striped">
+	<tbody>
+	  <tr>
+	    <td><code>name = test_something</code></td>
+	    <td>Find tests whose name is <code>test_something</code></td>
+	  </tr>
+	  <tr>
+	    <td><code>class = MyClass and name != test_first</code></td>
+	    <td>Find tests from the <code>MyClass</code> class whose name isn't <code>test_first</code></td>
+	  </tr>
+	  <tr>
+	    <td><code>user = someuser@somedomain.com</code></td>
+	    <td>Find tests run by the specified email (or first/last name)</td>
+	  </tr>
+	  <tr>
+	    <td><code>name ~ string</code></td>
+	    <td>Find tests whose names contain the string <code>string</code></td>
+	  </tr>
+	</tbody>
+      </table>
+
+    {{/search-help}}
   </form>
 
 {{/tool-bar}}

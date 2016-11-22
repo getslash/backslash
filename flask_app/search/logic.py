@@ -1,7 +1,7 @@
 import threading
 
-from sqlalchemy import func
-from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity
+from sqlalchemy import func, exists
+from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity, db, session_subject, SubjectInstance
 from .computed_search_field import Either
 from . import value_parsers
 
@@ -70,11 +70,13 @@ class TestSearchContext(SearchContext):
         return Test.query\
                    .join(Session, Session.id == Test.session_id)\
                    .join(User, Session.user_id == User.id)\
-                   .join(TestInformation)\
-                   .join(Session.subject_instances, isouter=True)\
-                   .join(Subject, isouter=True)\
-                   .join(RelatedEntity, RelatedEntity.session_id == Test.session_id, isouter=True)
+                   .join(TestInformation)
 
 
 def with_(entity_name):
-    return (Subject.name == entity_name) | (RelatedEntity.name == entity_name)
+    returned = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
+    returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
+        (session_subject.c.session_id == Test.session_id) &
+        (Subject.name == entity_name)).exists().correlate(Test)
+
+    return returned

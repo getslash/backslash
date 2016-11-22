@@ -1,7 +1,8 @@
 # Changelog
 
-# Version 2.4.0
+# Version 2.3.1
 
+* Minor bug fixes
 
 # Version 2.3.0
 

@@ -2,7 +2,10 @@ class SearchException(Exception):
     pass
 
 class SearchSyntaxError(SearchException):
-    pass
+
+    def __init__(self, msg, reason='Syntax error'):
+        super(SearchSyntaxError, self).__init__(msg)
+        self.reason = reason
 
 class UnknownField(SearchSyntaxError):
     pass
