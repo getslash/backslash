@@ -8,27 +8,9 @@
      translucentOverlay=true}}
     <div class="container">
       <h3>Search Syntax Help</h3>
-      <table class="table table-striped">
-	<tbody>
-
-	  <tr>
-	    <td><code>name = text</code></td>
-	    <td>Name should equal 'text'. For ordered fields, operators <code>&gt; &lt; &gt;= &lt;= !=</code> are also supported.</td>
-	  </tr>
-
-	  <tr>
-	    <td><code>name ~ text</code></td>
-	    <td>Search inside fields (the "name" field should contain "text")'</td>
-	  </tr>
-
-	  <tr>
-	    <td><code>start_time &lt; -2d</code></td>
-	    <td>Start time is more than two days ago</td>
-	  </tr>
-
-
-	</tbody>
-      </table>
+      <div class="container">
+	{{yield}}
+      </div>
     </div>
   {{/modal-dialog}}
 {{/if}}
