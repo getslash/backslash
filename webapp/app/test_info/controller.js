@@ -10,4 +10,6 @@ export default PaginatedFilteredController.extend(StatusFilterableController, {
     collection: Ember.computed.oneWay('tests'),
 
     available_page_sizes: config.APP.available_page_sizes,
+
+    display: Ember.inject.service(),
 });

@@ -2,9 +2,6 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
     queryParams: {
-        humanize_times: {
-            refreshModel: false,
-        },
         page: {
             refreshModel: true
         },
