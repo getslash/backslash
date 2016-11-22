@@ -100,6 +100,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined')
 
+    labels = db.relationship('Label', secondary='session_label', lazy='joined')
+
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
     num_failed_tests = db.Column(db.Integer, default=0)
@@ -181,6 +183,10 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
         if user is None:
             return None
         return user.email
+
+    @rendered_field(name='labels')
+    def label_names(self):
+        return [l.name for l in self.labels]
 
 
 class SubjectInstance(db.Model):
@@ -577,3 +583,19 @@ class AppConfig(db.Model):
 
     key = db.Column(db.String(256), primary_key=True)
     value = db.Column(JSONB, nullable=False)
+
+
+class Label(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), unique=True, index=True)
+
+
+session_label = db.Table('session_label',
+                           db.Column('session_id',
+                                     db.Integer,
+                                     db.ForeignKey('session.id', ondelete='CASCADE')),
+                           db.Index('ix_session_label_session_id', 'session_id'),
+                           db.Column('label_id',
+                                     db.Integer,
+                                     db.ForeignKey('label.id', ondelete='CASCADE')))

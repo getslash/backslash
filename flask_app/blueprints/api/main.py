@@ -30,6 +30,7 @@ from . import sessions # pylint: disable=unused-import
 from . import metadata # pylint: disable=unused-import
 from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
+from . import labels # pylint: disable=unused-import
 from . import quick_search # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
 

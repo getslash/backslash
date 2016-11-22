@@ -25,9 +25,13 @@
 <div class="details">
   {{status-icon status=test.computed_status}}
     {{tests/test-name info=test.info variation=test.variation}}
-  {{#if show_subjects}}
-    {{subject-info subjects=test.subjects}}
-  {{/if}}
+
+  <div class="item-info">
+    {{#if show_subjects}}
+      {{subject-info subjects=test.subjects}}
+    {{/if}}
+  </div>
+
   {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
   <div class="duration">
     {{humanize-duration start=test.start_time end=test.end_time}}
