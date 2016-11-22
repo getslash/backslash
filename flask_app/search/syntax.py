@@ -40,7 +40,7 @@ or_ = Keyword("or", caseless=True)
 def _get_operator(opname):
     returned = _OPERATORS.get(opname)
     if returned is None:
-        raise UnknownOperator(opname)
+        raise UnknownOperator(opname, reason='Unknown operator: {!r}'.format(opname))
     return returned
 
 grammar = infixNotation(atom, [
@@ -82,7 +82,7 @@ def _translate_tokens(tokens):
     rhs = logic.resolve_value(lhs, rhs)
 
     if field is None:
-        raise UnknownField('Unknown field specified: {!r}'.format(lhs))
+        raise UnknownField('Unknown field', reason='Unknown field specified: {!r}'.format(lhs))
 
     if isinstance(field, ComputedSearchField):
         returned = field.get_query_expression(op, rhs)

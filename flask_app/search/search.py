@@ -12,10 +12,10 @@ def get_orm_query_from_search_string(object_type, query, abort_on_syntax_error=F
 
         try:
             returned = transform_to_query(base_query, query)
-        except SearchSyntaxError:
+        except SearchSyntaxError as e:
             if not abort_on_syntax_error:
                 raise
-            error_abort('Syntax Error', code=requests.codes.bad_request)
+            error_abort('Syntax Error', code=requests.codes.bad_request, extra={'errors': [{'detail': e.reason}]})
         return returned
 
 __all__ = ['get_orm_query_from_search_string']
