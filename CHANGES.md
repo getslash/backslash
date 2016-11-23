@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 2.3.3
+
+* Times are humanized by default again (accidental regression)
+
 # Version 2.3.2
 
 * Minor bug fixes
