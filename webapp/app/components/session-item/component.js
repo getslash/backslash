@@ -8,6 +8,8 @@ export default Ember.Component.extend({
     classNames: ['item', 'session', 'clickable'],
     classNameBindings: ['item.investigated:investigated', 'is_abandoned:abandoned', 'result_type', 'session.computed_status', 'in_pdb:pdb', 'interrupted:interrupted', 'has_any_error:unsuccessful'],
 
+    show_labels: true,
+
     session: Ember.computed.alias('item'),
 
 

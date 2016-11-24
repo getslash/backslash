@@ -1,3 +1,4 @@
+import functools
 import datetime
 
 from .english import plural_noun
@@ -26,14 +27,20 @@ def render_api_object(obj, only_fields=None, extra_fields=None, is_single=False)
             should_include = is_rendered_on_all(method)
 
         if should_include:
-            returned[method_name] = getattr(obj, method_name)()
+            rendered_name = method.__rendered__.get('name', method_name)
+            returned[rendered_name] = getattr(obj, method_name)()
+
     returned['type'] = typename = obj.get_typename()
     returned['api_path'] = '/rest/{}/{}'.format(plural_noun(typename), obj.id)
     return returned
 
 
-def rendered_field(func):
-    func.__rendered__ = {'on': 'all'}
+def rendered_field(func=None, name=None):
+    if func is None:
+        return functools.partial(rendered_field, name=name)
+    if name is None:
+        name = func.__name__
+    func.__rendered__ = {'on': 'all', 'name': name}
     return func
 
 
