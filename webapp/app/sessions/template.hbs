@@ -1,7 +1,8 @@
 {{#tool-bar}}
   {{outlet "filter-controls"}}
 {{/tool-bar}}
-{{query-results results=sessions update_filter=(action "update_filter") goto_page=(action "goto_page")
+{{query-results results=sessions update_filter=(action "update_filter")
+  page=(mut page)
   page_size=(mut page_size)
   show_successful=(mut show_successful)
   show_unsuccessful=(mut show_unsuccessful)

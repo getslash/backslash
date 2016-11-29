@@ -9,7 +9,7 @@
 
 <div class="container-fluid">
   {{query-results results=tests
-    goto_page=(action "goto_page")
+    page=(mut page)
     page_size=(mut page_size)
     show_successful=(mut show_successful)
     show_unsuccessful=(mut show_unsuccessful)
