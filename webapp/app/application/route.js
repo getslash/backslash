@@ -20,13 +20,13 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
 
     afterModel(model) {
 
-	if (model.runtime_config.setup_needed) {
-	    this.transitionTo('setup');
-	} else {
-	    let cfg = config.torii;
-	    cfg.providers["google-oauth2"].apiKey = model.runtime_config.google_oauth2_client_id;
-	    this.load_current_user();
-	}
+        if (model.runtime_config.setup_needed) {
+            this.transitionTo('setup');
+        } else {
+            let cfg = config.torii;
+            cfg.providers["google-oauth2"].apiKey = model.runtime_config.google_oauth2_client_id;
+            this.load_current_user();
+        }
     },
 
     sessionAuthenticated() {
@@ -49,8 +49,8 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     setupController(controller, model) {
-	controller.setProperties(model);
-	controller.set('version', model.runtime_config.version);
+        controller.setProperties(model);
+        controller.set('version', model.runtime_config.version);
     },
 
     actions: {
