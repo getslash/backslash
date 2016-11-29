@@ -49,8 +49,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     setupController(controller, model) {
-        controller.setProperties(model);
-	console.log('Got runtime config', model.runtime_config);
+	controller.setProperties(model);
 	controller.set('version', model.runtime_config.version);
     },
 
