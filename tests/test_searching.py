@@ -17,6 +17,7 @@ def test_parsing_simple_exression():
 
 @pytest.mark.parametrize('q', [
     'with(related-entity1)',
+    'without(related-entity1)',
     'name = bla and with(subject)',
     'start_time < "-2d"',
     'start_time < "2 days ago"',

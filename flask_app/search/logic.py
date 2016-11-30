@@ -73,10 +73,14 @@ class TestSearchContext(SearchContext):
                    .join(TestInformation)
 
 
-def with_(entity_name):
-    returned = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
-    returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
+def with_(entity_name, negate=False):
+    related_entity_query = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
+    subject_query = db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
         (session_subject.c.session_id == Test.session_id) &
         (Subject.name == entity_name)).exists().correlate(Test)
+    if negate:
+        return (~related_entity_query) & (~subject_query)
+    return related_entity_query | subject_query
 
-    return returned
+def without_(entity_name):
+    return with_(entity_name, negate=True)
