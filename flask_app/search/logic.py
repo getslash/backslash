@@ -1,7 +1,7 @@
 import threading
 
 from sqlalchemy import func, exists
-from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity, db, session_subject, SubjectInstance
+from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity, session_subject, db, SubjectInstance
 from .computed_search_field import Either
 from . import value_parsers
 
@@ -21,6 +21,9 @@ class SearchContext(object):
         return value
 
     def get_base_query(self):
+        raise NotImplementedError() # pragma: no cover
+
+    def get_fallback_filter(self, search_term):
         raise NotImplementedError() # pragma: no cover
 
     def __enter__(self):
@@ -72,11 +75,20 @@ class TestSearchContext(SearchContext):
                    .join(User, Session.user_id == User.id)\
                    .join(TestInformation)
 
+    def get_fallback_filter(self, term):
+        return TestInformation.name.contains(term)
+
 
 def with_(entity_name):
-    returned = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
-    returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
-        (session_subject.c.session_id == Test.session_id) &
-        (Subject.name == entity_name)).exists().correlate(Test)
+    return _get_related_entity_query(entity_name) | _get_subject_query(entity_name)
 
-    return returned
+
+def without_(entity_name):
+    return (~_get_related_entity_query(entity_name)) & (~_get_subject_query(entity_name))
+
+
+def _get_related_entity_query(entity_name):
+    return Session.related_entities.any(RelatedEntity.name == entity_name)
+
+def _get_subject_query(entity_name):
+    return db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(session_subject.c.session_id == Test.session_id, Subject.name == entity_name).correlate(Test).exists()

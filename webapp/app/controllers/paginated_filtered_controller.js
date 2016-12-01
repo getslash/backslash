@@ -74,10 +74,6 @@ export default Ember.Controller.extend({
 
 
     actions: {
-        goto_page: function(page) {
-            this.set('page', page);
-        },
-
         update_filter: function(name, value) {
             this.transitionToRoute({queryParams: {page: this.get('page'), filter: this.get_new_filter_with(name, value)}});
         },

@@ -6,6 +6,7 @@ import pytest
 from flask_app import models
 from flask_app.search import get_orm_query_from_search_string
 from flask_app.search.logic import TestSearchContext
+from flask_app.search.syntax import with_, without_
 from flask_app.search.value_parsers import parse_date
 from flask_app.search.exceptions import SearchSyntaxError
 
@@ -17,6 +18,10 @@ def test_parsing_simple_exression():
 
 @pytest.mark.parametrize('q', [
     'with(related-entity1)',
+    'without(related-entity1)',
+    'with(obj123) and with(a.b.c.d)',
+    'with(obj123) and with(a.b.c.d) and status != success',
+    'with(obj) AND with(other_obj) OR with(obj3)',
     'name = bla and with(subject)',
     'start_time < "-2d"',
     'start_time < "2 days ago"',
@@ -24,7 +29,8 @@ def test_parsing_simple_exression():
     'start_time < "12/1/2016"',
     ])
 def test_search_functions(q):
-    _ = get_orm_query_from_search_string('test', q)
+    query = get_orm_query_from_search_string('test', q)
+    unused = query.limit(5).all()
 
 @pytest.mark.parametrize('date', [
     '-2d',
@@ -33,6 +39,11 @@ def test_search_functions(q):
     ])
 def test_date_parser(date):
     assert isinstance(parse_date(date), float)
+
+
+def test_with_without():
+    assert TestSearchContext().get_base_query().filter(with_(str(uuid4()))).all() == []
+    assert TestSearchContext().get_base_query().filter(without_(str(uuid4()))).limit(1).all()
 
 
 @pytest.mark.parametrize('q', [
@@ -47,8 +58,6 @@ def test_parsing_and_or_exression(q, ended_test):
 
 @pytest.mark.parametrize('q', [
     'name = ffff|||',
-    'fff',
-    'fdfd',
     'start_time < dfdfd',
 ])
 def test_invalid_syntax(q):

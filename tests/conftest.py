@@ -392,6 +392,10 @@ def test_info(file_name, test_name, class_name):
 def error_container(request, client):
     return _get_api_object_by_typename(client=client, typename=request.param)
 
+@pytest.fixture(params=['session'])
+def label_container(request, client):
+    return _get_api_object_by_typename(client=client, typename=request.param)
+
 
 @pytest.fixture(params=['session', 'test'])
 def related_entity_container(request, client):

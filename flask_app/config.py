@@ -1,10 +1,12 @@
 from flask import current_app
 from . import models
+from .__version__ import __version__
 
 
 def get_runtime_config_private_dict():
     returned = {
         'debug': current_app.config['DEBUG'],
+        'version': __version__,
         'setup_needed': True,
     }
     returned.update(

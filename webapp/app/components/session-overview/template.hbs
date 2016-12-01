@@ -58,3 +58,9 @@
   {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
   </p>
 {{/if}}
+
+{{#each session_model.labels as |label|}}
+  <p>
+    {{item-label label=label}}
+  </p>
+{{/each}}

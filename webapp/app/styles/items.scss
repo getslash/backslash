@@ -203,7 +203,7 @@ a.item, a.item:hover {
 	    align-items: center;
 	}
 
-	.subject-info {
+	.item-info {
 	    @extend .overflow-ellipsis;
 	    flex: 0 0 30%;
 	}

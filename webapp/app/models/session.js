@@ -49,6 +49,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
     next_keepalive: DS.attr('number'),
     related: DS.attr(),
+    labels: DS.attr(),
 
     total_num_warnings: function() {
         return this.get('num_warnings') + this.get('num_test_warnings');

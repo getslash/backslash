@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 2.4.0
+
+* Support session labels, added through API
+* Support the `without` search function
+
 # Version 2.3.3
 
 * Times are humanized by default again (accidental regression)
