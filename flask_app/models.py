@@ -208,6 +208,10 @@ class RelatedEntity(db.Model):
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
+    __table_args__ = (
+        Index('ix_related_entity_session_id_name', session_id, name),
+    )
+
 
 class Subject(db.Model, TypenameMixin):
 
