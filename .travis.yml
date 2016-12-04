@@ -1,27 +1,16 @@
 language: python
-sudo: true
-env:
-  global:
-  - PGPORT=5433
-  - PGHOST=localhost
+sudo: required
+dist: precise
 python:
   - 3.5
 addons:
-  apt:
-    sources:
-    - precise-pgdg-9.5
-    packages:
-    - postgresql-9.5
-    - postgresql-contrib-9.5
-  postgresql: 9.5
-
+    postgresql: "9.5"
 services:
   - redis-server
+  - postgresql
 before_install:
   - nvm install node
 install:
-  - sudo cp /etc/postgresql/9.4/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-  - sudo /etc/init.d/postgresql restart
   - psql -c 'create database backslash;' -U postgres
   - pip install virtualenv
   - mkdir static
