@@ -80,15 +80,9 @@ class TestSearchContext(SearchContext):
 
 
 def with_(entity_name):
-    return _get_related_entity_query(entity_name) | _get_subject_query(entity_name)
+    returned = exists().where((RelatedEntity.name == entity_name) & (RelatedEntity.session_id == Test.session_id)).correlate(Test)
+    returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
+        (session_subject.c.session_id == Test.session_id) &
+        (Subject.name == entity_name)).exists().correlate(Test)
 
-
-def without_(entity_name):
-    return (~_get_related_entity_query(entity_name)) & (~_get_subject_query(entity_name))
-
-
-def _get_related_entity_query(entity_name):
-    return Session.related_entities.any(RelatedEntity.name == entity_name)
-
-def _get_subject_query(entity_name):
-    return db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(session_subject.c.session_id == Test.session_id, Subject.name == entity_name).correlate(Test).exists()
+    return returned
