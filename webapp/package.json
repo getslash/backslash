@@ -62,7 +62,7 @@
     "ember-toggle-helper": "0.1.1",
     "ember-truth-helpers": "1.2.0",
     "ember-welcome-page": "^1.0.3",
-    "liquid-fire": "0.25.0",
+    "liquid-fire": "0.26.5",
     "loader.js": "^4.0.10",
     "torii": "^0.8.0",
     "ui-ember-slider": "0.3.7"
