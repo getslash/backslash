@@ -1,7 +1,7 @@
 import functools
 import operator
 
-from .logic import get_current_logic, with_, without_
+from .logic import get_current_logic, with_
 from .exceptions import UnknownField, UnknownOperator, SearchSyntaxError
 from .computed_search_field import ComputedSearchField
 
@@ -24,7 +24,6 @@ _OPERATORS = {
 
 _FUNCTIONS = {
     'with': with_,
-    'without': without_,
 }
 
 
