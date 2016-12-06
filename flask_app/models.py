@@ -456,7 +456,7 @@ class Role(db.Model, RoleMixin):
 
 class User(db.Model, UserMixin, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), unique=True)
+    email = db.Column(db.String(255), unique=True, index=True)
     first_name = db.Column(db.String(255), index=True)
     last_name = db.Column(db.String(255), index=True)
     password = db.Column(db.String(255))
