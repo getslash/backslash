@@ -45,6 +45,8 @@ def create_app(config=None):
 
     if app.config['TESTING']:
         app.config['TRACEBACK_DIR'] = '/tmp/backslash_tracebacks'
+    else:
+        _disable_logs(['dogpile.lock'])
 
     app.logger.info("Started")
 
@@ -70,3 +72,13 @@ def create_app(config=None):
         app.errorhandler(code)(errors[code])
 
     return app
+
+
+def _disable_logs(logger_names):
+
+    logger_names = set(logger_names)
+
+    def filter(record, _):
+        return record.channel in logger_names
+
+    logbook.NullHandler(filter=filter).push_application()
