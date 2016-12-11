@@ -41,7 +41,5 @@
     </div>
   </div>
 {{else}}
-  {{#each tests as |result|}}
-     {{test-item item=result show_subjects=true}}
-  {{/each}}
+  {{query-results results=tests page=(mut page)}}
 {{/if}}
