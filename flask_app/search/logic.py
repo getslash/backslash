@@ -14,10 +14,21 @@ def get_current_logic():
 
 class SearchContext(object):
 
+    CUSTOM_FIELDS = {}
+    VALUE_PARSERS = {}
+    MODEL = None
+
     def resolve_model_field(self, field_name):
-        raise NotImplementedError()  # pragma: no cover
+        returned = self.CUSTOM_FIELDS.get(field_name)
+        if returned is not None:
+            return returned
+
+        return getattr(self.MODEL, field_name, None)
 
     def resolve_value(self, field_name, value): # pylint: disable=unused-argument
+        parser = self.VALUE_PARSERS.get(field_name)
+        if parser is not None:
+            return parser(value)
         return value
 
     def get_base_query(self):
@@ -37,37 +48,32 @@ class SearchContext(object):
     def get_for_type(cls, objtype):
         if objtype is Test or (isinstance(objtype, str) and objtype.lower() == 'test'):
             return TestSearchContext()
+        if objtype is Session or (isinstance(objtype, str) and objtype.lower() == 'session'):
+            return SessionSearchContext()
         raise NotImplementedError() # pragma: no cover
 
-
-_TEST_SPECIAL_SEARCH_FIELDS = {
-    'name': TestInformation.name,
-    'file': TestInformation.file_name,
-    'class': TestInformation.class_name,
-    'user': Either([User.email, User.first_name, User.last_name]),
-    'status': func.lower(Test.status),
+_COMMON_FIELDS = {
+    'user': Either([User.email, func.lower(User.first_name), func.lower(User.last_name)]),
 }
 
-_TEST_VALUE_PARSERS = {
-    'start_time': value_parsers.parse_date,
-    'end_time': value_parsers.parse_date,
-}
 
 class TestSearchContext(SearchContext):
 
-    def resolve_model_field(self, field_name):
+    MODEL = Test
 
-        returned = _TEST_SPECIAL_SEARCH_FIELDS.get(field_name)
-        if returned is not None:
-            return returned
+    VALUE_PARSERS = {
+        'start_time': value_parsers.parse_date,
+        'end_time': value_parsers.parse_date,
+    }
 
-        return getattr(Test, field_name, None)
+    CUSTOM_FIELDS = {
+        'name': TestInformation.name,
+        'file': TestInformation.file_name,
+        'class': TestInformation.class_name,
+        'status': func.lower(Test.status),
+        **_COMMON_FIELDS,
+    }
 
-    def resolve_value(self, field_name, value):
-        parser = _TEST_VALUE_PARSERS.get(field_name)
-        if parser is not None:
-            return parser(value)
-        return super(TestSearchContext, self).resolve_value(field_name, value)
 
     def get_base_query(self):
         return Test.query\
@@ -77,6 +83,29 @@ class TestSearchContext(SearchContext):
 
     def get_fallback_filter(self, term):
         return TestInformation.name.contains(term)
+
+
+class SessionSearchContext(SearchContext):
+
+    VALUE_PARSERS = {
+        'start_time': value_parsers.parse_date,
+        'end_time': value_parsers.parse_date,
+    }
+
+    CUSTOM_FIELDS = {
+        **_COMMON_FIELDS,
+    }
+
+    MODEL = Session
+
+
+    def get_base_query(self):
+        return Session.query\
+                   .join(User, Session.user_id == User.id)
+
+    def get_fallback_filter(self, term):
+        return TestInformation.name.contains(term)
+
 
 
 def with_(entity_name):

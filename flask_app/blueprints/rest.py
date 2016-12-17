@@ -34,6 +34,7 @@ def _resource(*args, **kwargs):
 session_parser = reqparse.RequestParser()
 session_parser.add_argument('user_id', type=int, default=None)
 session_parser.add_argument('subject_name', type=str, default=None)
+session_parser.add_argument('search', type=str, default=None)
 
 @_resource('/sessions', '/sessions/<object_id>')
 class SessionResource(ModelResource):
@@ -45,9 +46,14 @@ class SessionResource(ModelResource):
         return _get_object_by_id_or_logical_id(self.MODEL, object_id)
 
     def _get_iterator(self):
-        returned = super(SessionResource, self)._get_iterator()
-        returned = returned.filter_by(archived=False)
         args = session_parser.parse_args()
+
+        if args.search:
+            returned = get_orm_query_from_search_string('session', args.search, abort_on_syntax_error=True)
+        else:
+            returned = super(SessionResource, self)._get_iterator()
+
+        returned = returned.filter(Session.archived==False)
         if args.subject_name is not None:
             returned = (
                 returned

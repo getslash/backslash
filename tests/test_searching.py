@@ -27,9 +27,20 @@ def test_parsing_simple_exression():
     'start_time < "-2d"',
     'start_time < "12/1/2016"',
     ])
-def test_search_functions(q):
+def test_test_search(q):
     query = get_orm_query_from_search_string('test', q)
     unused = query.limit(5).all()
+
+
+@pytest.mark.parametrize('q', [
+    'start_time < "-2d"',
+    'user = bla',
+    ])
+def test_session_search(q):
+    query = get_orm_query_from_search_string('session', q)
+    unused = query.limit(5).all()
+
+
 
 @pytest.mark.parametrize('date', [
     '-2d',
