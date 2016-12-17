@@ -1,8 +1,8 @@
 import threading
 
 from sqlalchemy import func, exists
-from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity, session_subject, db, SubjectInstance
-from .computed_search_field import Either
+from ..models import Test, TestInformation, User, Session, Subject, RelatedEntity, session_subject, db, SubjectInstance, session_label, Label
+from .computed_search_field import Either, FunctionComputedField
 from . import value_parsers
 
 _current = threading.local()
@@ -84,6 +84,9 @@ class TestSearchContext(SearchContext):
     def get_fallback_filter(self, term):
         return TestInformation.name.contains(term)
 
+def has_label(_, label):
+    return db.session.query(session_label).join(Label).filter((session_label.c.session_id == Session.id) & (Label.name == label)).exists().correlate(Session)
+
 
 class SessionSearchContext(SearchContext):
 
@@ -93,6 +96,7 @@ class SessionSearchContext(SearchContext):
     }
 
     CUSTOM_FIELDS = {
+        'label': FunctionComputedField(has_label),
         **_COMMON_FIELDS,
     }
 
