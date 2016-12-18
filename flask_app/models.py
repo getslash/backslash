@@ -166,7 +166,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
         return self.end_time is None
 
     # rendered extras
-    related_entities = db.relationship('RelatedEntity')
+    related_entities = db.relationship('Entity', secondary='session_entity')
 
     @rendered_field
     def user_email(self):
@@ -201,16 +201,37 @@ class SubjectInstance(db.Model):
         return self.subject.name
 
 
-class RelatedEntity(db.Model):
+class Entity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text(), nullable=False)
     type = db.Column(db.String(256), nullable=False)
-    name = db.Column(db.Text(), nullable=False, index=True)
-    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
-    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
     __table_args__ = (
-        Index('ix_related_entity_session_id_name', session_id, name),
+        Index('ix_entity', name, type, unique=True),
     )
+
+
+
+session_entity = db.Table('session_entity',
+                           db.Column('session_id',
+                                     db.Integer,
+                                     db.ForeignKey('session.id', ondelete='CASCADE')),
+                           db.Column('entity_id',
+                                     db.Integer,
+                                     db.ForeignKey('entity.id', ondelete='CASCADE')),
+                           db.Index('ix_session_entity_session_id_entity_id', 'session_id', 'entity_id'),
+)
+
+test_entity = db.Table('test_entity',
+                           db.Column('test_id',
+                                     db.Integer,
+                                     db.ForeignKey('test.id', ondelete='CASCADE')),
+                           db.Column('entity_id',
+                                     db.Integer,
+                                     db.ForeignKey('entity.id', ondelete='CASCADE')),
+                           db.Index('ix_test_entity_test_id_entity_id', 'test_id', 'entity_id'),
+)
+
 
 
 class Subject(db.Model, TypenameMixin):
@@ -357,7 +378,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
         return {'comment': comment.comment, 'user_email': comment.user.email}
 
 
-    related_entities = db.relationship('RelatedEntity')
+    related_entities = db.relationship('Entity', secondary='test_entity')
 
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
