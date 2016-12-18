@@ -52,6 +52,7 @@
     "ember-infinity": "0.2.6",
     "ember-keyboard-shortcuts": "0.3.0",
     "ember-linkify": "2.5.1",
+    "ember-load": "0.0.11",
     "ember-load-initializers": "^0.5.1",
     "ember-math-helpers": "1.2.3",
     "ember-modal-dialog": "0.9.0",
