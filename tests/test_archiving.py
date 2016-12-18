@@ -7,7 +7,9 @@ def test_regular_user_cant_archive(client, ended_session, real_login):
 
 def test_archive_session(client, ended_session, real_login, moderator_role):
     ended_session.toggle_archived()
-    for session in client.query_sessions():
+    for index, session in enumerate(client.query_sessions()):
+        if index > 500:
+            break
         assert session.id != ended_session.id
 
 def test_archive_unarchive_session(client, ended_session, real_login, moderator_role):
