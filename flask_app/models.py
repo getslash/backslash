@@ -201,18 +201,6 @@ class SubjectInstance(db.Model):
         return self.subject.name
 
 
-class RelatedEntity(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(256), nullable=False)
-    name = db.Column(db.Text(), nullable=False, index=True)
-    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
-    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
-
-    __table_args__ = (
-        Index('ix_related_entity_session_id_name', session_id, name),
-    )
-
-
 class Entity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text(), nullable=False)
