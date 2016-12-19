@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 2.5.0
+
+* Proxy users can now run sessions for emails that do not exist yet. This will create stub user records to be populated later
+
 # Version 2.4.0
 
 * Support session labels, added through API
