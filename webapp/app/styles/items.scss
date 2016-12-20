@@ -266,6 +266,11 @@ a.item, a.item:hover {
 
     .name {
 	@extend .pad-small;
+        min-width: 30em;
+    }
+
+    .last-active {
+        min-width: 10em;
     }
 
 }
