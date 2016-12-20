@@ -3,6 +3,7 @@
     Subjects
   </div>
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
+  {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
 {{/tool-bar}}
 
 {{pagination-nav page=(mut page) has_next=subjects.meta.has_more }}
