@@ -5,23 +5,21 @@
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
 {{/tool-bar}}
 
-<div class="container">
+{{pagination-nav page=(mut page) has_next=subjects.meta.has_more }}
 
-  {{#each subjects as |subject|}}
-    {{#link-to 'subject' subject.name classNames="item subject"}}
-      <div class="name" title="{{subject.name}}">
-        {{subject.name}}
-      </div>
-      <div class="faint vertical-center-flex">
-        {{#if subject.last_activity}}
+{{#each subjects as |subject|}}
+  {{#link-to 'subject' subject.name classNames="item subject"}}
+    <div class="name" title="{{subject.name}}">
+      {{subject.name}}
+    </div>
+    <div class="faint vertical-center-flex">
+      {{#if subject.last_activity}}
         Last active {{moment-time ago=subject.last_activity}}
-        {{else}}
+      {{else}}
         Last active: N/A
-        {{/if}}
-      </div>
-    {{/link-to}}
-  {{/each}}
+      {{/if}}
+    </div>
+  {{/link-to}}
+{{/each}}
 
-  {{infinity-loader infinityModel=subjects loadingText="Loading..." loadedText=""}}
-</div>
-
+{{pagination-nav page=(mut page) has_next=subjects.meta.has_more }}

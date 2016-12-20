@@ -1,8 +1,15 @@
 import Ember from 'ember';
 
+import config from '../config/environment';
+
 export default Ember.Controller.extend({
 
-    queryParams: ['sort'],
+
+    available_page_sizes: config.APP.available_page_sizes,
+    page: 1,
+    page_size: config.APP.default_page_size,
+
+    queryParams: ['sort', 'page', 'page_size'],
 
     sort: 'last_activity',
 
