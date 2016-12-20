@@ -11,10 +11,20 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ScrollToTo
         return model.subject.get('name');
     },
 
+    queryParams: {
+        page: {
+            refreshModel: true,
+        },
+        page_size: {
+            refreshModel: true,
+        },
+    },
+
     model(params) {
         let query_params = {
             subject_name: params.name,
             page: params.page,
+            page_size: params.page_size,
         };
         this.transfer_filter_params(params, query_params);
         return Ember.RSVP.hash({
@@ -26,6 +36,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ScrollToTo
     setupController(controller, model) {
         this._super(controller, model);
         controller.setProperties(model);
+        controller.set('page', model.sessions.get('meta.page'));
     },
 
     renderTemplate() {
