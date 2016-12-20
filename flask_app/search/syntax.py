@@ -1,11 +1,12 @@
 import functools
 import operator
 
-from .logic import get_current_logic, with_
+from .logic import get_current_logic
 from .exceptions import UnknownField, UnknownOperator, SearchSyntaxError
-from .computed_search_field import ComputedSearchField
 
 from pyparsing import infixNotation, opAssoc, Word, alphanums, oneOf, Keyword, ParseException, Suppress, Group
+
+import sqlalchemy
 
 import logbook
 
@@ -23,7 +24,6 @@ _OPERATORS = {
 }
 
 _FUNCTIONS = {
-    'with': with_,
 }
 
 
@@ -43,14 +43,22 @@ def transform_to_query(base_query, query_string):
 
 
 def _get_operator(opname):
-    returned = _OPERATORS.get(opname)
-    if returned is None:
+    func = _OPERATORS.get(opname)
+    if func is None:
         raise UnknownOperator(
             opname, reason='Unknown operator: {!r}'.format(opname))
-    return returned
+    return Operator(op=opname, func=func)
 
 
-def _handle_func_call(s, l, tokens): # pylint: disable=unused-argument
+class Operator(object):
+
+    def __init__(self, op, func):
+        super().__init__()
+        self.op = op
+        self.func = func
+
+
+def _handle_func_call(s, l, tokens):  # pylint: disable=unused-argument
 
     func_name, operand = tokens[0]
     return _FUNCTIONS[func_name](operand)
@@ -67,26 +75,16 @@ def _handle_binop(tokens):
     op = _get_operator(op_name)
 
     logic = get_current_logic()
-    field = logic.resolve_model_field(lhs)
-    rhs = logic.resolve_value(lhs, rhs)
 
-    if field is None:
-        raise UnknownField(
-            'Unknown field', reason='Unknown field specified: {!r}'.format(lhs))
-
-    if isinstance(field, ComputedSearchField):
-        returned = field.get_query_expression(op, rhs)
-        _logger.trace('{} {} {!r} ==> {}', lhs, op_name, rhs, returned)
-        return returned
-
-    return op(field, rhs)
+    return logic.resolve_search_clause(lhs, op, rhs)
 
 
 def _handle_and(tokens):
-    return functools.reduce(operator.and_, list(tokens)[0][::2])
+    return functools.reduce(sqlalchemy.and_, list(tokens)[0][::2])
+
 
 def _handle_or(tokens):
-    return functools.reduce(operator.or_, list(tokens)[0][::2])
+    return functools.reduce(sqlalchemy.or_, list(tokens)[0][::2])
 
 alphanums_plus = alphanums + '_-/@.'
 identifier = Word(alphanums_plus)
@@ -94,7 +92,8 @@ LPAR, RPAR = map(Suppress, '()')
 QUOTE = Suppress('"')
 
 
-func_call = Group(oneOf(list(_FUNCTIONS)) + LPAR + identifier + RPAR).setParseAction(_handle_func_call)
+func_call = Group(oneOf(list(_FUNCTIONS)) + LPAR +
+                  identifier + RPAR).setParseAction(_handle_func_call)
 
 
 atom = func_call | identifier | (QUOTE + Word(alphanums_plus + ' ') + QUOTE)

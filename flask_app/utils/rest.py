@@ -126,6 +126,10 @@ class ModelResource(RestResource):
         else:
             metadata['has_more'] = False
 
+        if returned and not isinstance(returned[0], self.MODEL):
+            # Assume ID query
+            returned = self._sort(self.MODEL.query.filter(self.MODEL.id.in_(returned)), metadata).all()
+
         return returned
 
     def _get_collection_key_for_object(self, obj):
