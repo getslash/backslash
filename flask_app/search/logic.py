@@ -134,8 +134,7 @@ class SessionSearchContext(SearchContext):
 
 
     def get_base_query(self):
-        return Session.query\
-                   .join(User, Session.user_id == User.id)
+        return Session.query.join(User, Session.user_id == User.id)
 
     def get_fallback_filter(self, term):
         return TestInformation.name.contains(term)
