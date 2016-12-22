@@ -33,7 +33,7 @@ def _set_metadata_dict(*, entity_type, entity_id, metadata, commit=True):
 
 
 
-@API(generates_activity=True)
+@API(require_login=False)
 def get_metadata(entity_type: str, entity_id: (int, str)):
     query = _get_metadata_query(entity_type=entity_type, entity_id=entity_id)
     return {obj.key: obj.metadata_item for obj in query}
