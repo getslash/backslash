@@ -92,6 +92,7 @@ class TestSearchContext(SearchContext):
     def get_base_query(self):
         return (Test.query
                 .join(Session)
+                .join(TestInformation)
                 .join(User, User.id == Session.user_id))
 
     def get_fallback_filter(self, term):
