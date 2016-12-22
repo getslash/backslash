@@ -215,20 +215,20 @@ class Entity(db.Model):
 session_entity = db.Table('session_entity',
                            db.Column('session_id',
                                      db.Integer,
-                                     db.ForeignKey('session.id', ondelete='CASCADE')),
+                                     db.ForeignKey('session.id', ondelete='CASCADE'), index=True),
                            db.Column('entity_id',
                                      db.Integer,
-                                     db.ForeignKey('entity.id', ondelete='CASCADE')),
+                                     db.ForeignKey('entity.id', ondelete='CASCADE'), index=True),
                            db.Index('ix_session_entity_session_id_entity_id', 'session_id', 'entity_id'),
 )
 
 test_entity = db.Table('test_entity',
                            db.Column('test_id',
                                      db.Integer,
-                                     db.ForeignKey('test.id', ondelete='CASCADE')),
+                                     db.ForeignKey('test.id', ondelete='CASCADE'), index=True),
                            db.Column('entity_id',
                                      db.Integer,
-                                     db.ForeignKey('entity.id', ondelete='CASCADE')),
+                                     db.ForeignKey('entity.id', ondelete='CASCADE'), index=True),
                            db.Index('ix_test_entity_test_id_entity_id', 'test_id', 'entity_id'),
 )
 
@@ -509,6 +509,10 @@ class User(db.Model, UserMixin, TypenameMixin):
     def capabilities(self):
         return {cap_name: True for cap_name, cap in CAPABILITIES.items() if cap.enabled_for(self)}
 
+    __table_args__ = (
+        Index('ix_user_first_name_lower', func.lower(first_name)),
+        Index('ix_user_last_name_lower', func.lower(last_name)),
+    )
 
 class RunToken(db.Model):
 

@@ -1,6 +1,8 @@
 from .. import models
 from sqlalchemy.orm.exc import NoResultFound
 
+from contextlib import contextmanager
+
 
 def get_or_create(model, **kwargs):
     try:
@@ -11,3 +13,12 @@ def get_or_create(model, **kwargs):
         models.db.session.flush()
         models.db.session.commit()
     return returned
+
+
+@contextmanager
+def statement_timeout_context(timeout_seconds=5):
+    prev = models.db.session.execute('show statement_timeout').scalar()
+    assert prev
+    models.db.session.execute('SET statement_timeout={}'.format(timeout_seconds * 1000))
+    yield
+    models.db.session.execute('SET statement_timeout={}'.format(prev))

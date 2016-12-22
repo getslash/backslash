@@ -1,9 +1,11 @@
 import threading
+import operator
 
-from sqlalchemy import func, exists
-from ..models import Test, TestInformation, User, Session, Subject, Entity, session_subject, db, SubjectInstance, session_label, Label, session_entity
-from .computed_search_field import Either, FunctionComputedField
+from sqlalchemy import func
+from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity
 from . import value_parsers
+from .exceptions import UnknownField
+from .helpers import only_ops
 
 _current = threading.local()
 
@@ -14,22 +16,9 @@ def get_current_logic():
 
 class SearchContext(object):
 
-    CUSTOM_FIELDS = {}
-    VALUE_PARSERS = {}
+    SEARCHABLE_FIELDS = {
+    }
     MODEL = None
-
-    def resolve_model_field(self, field_name):
-        returned = self.CUSTOM_FIELDS.get(field_name)
-        if returned is not None:
-            return returned
-
-        return getattr(self.MODEL, field_name, None)
-
-    def resolve_value(self, field_name, value): # pylint: disable=unused-argument
-        parser = self.VALUE_PARSERS.get(field_name)
-        if parser is not None:
-            return parser(value)
-        return value
 
     def get_base_query(self):
         raise NotImplementedError() # pragma: no cover
@@ -52,55 +41,95 @@ class SearchContext(object):
             return SessionSearchContext()
         raise NotImplementedError() # pragma: no cover
 
-_COMMON_FIELDS = {
-    'user': Either([User.email, func.lower(User.first_name), func.lower(User.last_name)]),
-}
+    def search__start_time(self, op, value):
+        return self._search_time_field(self.MODEL.start_time, op, value)
+
+    def search__end_time(self, op, value):
+        return self._search_time_field(self.MODEL.end_time, op, value)
+
+    def _search_time_field(self, field, op, value):
+        return op.func(field, value_parsers.parse_date(value))
+
+    @only_ops(['=', '!=', '~'])
+    def search__user(self, op, value): # pylint: disable=unused-argument
+        search_func = op.func if op.op != '!=' else operator.eq
+        user_ids = db.session.query(User.id).filter(search_func(func.lower(User.first_name), value) | search_func(func.lower(User.last_name), value) | search_func(User.email, value)).all()
+        if not user_ids:
+            return op.op == '!='
+        returned = Session.user_id.in_(user_ids)
+        if op.op == '!=':
+            returned = ~returned
+        return returned
+
+    def resolve_search_clause(self, lhs, op, rhs):
+        field = self.SEARCHABLE_FIELDS.get(lhs)
+        if field is True:
+            field = getattr(self.MODEL, lhs)
+
+        if field is not None:
+            return op.func(field, rhs)
+
+        method = getattr(self, 'search__{}'.format(lhs), None)
+        if method is not None:
+            return method(op, rhs)
+
+        raise UnknownField(lhs)
 
 
 class TestSearchContext(SearchContext):
 
     MODEL = Test
 
-    VALUE_PARSERS = {
-        'start_time': value_parsers.parse_date,
-        'end_time': value_parsers.parse_date,
-    }
-
-    CUSTOM_FIELDS = {
+    SEARCHABLE_FIELDS = {
+        'id': True,
         'name': TestInformation.name,
         'file': TestInformation.file_name,
         'class': TestInformation.class_name,
         'status': func.lower(Test.status),
-        **_COMMON_FIELDS,
     }
 
 
     def get_base_query(self):
-        return Test.query\
-                   .join(Session, Session.id == Test.session_id)\
-                   .join(User, Session.user_id == User.id)\
-                   .join(TestInformation)
+        return (Test.query
+                .join(Session)
+                .join(User, User.id == Session.user_id))
 
     def get_fallback_filter(self, term):
         return TestInformation.name.contains(term)
 
-def has_label(_, label):
-    return db.session.query(session_label).join(Label).filter((session_label.c.session_id == Session.id) & (Label.name == label)).exists().correlate(Session)
+    @only_ops(['=', '!='])
+    def search__subject(self, op, value): # pylint: disable=unused-argument
+        subject_id = db.session.query(Subject.id).filter(Subject.name == value).first()
+        if subject_id is None:
+            return op.op == '!='
+        query = Session.id.in_(db.session.query(session_subject.c.session_id).distinct(session_subject.c.session_id).join(SubjectInstance).filter(SubjectInstance.subject_id == subject_id))
+        if op.op == '!=':
+            query = ~query
+        return query
+
+
+    @only_ops(['=', '!='])
+    def search__related(self, op, value): # pylint: disable=unused-argument
+        entity = Entity.query.filter(Entity.name == value).first()
+        if not entity:
+            return op.op == '!='
+        subquery = db.session.query(session_entity).filter_by(entity_id=entity.id, session_id=Test.session_id).exists().correlate(Test)
+        if op.op == '!=':
+            subquery = ~subquery
+        return subquery
 
 
 class SessionSearchContext(SearchContext):
 
-    VALUE_PARSERS = {
-        'start_time': value_parsers.parse_date,
-        'end_time': value_parsers.parse_date,
-    }
-
-    CUSTOM_FIELDS = {
-        'label': FunctionComputedField(has_label),
-        **_COMMON_FIELDS,
+    SEARCHABLE_FIELDS = {
+        'id': True,
     }
 
     MODEL = Session
+
+    @only_ops(['='])
+    def search__label(self, op, value): # pylint: disable=unused-argument
+        return db.session.query(session_label).join(Label).filter((session_label.c.session_id == Session.id) & (Label.name == value)).exists().correlate(Session)
 
 
     def get_base_query(self):
@@ -110,13 +139,20 @@ class SessionSearchContext(SearchContext):
     def get_fallback_filter(self, term):
         return TestInformation.name.contains(term)
 
+    @only_ops(['=', '!='])
+    def search__subject(self, op, value): # pylint: disable=unused-argument
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
+            Subject.name == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
+        if op.op == '!=':
+            subquery = ~subquery
+        return subquery
 
-
-def with_(entity_name):
-    returned = db.session.query(session_entity).join(Entity).filter(
-        (session_entity.c.session_id == Test.session_id) & (Entity.name == entity_name)).exists().correlate(Test)
-    returned |= db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
-        (session_subject.c.session_id == Test.session_id) &
-        (Subject.name == entity_name)).exists().correlate(Test)
-
-    return returned
+    @only_ops(['=', '!='])
+    def search__related(self, op, value): # pylint: disable=unused-argument
+        entity = Entity.query.filter(Entity.name == value).first()
+        if not entity:
+            return op.op == '!='
+        subquery = db.session.query(session_entity).filter_by(entity_id=entity.id, session_id=Session.id).exists().correlate(Session)
+        if op.op == '!=':
+            subquery = ~subquery
+        return subquery

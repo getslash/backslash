@@ -6,7 +6,6 @@ import pytest
 from flask_app import models
 from flask_app.search import get_orm_query_from_search_string
 from flask_app.search.logic import TestSearchContext
-from flask_app.search.syntax import with_
 from flask_app.search.value_parsers import parse_date
 from flask_app.search.exceptions import SearchSyntaxError
 
@@ -16,43 +15,61 @@ def test_parsing_simple_exression():
     assert str(query) == str(TestSearchContext().get_base_query().filter(
         models.TestInformation.name == 'test_blap'))
 
+
 @pytest.mark.parametrize('q', [
-    'with(related-entity1)',
-    'with(obj123) and with(a.b.c.d)',
-    'with(obj123) and with(a.b.c.d) and status != success',
-    'with(obj) AND with(other_obj) OR with(obj3)',
-    'name = bla and with(subject)',
+    'subject=obj123 and related=a.b.c.d and status != success',
+    'name = bla and subject=subject',
     'start_time < "-2d"',
     'start_time < "2 days ago"',
     'start_time < "-2d"',
     'start_time < "12/1/2016"',
-    ])
+])
 def test_test_search(q):
     query = get_orm_query_from_search_string('test', q)
     unused = query.limit(5).all()
 
 
 @pytest.mark.parametrize('q', [
-    'start_time < "-2d"',
-    'user = bla',
-    ])
-def test_session_search(q):
-    query = get_orm_query_from_search_string('session', q)
+    'related=related-entity1',
+    'related=related-entity1',
+    'related=obj123 and related=a.b.c.d',
+    'related != bla and subject != bla',
+])
+@pytest.mark.parametrize('objtype', ['test', 'session'])
+def test_related_subject_searches(objtype, q):
+    query = get_orm_query_from_search_string(objtype, q)
     unused = query.limit(5).all()
 
 
+@pytest.mark.parametrize('objtype', ['session', 'test'])
+@pytest.mark.parametrize('negate', [True, False])
+def test_subject_search(started_session, started_test, subjects, objtype, negate):
+    started_session.add_subject(**subjects[0])
+    query = get_orm_query_from_search_string(objtype, 'subject {} {}'.format('!=' if negate else '=', subjects[0].name)).limit(5)
+
+    if negate:
+        assert query.all()
+    else:
+        obj = query.one()
+        assert obj.id == (started_session if objtype == 'session' else started_test).id
+
+
+@pytest.mark.parametrize('q', [
+    'start_time < "-2d"',
+    'user = bla',
+    'user != bla',
+])
+def test_session_search(q):
+    query = get_orm_query_from_search_string('session', q)
+    unused = query.limit(5).all()
 
 @pytest.mark.parametrize('date', [
     '-2d',
     '2 days ago',
     '12/1/2016',
-    ])
+])
 def test_date_parser(date):
     assert isinstance(parse_date(date), float)
-
-
-def test_with():
-    assert TestSearchContext().get_base_query().filter(with_(str(uuid4()))).all() == []
 
 
 @pytest.mark.parametrize('q', [
@@ -75,10 +92,11 @@ def test_invalid_syntax(q):
 
 
 @pytest.mark.parametrize('use_like', [True, False])
-def test_computed_fields(ended_test, user_identifier, testuser_id, use_like): # pylint: disable=unused-argument
+def test_computed_fields(ended_test, user_identifier, testuser_id, use_like):  # pylint: disable=unused-argument
     search_term = user_identifier[1:-1] if use_like else user_identifier
 
-    tests = get_orm_query_from_search_string('test', 'user {} {}'.format('~' if use_like else '=', search_term)).all()
+    tests = get_orm_query_from_search_string(
+        'test', 'user {} {}'.format('~' if use_like else '=', search_term)).all()
     assert tests
     for t in tests:
         assert t.session.user.id == testuser_id
@@ -89,7 +107,7 @@ def test_computed_fields(ended_test, user_identifier, testuser_id, use_like): # 
     operator.attrgetter('last_name'),
     operator.attrgetter('email'),
 ])
-def user_identifier(request, testuser_id, active_db_context): # pylint: disable=unused-argument
+def user_identifier(request, testuser_id, active_db_context):  # pylint: disable=unused-argument
     testuser = models.User.query.get(testuser_id)
     return request.param(testuser)
 
@@ -98,8 +116,9 @@ def user_identifier(request, testuser_id, active_db_context): # pylint: disable=
 def db_context_active(active_db_context):  # pylint: disable=unused-argument
     pass
 
+
 @pytest.fixture(autouse=True)
-def testuser_with_full_name(testuser_id, active_db_context): # pylint: disable=unused-argument
+def testuser_with_full_name(testuser_id, active_db_context):  # pylint: disable=unused-argument
     testuser = models.User.query.get(testuser_id)
     testuser.first_name = str(uuid4())
     testuser.last_name = str(uuid4())
