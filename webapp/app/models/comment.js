@@ -6,6 +6,7 @@ export default DS.Model.extend({
     comment: DS.attr(),
     timestamp: DS.attr(),
     edited: DS.attr('boolean'),
+    user: DS.attr(),
     user_email: DS.attr(),
 
     can: DS.attr(),

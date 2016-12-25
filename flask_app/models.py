@@ -535,10 +535,15 @@ class Comment(db.Model, TypenameMixin):
     deleted = db.Column(db.Boolean, server_default="false")
     session_id = db.Column(db.ForeignKey(Session.id, ondelete='CASCADE'), nullable=True, index=True)
     test_id = db.Column(db.ForeignKey(Test.id, ondelete='CASCADE'), nullable=True, index=True)
+    edited = db.Column(db.Boolean, server_default="false")
 
     @rendered_field
     def user_email(self):
         return self.user.email
+
+    @rendered_field(name='user')
+    def user_display_nam(self):
+        return self.user.display_name()
 
     @rendered_field
     def can(self):
