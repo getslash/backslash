@@ -44,6 +44,9 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 
     setupController(controller, model) {
         controller.set('sessions', model.sessions);
+        controller.set('page', model.sessions.get('meta.page'));
+        controller.set('page_size', model.sessions.get('meta.page_size'));
+        
     },
 
     get_user_id_parameter: function() {
