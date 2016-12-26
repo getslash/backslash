@@ -39,7 +39,7 @@ def _set_metadata_dict(*, entity_type, entity_id, metadata, commit=True):
 
 @API(require_login=False)
 def get_metadata(entity_type: str, entity_id: (int, str)):
-    return _get_metadata_query(entity_type=entity_type, entity_id=entity_id).scalar()
+    return _get_metadata_query(entity_type=entity_type, entity_id=entity_id).scalar() or {}
 
 
 def _get_metadata_query(*, entity_type, entity_id):
