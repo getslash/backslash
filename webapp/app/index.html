@@ -23,6 +23,24 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/icons/favicon-16x16.png">
 
 
+    <style>
+    .ember-load-indicator {
+      animation-name: pop-up;
+      animation-iteration-count: 1;
+      animation-timing-function: ease-out;
+      animation-duration: 0.2s;
+    }
+
+    @keyframes pop-up {
+      0% {
+        transform: scale(0, 0);
+      }
+      100% {
+        transform: scale(1, 1);
+      }
+    }
+    </style>
+
     {{content-for "head"}}
 
     <noscript>
@@ -47,6 +65,12 @@
   </head>
   <body>
     {{content-for "body"}}
+
+    <div class="ember-load-indicator">
+      <div class="container text-center">
+        <h1>Loading. Please Wait...</h1>
+      </div>
+    </div>
 
     <script src="/static/assets/vendor.js"></script>
     <script src="/static/assets/webapp.js"></script>

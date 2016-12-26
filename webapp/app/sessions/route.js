@@ -4,17 +4,32 @@ import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import PollingRoute from '../mixins/polling-route';
 import ScrollToTopMixin from '../mixins/scroll-top';
-import StatusFilterableRoute from '../mixins/status-filterable/route';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin, StatusFilterableRoute, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin,  {
 
     titleToken: 'Sessions',
 
     user_prefs: Ember.inject.service(),
 
+    queryParams: {
+	search: {
+	    replace: true,
+	    refreshModel: true,
+	},
+	page: {
+	    refreshModel: true,
+	},
+	page_size: {
+	    refreshModel: true,
+	},
+    },
+
+
     model(params) {
         let query_params = {page: params.page, filter: params.filter, page_size: params.page_size};
-        this.transfer_filter_params(params, query_params);
+        if (params.search) {
+            query_params.search = params.search;
+        }
 
         let user_id = this.get_user_id_parameter();
 
@@ -29,6 +44,9 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 
     setupController(controller, model) {
         controller.set('sessions', model.sessions);
+        controller.set('page', model.sessions.get('meta.page'));
+        controller.set('page_size', model.sessions.get('meta.page_size'));
+        
     },
 
     get_user_id_parameter: function() {

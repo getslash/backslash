@@ -3,10 +3,12 @@ import requests
 from flask import g, request
 from flask_simple_api import error_abort
 
+from ...auth import get_or_create_user
+
 from ...models import Session, db, SessionMetadata
 from ...utils import get_current_time, statuses
 from ...utils.subjects import get_or_create_subject_instance
-from ...utils.users import get_user_id_by_email, has_role
+from ...utils.users import has_role
 from .blueprint import API
 
 NoneType = type(None)
@@ -31,7 +33,7 @@ def report_session_start(logical_id: str=None,
             error_abort('User is not authorized to run tests on others behalf',
                         code=requests.codes.forbidden)
         real_user_id = g.token_user.id
-        user_id = get_user_id_by_email(user_email)
+        user_id = get_or_create_user({'email': user_email}).id
     else:
         user_id = g.token_user.id
         real_user_id = None

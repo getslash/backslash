@@ -5,6 +5,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
 
+    titleToken: 'Tests',
+
     queryParams: {
 	search: {
 	    replace: true,

@@ -9,6 +9,7 @@ from sqlalchemy.sql.expression import nullslast
 
 from .rendering import render_api_object
 from .english import plural_noun
+from .db_utils import statement_timeout_context
 _logger = logbook.Logger(__name__)
 
 
@@ -23,10 +24,11 @@ class RestResource(Resource):
             obj = self._get_object_by_id(object_id)
             return self._format_result({self._get_single_object_key(): self._render_single(obj, in_collection=False)}, metadata=metadata)
         else:
-            iterator = self._get_iterator()
-            iterator = self._filter(iterator, metadata)
-            iterator = self._sort(iterator, metadata)
-            returned = self._paginate(iterator, metadata)
+            with statement_timeout_context():
+                iterator = self._get_iterator()
+                iterator = self._filter(iterator, metadata)
+                iterator = self._sort(iterator, metadata)
+                returned = self._paginate(iterator, metadata)
             result = {}
             for obj in returned:
                 key = self._get_collection_key_for_object(obj)
@@ -123,6 +125,10 @@ class ModelResource(RestResource):
             returned.pop(-1)
         else:
             metadata['has_more'] = False
+
+        if returned and not isinstance(returned[0], self.MODEL):
+            # Assume ID query
+            returned = self._sort(self.MODEL.query.filter(self.MODEL.id.in_(returned)), metadata).all()
 
         return returned
 

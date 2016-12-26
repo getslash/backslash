@@ -7,6 +7,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     api: Ember.inject.service(),
     session: Ember.inject.service(),
     runtime_config: Ember.inject.service(),
+    user_prefs: Ember.inject.service(),
 
     title(tokens) {
         return tokens.join(' - ') + ' - Backslash';
@@ -39,6 +40,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
         if (self.get('session.data.authenticated')) {
             return self.store.find('user', 'self').then(function(u) {
                 self.set('session.data.authenticated.current_user', u);
+                return self.get('user_prefs').get_all();
             }).catch(function() {
                 let s = self.get('session');
                 if (s !== undefined && s.get('isAuthenticated')) {

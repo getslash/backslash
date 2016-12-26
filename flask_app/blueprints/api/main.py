@@ -7,6 +7,7 @@ from flask import abort, current_app
 from flask_simple_api import error_abort
 from flask_security import current_user
 
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -14,7 +15,7 @@ from .blueprint import API
 from ... import activity
 from ... import stats
 from ... import models
-from ...models import db, Session, Test, Comment, User, Role, Warning, RelatedEntity, TestVariation, TestMetadata
+from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -58,12 +59,17 @@ def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
 
-    db.session.add(RelatedEntity(
-        test_id=test_id,
-        session_id=session_id,
-        type=type,
-        name=name
-        ))
+    if session_id is not None:
+        obj = Session.query.get_or_404(session_id)
+    else:
+        obj = Test.query.get_or_404(test_id)
+
+    db.session.execute(insert(Entity).values(name=name, type=type).on_conflict_do_nothing())
+    db.session.commit()
+
+    entity = Entity.query.filter_by(name=name, type=type).one()
+
+    obj.related_entities.append(entity)
     db.session.commit()
 
 
