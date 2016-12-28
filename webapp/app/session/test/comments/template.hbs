@@ -1,6 +1,6 @@
 <div class="add-margin-top">
   {{#each comments as |comment|}}
-    {{comment-box comment=comment}}
+    {{comment-box comment=comment comment_deleted=(action "refresh")}}
   {{/each}}
 
   {{new-comment post=(action "post_comment") text=(mut new_comment)}}
