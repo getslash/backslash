@@ -489,3 +489,10 @@ def flask_app(webapp):
 @pytest.fixture(params=['admin', 'proxy', 'moderator'])
 def role(request):
     return request.param
+
+@pytest.fixture(params=['session', 'test'])
+def commentable(request, ended_session, ended_test):
+    if request.param == 'session':
+        return ended_session
+    if request.param == 'test':
+        return ended_test

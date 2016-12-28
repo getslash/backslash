@@ -281,9 +281,9 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
         error_abort('Either session_id or test_id required')
 
     if session_id is not None:
-        obj = db.session.query(Session).get(session_id)
+        obj = Session.query.get_or_404(session_id)
     else:
-        obj = db.session.query(Test).get(test_id)
+        obj = Test.query.get_or_404(test_id)
 
     returned = Comment(user_id=current_user.id, comment=comment)
     obj.comments.append(returned)

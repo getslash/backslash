@@ -1,0 +1,38 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{users/user-avatar email=comment.user_email}}
+          <span>
+            <strong>{{comment.user}}</strong> <span class="text-muted">commented {{moment-time ago=comment.timestamp}}</span>
+            {{#if comment.edited}}<span class="label label-default">Edited</span>{{/if}}
+            </span>
+          <div class="controls">
+            {{#if comment.can.edit}}
+              <i class="fa fa-pencil clickable" {{action 'start_editing'}} title="Edit this comment"></i>
+            {{/if}}
+            {{#if comment.can.delete}}
+            <i class="fa fa-trash clickable" {{action 'delete_comment'}} title="Delete this comment"></i>
+            {{/if}}
+          </div>
+        </div>
+        <div class="panel-body">
+          {{#if editing}}
+            <div class="form-group">
+            {{textarea cols="80" rows="6" class="form-control" value=comment.comment}}
+            </div>
+            <div class="form-group">
+              <button class="btn btn-success pull-right add-margin-left" {{action "save"}}>Update Comment</button>
+              <button class="btn btn-default pull-right add-margin-left" {{action "cancel_editing"}}>Cancel</button>
+            </div>
+
+          {{else}}
+            {{markdown-to-html comment.comment}}
+          {{/if}}
+        </div><!-- /panel-body -->
+      </div><!-- /panel panel-default -->
+    </div><!-- /col-sm-5 -->
+
+  </div><!-- /row -->
+</div>

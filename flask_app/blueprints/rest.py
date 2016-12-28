@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from flask import Blueprint, abort, request, jsonify, current_app, send_file, Response
+from flask import Blueprint, abort, request, jsonify, current_app, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -156,6 +156,10 @@ session_test_user_query_parser.add_argument('session_id', type=int, default=None
 session_test_user_query_parser.add_argument('test_id', type=int, default=None)
 session_test_user_query_parser.add_argument('user_id', type=int, default=None)
 
+session_test_query_parser = reqparse.RequestParser()
+session_test_query_parser.add_argument('session_id', type=int, default=None)
+session_test_query_parser.add_argument('test_id', type=int, default=None)
+
 
 @_resource('/warnings', '/warnings/<int:object_id>')
 class WarningsResource(ModelResource):
@@ -222,6 +226,46 @@ class UserResource(ModelResource):
             except NoResultFound:
                 abort(requests.codes.not_found)
         return User.query.get_or_404(int(object_id))
+
+@_resource('/comments', '/comments/<object_id>', methods=['get', 'delete', 'put'])
+class CommentResource(ModelResource):
+
+    MODEL = models.Comment
+    DEFAULT_SORT = (models.Comment.timestamp.asc(),)
+
+    def _get_iterator(self):
+        args = session_test_query_parser.parse_args()
+        if not ((args.session_id is not None) ^ (args.test_id is not None)): # pylint: disable=superfluous-parens
+            error_abort('Either test_id or session_id must be passed to the query')
+
+        return models.Comment.query.filter_by(session_id=args.session_id, test_id=args.test_id)
+
+    def delete(self, object_id=None):
+        if object_id is None:
+            error_abort('Not implemented', code=requests.codes.not_implemented)
+        comment = models.Comment.query.get_or_404(object_id)
+        if comment.session_id is not None:
+            obj = models.Session.query.get(comment.session_id)
+        else:
+            obj = models.Test.query.get(comment.test_id)
+        if comment.user_id != current_user.id:
+            error_abort('Not allowed to delete comment', code=requests.codes.forbidden)
+        obj.num_comments = type(obj).num_comments - 1
+        models.db.session.add(obj)
+        models.db.session.delete(comment)
+        models.db.session.commit()
+
+    def put(self, object_id=None):
+        if object_id is None:
+            error_abort('Not implemented', code=requests.codes.not_implemented)
+        comment = models.Comment.query.get_or_404(object_id)
+        if comment.user_id != current_user.id:
+            error_abort('Not allowed to delete comment', code=requests.codes.forbidden)
+        comment.comment = request.get_json().get('comment', {}).get('comment')
+        comment.edited = True
+        models.db.session.add(comment)
+        models.db.session.commit()
+        return jsonify({'comment': self._render_single(comment, in_collection=False)})
 
 
 @blueprint.route('/activities')

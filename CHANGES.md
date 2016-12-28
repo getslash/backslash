@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 2.6.0
+
+* Comments can now be edited and deleted
+* Comments now support markdown syntax for formatting
+
 # Version 2.5.0
 
 * Proxy users can now run sessions for emails that do not exist yet. This will create stub user records to be populated later
