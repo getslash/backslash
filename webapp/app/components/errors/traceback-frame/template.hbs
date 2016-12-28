@@ -16,7 +16,15 @@
     {{frame.filename}}, line <strong>{{frame.lineno}}</strong> (in <strong>{{frame.func_name}}</strong>)
   </div>
 
-  <div class="frame-code"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
+  <div class="frame-code {{if code_expanded 'expanded'}}">
+    {{#each frame.code_lines_before as |line num|}}
+      <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
+    {{/each}}
+    <div class="line main {{if (or frame.code_lines_before frame.code_lines_after) 'clickable'}}" {{action (toggle this "code_expanded")}}><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
+    {{#each frame.code_lines_after as |line num|}}
+      <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
+    {{/each}}
+  </div>
 
   {{#if show_vars}}
     {{#if (or has_globals has_locals)}}
