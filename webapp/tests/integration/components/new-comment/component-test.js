@@ -13,13 +13,4 @@ test('it renders', function(assert) {
   this.render(hbs`{{new-comment}}`);
 
   assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#new-comment}}
-      template block text
-    {{/new-comment}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
 });
