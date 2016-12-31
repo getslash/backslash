@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+import HasComputedStatus from '../mixins/has-computed-status';
+
 export default Ember.Route.extend({
 
     model() {
@@ -15,7 +17,7 @@ export default Ember.Route.extend({
     },
 
     _create_session_result() {
-        return Ember.Object.extend({
+        return Ember.Object.extend(HasComputedStatus, {
 	    num_successful_tests: function() {
 		return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');
 	    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests'),
@@ -30,6 +32,8 @@ export default Ember.Route.extend({
             num_error_tests: 1,
             num_skipped_tests: 9,
             num_finished_tests: 50,
+
+            status: 'failed',
 
             num_errors: 0,
             total_num_warnings: 10,
@@ -57,7 +61,7 @@ export default Ember.Route.extend({
     },
 
     _create_test_result() {
-        let cls = Ember.Object.extend({
+        let cls = Ember.Object.extend(HasComputedStatus, {
             first_error: function() {
                 let status = this.get('status');
                 if (status === 'error' || status === 'failure') {
