@@ -70,15 +70,12 @@ $left-badge-close-width: 10px;
         animation-delay: 3s;
         animation-timing-function: ease-in-out;
 
-        &:hover {
-            animation: none;
-        }
     }
 
     &.failed,&.session.success,&.skipped,&.running,&.abandoned,&.finished,&.session.interrupted {
 
 
-	.left-badge:hover {
+	.left-badge:hover, .left-badge.expanded {
 	    flex: 0 0 200px;
 	    padding-left: 1em;
 	    @include slide-flex;
@@ -145,6 +142,10 @@ $left-badge-close-width: 10px;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
     }
+
+   .left-badge:hover, .left-badge.expanded {
+       animation: none;
+   }
 
 
     .right-label {

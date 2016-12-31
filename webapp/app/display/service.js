@@ -3,6 +3,7 @@ import Ember from 'ember';
 const _DEFAULTS = {
     humanize_times: true,
     comments_expanded: false,
+    show_side_labels: false,
 };
 
 let _classvars = {};

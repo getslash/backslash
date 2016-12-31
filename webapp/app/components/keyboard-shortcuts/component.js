@@ -12,6 +12,7 @@ let _keys = [
     {key: 'a', action: 'filter_none', description: 'Show all entities'},
     {key: 'f', action: 'filter_only_failed', description: 'Hide all entities except failed'},
     {key: 'c', action: 'toggle_inline_comment', description: 'Toggle comment preview for items'},
+    {key: 's', action: 'toggle_session_side_labels', description: 'Toggle the side breakdown panel for Sessions'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -55,7 +56,6 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         self.sendAction('close_boxes');
         self._close_boxes();
-	console.log('Transitioning to', obj.route, obj.key);
         self.router.transitionTo(obj.route, obj.key);
 
     },
@@ -92,6 +92,10 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
 
     actions: {
+
+        toggle_session_side_labels() {
+            this.get('display').toggleProperty('show_side_labels');
+        },
 
 	close_box() {
 	    this._close_boxes();
