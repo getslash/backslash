@@ -11,7 +11,7 @@ a.item, a.item:hover {
 }
 
 @mixin slide-flex {
-    transition: flex 0.2s;
+    transition: flex 0.2s, background-color 0.2s;
 }
 
 @mixin ellipsis-overflow {
@@ -20,6 +20,7 @@ a.item, a.item:hover {
     white-space: nowrap;
 }
 
+$left-badge-close-width: 10px;
 
 .item {
 
@@ -29,11 +30,20 @@ a.item, a.item:hover {
     overflow: hidden;
 
     .left-badge {
+
+        .open-hint {
+            color: white;
+            display: none;
+            opacity: 0.5;
+            font-size: xx-small;
+            margin-left: 2px;
+        }
+
 	align-items: center;
 	background: silver;
 	border-radius: 2px 0 0 2px;
 	display: flex;
-	flex: 0 0 10px;
+	flex: 0 0 $left-badge-close-width;
 	@include slide-flex;
 	overflow: hidden;
 
@@ -51,13 +61,33 @@ a.item, a.item:hover {
 
     }
 
+    &:hover .left-badge {
+        .open-hint {
+            display: inline-block;
+        }
+        animation-name: openme-hint;
+        animation-duration: 0.5s;
+        animation-delay: 3s;
+        animation-timing-function: ease-in-out;
+
+        &:hover {
+            animation: none;
+        }
+    }
+
     &.failed,&.session.success,&.skipped,&.running,&.abandoned,&.finished,&.session.interrupted {
 
 
 	.left-badge:hover {
-	    flex: 0 0 130px;
+	    flex: 0 0 200px;
 	    padding-left: 1em;
 	    @include slide-flex;
+
+            background-color: $gray-lighter;
+
+            .open-hint {
+                display: none;
+            }
 
 	    .summary {
 		@include reveal-opacity-later;
@@ -275,3 +305,9 @@ a.item, a.item:hover {
 
 }
 
+@keyframes openme-hint {
+
+    from {flex: 0 0 $left-badge-close-width;}
+    50% {flex: 0 0 30px;}
+    to {flex: 0 0 $left-badge-close-width;}
+}

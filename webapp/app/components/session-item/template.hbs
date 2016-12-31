@@ -1,56 +1,10 @@
 
 <div class="left-badge">
+  <div class="open-hint">
+    <i class="fa fa-chevron-right"></i>
+  </div>
   <div class="summary">
-    {{#if in_pdb}}
-      <div>
-        (In Debugger)
-      </div>
-    {{/if}}
-    {{#if session.num_errors}}
-      <div>
-	<i class="fa fa-exclamation-circle"></i>
-	{{session.num_errors}} session {{pluralize-word session.num_errors "error" omitCount=true}}
-      </div>
-    {{/if}}
-    {{#if is_abandoned}}
-      <div>
-      Abandoned
-      </div>
-      <div>
-        ({{abandoned_reason}})
-      </div>
-    {{else}}
-      {{#if session.num_finished_tests}}
-        {{session.num_finished_tests}} tests
-        {{#if (and session.total_num_tests (gt session.total_num_tests session.num_finished_tests))}}
-          / {{session.total_num_tests}}
-        {{/if}}
-      {{/if}}
-      {{#if session.is_interrupted}}
-	<div>
-	  Interrupted
-	</div>
-      {{else}}
-	{{#if (and session.num_finished_tests (not (or total_num_unsuccessful session.num_skipped_tests))) }}
-          <div>
-            <i class="fa fa-check"></i> {{session.num_finished_tests}} successful
-          </div>
-	{{else}}
-          {{#if total_num_unsuccessful}}
-            <div>
-              <i class="fa fa-exclamation-circle"></i>
-              {{total_num_unsuccessful}} unsuccessful tests
-            </div>
-          {{/if}}
-	{{/if}}
-        {{#if session.num_skipped_tests}}
-          <div>
-            <i class="fa fa-forward"></i>
-            {{session.num_skipped_tests}} skipped tests
-          </div>
-        {{/if}}
-      {{/if}}
-    {{/if}}
+    {{session-breakdown session=session show_total_count=false}}
   </div>
 </div>
 <div class="details">

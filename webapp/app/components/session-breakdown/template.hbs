@@ -1,4 +1,6 @@
+{{#if show_total_count}}
 <p class="faint">{{or session.total_num_tests session.num_finished_tests}} total tests</p>
+{{/if}}
 <div class="inner">
 
 <div class="success">
@@ -49,4 +51,22 @@
     {{/elements/tool-tip}}
   </div>
 {{/if}}
+
+{{#if session.is_abandoned}}
+  <div class="additional">
+    {{#elements/tool-tip title="Abandoned"}}
+    <i class="fa fa-trash"></i>
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}
+
+{{#if session.in_pdb}}
+  <div class="additional">
+    {{#elements/tool-tip title="In debugger"}}
+      (Pdb)$
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}
+
+
 </div>
