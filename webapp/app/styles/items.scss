@@ -11,7 +11,7 @@ a.item, a.item:hover {
 }
 
 @mixin slide-flex {
-    transition: flex 0.2s;
+    transition: flex 0.2s, background-color 0.2s;
 }
 
 @mixin ellipsis-overflow {
@@ -58,6 +58,8 @@ a.item, a.item:hover {
 	    flex: 0 0 130px;
 	    padding-left: 1em;
 	    @include slide-flex;
+
+            background-color: $gray-lighter;
 
 	    .summary {
 		@include reveal-opacity-later;

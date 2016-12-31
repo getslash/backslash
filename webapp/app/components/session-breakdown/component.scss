@@ -1,0 +1,46 @@
+& {
+    .inner {
+        display: flex;
+        flex-direction: row;
+        font-size: x-small;
+
+        &>div {
+            color: white;
+            padding: 5px;
+            &:nth-child(1) {
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+            &:nth-last-child(1) {
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+        }
+
+        .success {
+            background-color: $brand-success;
+        }
+
+        .failed {
+            background-color: $brand-danger;
+        }
+
+        .skipped {
+            background-color: $brand-warning;
+        }
+
+        .not-run {
+            background-color: $gray-light;
+        }
+
+        .warning {
+            color: $brand-warning;
+            border: 1px solid $brand-warning;
+        }
+
+        .errors {
+            color: $brand-danger;
+            border: 1px solid $brand-danger;
+        }
+    }
+}
