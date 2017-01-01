@@ -17,6 +17,13 @@ export default Ember.Controller.extend({
 	'YYYY-MM-DD HH:mm:ss',
     ],
 
+    start_page: Ember.computed.oneWay('model.start_page'),
+
+    start_pages: [
+        'default',
+        'my sessions',
+    ],
+
     display_time_formats: function() {
 	let returned = [];
 	let formats = this.get('time_formats');
