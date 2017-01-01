@@ -18,9 +18,6 @@ def test_test_information_name(started_test, test_name):
     assert started_test.info['name'] == test_name
 
 
-
-
-
 def test_report_test_start_logical_id(started_session, test_name):
     test = started_session.report_test_start(
         name=test_name, test_logical_id='11')
@@ -188,3 +185,16 @@ def test_test_start_with_metadata(started_session, test_name, class_name):
     test = started_session.report_test_start(
         name=test_name, class_name=class_name, metadata=metadata)
     assert test.refresh().get_metadata() == metadata
+
+
+def test_test_index_default(started_session, test_name):
+    test_1 = started_session.report_test_start(name=test_name)
+    assert test_1.refresh().test_index == 1
+
+    test_2 = started_session.report_test_start(name=test_name)
+    assert test_2.refresh().test_index == 2
+
+
+def test_test_index_custom(started_session, test_name):
+    test_1 = started_session.report_test_start(name=test_name, test_index=600)
+    assert test_1.refresh().test_index == 600

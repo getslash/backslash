@@ -112,6 +112,7 @@ def report_test_start(
         is_interactive: bool=False,
         variation: (dict, NoneType)=None,
         metadata: (dict, NoneType)=None,
+        test_index: (int, NoneType)=None,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -120,6 +121,9 @@ def report_test_start(
         error_abort('Session already ended', code=requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
+
+    if test_index is None:
+        test_index = Test.query.filter(Test.session_id == session_id).count() + 1
     if is_interactive:
         session.total_num_tests = Session.total_num_tests + 1
         db.session.add(session)
@@ -133,6 +137,7 @@ def report_test_start(
         scm=scm,
         is_interactive=is_interactive,
         file_hash=file_hash,
+        test_index=test_index,
     )
     if variation is not None:
         returned.test_variation = TestVariation(variation=sanitize_json(variation))

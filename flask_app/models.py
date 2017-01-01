@@ -395,6 +395,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
+        Index('ix_test_session_id_start_time', session_id, start_time),
     )
 
     @rendered_field
