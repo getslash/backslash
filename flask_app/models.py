@@ -299,6 +299,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     id = db.Column(db.Integer, primary_key=True)
 
+    test_index = db.Column(db.Integer)
+
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
 
