@@ -2,6 +2,8 @@
 
 # Version 2.6.0
 
+* Add session breakdown info to left information bar
+* Add option to quickly expand side information bars for sessions
 * Comments can now be edited and deleted
 * Comments now support markdown syntax for formatting
 
