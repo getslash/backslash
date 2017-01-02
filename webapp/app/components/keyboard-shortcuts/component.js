@@ -13,6 +13,8 @@ let _keys = [
     {key: 'f', action: 'filter_only_failed', description: 'Hide all entities except failed'},
     {key: 'c', action: 'toggle_inline_comment', description: 'Toggle comment preview for items'},
     {key: 's', action: 'toggle_session_side_labels', description: 'Toggle the side breakdown panel for Sessions'},
+    {key: 'j', action: 'goto_next', description: 'Jump to next item'},
+    {key: 'k', action: 'goto_prev', description: 'Jump to previous item'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -33,6 +35,11 @@ let _FILTERABLE_VIEWS = [
     'session.index',
     'user.sessions',
     'subject',
+];
+
+let _JUMPABLE_VIEWS = [
+    'session.test.index',
+    'session.test.errors',
 ];
 
 
@@ -89,7 +96,6 @@ export default Ember.Component.extend(KeyboardShortcuts, {
             callback(controller);
         }
     },
-
 
     actions: {
 
@@ -181,6 +187,18 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                 }).focus();
             });
         },
+
+        goto_next() {
+            this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
+                controller.jump_to_relative(1)
+            });
+        },
+
+        goto_prev() {
+            this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
+                controller.jump_to_relative(-1)
+            });
+        }
     }
 
 });

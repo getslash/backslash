@@ -34,6 +34,8 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
     test_info_id: DS.attr('number'),
 
+    test_index: DS.attr('number'),
+
     type: DS.attr(),
 
     first_error: DS.attr(),

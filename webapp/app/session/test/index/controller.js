@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
+import RelativeItemJump from '../../../mixins/relative-item-jump';
+
+export default Ember.Controller.extend(RelativeItemJump, {
     additional_metadata: function() {
 	return {
 	};
