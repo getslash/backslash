@@ -106,7 +106,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                 this._close_boxes();
             }
             else {
-                this.router.transitionTo('sessions');
+                this.router.transitionTo('index');
             }
         },
 
