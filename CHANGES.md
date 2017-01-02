@@ -2,6 +2,8 @@
 
 # Version 2.6.0
 
+* Backslash now documents test indices
+* J/K in test view jumps to next/previous test
 * Comments can now be edited and deleted
 * Comments now support markdown syntax for formatting
 

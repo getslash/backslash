@@ -53,7 +53,7 @@ class SessionResource(ModelResource):
         else:
             returned = super(SessionResource, self)._get_iterator()
 
-        returned = returned.filter(Session.archived==False)
+        returned = returned.filter(Session.archived == False) # pylint: disable=singleton-comparison
         if args.subject_name is not None:
             returned = (
                 returned
@@ -72,6 +72,7 @@ test_query_parser = reqparse.RequestParser()
 test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
 test_query_parser.add_argument('search', type=str, default=None)
+test_query_parser.add_argument('test_index', type=int, default=None)
 
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
@@ -99,9 +100,13 @@ class TestResource(ModelResource):
             try:
                 session_id = int(args.session_id)
             except ValueError:
-                return Test.query.join(Session).filter(Session.logical_id == args.session_id)
+                returned = Test.query.join(Session).filter(Session.logical_id == args.session_id)
+            else:
+                returned = returned.filter(Test.session_id == session_id)
 
-            returned = returned.filter(Test.session_id == session_id)
+            if args.test_index is not None:
+                returned = returned.filter(Test.test_index == args.test_index)
+
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
