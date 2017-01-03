@@ -2,7 +2,7 @@ import threading
 import operator
 
 from sqlalchemy import func
-from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity
+from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision
 from . import value_parsers
 from .exceptions import UnknownField
 from .helpers import only_ops
@@ -119,6 +119,14 @@ class TestSearchContext(SearchContext):
             subquery = ~subquery
         return subquery
 
+    @only_ops(['=', '!='])
+    def search__product_version(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Test.session_id).exists().correlate(Test)
+        if op.op == '!=':
+            subquery = ~subquery
+        return subquery
+
+
 
 class SessionSearchContext(SearchContext):
 
@@ -153,6 +161,13 @@ class SessionSearchContext(SearchContext):
         if not entity:
             return op.op == '!='
         subquery = db.session.query(session_entity).filter_by(entity_id=entity.id, session_id=Session.id).exists().correlate(Session)
+        if op.op == '!=':
+            subquery = ~subquery
+        return subquery
+
+    @only_ops(['=', '!='])
+    def search__product_version(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
         if op.op == '!=':
             subquery = ~subquery
         return subquery

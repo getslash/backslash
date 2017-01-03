@@ -190,13 +190,13 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         goto_next() {
             this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
-                controller.jump_to_relative(1)
+                controller.jump_to_relative(1);
             });
         },
 
         goto_prev() {
             this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
-                controller.jump_to_relative(-1)
+                controller.jump_to_relative(-1);
             });
         }
     }

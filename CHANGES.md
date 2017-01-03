@@ -2,6 +2,7 @@
 
 ## Version 2.6.0
 
+* Add ability to search by product version
 * Add option to control the landing page (all sessions/my sessions)
 * Add session breakdown info to left information bar
 * Add option to quickly expand side information bars for sessions
