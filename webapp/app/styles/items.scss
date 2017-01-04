@@ -103,10 +103,10 @@ $left-badge-close-width: 10px;
 	    background: repeating-linear-gradient(0deg, $brand-danger, lighten($brand-danger, 10%));
 	    background: repeating-linear-gradient(
 				45deg,
-				$brand-danger,
-				$brand-danger 10px,
-				lighten($brand-danger, 10%) 10px,
-				lighten($brand-danger, 10%) 20px);
+				lighten($brand-danger, 30%),
+				lighten($brand-danger, 30%) 10px,
+				lighten($brand-danger, 35%) 10px,
+				lighten($brand-danger, 35%) 20px);
 	}
     }
 
