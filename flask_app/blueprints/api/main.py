@@ -9,7 +9,6 @@ from flask_security import current_user
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
-from sqlalchemy.orm.exc import NoResultFound
 
 from .blueprint import API
 from ... import activity
@@ -72,30 +71,6 @@ def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=
     obj.related_entities.append(entity)
     db.session.commit()
 
-
-
-@API
-def report_session_end(id: int, duration: (int, NoneType)=None):
-    try:
-        session = Session.query.filter(Session.id == id).one()
-    except NoResultFound:
-        error_abort('Session not found', code=requests.codes.not_found)
-
-    if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
-        error_abort('Session is not running', code=requests.codes.conflict)
-
-    session.end_time = get_current_time(
-    ) if duration is None else session.start_time + duration
-    # TODO: handle interrupted sessions
-    if session.num_error_tests or session.num_errors:
-        session.status = statuses.ERROR
-    elif session.num_failed_tests or session.num_failures:
-        session.status = statuses.FAILURE
-    else:
-        session.status = statuses.SUCCESS
-    session.in_pdb = False
-    db.session.add(session)
-    db.session.commit()
 
 
 @API(version=2)

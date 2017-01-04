@@ -198,3 +198,14 @@ def test_test_index_default(started_session, test_name):
 def test_test_index_custom(started_session, test_name):
     test_1 = started_session.report_test_start(name=test_name, test_index=600)
     assert test_1.refresh().test_index == 600
+
+
+def test_report_interrupted(started_test):
+    started_test.report_interrupted()
+    assert started_test.refresh().status.lower() == 'interrupted'
+
+
+def test_cannot_report_interrupted_ended_test(started_test):
+    started_test.report_end()
+    with raises_conflict():
+        started_test.report_interrupted()

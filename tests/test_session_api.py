@@ -113,3 +113,17 @@ def test_session_query_tests(started_session_with_ended_test):
     assert queried_test.id == test.id
     test.refresh()  # need to update end_time
     assert queried_test == without_single_rendered_fields(test)
+
+
+@pytest.mark.parametrize('report_end', [True, False])
+def test_report_interrupted(started_session, report_end):
+    started_session.report_interrupted()
+    if report_end:
+        started_session.report_end()
+    assert started_session.refresh().status.lower() == 'interrupted'
+
+
+def test_cannot_report_interrupted_ended_session(started_session):
+    started_session.report_end()
+    with raises_conflict():
+        started_session.report_interrupted()
