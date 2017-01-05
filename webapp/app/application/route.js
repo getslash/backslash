@@ -55,15 +55,4 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
         controller.set('version', model.runtime_config.version);
     },
 
-    actions: {
-
-        loading: function(transition) {
-            let controller = this.controllerFor('application');
-            controller.set('loading', true);
-            transition.promise.finally(function() {
-                controller.set('loading', false);
-            });
-        },
-    },
-
 });

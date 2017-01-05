@@ -1,9 +1,10 @@
 import Ember from 'ember';
 
 import ComplexModelRoute from '../mixins/complex-model-route';
+import LoadingIndicatingRoute from '../mixins/loading-indicating-route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, LoadingIndicatingRoute, {
 
     titleToken: 'Tests',
 
