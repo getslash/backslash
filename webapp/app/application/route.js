@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-import retry from 'ember-retry/retry'
+import retry from 'ember-retry/retry';
 
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import config from '../config/environment';
