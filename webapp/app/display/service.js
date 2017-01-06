@@ -4,6 +4,7 @@ const _DEFAULTS = {
     humanize_times: true,
     comments_expanded: false,
     show_side_labels: false,
+    session_side_bar_collapsed: false,
 };
 
 let _classvars = {};

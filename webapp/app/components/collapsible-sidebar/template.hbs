@@ -1,0 +1,11 @@
+<div class="{{if collapsed 'hidden-md hidden-sm hidden-lg' 'col-sm-12 col-md-3'}} ">
+  {{yield side}}
+</div>
+<div class="col-sm-12 col-md-{{if collapsed 12 9}} main">
+  <div class="hidden-sm hidden-xs toggle" {{action (toggle this "collapsed")}} title="Toggle sidebar">
+    <i class="fa fa-angle-double-{{if collapsed 'right' 'left'}}"></i>
+  </div>
+  <div class="outlet">
+  {{yield main}}
+  </div>
+</div>

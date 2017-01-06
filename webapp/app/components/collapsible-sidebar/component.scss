@@ -1,0 +1,19 @@
+& {
+
+    .main {
+        display: flex;
+        .toggle {
+            @extend .clickable;
+            flex: 0 0;
+            padding: 1em;
+            margin-left: -1em;
+            border-right: 1px solid silver;
+            margin-right: 5px;
+            margin-top: -$navbar-margin-bottom;
+            height: 100vh;
+        }
+        .outlet {
+            flex: 1 1;
+        }
+    }
+}

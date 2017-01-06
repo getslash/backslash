@@ -17,22 +17,16 @@
 
 {{/tool-bar}}
 
-<div class="container-fluid">
-
-  <div class="col-md-3 col-sm-12">
+{{#collapsible-sidebar collapsed=(mut display.session_side_bar_collapsed) as |section|}}
+  {{#if section.side}}
     {{session-overview session_model=session_model metadata=metadata user=user}}
-  </div>
-
-  <div class="col-md-9 col-sm-12">
-
+  {{else}}
     <div class="navigation">
-
       <div class="tabs">
 	<ul class="nav nav-tabs">
 	  {{#link-to 'session.index' tagName='li'}}
 	    <a href>Tests </a>
 	  {{/link-to}}
-
 	  {{#if session_model.num_errors}}
 	    {{#link-to 'session.errors' tagName='li'}}
 	      <a href>Session Errors <span class="label label-danger">{{session_model.num_errors}}</span></a>
@@ -63,17 +57,17 @@
 
 	  {{#if current_test }}
 	    {{#if (s-starts-with router.currentRouteName 'session.test') }}
-	    <li class="active">
-	      <a>
-		Test #{{current_test.ordinal}}
-	      </a>
-	    </li>
+	      <li class="active">
+	        <a>
+		  Test #{{current_test.ordinal}}
+	        </a>
+	      </li>
 	    {{else}}
-	    <li>
-	      {{#link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
-		Test #{{current_test.ordinal}}
-	      {{/link-to}}
-	    </li>
+	      <li>
+	        {{#link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
+		  Test #{{current_test.ordinal}}
+	        {{/link-to}}
+	      </li>
 	    {{/if}}
 	  {{/if}}
 
@@ -83,11 +77,9 @@
 	{{outlet "filter-controls"}}
       </div>
     </div>
-
     {{outlet}}
-  </div>
-
-</div>
+  {{/if}}
+{{/collapsible-sidebar}}
 
 
 {{#if investigating}}
