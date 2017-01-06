@@ -4,6 +4,7 @@ import BaseController from '../controllers/base';
 export default BaseController.extend({
 
     session: Ember.inject.service(),
+    state: Ember.inject.service(),
 
     path_tracker: Ember.inject.service(),
 

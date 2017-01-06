@@ -4,8 +4,9 @@ import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import PollingRoute from '../mixins/polling-route';
 import ScrollToTopMixin from '../mixins/scroll-top';
+import LoadingIndicatingRoute from '../mixins/loading-indicating-route';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin,  {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin, LoadingIndicatingRoute, {
 
     titleToken: 'Sessions',
 

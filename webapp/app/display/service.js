@@ -16,7 +16,6 @@ let _setting = Ember.computed({
     },
 
     get(key) {
-        console.log('getting', key);
         let value = this.get('_cache_' + key);
 
         if (value !== undefined) {
