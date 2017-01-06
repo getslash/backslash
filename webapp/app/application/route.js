@@ -1,4 +1,7 @@
 import Ember from 'ember';
+
+import retry from 'ember-retry/retry'
+
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import config from '../config/environment';
 
@@ -38,14 +41,12 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     load_current_user() {
         let self = this;
         if (self.get('session.data.authenticated')) {
-            return self.store.find('user', 'self').then(function(u) {
+
+            return retry(() => {
+                return self.store.find('user', 'self');
+            }).then(function(u) {
                 self.set('session.data.authenticated.current_user', u);
                 return self.get('user_prefs').get_all();
-            }).catch(function() {
-                let s = self.get('session');
-                if (s !== undefined && s.get('isAuthenticated')) {
-                    s.invalidate();
-                }
             });
         }
     },
