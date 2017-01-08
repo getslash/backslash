@@ -11,20 +11,24 @@
       <table class="table table-striped">
         <tbody>
           <tr>
-            <td><code>name = test_something</code></td>
-            <td>Find tests whose name is <code>test_something</code></td>
+            <td><code>start_time < -30d</code></td>
+            <td>Find sessions which started more than 30 days ago</td>
           </tr>
           <tr>
-            <td><code>class = MyClass and name != test_first</code></td>
-            <td>Find tests from the <code>MyClass</code> class whose name isn't <code>test_first</code></td>
+            <td><code>end_time > -15d</code></td>
+            <td>Find sessions which ended less than 15 days ago</td>
           </tr>
           <tr>
-            <td><code>user = someuser@somedomain.com</code></td>
-            <td>Find tests run by the specified email (or first/last name)</td>
+            <td><code>user = someuser</code></td>
+            <td>Find sessions run by user <code>someuser</code></td>
           </tr>
           <tr>
-            <td><code>name ~ string</code></td>
-            <td>Find tests whose names contain the string <code>string</code></td>
+            <td><code>subject = microwave01</code></td>
+            <td>Find sessions which ran on <code>microwave01</code></td>
+          </tr>
+          <tr>
+            <td><code>product_version = 1.0.0</code></td>
+            <td>Find sessions which ran on product version <code>1.0.0</code></td>
           </tr>
         </tbody>
       </table>
