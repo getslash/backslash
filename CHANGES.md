@@ -2,6 +2,7 @@
 
 ## Version 2.6.0
 
+* Session information sidebar in session view is now collapsible, giving more room to examine tracebacks or exceptions
 * Backslash now properly handles interrupted tests and sessions
 * Add ability to search by product version
 * Add option to control the landing page (all sessions/my sessions)
