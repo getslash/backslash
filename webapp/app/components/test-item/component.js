@@ -12,7 +12,7 @@ export default Ember.Component.extend({
     session_model: null,
 
     is_running: Ember.computed.equal('test.computed_status', 'running'),
-    
+
     href: function() {
 	let returned = `/#/sessions/${this.get('test.session_display_id')}/tests/${this.get('test.display_id')}`;
 	if (this.get('test.has_any_error')) {
