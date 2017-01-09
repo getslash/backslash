@@ -25,7 +25,7 @@
 <div class="details">
   {{status-icon status=test.computed_status}}
   <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
-    {{tests/test-name info=test.info variation=test.variation}}
+    {{tests/test-name info=test.info variation=test.variation parameters=test.parameters}}
 
   <div class="item-info">
     {{#if show_subjects}}

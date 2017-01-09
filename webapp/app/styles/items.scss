@@ -209,12 +209,7 @@ $left-badge-close-width: 10px;
 	    margin-right: 1em;
 	}
 
-	.test-name {
-	    flex: 1;
-	    @include ellipsis-overflow;
-	}
-
-	.times {
+        .times {
 	    flex: 0;
 	    @extend .hidden-xs;
 	    @extend .hidden-sm;
