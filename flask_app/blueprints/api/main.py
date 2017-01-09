@@ -88,6 +88,7 @@ def report_test_start(
         variation: (dict, NoneType)=None,
         metadata: (dict, NoneType)=None,
         test_index: (int, NoneType)=None,
+        parameters: (dict, NoneType)=None,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -113,6 +114,7 @@ def report_test_start(
         is_interactive=is_interactive,
         file_hash=file_hash,
         test_index=test_index,
+        parameters=sanitize_json(parameters),
     )
     if variation is not None:
         returned.test_variation = TestVariation(variation=sanitize_json(variation))

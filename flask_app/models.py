@@ -312,6 +312,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     metadatas = db.relationship('TestMetadata', lazy='dynamic')
 
+    parameters = db.Column(JSONB)
+
     @rendered_field
     def variation(self):
         v = self.test_variation
