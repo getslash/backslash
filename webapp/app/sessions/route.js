@@ -40,14 +40,28 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 	return Ember.RSVP.hash({
 	    sessions: this.store.query('session', query_params),
 	    __prefs: this.get('user_prefs').ensure_cache_populated(),
-	});
+	}).catch(
+	    function(exception) {
+		let message = null;
+		exception.errors.forEach(function(e) {
+		    message = e.detail;
+		});
+
+		if (message) {
+		    return {error: message};
+		}
+		throw exception; // reraise
+	    }
+	);
     },
 
     setupController(controller, model) {
-        controller.set('sessions', model.sessions);
-        controller.set('page', model.sessions.get('meta.page'));
-        controller.set('page_size', model.sessions.get('meta.page_size'));
-        
+        controller.set('error', null);
+        controller.setProperties(model);
+        if (!model.error) {
+            controller.set('page', model.sessions.get('meta.page'));
+            controller.set('page_size', model.sessions.get('meta.page_size'));
+        }
     },
 
     get_user_id_parameter: function() {

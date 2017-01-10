@@ -37,8 +37,17 @@
   </form>
 
 {{/tool-bar}}
-{{query-results
-  results=sessions
-  page=(mut page)
-  page_size=(mut page_size)
-}}
+
+{{#if error}}
+    <div class="container">
+      <div class="alert alert-danger text-center">
+        {{error}}
+      </div>
+    </div>
+{{else}}
+  {{query-results
+    results=sessions
+    page=(mut page)
+    page_size=(mut page_size)
+  }}
+{{/if}}

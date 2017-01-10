@@ -21,7 +21,8 @@ export default Ember.Controller.extend({
     actions: {
         search() {
             this.set('page', 1);
-            this.set('search', this.get('entered_search'));
+            let entered_search = this.get('entered_search');
+            this.set('search', entered_search);
         },
     },
 
