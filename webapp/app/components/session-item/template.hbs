@@ -7,7 +7,7 @@
     {{session-breakdown session=session show_total_count=false}}
   </div>
 </div>
-<div class="details">
+<div class="main-info">
   {{status-icon status=session.computed_status}}
   <div class="user-info">
 
@@ -15,18 +15,21 @@
     <small>Started by {{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
 
   </div>
+</div>
 
 
-  <div class="item-info">
-    {{#if show_subjects}}
-      {{subject-info subjects=session.subjects}}
-    {{/if}}
-    {{#if show_labels}}
-      {{#each session.labels as |label|}}
-	{{item-label label=label}}
-      {{/each}}
-    {{/if}}
-  </div>
+<div class="subject-info">
+  {{#if show_subjects}}
+    {{subject-info subjects=session.subjects}}
+  {{/if}}
+  {{#if show_labels}}
+    {{#each session.labels as |label|}}
+      {{item-label label=label}}
+    {{/each}}
+  {{/if}}
+</div>
+
+<div class="additional-info">
 
   {{item-times start=session.start_time end=session.end_time humanize=display.humanize_times}}
 

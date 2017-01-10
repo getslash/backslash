@@ -209,3 +209,37 @@ def test_cannot_report_interrupted_ended_test(started_test):
     started_test.report_end()
     with raises_conflict():
         started_test.report_interrupted()
+
+
+def test_test_parameters(started_session, test_name, params):
+    test = started_session.report_test_start(
+        name=test_name, parameters=params)
+    expected = params.copy()
+    if 'obj_param' in expected:
+        expected['obj_param'] = str(expected['obj_param'])
+    test.refresh()
+    got_params = test.parameters
+    assert expected['very_long_param'] != got_params['very_long_param']
+    assert expected['very_long_param'][:10] == got_params['very_long_param'][:10]
+    expected.pop('very_long_param')
+    got_params.pop('very_long_param')
+    assert got_params == expected
+
+
+@pytest.fixture(params=[True, False])
+def params(request):
+    encodable = request.param
+
+    returned = {
+        'int_param': 2,
+        'str_param': 'some string',
+        'very_long_param': 'very long' * 1000,
+        'float_param': 1.5,
+        'bool_param': True,
+        'null_param': None,
+    }
+
+    if not encodable:
+        returned['obj_param'] = object()
+
+    return returned

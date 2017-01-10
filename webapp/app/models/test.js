@@ -52,6 +52,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     session_id: DS.attr('number'),
 
     variation: DS.attr(),
+    parameters: DS.attr(),
     subjects: DS.attr(),
 
     is_success: function() {

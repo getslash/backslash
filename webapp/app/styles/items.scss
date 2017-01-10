@@ -149,7 +149,7 @@ $left-badge-close-width: 10px;
    }
 
 
-    .right-label {
+   .right-label {
 	visibility: hidden;
 
 	&.visible {
@@ -189,32 +189,41 @@ $left-badge-close-width: 10px;
 	    background-color: $brand-warning;
 	    color: white;
 	}
-    }
+    } // end of .right-label
 
-    .details {
-	padding: 1em;
-	display: flex;
-	overflow: hidden;
-	flex: 1;
+    .main-info {
+        align-items: center;
+        display: flex;
+        flex: 4 1;
+        padding: 1em;
 
-	.user-info {
+        .user-info {
 	    color: $gray-light;
 	    flex: 0 0 15%;
 	    width: 300px;
 	    @include ellipsis-overflow;
 	}
-
-	.is-running {
+        .is-running {
 	    flex: 0 0;
 	    margin-right: 1em;
 	}
 
-	.test-name {
-	    flex: 1;
-	    @include ellipsis-overflow;
-	}
+    }
 
-	.times {
+    .subject-info {
+        align-items: center;
+        display: flex;
+        flex: 2 1;
+    }
+
+    .additional-info {
+        display: flex;
+        flex: 1 1;
+        align-items: center;
+
+        @extend .hidden-xs;
+	@extend .hidden-sm;
+        .times {
 	    flex: 0;
 	    @extend .hidden-xs;
 	    @extend .hidden-sm;
@@ -223,21 +232,13 @@ $left-badge-close-width: 10px;
 	    white-space: nowrap;
 	}
 
-	.duration {
-	    @extend .hidden-xs;
-	    @extend .hidden-sm;
-	    @extend .overflow-ellipsis;
+        .duration {
 	    color: $gray-light;
 	    display: flex;
 	    flex: 0 0 8em;
 	    justify-content: flex-end;
 	    font-size: xx-small;
 	    align-items: center;
-	}
-
-	.item-info {
-	    @extend .overflow-ellipsis;
-	    flex: 0 0 30%;
 	}
 
 

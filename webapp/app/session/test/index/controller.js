@@ -6,20 +6,28 @@ export default Ember.Controller.extend(RelativeItemJump, {
     additional_metadata: function() {
 	return {
 	};
-    }.property('test'),
+    }.property('test_model'),
 
     scm_details: function() {
 	let self = this;
-	let test = self.get('test_model');
+	let test_model = self.get('test_model');
 
-	if (!test.get('scm')) {
+	if (!test_model.get('scm')) {
 	    return {};
 	}
 
 	return Ember.Object.create({
-	    'Revision': test.get('scm_revision'),
-	    'File Hash': test.get('file_hash')
+	    'Revision': test_model.get('scm_revision'),
+	    'File Hash': test_model.get('file_hash')
 	});
 
-    }.property('test'),
+    }.property('test_model'),
+
+    params: function() {
+        let params = this.get('test_model.parameters');
+        if (params) {
+            return params;
+        }
+        return this.get('test_model.variation');
+    }.property('test_model'),
 });

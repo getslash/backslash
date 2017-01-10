@@ -2,6 +2,7 @@
 
 ## Version 2.6.0
 
+* Support test parameters display for parameetrized tests
 * Session information sidebar in session view is now collapsible, giving more room to examine tracebacks or exceptions
 * Backslash now properly handles interrupted tests and sessions
 * Add ability to search by product version
