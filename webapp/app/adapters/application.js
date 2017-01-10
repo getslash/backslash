@@ -12,9 +12,9 @@ export default DS.RESTAdapter.extend({
   ajax: function(url, type, options) {
     return this._super(url, type, options).catch(function(error){
     	error.errors.forEach(function(e){
-    		if (e.status==="404"){ // Replace Ember's default message for 404
-                    error.not_found = true;
-    		}
+    	    if (e.status==="404"){ // Replace Ember's default message for 404
+                error.not_found = true;
+    	    }
     	});
     	throw error;
     });
