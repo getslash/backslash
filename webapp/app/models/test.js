@@ -38,6 +38,9 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
     type: DS.attr(),
 
+    user_display_name: DS.attr(),
+    user_email: DS.attr(),
+
     first_error: DS.attr(),
     last_comment: DS.attr(),
 

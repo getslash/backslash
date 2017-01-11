@@ -4,6 +4,7 @@ export default Ember.Component.extend({
 
     results: null,
     show_subjects: true,
+    show_users: true,
     session_model: null,
 
     display: Ember.inject.service(),

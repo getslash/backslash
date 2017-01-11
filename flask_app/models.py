@@ -26,6 +26,18 @@ class TypenameMixin(object):
         return cls.__name__.lower()
 
 
+class UserDetailsMixin(object):
+
+    @rendered_field
+    def user_email(self):
+        return self.user.email
+
+    @rendered_field
+    def user_display_name(self):
+        return self.user.display_name()
+
+
+
 class HasRelatedMixin(object):
 
     @rendered_only_on_single
@@ -73,7 +85,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
@@ -167,15 +179,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
 
     # rendered extras
     related_entities = db.relationship('Entity', secondary='session_entity')
-
-    @rendered_field
-    def user_email(self):
-        return self.user.email
-
-    @rendered_field
-    def user_display_name(self):
-        return self.user.display_name()
-
 
     @rendered_field
     def real_email(self):
@@ -295,7 +298,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -309,6 +312,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined')
+
+    user = db.relationship('User', secondary=Session.__table__, primaryjoin='Test.session_id==Session.id', secondaryjoin='Session.user_id==User.id', lazy='joined', uselist=False)
 
     metadatas = db.relationship('TestMetadata', lazy='dynamic')
 
