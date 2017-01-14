@@ -12,6 +12,6 @@ test('it renders', function(assert) {
     this.set('data', {key: 'value'});
     this.render(hbs`{{key-value-data data=data}}`);
 
-    assert.equal(this.$().find('tr td:eq(0)').text().trim(), 'key');
-    assert.equal(this.$().find('tr td:eq(1)').text().trim(), 'value');
+    assert.equal(this.$().find('div div.key').text().trim(), 'key');
+    assert.equal(this.$().find('div div span.value').text().trim(), 'value');
 });
