@@ -75,13 +75,16 @@ $left-badge-close-width: 10px;
 
     &.failed,&.session.success,&.skipped,&.running,&.abandoned,&.finished,&.session.interrupted {
 
+        &.session {
+            .left-badge:hover, .left-badge.expanded {
+                background-color: $gray-lighter;
+            }
+        }
 
 	.left-badge:hover, .left-badge.expanded {
 	    flex: 0 0 $left-badge-open-width;
 	    padding-left: 1em;
 	    @include slide-flex;
-
-            background-color: $gray-lighter;
 
             .open-hint {
                 display: none;
