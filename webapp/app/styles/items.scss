@@ -196,6 +196,7 @@ $left-badge-close-width: 10px;
         display: flex;
         flex: 5 1 10em;
         padding: 1em;
+        @include ellipsis-overflow;
 
         .user-info {
 	    color: $gray-light;
