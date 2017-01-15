@@ -217,12 +217,17 @@ $left-badge-close-width: 10px;
     .subject-info {
         align-items: center;
         display: flex;
-        flex: 0 0 10em;
+        flex: 0 0 20em;
     }
 
     .additional-info {
         display: flex;
-        flex: 0 0 15em;
+        flex: 0 0 35em;
+
+        &.humanized {
+            flex: 0 0 20em;
+        }
+        
         align-items: center;
 
         @extend .hidden-xs;

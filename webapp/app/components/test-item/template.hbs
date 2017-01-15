@@ -39,7 +39,7 @@
     {{/if}}
 </div>
 
-<div class="additional-info">
+<div class="additional-info {{if display.humanize_times 'humanized'}}">
   {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
   <div class="duration">
     {{humanize-duration start=test.start_time end=test.end_time}}
