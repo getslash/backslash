@@ -86,17 +86,18 @@ def _handle_and(tokens):
 def _handle_or(tokens):
     return functools.reduce(sqlalchemy.or_, list(tokens)[0][::2])
 
-alphanums_plus = alphanums + '_-/@.'
+alphanums_plus = alphanums + '_-/@.:'
 identifier = Word(alphanums_plus)
 LPAR, RPAR = map(Suppress, '()')
-QUOTE = Suppress('"')
+DQUOTE = Suppress('"')
+SQUOTE = Suppress("'")
 
 
 func_call = Group(oneOf(list(_FUNCTIONS)) + LPAR +
                   identifier + RPAR).setParseAction(_handle_func_call)
 
 
-atom = func_call | identifier | (QUOTE + Word(alphanums_plus + ' ') + QUOTE)
+atom = func_call | identifier | (DQUOTE + Word(alphanums_plus + ' ') + DQUOTE) | (SQUOTE + Word(alphanums_plus + ' ') + SQUOTE)
 binop = oneOf(list(_OPERATORS))
 
 and_ = Keyword("and", caseless=True)

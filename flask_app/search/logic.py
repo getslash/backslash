@@ -47,6 +47,11 @@ class SearchContext(object):
     def search__end_time(self, op, value):
         return self._search_time_field(self.MODEL.end_time, op, value)
 
+    @only_ops(['='])
+    def search__at(self, op, value): # pylint: disable=unused-argument
+        value = value_parsers.parse_date(value)
+        return (self.MODEL.end_time >= value) & (self.MODEL.start_time <= value)
+
     def _search_time_field(self, field, op, value):
         return op.func(field, value_parsers.parse_date(value))
 
