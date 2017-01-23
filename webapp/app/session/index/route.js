@@ -18,15 +18,17 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
                 page_size: params.page_size,
         };
 
+        let filters = {};
         for (let key in params) {
             if (key.startsWith('show_')) {
-                query_params[key] = params[key];
+                filters[key] = query_params[key] = params[key];
             }
         }
 
 	return Ember.RSVP.hash({
-	    'session_model': session,
-	    'tests': this.store.query('test', query_params),
+	    session_model: session,
+	    tests: this.store.query('test', query_params),
+            filters: filters,
 	});
 
     },
@@ -40,8 +42,11 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
     },
 
     setupController: function(controller, model) {
-      this._super(controller, model);
-      controller.setProperties(model);
+        this._super(controller, model);
+        let parent_controller = this.controllerFor('session');
+        console.log('Filters:', model.filters);
+        parent_controller.set('test_filters', model.filters);
+        controller.setProperties(model);
     }
 
 });
