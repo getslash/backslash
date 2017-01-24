@@ -114,7 +114,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         _.assign(filters, session_controller.get('test_filters'));
 
         self.get('store').queryRecord('test', filters).then(function(test) {
-            self.router.transitionTo(current_path, session.get('display_id'), test.get('display_id'));
+            if (test) {
+                self.router.transitionTo(current_path, session.get('display_id'), test.get('display_id'));
+            }
         });
     },
 

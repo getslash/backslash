@@ -59,13 +59,13 @@
 	    {{#if (s-starts-with router.currentRouteName 'session.test') }}
 	      <li class="active">
 	        <a>
-		  Test #{{current_test.ordinal}}
+		  Test #{{current_test.test_index}}
 	        </a>
 	      </li>
 	    {{else}}
 	      <li>
 	        {{#link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
-		  Test #{{current_test.ordinal}}
+		  Test #{{current_test.test_index}}
 	        {{/link-to}}
 	      </li>
 	    {{/if}}
