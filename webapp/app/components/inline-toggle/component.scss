@@ -1,0 +1,20 @@
+$disabled_color: $gray-lighter;
+$enabled_color: $backslash-orange;
+
+& {
+    display: inline-block;
+
+    color: silver;
+    border-radius: 2px;
+    padding: 0 2px 0 2px;
+    border: 1px solid;
+    border-color: $disabled_color;
+
+    transition: background-color 0.5s;
+    &.enabled {
+        color: white;
+        border-color: $enabled_color;
+        background: $enabled_color;
+        transition: background-color 0.5s;
+    }
+}
