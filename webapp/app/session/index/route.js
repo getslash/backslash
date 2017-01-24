@@ -44,7 +44,6 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin
     setupController: function(controller, model) {
         this._super(controller, model);
         let parent_controller = this.controllerFor('session');
-        console.log('Filters:', model.filters);
         parent_controller.set('test_filters', model.filters);
         controller.setProperties(model);
     }

@@ -12,7 +12,6 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
     },
 
     afterModel(model) {
-        console.log('start page is', model.start_page);
         if (model.start_page === 'my sessions') {
             this.replaceWith('user.sessions', this.get('session.data.authenticated.user_info.email'));
         } else {

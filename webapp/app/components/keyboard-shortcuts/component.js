@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import _ from 'lodash';
 const {
   getOwner
 } = Ember;
@@ -37,11 +38,6 @@ let _FILTERABLE_VIEWS = [
     'subject',
 ];
 
-let _JUMPABLE_VIEWS = [
-    'session.test.index',
-    'session.test.errors',
-];
-
 
 export default Ember.Component.extend(KeyboardShortcuts, {
     help_displayed: false,
@@ -51,7 +47,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     api: Ember.inject.service(),
     display: Ember.inject.service(),
-
+    store: Ember.inject.service(),
 
     search(query, sync_callback, async_callback) {
         this.get('async_search').perform(query, async_callback);
@@ -97,15 +93,41 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         }
     },
 
+    goto_next_prev(direction) {
+        let self = this;
+        let appcontroller = getOwner(this).lookup('controller:application');
+        let current_path = appcontroller.currentPath;
+
+        if (!current_path.startsWith('session.test.')) {
+            return;
+        }
+
+        let session_controller = getOwner(this).lookup('controller:session');
+        let test = session_controller.get('current_test');
+        let session = session_controller.get('session_model');
+        console.assert(session_controller);
+        console.assert(test);
+
+        let filters = {session_id: test.get('session_id')};
+        filters[direction + '_index'] = test.get('test_index');
+
+        _.assign(filters, session_controller.get('test_filters'));
+
+        self.get('store').queryRecord('test', filters).then(function(test) {
+            self.router.transitionTo(current_path, session.get('display_id'), test.get('display_id'));
+        });
+    },
+
+
     actions: {
 
         toggle_session_side_labels() {
             this.get('display').toggleProperty('show_side_labels');
         },
 
-	close_box() {
-	    this._close_boxes();
-	},
+        close_box() {
+            this._close_boxes();
+        },
 
         close_boxes_or_home() {
             if (this.get('quick_search_open') || this.get('help_displayed')) {
@@ -129,7 +151,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         toggle_human_times() {
-	    this.get('display').toggleProperty('humanize_times');
+            this.get('display').toggleProperty('humanize_times');
         },
 
 
@@ -145,9 +167,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
             });
         },
 
-	toggle_inline_comment() {
-	    this.get('display').toggleProperty('comments_expanded');
-	},
+        toggle_inline_comment() {
+            this.get('display').toggleProperty('comments_expanded');
+        },
 
         open_quick_search() {
             let self = this;
@@ -177,9 +199,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                     },
                 });
                 element.on('keyup', function(e) {
-		    if (e.keyCode === 27) {
-			self._close_boxes();
-		    }
+                    if (e.keyCode === 27) {
+                        self._close_boxes();
+                    }
                 }).on('typeahead:selected', function(evt, obj) {
                     self.select(obj);
                 }).on('typeahead:render', function() {
@@ -189,16 +211,11 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         goto_next() {
-            this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
-                controller.jump_to_relative(1);
-            });
+            this.goto_next_prev('after');
         },
 
         goto_prev() {
-            this._do_if_in(_JUMPABLE_VIEWS, function(controller) {
-                controller.jump_to_relative(-1);
-            });
-        }
+            this.goto_next_prev('before');
+        },
     }
-
 });
