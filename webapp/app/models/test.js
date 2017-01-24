@@ -4,17 +4,6 @@ import HasComputedStatus from '../mixins/has-computed-status';
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
-    ordinal: function() {
-	let id = this.get('display_id');
-	let parts = id.split('_');
-
-	if (parts.length > 1) {
-	    return parseInt(parts[parts.length - 1]);
-	}
-
-	return null;
-    }.property('display_id'),
-
     session_display_id: DS.attr(),
 
     has_any_error: function() {

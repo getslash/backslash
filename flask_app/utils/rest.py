@@ -25,10 +25,11 @@ class RestResource(Resource):
             return self._format_result({self._get_single_object_key(): self._render_single(obj, in_collection=False)}, metadata=metadata)
         else:
             with statement_timeout_context():
-                iterator = self._get_iterator()
-                iterator = self._filter(iterator, metadata)
-                iterator = self._sort(iterator, metadata)
-                returned = self._paginate(iterator, metadata)
+                returned = self._get_iterator()
+                if not isinstance(returned, list):
+                    returned = self._filter(returned, metadata)
+                    returned = self._sort(returned, metadata)
+                    returned = self._paginate(returned, metadata)
             result = {}
             for obj in returned:
                 key = self._get_collection_key_for_object(obj)

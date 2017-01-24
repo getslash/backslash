@@ -72,7 +72,8 @@ test_query_parser = reqparse.RequestParser()
 test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
 test_query_parser.add_argument('search', type=str, default=None)
-test_query_parser.add_argument('test_index', type=int, default=None)
+test_query_parser.add_argument('after_index', type=int, default=None)
+test_query_parser.add_argument('before_index', type=int, default=None)
 
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
@@ -104,14 +105,16 @@ class TestResource(ModelResource):
             else:
                 returned = returned.filter(Test.session_id == session_id)
 
-            if args.test_index is not None:
-                returned = returned.filter(Test.test_index == args.test_index)
-
-
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
 
         returned = filter_by_statuses(returned, Test)
+
+        if args.session_id is not None:
+            if args.after_index is not None:
+                returned = returned.filter(self.MODEL.test_index > args.after_index).order_by(self.MODEL.test_index.asc()).limit(1).all()
+            elif args.before_index is not None:
+                returned = returned.filter(self.MODEL.test_index < args.before_index).order_by(self.MODEL.test_index.desc()).limit(1).all()
 
         return returned
 
