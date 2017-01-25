@@ -62,7 +62,9 @@
       {{/if}}
     </div>
   </div>
-
+  {{# if state.loading}}
+    <div class="loading-indicator"></div>
+  {{/if}}
 </nav>
 
 
@@ -70,7 +72,7 @@
 
 {{outlet name="main"}}
 
-{{#if (not state.loading) }}
+{{#if (not loading) }}
 <footer class="footer">
   <div class="container text-center">
     <p class="text-muted">
