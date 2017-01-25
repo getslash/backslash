@@ -4,8 +4,9 @@ $loading-gradient-fg: #fcaa2f;
 .loading-indicator {
     width: 200%;
     height: 5px;
+    z-index: 2000;
     position: absolute;
-    bottom: -1px;
+    top: $navbar-height - 5px + 2px;
 
     background: $loading-gradient-bg; /* Old browsers */
     background: -moz-linear-gradient(left,  $loading-gradient-bg 0%, $loading-gradient-fg 50%, $loading-gradient-bg 100%); /* FF3.6+ */
@@ -16,7 +17,7 @@ $loading-gradient-fg: #fcaa2f;
     background: linear-gradient(to right,  $loading-gradient-bg 0%,$loading-gradient-fg 50%,$loading-gradient-bg 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$loading-gradient-bg', endColorstr='$loading-gradient-bg',GradientType=1 ); /* IE6-9 */
 
-    animation: line-loader-animation linear 1s;
+    animation: line-loader-animation linear 0.5s;
     animation-iteration-count: infinite;
 }
 

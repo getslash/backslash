@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import LoadingIndicatingRoute from '../mixins/loading-indicating-route';
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, LoadingIndicatingRoute, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
     titleToken: 'Users',
 
