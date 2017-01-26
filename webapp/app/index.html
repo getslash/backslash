@@ -39,6 +39,15 @@
       </div>
     </noscript>
 
+
+    <link rel="stylesheet" href="/static/assets/vendor.css">
+    <link rel="stylesheet" href="/static/assets/webapp.css">
+
+    {{content-for "head-footer"}}
+  </head>
+  <body>
+    {{content-for "body"}}
+
     <div class="ember-load-indicator">
       <!-- for quick page view during loading -->
       <nav role="navigation" class="navbar navbar-default navbar-inverse navbar-fixed-top">
@@ -51,13 +60,6 @@
       </nav>
     </div>
 
-    <link rel="stylesheet" href="/static/assets/vendor.css">
-    <link rel="stylesheet" href="/static/assets/webapp.css">
-
-    {{content-for "head-footer"}}
-  </head>
-  <body>
-    {{content-for "body"}}
 
     <script src="/static/assets/vendor.js"></script>
     <script src="/static/assets/webapp.js"></script>
