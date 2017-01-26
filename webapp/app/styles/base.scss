@@ -5,6 +5,10 @@
     height: 100%;
 }
 
+.ember-load-indicator {
+    z-index: $zindex-navbar * 2;
+}
+
 .clickable
 {
     cursor: pointer;
