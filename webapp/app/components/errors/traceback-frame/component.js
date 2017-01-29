@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
     frame: null,
     show_vars: false,
+    code_expanded: false,
 
 
     has_locals: Ember.computed.notEmpty('frame.locals'),

@@ -21,17 +21,25 @@
   </div>
 </div>
 
-
-<div class="details">
+<div class="main-info">
   {{status-icon status=test.computed_status}}
-    {{tests/test-name info=test.info variation=test.variation}}
+  {{#if show_user}}
+    <div class="user-info">
+    {{users/user-avatar email=test.user_email small=true}}
+    <small>Started by {{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
+    </div>
+  {{/if}}
+  <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
+  {{tests/test-name info=test.info variation=test.variation parameters=test.parameters}}
+</div>
 
-  <div class="item-info">
+<div class="subject-info">
     {{#if show_subjects}}
       {{subject-info subjects=test.subjects}}
     {{/if}}
-  </div>
+</div>
 
+<div class="additional-info {{if display.humanize_times 'humanized'}}">
   {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
   <div class="duration">
     {{humanize-duration start=test.start_time end=test.end_time}}

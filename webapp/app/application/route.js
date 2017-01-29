@@ -1,4 +1,7 @@
 import Ember from 'ember';
+
+import retry from 'ember-retry/retry';
+
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import config from '../config/environment';
 
@@ -8,6 +11,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     session: Ember.inject.service(),
     runtime_config: Ember.inject.service(),
     user_prefs: Ember.inject.service(),
+    state: Ember.inject.service(),
 
     title(tokens) {
         return tokens.join(' - ') + ' - Backslash';
@@ -38,14 +42,12 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     load_current_user() {
         let self = this;
         if (self.get('session.data.authenticated')) {
-            return self.store.find('user', 'self').then(function(u) {
+
+            return retry(() => {
+                return self.store.find('user', 'self');
+            }).then(function(u) {
                 self.set('session.data.authenticated.current_user', u);
                 return self.get('user_prefs').get_all();
-            }).catch(function() {
-                let s = self.get('session');
-                if (s !== undefined && s.get('isAuthenticated')) {
-                    s.invalidate();
-                }
             });
         }
     },
@@ -56,12 +58,11 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
 
     actions: {
-
         loading: function(transition) {
-            let controller = this.controllerFor('application');
-            controller.set('loading', true);
+            let state = this.get('state');
+            state.set('loading', true);
             transition.promise.finally(function() {
-                controller.set('loading', false);
+                state.set('loading', false);
             });
         },
     },

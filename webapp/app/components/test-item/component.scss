@@ -1,0 +1,11 @@
+& {
+
+    .test-index {
+        color: darken($gray-lighter, 10%);
+        min-width: 4em;
+
+        &:before {
+            content: "#";
+        }
+    }
+}

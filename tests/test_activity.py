@@ -34,7 +34,7 @@ def test_archive_activity(client, ended_session, real_login, moderator_role):
     assert a1['timestamp'] < a2['timestamp']
 
 
-def test_comment(client, commentable, real_login):
+def test_comment_activity(client, commentable, real_login):
     comment = 'comment here'
     commentable.post_comment(comment)
     [a1] = _get_activities(client, commentable)
@@ -72,11 +72,3 @@ def _get_activities(client, params):
     return client.api.session.get(
         client.api.url.add_path('rest/activities'),
         params=params).json()['activities']
-
-
-@pytest.fixture(params=['session', 'test'])
-def commentable(request, ended_session, ended_test):
-    if request.param == 'session':
-        return ended_session
-    if request.param == 'test':
-        return ended_test

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import _ from 'lodash';
 const {
   getOwner
 } = Ember;
@@ -12,6 +13,9 @@ let _keys = [
     {key: 'a', action: 'filter_none', description: 'Show all entities'},
     {key: 'f', action: 'filter_only_failed', description: 'Hide all entities except failed'},
     {key: 'c', action: 'toggle_inline_comment', description: 'Toggle comment preview for items'},
+    {key: 's', action: 'toggle_session_side_labels', description: 'Toggle the side breakdown panel for Sessions'},
+    {key: 'j', action: 'goto_next', description: 'Jump to next item'},
+    {key: 'k', action: 'goto_prev', description: 'Jump to previous item'},
     {key: 'esc', action: 'close_boxes_or_home'},
     {key: 'ctrl+s', action: 'goto_sessions', description: 'Jump to Sessions view'},
     {key: 'ctrl+u', action: 'goto_users', description: 'Jump to Users view'},
@@ -43,7 +47,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     api: Ember.inject.service(),
     display: Ember.inject.service(),
-
+    store: Ember.inject.service(),
 
     search(query, sync_callback, async_callback) {
         this.get('async_search').perform(query, async_callback);
@@ -55,7 +59,6 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         self.sendAction('close_boxes');
         self._close_boxes();
-	console.log('Transitioning to', obj.route, obj.key);
         self.router.transitionTo(obj.route, obj.key);
 
     },
@@ -90,19 +93,50 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         }
     },
 
+    goto_next_prev(direction) {
+        let self = this;
+        let appcontroller = getOwner(this).lookup('controller:application');
+        let current_path = appcontroller.currentPath;
+
+        if (!current_path.startsWith('session.test.')) {
+            return;
+        }
+
+        let session_controller = getOwner(this).lookup('controller:session');
+        let test = session_controller.get('current_test');
+        let session = session_controller.get('session_model');
+        console.assert(session_controller);
+        console.assert(test);
+
+        let filters = {session_id: test.get('session_id')};
+        filters[direction + '_index'] = test.get('test_index');
+
+        _.assign(filters, session_controller.get('test_filters'));
+
+        self.get('store').queryRecord('test', filters).then(function(test) {
+            if (test) {
+                self.router.transitionTo(current_path, session.get('display_id'), test.get('display_id'));
+            }
+        });
+    },
+
 
     actions: {
 
-	close_box() {
-	    this._close_boxes();
-	},
+        toggle_session_side_labels() {
+            this.get('display').toggleProperty('show_side_labels');
+        },
+
+        close_box() {
+            this._close_boxes();
+        },
 
         close_boxes_or_home() {
             if (this.get('quick_search_open') || this.get('help_displayed')) {
                 this._close_boxes();
             }
             else {
-                this.router.transitionTo('sessions');
+                this.router.transitionTo('index');
             }
         },
 
@@ -119,7 +153,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         toggle_human_times() {
-	    this.get('display').toggleProperty('humanize_times');
+            this.get('display').toggleProperty('humanize_times');
         },
 
 
@@ -135,9 +169,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
             });
         },
 
-	toggle_inline_comment() {
-	    this.get('display').toggleProperty('comments_expanded');
-	},
+        toggle_inline_comment() {
+            this.get('display').toggleProperty('comments_expanded');
+        },
 
         open_quick_search() {
             let self = this;
@@ -167,9 +201,9 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                     },
                 });
                 element.on('keyup', function(e) {
-		    if (e.keyCode === 27) {
-			self._close_boxes();
-		    }
+                    if (e.keyCode === 27) {
+                        self._close_boxes();
+                    }
                 }).on('typeahead:selected', function(evt, obj) {
                     self.select(obj);
                 }).on('typeahead:render', function() {
@@ -177,6 +211,13 @@ export default Ember.Component.extend(KeyboardShortcuts, {
                 }).focus();
             });
         },
-    }
 
+        goto_next() {
+            this.goto_next_prev('after');
+        },
+
+        goto_prev() {
+            this.goto_next_prev('before');
+        },
+    }
 });

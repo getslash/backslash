@@ -9,7 +9,6 @@ from flask_security import current_user
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
-from sqlalchemy.orm.exc import NoResultFound
 
 from .blueprint import API
 from ... import activity
@@ -74,30 +73,6 @@ def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=
 
 
 
-@API
-def report_session_end(id: int, duration: (int, NoneType)=None):
-    try:
-        session = Session.query.filter(Session.id == id).one()
-    except NoResultFound:
-        error_abort('Session not found', code=requests.codes.not_found)
-
-    if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
-        error_abort('Session is not running', code=requests.codes.conflict)
-
-    session.end_time = get_current_time(
-    ) if duration is None else session.start_time + duration
-    # TODO: handle interrupted sessions
-    if session.num_error_tests or session.num_errors:
-        session.status = statuses.ERROR
-    elif session.num_failed_tests or session.num_failures:
-        session.status = statuses.FAILURE
-    else:
-        session.status = statuses.SUCCESS
-    session.in_pdb = False
-    db.session.add(session)
-    db.session.commit()
-
-
 @API(version=2)
 def report_test_start(
         session_id: int,
@@ -112,6 +87,8 @@ def report_test_start(
         is_interactive: bool=False,
         variation: (dict, NoneType)=None,
         metadata: (dict, NoneType)=None,
+        test_index: (int, NoneType)=None,
+        parameters: (dict, NoneType)=None,
 ):
     session = Session.query.get(session_id)
     if session is None:
@@ -120,6 +97,9 @@ def report_test_start(
         error_abort('Session already ended', code=requests.codes.conflict)
     test_info_id = get_or_create_test_information_id(
         file_name=file_name, name=name, class_name=class_name)
+
+    if test_index is None:
+        test_index = Test.query.filter(Test.session_id == session_id).count() + 1
     if is_interactive:
         session.total_num_tests = Session.total_num_tests + 1
         db.session.add(session)
@@ -133,6 +113,8 @@ def report_test_start(
         scm=scm,
         is_interactive=is_interactive,
         file_hash=file_hash,
+        test_index=test_index,
+        parameters=sanitize_json(parameters),
     )
     if variation is not None:
         returned.test_variation = TestVariation(variation=sanitize_json(variation))
@@ -281,9 +263,9 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
         error_abort('Either session_id or test_id required')
 
     if session_id is not None:
-        obj = db.session.query(Session).get(session_id)
+        obj = Session.query.get_or_404(session_id)
     else:
-        obj = db.session.query(Test).get(test_id)
+        obj = Test.query.get_or_404(test_id)
 
     returned = Comment(user_id=current_user.id, comment=comment)
     obj.comments.append(returned)

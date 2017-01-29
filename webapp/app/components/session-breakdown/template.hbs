@@ -1,4 +1,6 @@
+{{#if show_total_count}}
 <p class="faint">{{or session.total_num_tests session.num_finished_tests}} total tests</p>
+{{/if}}
 <div class="inner">
 
 <div class="success">
@@ -49,4 +51,6 @@
     {{/elements/tool-tip}}
   </div>
 {{/if}}
+
+
 </div>

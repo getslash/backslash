@@ -18,9 +18,6 @@ def test_test_information_name(started_test, test_name):
     assert started_test.info['name'] == test_name
 
 
-
-
-
 def test_report_test_start_logical_id(started_session, test_name):
     test = started_session.report_test_start(
         name=test_name, test_logical_id='11')
@@ -188,3 +185,61 @@ def test_test_start_with_metadata(started_session, test_name, class_name):
     test = started_session.report_test_start(
         name=test_name, class_name=class_name, metadata=metadata)
     assert test.refresh().get_metadata() == metadata
+
+
+def test_test_index_default(started_session, test_name):
+    test_1 = started_session.report_test_start(name=test_name)
+    assert test_1.refresh().test_index == 1
+
+    test_2 = started_session.report_test_start(name=test_name)
+    assert test_2.refresh().test_index == 2
+
+
+def test_test_index_custom(started_session, test_name):
+    test_1 = started_session.report_test_start(name=test_name, test_index=600)
+    assert test_1.refresh().test_index == 600
+
+
+def test_report_interrupted(started_test):
+    started_test.report_interrupted()
+    assert started_test.refresh().status.lower() == 'interrupted'
+
+
+def test_cannot_report_interrupted_ended_test(started_test):
+    started_test.report_end()
+    with raises_conflict():
+        started_test.report_interrupted()
+
+
+def test_test_parameters(started_session, test_name, params):
+    test = started_session.report_test_start(
+        name=test_name, parameters=params)
+    expected = params.copy()
+    if 'obj_param' in expected:
+        expected['obj_param'] = str(expected['obj_param'])
+    test.refresh()
+    got_params = test.parameters
+    assert expected['very_long_param'] != got_params['very_long_param']
+    assert expected['very_long_param'][:10] == got_params['very_long_param'][:10]
+    expected.pop('very_long_param')
+    got_params.pop('very_long_param')
+    assert got_params == expected
+
+
+@pytest.fixture(params=[True, False])
+def params(request):
+    encodable = request.param
+
+    returned = {
+        'int_param': 2,
+        'str_param': 'some string',
+        'very_long_param': 'very long' * 1000,
+        'float_param': 1.5,
+        'bool_param': True,
+        'null_param': None,
+    }
+
+    if not encodable:
+        returned['obj_param'] = object()
+
+    return returned

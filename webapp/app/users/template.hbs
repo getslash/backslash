@@ -8,7 +8,7 @@
 {{pagination-nav page=(mut page) has_next=users.meta.has_more }}
 
 {{#each users as |user|}}
-  {{#link-to 'user' user.email classNames="item user"}}
+  {{#link-to 'user.sessions' user.email classNames="item user"}}
     {{users/user-avatar user=user}}
     <div class="name" title="{{user.name}}">
       {{user.display_name}}

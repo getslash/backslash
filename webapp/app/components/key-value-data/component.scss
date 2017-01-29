@@ -1,0 +1,15 @@
+& {
+    border: 1px solid silver;
+    padding: 1em;
+    .key {
+        font-weight: bold;
+    }
+    .value {
+        font-family: monospace;
+        background-color: $gray-lighter;
+        padding: 3px;
+        white-space: pre;
+        border: 1px solid silver;
+        border-radius: 3px;
+    }
+}

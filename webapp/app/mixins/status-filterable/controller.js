@@ -1,12 +1,18 @@
 import Ember from 'ember';
 
+const _ALL_FILTERS = ['show_successful', 'show_unsuccessful', 'show_abandoned', 'show_skipped'];
+
 export default Ember.Mixin.create({
-    queryParams: ['show_successful', 'show_unsuccessful', 'show_abandoned', 'show_skipped'],
+    queryParams: _ALL_FILTERS,
 
     show_successful: true,
     show_unsuccessful: true,
     show_abandoned: true,
     show_skipped: true,
+
+    reset_page: function() {
+        this.set('page', 1);
+    }.observes(..._ALL_FILTERS),
 
 
     filter_all_except(filter_name) {

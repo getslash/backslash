@@ -11,7 +11,7 @@ a.item, a.item:hover {
 }
 
 @mixin slide-flex {
-    transition: flex 0.2s;
+    transition: flex 0.2s, background-color 0.2s;
 }
 
 @mixin ellipsis-overflow {
@@ -20,6 +20,8 @@ a.item, a.item:hover {
     white-space: nowrap;
 }
 
+$left-badge-open-width: 250px;
+$left-badge-close-width: 10px;
 
 .item {
 
@@ -29,11 +31,20 @@ a.item, a.item:hover {
     overflow: hidden;
 
     .left-badge {
+
+        .open-hint {
+            color: white;
+            display: none;
+            opacity: 0.5;
+            font-size: xx-small;
+            margin-left: 2px;
+        }
+
 	align-items: center;
 	background: silver;
 	border-radius: 2px 0 0 2px;
 	display: flex;
-	flex: 0 0 10px;
+	flex: 0 0 $left-badge-close-width;
 	@include slide-flex;
 	overflow: hidden;
 
@@ -51,13 +62,33 @@ a.item, a.item:hover {
 
     }
 
+    &:hover .left-badge {
+        .open-hint {
+            display: inline-block;
+        }
+        animation-name: openme-hint;
+        animation-duration: 0.5s;
+        animation-delay: 3s;
+        animation-timing-function: ease-in-out;
+
+    }
+
     &.failed,&.session.success,&.skipped,&.running,&.abandoned,&.finished,&.session.interrupted {
 
+        &.session {
+            .left-badge:hover, .left-badge.expanded {
+                background-color: $gray-lighter;
+            }
+        }
 
-	.left-badge:hover {
-	    flex: 0 0 130px;
+	.left-badge:hover, .left-badge.expanded {
+	    flex: 0 0 $left-badge-open-width;
 	    padding-left: 1em;
 	    @include slide-flex;
+
+            .open-hint {
+                display: none;
+            }
 
 	    .summary {
 		@include reveal-opacity-later;
@@ -76,10 +107,10 @@ a.item, a.item:hover {
 	    background: repeating-linear-gradient(0deg, $brand-danger, lighten($brand-danger, 10%));
 	    background: repeating-linear-gradient(
 				45deg,
-				$brand-danger,
-				$brand-danger 10px,
-				lighten($brand-danger, 10%) 10px,
-				lighten($brand-danger, 10%) 20px);
+				lighten($brand-danger, 30%),
+				lighten($brand-danger, 30%) 10px,
+				lighten($brand-danger, 35%) 10px,
+				lighten($brand-danger, 35%) 20px);
 	}
     }
 
@@ -116,8 +147,12 @@ a.item, a.item:hover {
 	animation-iteration-count: infinite;
     }
 
+   .left-badge:hover, .left-badge.expanded {
+       animation: none;
+   }
 
-    .right-label {
+
+   .right-label {
 	visibility: hidden;
 
 	&.visible {
@@ -157,55 +192,62 @@ a.item, a.item:hover {
 	    background-color: $brand-warning;
 	    color: white;
 	}
-    }
+    } // end of .right-label
 
-    .details {
-	padding: 1em;
-	display: flex;
-	overflow: hidden;
-	flex: 1;
+    .main-info {
+        align-items: center;
+        display: flex;
+        flex: 5 1 10em;
+        padding: 1em;
+        @include ellipsis-overflow;
 
-	.user-info {
+        .user-info {
 	    color: $gray-light;
 	    flex: 0 0 15%;
 	    width: 300px;
 	    @include ellipsis-overflow;
 	}
-
-	.is-running {
+        .is-running {
 	    flex: 0 0;
 	    margin-right: 1em;
 	}
 
-	.test-name {
-	    flex: 1;
-	    @include ellipsis-overflow;
-	}
+    }
 
-	.times {
-	    flex: 0;
+    .subject-info {
+        align-items: center;
+        display: flex;
+        flex: 0 0 20em;
+    }
+
+    .additional-info {
+        display: flex;
+        flex: 0 0 35em;
+
+        &.humanized {
+            flex: 0 0 20em;
+        }
+        
+        align-items: center;
+
+        @extend .hidden-xs;
+	@extend .hidden-sm;
+        .times {
 	    @extend .hidden-xs;
 	    @extend .hidden-sm;
 	    color: $gray-light;
-	    flex: 0 0 30%;
+	    flex: 0 0 5em;
+            justify-content: flex-end;
 	    white-space: nowrap;
 	}
 
-	.duration {
-	    @extend .hidden-xs;
-	    @extend .hidden-sm;
-	    @extend .overflow-ellipsis;
+        .duration {
 	    color: $gray-light;
 	    display: flex;
 	    flex: 0 0 8em;
 	    justify-content: flex-end;
 	    font-size: xx-small;
 	    align-items: center;
-	}
-
-	.item-info {
-	    @extend .overflow-ellipsis;
-	    flex: 0 0 30%;
 	}
 
 
@@ -275,3 +317,9 @@ a.item, a.item:hover {
 
 }
 
+@keyframes openme-hint {
+
+    from {flex: 0 0 $left-badge-close-width;}
+    50% {flex: 0 0 30px;}
+    to {flex: 0 0 $left-badge-close-width;}
+}

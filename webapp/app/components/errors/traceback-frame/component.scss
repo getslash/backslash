@@ -1,0 +1,90 @@
+& {
+    border: 1px solid $gray-light;
+    margin: 0.5em;
+
+    .btn-expand {
+        visibility: hidden;
+    }
+
+    &:hover .btn-expand {
+        visibility: visible;
+    }
+
+    &.test-code .frame-code {
+
+        background-color: $mild-red;
+    }
+}
+
+.frame-info {
+    color: $gray-light;
+    font-size: small;
+    padding: 0.5em;
+}
+
+.frame-code {
+    @extend .mono;
+
+    .line {
+        padding: 0.3em;
+        &:first-child {
+            padding-top: 0.5em;
+        }
+        &:last-child {
+            padding-bottom: 0.5em;
+        }
+        white-space: pre-wrap;
+
+        &.around {
+            background-color: lighten($gray-lighter, 4%);
+            color: silver;
+            display: none;
+        }
+
+        &.main {
+            background-color: $gray-lighter;
+            font-weight: bold;
+        }
+
+        .lineno {
+            color: darken($gray-lighter, 20%);
+            min-width: 3em;
+            display: inline-block;
+        }
+    }
+
+
+    &.expanded .line {
+
+        & {
+            display: block;
+        }
+    }
+}
+
+
+.traceback-frame-vars {
+
+    @extend .row;
+    margin: 0.5em;
+    border: 1px solid $gray-lighter;
+    color: $gray-light;
+
+    .variable {
+        @extend .col-sm-12;
+        @extend .row;
+
+        .name {
+            @extend .mono;
+            @extend .col-sm-2;
+            @extend .pad-medium;
+        }
+        .value {
+            background: lighten($gray-lighter, 20%);
+            @extend .pad-medium;
+            @extend .col-sm-10;
+            @extend .pre;
+            @extend .mono;
+        }
+    }
+}

@@ -3,20 +3,20 @@ import Ember from 'ember';
 const _DEFAULTS = {
     humanize_times: true,
     comments_expanded: false,
+    show_side_labels: false,
+    session_side_bar_collapsed: false,
 };
 
 let _classvars = {};
 
 let _setting = Ember.computed({
     set(key, value) {
-        console.log('saving', key, value);
         localStorage.setItem('display.' + key, value === true);
         this.set('_cache_' + key, value);
         return value;
     },
 
     get(key) {
-        console.log('getting', key);
         let value = this.get('_cache_' + key);
 
         if (value !== undefined) {
@@ -24,9 +24,7 @@ let _setting = Ember.computed({
         }
 
         value = localStorage.getItem('display.' + key);
-        console.log('Got from local storage:', value);
         if (value !== 'true' && value !== 'false') {
-            console.log('Retrieving default for', key, value);
             return _DEFAULTS[key];
         }
         return value === "true";

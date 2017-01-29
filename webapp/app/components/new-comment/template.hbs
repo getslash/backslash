@@ -1,0 +1,13 @@
+<div class="continer-fluid">
+  <div class="col-md-6 col-sm-12">
+    <div class="form-group add-margin-top">
+      {{textarea value=text cols="80" rows="6" class="form-control" placeholder="Write something here"}}
+    </div>
+    <div class="form-group">
+      {{#if can_commit}}
+      <button class="btn btn-success pull-right" {{action this.attrs.post}}>Post Comment</button>
+      {{/if}}
+    </div>
+  </div>
+
+</div>

@@ -13,16 +13,17 @@ Router.map(function() {
     this.route('errors');
     this.route('single_error', { path: "/errors/:index" });
     this.route('warnings');
-    this.route('activity');
     this.route('info');
     this.route('test', {path: "/tests/:test_id"}, function() {
       this.route('errors');
       this.route('warnings');
-      this.route('activity');
+      this.route('comments');
     });
+    this.route('comments');
   });
 
   this.route("test", { path: "/tests/:test_id" }, function() {
+    this.route('comments');
   });
 
   this.route('login', function() {});
@@ -33,7 +34,6 @@ Router.map(function() {
     this.route('preferences');
   });
   this.route('authorize-runtoken', { path: '/runtoken/:requestid/authorize' });
-  this.route('loading');
   this.route('users');
   this.route('subjects');
   this.route('subject', { path: '/subjects/:name' });

@@ -1,40 +1,59 @@
 {{#tool-bar}}
   {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
-  <form class="navbar-form" role="search">
-    <div class="input-group col-xs-6 {{if error 'has-error'}}">
-      {{input class="form-control search-bar" placeholder="Search for..." value=entered_search}}
-    </div>
-    <div class="input-group">
-      <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
-    </div>
-    {{#search-help}}
-      <table class="table table-striped">
-        <tbody>
-          <tr>
-            <td><code>name = test_something</code></td>
-            <td>Find tests whose name is <code>test_something</code></td>
-          </tr>
-          <tr>
-            <td><code>class = MyClass and name != test_first</code></td>
-            <td>Find tests from the <code>MyClass</code> class whose name isn't <code>test_first</code></td>
-          </tr>
-          <tr>
-            <td><code>user = someuser@somedomain.com</code></td>
-            <td>Find tests run by the specified email (or first/last name)</td>
-          </tr>
-          <tr>
-            <td><code>name ~ string</code></td>
-            <td>Find tests whose names contain the string <code>string</code></td>
-          </tr>
-        </tbody>
-      </table>
+  {{#if (not hide_search)}}
+    <form class="navbar-form" role="search">
+      <div class="input-group col-xs-6 {{if error 'has-error'}}">
+        {{input class="form-control search-bar" placeholder="Search for..." value=entered_search}}
+      </div>
+      <div class="input-group">
+        <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
+      </div>
+      {{#search-help}}
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <td><code>start_time &lt; -30d </code></td>
+              <td>Find sessions which started more than 30 days ago</td>
+            </tr>
+            <tr>
+              <td><code>end_time &gt; -15d</code></td>
+              <td>Find sessions which ended less than 15 days ago</td>
+            </tr>
+            <tr>
+              <td><code>at = '26/11/2016 13:08:40'</code></td>
+              <td>Find sessions which were running at the given date</td>
+            </tr>
+            <tr>
+              <td><code>user = someuser</code></td>
+              <td>Find sessions run by user <code>someuser</code></td>
+            </tr>
+            <tr>
+              <td><code>subject = microwave01</code></td>
+              <td>Find sessions which ran on <code>microwave01</code></td>
+            </tr>
+            <tr>
+              <td><code>product_version = 1.0.0</code></td>
+              <td>Find sessions which ran on product version <code>1.0.0</code></td>
+            </tr>
+          </tbody>
+        </table>
 
-    {{/search-help}}
-  </form>
+      {{/search-help}}
+    </form>
+  {{/if}}
 
 {{/tool-bar}}
-{{query-results
-  results=sessions
-  page=(mut page)
-  page_size=(mut page_size)
-}}
+
+{{#if error}}
+  <div class="container">
+    <div class="alert alert-danger text-center">
+      {{error}}
+    </div>
+  </div>
+{{else}}
+  {{query-results
+    results=sessions
+    page=(mut page)
+    page_size=(mut page_size)
+  }}
+{{/if}}

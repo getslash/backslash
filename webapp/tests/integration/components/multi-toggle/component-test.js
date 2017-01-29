@@ -16,5 +16,5 @@ test('it renders', function(assert) {
 
     let comp = this.$('>:first-child');
     assert.ok(comp.find('button:eq(0)').hasClass('btn-success'));
-    assert.equal(comp.find('button:eq(0)').text().trim(), this.get('value'));
+    assert.equal(comp.find('button:eq(0)').text().trim(), this.get('value').toUpperCase());
 });

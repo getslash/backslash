@@ -35,7 +35,6 @@ body {
 @import 'fonts.scss';
 
 @import 'base.scss';
-@import 'tables.scss';
 @import 'modules.scss';
 @import 'elements.scss';
 @import 'utils.scss';
@@ -47,8 +46,6 @@ body {
 
 @import 'sessions.scss';
 @import 'users.scss';
-@import 'comments.scss';
-@import 'activity.scss';
 @import 'loading-indicator.scss';
 
 @import 'boxes.scss';
@@ -59,14 +56,10 @@ body {
 
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
-@import 'components/tests/test-name.scss';
 @import 'components/elements/copyable-text.scss';
 
 
-@import 'components/errors/traceback-frame.scss';
 @import 'components/warnings/warnings.scss';
-
-@import 'components/session-breakdown.scss';
 
 @import "ember-modal-dialog/ember-modal-structure";
 @import "ember-modal-dialog/ember-modal-appearance";

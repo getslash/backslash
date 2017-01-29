@@ -29,7 +29,7 @@
 
 <p>
   {{#if session_model.is_abandoned}}
-    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped)
+    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped at {{moment-time unix=session_model.next_keepalive}})
   {{else}}
     <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
   {{/if}}

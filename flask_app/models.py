@@ -26,6 +26,18 @@ class TypenameMixin(object):
         return cls.__name__.lower()
 
 
+class UserDetailsMixin(object):
+
+    @rendered_field
+    def user_email(self):
+        return self.user.email
+
+    @rendered_field
+    def user_display_name(self):
+        return self.user.display_name()
+
+
+
 class HasRelatedMixin(object):
 
     @rendered_only_on_single
@@ -73,7 +85,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), index=True)
@@ -167,15 +179,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
 
     # rendered extras
     related_entities = db.relationship('Entity', secondary='session_entity')
-
-    @rendered_field
-    def user_email(self):
-        return self.user.email
-
-    @rendered_field
-    def user_display_name(self):
-        return self.user.display_name()
-
 
     @rendered_field
     def real_email(self):
@@ -295,9 +298,11 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
+
+    test_index = db.Column(db.Integer)
 
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
@@ -308,7 +313,11 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined')
 
+    user = db.relationship('User', secondary=Session.__table__, primaryjoin='Test.session_id==Session.id', secondaryjoin='Session.user_id==User.id', lazy='joined', uselist=False)
+
     metadatas = db.relationship('TestMetadata', lazy='dynamic')
+
+    parameters = db.Column(JSONB)
 
     @rendered_field
     def variation(self):
@@ -393,6 +402,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
+        Index('ix_test_session_id_start_time', session_id, start_time),
     )
 
     @rendered_field
@@ -535,10 +545,15 @@ class Comment(db.Model, TypenameMixin):
     deleted = db.Column(db.Boolean, server_default="false")
     session_id = db.Column(db.ForeignKey(Session.id, ondelete='CASCADE'), nullable=True, index=True)
     test_id = db.Column(db.ForeignKey(Test.id, ondelete='CASCADE'), nullable=True, index=True)
+    edited = db.Column(db.Boolean, server_default="false")
 
     @rendered_field
     def user_email(self):
         return self.user.email
+
+    @rendered_field(name='user')
+    def user_display_nam(self):
+        return self.user.display_name()
 
     @rendered_field
     def can(self):

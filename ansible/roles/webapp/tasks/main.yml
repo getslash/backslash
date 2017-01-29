@@ -70,6 +70,8 @@
 - name: shut down nginx gracefully if code changes
   shell: systemctl stop nginx
   when: sources.changed or configuration.changed
+- name: migrate db
+  shell: cd {{src_root}} && python3 manage.py db upgrade
 - name: restart the service if code changes
   shell: systemctl restart {{item}}
   with_items:

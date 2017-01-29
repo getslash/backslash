@@ -7,10 +7,12 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, InfinityRoute, Comple
 
 
     model: function() {
-	const parent = this.modelFor('session.test').test_model;
+	const parent = this.modelFor('session.test');
 	return Ember.RSVP.hash({
+            test_model: parent.test_model,
+            session_model: parent.session_model, 
 	    errors: this.infinityModel('error', {
-		test_id: parent.id,
+		test_id: parent.test_model.id,
 		modelPath: 'controller.errors',
 	    }),
 	});

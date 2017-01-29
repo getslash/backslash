@@ -23,6 +23,8 @@ def test_parsing_simple_exression():
     'start_time < "2 days ago"',
     'start_time < "-2d"',
     'start_time < "12/1/2016"',
+    'start_time = "26/11/2016 13:08:40"',
+    "start_time = '26/11/2016 13:08:40'",
 ])
 def test_test_search(q):
     query = get_orm_query_from_search_string('test', q)
@@ -34,6 +36,7 @@ def test_test_search(q):
     'related=related-entity1',
     'related=obj123 and related=a.b.c.d',
     'related != bla and subject != bla',
+    'product_version = 1.2.3',
 ])
 @pytest.mark.parametrize('objtype', ['test', 'session'])
 def test_related_subject_searches(objtype, q):

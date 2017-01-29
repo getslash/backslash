@@ -6,8 +6,6 @@
   shell: python3 {{src_root}}/manage.py bootstrap --app
 - name: ensure private config
   shell: python3 {{src_root}}/manage.py ensure-secret {{deploy_root}}/conf.d/000-private.yml
-- name: migrate db
-  shell: cd {{src_root}} && python3 manage.py db upgrade
 - name: fix permissions
   file: path={{deploy_root}} owner={{user_name}} group={{group_name}} recurse=true
 - name: fix permissions of static folder

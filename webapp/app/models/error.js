@@ -1,5 +1,9 @@
 import DS from 'ember-data';
 
+const _MAX_NUM_ERROR_LINES = 30;
+const _MAX_NUM_ERROR_CHARS = 600;
+
+
 export default DS.Model.extend({
   message: DS.attr('string'),
   exception_type: DS.attr('string'),
@@ -15,7 +19,24 @@ export default DS.Model.extend({
 
   abbreviated_message: function() {
       let returned = this.get('full_message');
-      returned = returned.split(/\n\s*\n/, 1)[0];
+      let lines = returned.split(/\n/);
+      let truncated = false;
+      while (lines.length > _MAX_NUM_ERROR_LINES) {
+          lines.pop();
+          truncated = true;
+      }
+
+      returned = lines.join('\n');
+
+      if (returned.length > _MAX_NUM_ERROR_CHARS) {
+          returned = returned.substr(0, _MAX_NUM_ERROR_CHARS);
+          truncated = true;
+
+      }
+
+      if (truncated) {
+          returned += '...';
+      }
       return returned;
   }.property('full_message'),
 

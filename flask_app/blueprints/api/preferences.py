@@ -15,7 +15,7 @@ NoneType = type(None)
 def get_preferences():
     user_id = current_user.id
     returned = dict(current_app.config['DEFAULT_PREFERENCES'])
-    for pref in UserPreference.query.filter_by(user_id=user_id):
+    for pref in UserPreference.query.filter_by(user_id=user_id).all():
         returned[pref.preference] = pref.value['value']
     return returned
 

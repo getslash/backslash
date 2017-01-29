@@ -1,7 +1,7 @@
 {{pagination-nav page=(mut page) has_next=results.meta.has_more }}
 
 {{#each results as |result|}}
-  {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model }}
+  {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model show_user=show_users}}
 {{/each}}
 
 {{pagination-nav page=(mut page) has_next=results.meta.has_more }}
