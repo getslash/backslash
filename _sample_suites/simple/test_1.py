@@ -19,6 +19,9 @@ def test_3():
 def test_parametrized(param1, some_parameter):  # pylint: disable=unused-argument
     pass
 
+def test_only_parametrized_fixture(some_parameter):
+    pass
+
 
 @slash.fixture
 @slash.parametrize('param', ['very long' * 1000, 2, 'third arg'])

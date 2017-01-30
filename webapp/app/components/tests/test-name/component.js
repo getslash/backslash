@@ -10,6 +10,8 @@ export default Ember.Component.extend({
         if (!params) {
             return this.get('variation');
         }
-        return params;
+
+        let returned = Ember.assign({}, this.get('variation'), params);
+        return returned;
     }.property('parameters', 'variation'),
 });
