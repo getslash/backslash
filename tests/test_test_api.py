@@ -2,6 +2,7 @@ import flux
 import pytest
 
 from sentinels import NOTHING
+from uuid import uuid4
 
 from .utils import raises_not_found, raises_conflict
 
@@ -164,7 +165,7 @@ def test_skip_reason(started_test, reason):
 
 def test_test_variation(started_session, variation, test_name, class_name):
     test = started_session.report_test_start(
-        name=test_name, class_name=class_name, variation=variation)
+        name=test_name, class_name=class_name, variation=variation, test_logical_id=str(uuid4()))
     if variation is NOTHING:
         expected_variation = None
     else:
@@ -174,7 +175,10 @@ def test_test_variation(started_session, variation, test_name, class_name):
 
 def test_test_variation_invalid_values(started_session, invalid_variation, test_name, class_name):
     test = started_session.report_test_start(
-        name=test_name, class_name=class_name, variation=invalid_variation)
+        name=test_name,
+        class_name=class_name,
+        variation=invalid_variation,
+        test_logical_id=str(uuid4()))
     assert test.refresh().variation != invalid_variation
     assert test.variation # make sure it is not empty
 
@@ -188,10 +192,10 @@ def test_test_start_with_metadata(started_session, test_name, class_name):
 
 
 def test_test_index_default(started_session, test_name):
-    test_1 = started_session.report_test_start(name=test_name)
+    test_1 = started_session.report_test_start(name=test_name, test_logical_id=str(uuid4()))
     assert test_1.refresh().test_index == 1
 
-    test_2 = started_session.report_test_start(name=test_name)
+    test_2 = started_session.report_test_start(name=test_name, test_logical_id=str(uuid4()))
     assert test_2.refresh().test_index == 2
 
 
@@ -224,6 +228,59 @@ def test_test_parameters(started_session, test_name, params):
     expected.pop('very_long_param')
     got_params.pop('very_long_param')
     assert got_params == expected
+
+
+def test_append_upcoming_with_ended_session(ended_session, test_name, file_name, class_name):
+    test_list = [{'test_logical_id': str(uuid4()),
+                  'file_name': file_name,
+                  'name': test_name,
+                  'class_name': class_name
+                 }]
+    with raises_conflict():
+        ended_session.report_upcoming_tests(tests=test_list)
+
+
+def test_append_upcoming_report_all_tests(started_session, test_name, file_name, class_name):
+    test_logical_id = str(uuid4())
+    test1 = {'test_logical_id': test_logical_id,
+             'name': test_name,
+             'file_name': file_name,
+             'class_name': class_name
+            }
+    test2 = {'test_logical_id': str(uuid4()),
+             'name': test_name,
+             'file_name': file_name,
+             'class_name': class_name
+            }
+    test_list = [test1, test2]
+    all_tests = started_session.query_tests(include_planned=True).all()
+    assert len(all_tests) == 0
+
+    started_session.report_upcoming_tests(tests=test_list)
+    all_tests = started_session.query_tests(include_planned=True).all()
+    assert len(all_tests) == 2
+
+    started_session.report_test_start(name=test_name, test_logical_id=test_logical_id)
+    all_tests = started_session.query_tests(include_planned=True).all()
+    assert len(all_tests) == 2
+
+    started_session.report_test_start(name=test_name, test_logical_id=str(uuid4()))
+    all_tests = started_session.query_tests(include_planned=True).all()
+    assert len(all_tests) == 3
+
+
+def test_append_upcoming_dont_add_error(started_session, test_name, file_name, class_name):
+    test_logical_id = str(uuid4())
+    test1 = {'test_logical_id': test_logical_id,
+             'name': test_name,
+             'file_name': file_name,
+             'class_name': class_name
+            }
+    test_list = [test1]
+    started_session.report_upcoming_tests(tests=test_list)
+    test = started_session.query_tests(include_planned=True)[0]
+    with raises_conflict():
+        test.report_interrupted()
 
 
 @pytest.fixture(params=[True, False])

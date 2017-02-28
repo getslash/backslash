@@ -6,10 +6,13 @@
   {{menu-toggle title="Human-friendly times" value=(mut display.humanize_times)}}
 {{/dropdown-menu}}
 
+
 {{#dropdown-menu title="Filter"}}
   {{menu-toggle title="Show Successful" value=(mut show_successful)}}
   {{menu-toggle title="Show Unsuccessful" value=(mut show_unsuccessful)}}
   {{menu-toggle title="Show Abandoned" value=(mut show_abandoned)}}
   {{menu-toggle title="Show Skipped" value=(mut show_skipped)}}
-
+  {{#if (not-eq show_planned undefined)}}
+    {{menu-toggle title="Show Planned" value=(mut show_planned)}}
+  {{/if}}
 {{/dropdown-menu}}

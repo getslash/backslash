@@ -6,6 +6,8 @@ import config from '../../config/environment';
 
 export default PaginatedFilteredController.extend(StatusFilterableController, {
 
+    queryParams: ['show_planned'],
+    show_planned: false,
 
     collection: Ember.computed.oneWay('tests'),
 

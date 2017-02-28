@@ -36,6 +36,10 @@ export default Ember.Mixin.create({
 	if (this.get('num_finished_tests') || status === 'success') {
 	    return 'success';
 	}
+  
+  if (status === 'planned') {
+      return 'planned';
+  }
 
 	return 'finished';
 
