@@ -36,6 +36,7 @@ let _FILTERABLE_VIEWS = [
     'session.index',
     'user.sessions',
     'subject',
+    'test_info',
 ];
 
 
