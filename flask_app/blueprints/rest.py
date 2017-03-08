@@ -76,7 +76,7 @@ test_query_parser.add_argument('after_index', type=int, default=None)
 test_query_parser.add_argument('before_index', type=int, default=None)
 
 
-@_resource('/tests', '/tests/<object_id>', '/sessions/<int:session_id>/tests')
+@_resource('/tests', '/tests/<object_id>', '/sessions/<session_id>/tests')
 class TestResource(ModelResource):
 
     MODEL = Test
