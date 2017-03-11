@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+import os
 import requests
 
 from flask import Blueprint, abort, jsonify, request, url_for
@@ -70,4 +71,4 @@ def _get_runtoken_request_status(request_id):
     })
 
 def _get_redis_client():
-    return Redis()
+    return Redis(os.environ.get('BACKSLASH_REDIS_SERVER'))

@@ -20,4 +20,5 @@ install:
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
 script:
   - python manage.py ember test
+  - python manage.py frontend build
   - travis_retry .env/bin/py.test tests

@@ -37,7 +37,7 @@ def build(watch, production):
 
 def build_frontend(watch, production):
     _bootstrap_frontend()
-    cmd = '{} build --output-path=../static/'.format(_EMBER_EXECUTABLE)
+    cmd = '{} build'.format(_EMBER_EXECUTABLE)
     if watch:
         cmd += ' --watch'
     if production:
