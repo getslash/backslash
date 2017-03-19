@@ -19,6 +19,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     infrastructure: DS.attr(),
 
     num_error_tests: DS.attr('number'),
+    num_interrupted_tests: DS.attr('number'),
     num_errors: DS.attr('number'),
     num_failed_tests: DS.attr('number'),
     num_finished_tests: DS.attr('number'),
@@ -27,8 +28,8 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     last_comment: DS.attr(),
 
     num_successful_tests: function() {
-        return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests');
-    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests'),
+        return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests') - this.get('num_interrupted_tests');
+    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests', 'num_interrupted_tests'),
 
     ran_all_tests: function() {
         if (this.get('total_num_tests') === null) {
@@ -58,8 +59,10 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     status: DS.attr('string'),
 
     is_interrupted: function() {
-	return this.get('end_time') != null && this.get('has_tests_left_to_run');
-    }.property('end_time', 'has_tests_left_to_run'),
+	     return (this.get('end_time') != null && this.get('has_tests_left_to_run')) ||
+              this.get('status') === 'INTERRUPTED' ||
+              this.get('num_interrupted_tests');
+    }.property('end_time', 'has_tests_left_to_run', 'status', 'num_interrupted_tests'),
 
     subjects: DS.attr(),
 
