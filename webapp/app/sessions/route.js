@@ -4,8 +4,9 @@ import PaginatedFilteredRoute from '../routes/paginated_filtered_route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import PollingRoute from '../mixins/polling-route';
 import ScrollToTopMixin from '../mixins/scroll-top';
+import StatusFilterableRoute from './../mixins/status-filterable/route';
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin, StatusFilterableRoute, {
 
     titleToken: 'Sessions',
 
@@ -30,6 +31,12 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         if (params.search) {
             query_params.search = params.search;
         }
+        let filters = {};
+        for (let key in params) {
+            if (key.startsWith('show_')) {
+                filters[key] = query_params[key] = params[key];
+            }
+        }
 
         let user_id = this.get_user_id_parameter();
 
@@ -38,6 +45,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         }
 	return Ember.RSVP.hash({
 	    sessions: this.store.query('session', query_params),
+      filters: filters,
 	    __prefs: this.get('user_prefs').ensure_cache_populated(),
 	}).catch(
 	    function(exception) {
