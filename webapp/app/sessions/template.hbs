@@ -1,5 +1,7 @@
 {{#tool-bar}}
-  {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
+  <div class="filter-controls">
+{{outlet "filter-controls"}}
+  </div>
   {{#if (not hide_search)}}
     <form class="navbar-form" role="search">
       <div class="input-group col-xs-6 {{if error 'has-error'}}">
@@ -55,5 +57,9 @@
     results=sessions
     page=(mut page)
     page_size=(mut page_size)
+    show_successful=show_successful
+    show_unsuccessful=show_unsuccessful
+    show_abandoned=show_abandoned
+    show_skipped=show_skipped
   }}
 {{/if}}
