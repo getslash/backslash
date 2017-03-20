@@ -1,6 +1,8 @@
+<table>
 {{#each-in data as |key value|}}
-  <div class="row">
-    <div class="key col-sm-2">{{key}}</div>
-    <div class="col-sm-10"><span class="value">{{value}}</span></div>
-  </div>
+  <tr>
+    <td class="key">{{key}}</td>
+    <td class="value">{{value}}</td>
+  </tr>
 {{/each-in}}
+</table>
