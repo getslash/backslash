@@ -1,15 +1,36 @@
 language: python
 sudo: required
-dist: precise
 python:
   - 3.6
 addons:
     postgresql: "9.5"
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.11.2
+  DOCKER_HOST: tcp://127.0.0.1:2375
+
 services:
+  - docker
   - redis-server
   - postgresql
+
 before_install:
+  # fix docker-compose version
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+
+  # update to Docker 1.13
+  - sudo sh -c 'echo "deb https://apt.dockerproject.org/repo ubuntu-$(lsb_release -cs) main" > /etc/apt/sources.list.d/docker.list'
+  - curl -fsSL https://apt.dockerproject.org/gpg | sudo apt-key add -
+  - sudo apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+  - sudo apt-get update
+  - sudo apt-get -y install "docker-engine=1.13.1-0~ubuntu-$(lsb_release -cs)"
+
   - nvm install node
+
 install:
   - psql -c 'create database backslash;' -U postgres
   - pip install virtualenv
@@ -18,7 +39,10 @@ install:
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
+  - sudo docker-compose -f docker/docker-compose.yml build
+  - sudo docker-compose -f docker/docker-compose.yml up -d
+
 script:
   - python manage.py ember test
   - python manage.py frontend build
-  - travis_retry .env/bin/py.test tests
+  - travis_retry .env/bin/py.test tests --app-url http://127.0.0.1:8000
