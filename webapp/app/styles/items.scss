@@ -140,12 +140,8 @@ $left-badge-close-width: 10px;
     }
 
     &.running.unsuccessful .left-badge {
-	position: relative;
-	background: none;
-	animation-name: running-unsuccessful-pulse;
-	animation-duration: 2s;
-	animation-iteration-count: infinite;
-    }
+	background: $brand-danger;
+  }
 
    .left-badge:hover, .left-badge.expanded {
        animation: none;
@@ -227,7 +223,7 @@ $left-badge-close-width: 10px;
         &.humanized {
             flex: 0 0 20em;
         }
-        
+
         align-items: center;
 
         @extend .hidden-xs;
@@ -286,13 +282,6 @@ $left-badge-close-width: 10px;
   50% { background-color: $brand-warning}
   to { background-color: $brand-danger}
 }
-
-@keyframes running-unsuccessful-pulse {
-  from { background-color: $brand-danger}
-  50% { background-color: $gray-light}
-  to { background-color: $brand-danger}
-}
-
 
 .item.subject {
     @extend .pad-large;
