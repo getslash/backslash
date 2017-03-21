@@ -10,7 +10,7 @@
         visibility: visible;
     }
 
-    &.test-code .frame-code {
+    .test-code, .frame-code {
 
         background-color: $mild-red;
     }
