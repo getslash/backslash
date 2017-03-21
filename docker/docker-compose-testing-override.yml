@@ -1,0 +1,5 @@
+version: '3'
+services:
+  webapp:
+    environment:
+      - BACKSLASH_TESTING=1
