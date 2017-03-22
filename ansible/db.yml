@@ -1,6 +1,0 @@
----
-- hosts: db
-  vars_files:
-    - ../flask_app/app.yml
-  roles:
-    - db

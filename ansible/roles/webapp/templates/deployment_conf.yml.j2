@@ -1,6 +1,0 @@
-SQLALCHEMY_DATABASE_URI: "postgresql://{{app_name}}:{{app_name}}@{% if groups['db'][0] != groups['webapp'][0] %}{{groups['db'][0]}}{% else %}localhost{% endif %}/{{app_name}}"
-DEBUG: {% if install_with_debug is defined and install_with_debug -%}
-true
-{%- else -%}
-false
-{%- endif %}

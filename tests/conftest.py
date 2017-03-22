@@ -165,7 +165,10 @@ def invalidate_cache():
 
 
 def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default=None)
+    parser.addoption("--app-url", action="store", default=None,
+                     help="Integration App URL")
+    parser.addoption("--start-docker", action="store_true", default=False)
+
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -193,14 +196,6 @@ def client(webapp_without_login, runtoken, testuser_id):
 @pytest.fixture
 def real_login(client):
     client.do_real_login()
-
-
-@pytest.fixture
-def backslash_url(request):
-    url = request.config.getoption("--url")
-    if url is None:
-        pytest.skip()
-    return URL(url)
 
 
 @pytest.fixture

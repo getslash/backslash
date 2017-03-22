@@ -8,6 +8,7 @@ import random
 import string
 import subprocess
 from contextlib import contextmanager
+from collections import defaultdict
 
 from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
 from _lib.ansible import ensure_ansible
@@ -22,7 +23,6 @@ from _lib.users import user
 from _lib.celery import celery
 from _lib.slash_running import suite
 from _lib.utils import interact
-from _lib.deployment import run_gunicorn
 import click
 import requests
 import logbook
@@ -36,28 +36,12 @@ def cli():
     pass
 
 
-cli.add_command(run_gunicorn)
 cli.add_command(db)
 cli.add_command(user)
 cli.add_command(frontend)
 cli.add_command(ember)
 cli.add_command(celery)
 cli.add_command(suite)
-
-@cli.command('ensure-secret')
-@click.argument("conf_file")
-def ensure_secret(conf_file):
-    dirname = os.path.dirname(conf_file)
-    if not os.path.isdir(dirname):
-        os.makedirs(dirname)
-    if os.path.exists(conf_file):
-        return
-    with open(conf_file, "w") as f:
-        print('SECRET_KEY: "{0}"'.format(_generate_secret()), file=f)
-        print('SECURITY_PASSWORD_SALT: "{0}"'.format(_generate_secret()), file=f)
-
-def _generate_secret(length=50):
-    return "".join([random.choice(string.ascii_letters) for i in range(length)])
 
 
 @cli.command()
@@ -71,6 +55,55 @@ def bootstrap(develop, app):
         deps.append("app")
     bootstrap_env(deps)
     click.echo(click.style("Environment up to date", fg='green'))
+
+
+@cli.command(name='docker-start')
+def docker_start():
+    from flask_app.app import create_app
+    from flask_app.models import db
+    import flask_migrate
+
+    _ensure_conf()
+
+    app = create_app()
+
+    flask_migrate.Migrate(app, db)
+
+    with app.app_context():
+        flask_migrate.upgrade()
+
+    gunicorn_bin = from_env_bin('gunicorn')
+    cmd = [gunicorn_bin, 'flask_app.wsgi:app', '--bind', '0.0.0.0:8000', '--chdir', from_project_root('.')]
+    os.execv(gunicorn_bin, cmd)
+
+
+@cli.command(name='docker-nginx-start')
+def docker_nginx_start():
+    import jinja2
+    with open('etc/nginx-site-conf.j2') as f:
+        template = jinja2.Template(f.read())
+
+    environ = defaultdict(str, os.environ)
+    with open('/etc/nginx/conf.d/backslash.conf', 'w') as f:
+        f.write(template.render({'environ': environ, 'hostname': environ['BACKSLASH_HOSTNAME']}))
+
+    nginx_path = '/usr/sbin/nginx'
+    os.execv(nginx_path, [nginx_path, '-g', 'daemon off;'])
+
+
+def _ensure_conf():
+    config_directory = os.environ.get('CONFIG_DIRECTORY', None)
+    if config_directory is None:
+        config_directory = os.environ['CONFIG_DIRECTORY'] = '/conf'
+
+    private_filename = os.path.join(config_directory, '000-private.yml')
+    if not os.path.isfile(private_filename):
+        with open(private_filename, 'w') as f:
+            for secret_name in ('SECRET_KEY', 'SECURITY_PASSWORD_SALT'):
+                f.write('{}: {!r}\n'.format(secret_name, _generate_secret_string()))
+
+def _generate_secret_string(length=50):
+    return "".join([random.choice(string.ascii_letters) for i in range(length)])
 
 
 @cli.command()
@@ -105,51 +138,6 @@ def testserver(tmux, livereload, port):
 def _run_tmux_frontend(port):
     tmuxp = from_env_bin('tmuxp')
     os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port), CONFIG_DIRECTORY=from_project_root("conf.d")))
-
-@cli.command()
-@click.option("--dest", type=click.Choice(["production", "staging", "localhost", "vagrant", "custom"]), help="Deployment target", required=True)
-@click.option("-i", "--inventory", type=str, default=None, help="Path to an inventory file. Should be specified only when \"--dest custom\" is set")
-@click.option("--vagrant-machine", type=str, default="", help="Vagrant machine to provision")
-@click.option("--sudo/--no-sudo", default=False)
-@click.option("--ask-sudo-pass/--no-ask-sudo-pass", default=False)
-def deploy(dest, sudo, ask_sudo_pass, vagrant_machine, inventory):
-    prepare_source_package()
-    ansible = ensure_ansible()
-
-    if dest == "vagrant":
-        # Vagrant will invoke ansible
-        environ = os.environ.copy()
-        environ["PATH"] = "{}:{}".format(os.path.dirname(ansible), environ["PATH"])
-        # "vagrant up --provision" doesn't call provision if the virtual machine is already up,
-        # so we have to call vagrant provision explicitly
-        click.echo(click.style("Running deployment on Vagrant. This may take a while...", fg='magenta'))
-        subprocess.check_call('vagrant up ' + vagrant_machine, shell=True, env=environ)
-        subprocess.check_call('vagrant provision ' + vagrant_machine, shell=True, env=environ)
-    else:
-        if dest == "custom":
-            if inventory is None:
-                raise click.ClickException("-i/--inventory should be specified together with \"--dest custom\"")
-            if not os.path.exists(inventory):
-                raise click.ClickException("Custom inventory file {} doesn't exist".format(inventory))
-        else:
-            if inventory is not None:
-                raise click.ClickException("-i/--inventory should be specified only when \"--dest custom\" is specified")
-            inventory = from_project_root("ansible", "inventories", dest)
-        click.echo(click.style("Running deployment on {}. This may take a while...".format(inventory), fg='magenta'))
-        cmd = [ansible, "-i", inventory]
-        if dest in ("localhost",):
-            cmd.extend(["-c", "local"])
-            if dest == "localhost":
-                cmd.append("--sudo")
-
-        if sudo:
-            cmd.append('--sudo')
-
-        if ask_sudo_pass:
-            cmd.append('--ask-sudo-pass')
-
-        cmd.append(from_project_root("ansible", "site.yml"))
-        subprocess.check_call(cmd)
 
 
 @cli.command()

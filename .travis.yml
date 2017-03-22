@@ -2,7 +2,7 @@ language: python
 sudo: required
 dist: precise
 python:
-  - 3.5
+  - 3.6
 addons:
     postgresql: "9.5"
 services:
@@ -20,4 +20,5 @@ install:
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
 script:
   - python manage.py ember test
+  - python manage.py frontend build
   - travis_retry .env/bin/py.test tests
