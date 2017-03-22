@@ -1,27 +1,32 @@
-FROM python:3.6
+FROM ubuntu:16.04
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-RUN pip install virtualenv
+env PYTHON_VERSION 3.6
+env PYTHON_EXECUTABLE python$PYTHON_VERSION
+
+env LC_ALL C.UTF-8
+env LANG C.UTF-8
+
+RUN apt-get update
+RUN apt-get -y install build-essential rsync software-properties-common libpq-dev nginx curl redis-server gcc sudo libsasl2-dev libldap2-dev wget git
+
 
 # nginx
-ENV NGINX_VERSION 1.11.10-1~jessie
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
-        && echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list \
-        && apt-get update \
-        && apt-get install --no-install-recommends --no-install-suggests -y \
-                                                ca-certificates \
-                                                nginx=${NGINX_VERSION} \
-                                                nginx-module-xslt \
-                                                nginx-module-geoip \
-                                                nginx-module-image-filter \
-                                                nginx-module-perl \
-                                                nginx-module-njs \
-                                                gettext-base \
-        && rm -rf /var/lib/apt/lists/*
+RUN add-apt-repository ppa:chris-lea/nginx-devel
 RUN apt-get update
+RUN apt-get -y install nginx
 
-RUN apt-get -y install build-essential rsync python3 python3-pip python3-dev software-properties-common libpq-dev nginx curl redis-server gcc sudo libsasl2-dev libldap2-dev wget
+
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get -y install nodejs
+
+RUN add-apt-repository ppa:fkrull/deadsnakes
+RUN apt-get update
+RUN apt-get install -y $PYTHON_EXECUTABLE $PYTHON_EXECUTABLE-dev
+
+RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+RUN $PYTHON_EXECUTABLE /tmp/get-pip.py
+RUN $PYTHON_EXECUTABLE -m pip install virtualenv
+
 
 # dockerize
 ENV DOCKERIZE_VERSION v0.3.0
@@ -48,7 +53,7 @@ ADD ./flask_app /src/flask_app
 ADD ./migrations /src/migrations
 ADD ./webapp /src/webapp
 
-RUN cd /src && python manage.py bootstrap --app
+RUN cd /src && $PYTHON_EXECUTABLE manage.py bootstrap --app
 
 RUN rsync -a --delete /tmp/frontend/ /src/webapp/
 
