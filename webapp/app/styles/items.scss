@@ -197,11 +197,14 @@ $left-badge-close-width: 10px;
         padding: 1em;
         @include ellipsis-overflow;
 
+
         .user-info {
 	    color: $gray-light;
-	    flex: 0 0 15%;
+	    flex: 0 0 5em;
 	    width: 300px;
 	    @include ellipsis-overflow;
+      @extend .hidden-xs;
+      @extend .hidden-sm;
 	}
         .is-running {
 	    flex: 0 0;

@@ -24,20 +24,24 @@
 <div class="main-info">
   {{status-icon status=test.computed_status}}
   {{#if show_user}}
-    <div class="user-info">
-    {{users/user-avatar email=test.user_email small=true}}
-    <small>Started by {{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
-    </div>
+      {{#elements/tool-tip title=test.user_display_name}}
+        {{#link-to 'user' test.user_email}}
+        {{users/user-avatar email=test.user_email small=true}}
+        {{/link-to}}
+      {{/elements/tool-tip}}
+      <div class="user-info">
+        <small>{{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
+      </div>
   {{/if}}
   <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
   {{tests/test-name info=test.info variation=test.variation parameters=test.parameters}}
 </div>
 
-<div class="subject-info">
-    {{#if show_subjects}}
+{{#if show_subjects}}
+  <div class="subject-info">
       {{subject-info subjects=test.subjects}}
-    {{/if}}
-</div>
+  </div>
+{{/if}}
 
 <div class="additional-info {{if display.humanize_times 'humanized'}}">
   {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
