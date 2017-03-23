@@ -133,10 +133,14 @@ export default Ember.Component.extend(KeyboardShortcuts, {
         },
 
         close_boxes_or_home() {
+
             if (this.get('quick_search_open') || this.get('help_displayed')) {
                 this._close_boxes();
             }
             else {
+                this._do_if_in(['sessions'], function(controller) {
+                  controller.clear_search();
+                });
                 this.router.transitionTo('index');
             }
         },

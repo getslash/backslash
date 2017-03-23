@@ -18,6 +18,11 @@ export default Ember.Controller.extend(StatusFilterableController, {
 
     search: '',
 
+    clear_search() {
+      this.set('entered_search', '');
+      this.set('search', "");
+    },
+
     actions: {
         search() {
             this.set('page', 1);
