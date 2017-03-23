@@ -62,6 +62,21 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 	);
     },
 
+    resetController(controller, isExiting) {
+        if (isExiting) {
+          // isExiting would be false if only the route's model was changing
+          controller.set('search', "");
+          controller.set('entered_search', "");
+          let query_params = this.get('queryParams');
+          for (let key in query_params) {
+            if (key.startsWith('show_')) {
+              controller.set(key, true);
+            }
+          }
+        }
+    },
+
+
     setupController(controller, model) {
         controller.set('error', null);
         controller.setProperties(model);
