@@ -5,6 +5,7 @@ import PollingRoute from '../mixins/polling-route';
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, ScrollToTopMixin, PollingRoute, {
 
+    offline: Ember.inject.service(),
     api: Ember.inject.service(),
     title: 'Session Tests',
 
@@ -26,6 +27,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ScrollToTopMixin, Pol
     setupController: function(controller, model) {
       this._super(controller, model);
       controller.setProperties(model);
+      this.get('offline');
     },
 
     resetController(controller) {

@@ -8,6 +8,7 @@ import StatusFilterableRoute from './../mixins/status-filterable/route';
 
 export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRoute, ScrollToTopMixin, StatusFilterableRoute, {
 
+    offline: Ember.inject.service(),
     titleToken: 'Sessions',
 
     user_prefs: Ember.inject.service(),
@@ -83,6 +84,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
     setupController(controller, model) {
         controller.set('error', null);
         controller.setProperties(model);
+        this.get('offline');
         if (!model.error) {
             controller.set('page', model.sessions.get('meta.page'));
             controller.set('page_size', model.sessions.get('meta.page_size'));
