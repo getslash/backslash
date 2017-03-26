@@ -10,12 +10,12 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ScrollToTopMixin, Pol
 
     model(params) {
 	let self = this;
-	return self.store.find('session', params.id).then(function(session) {
+	return self.store.queryRecord('session', {id: params.id}).then(function(session) {
  	    return Ember.RSVP.hash({
-		'session_model': session,
-		'user': self.store.find('user', session.get('user_id')),
+  		'session_model': session,
+  		'user': self.store.find('user', session.get('user_id')),
 	    });
-        });
+      });
     },
 
     should_auto_refresh: function() {
