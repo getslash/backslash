@@ -50,15 +50,17 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
 	    __prefs: this.get('user_prefs').ensure_cache_populated(),
 	}).catch(
 	    function(exception) {
-		let message = null;
-		exception.errors.forEach(function(e) {
-		    message = e.detail;
-		});
-
-		if (message) {
-		    return {error: message};
-		}
-		throw exception; // reraise
+      		let message = exception.errors.get("firstObject");
+          if (message) {
+            if (message.detail === "The adapter operation was aborted") {
+        		  return false;
+        		}
+            if (message.status === "404") {
+              return {error: message.title};
+            }
+      		  return {error: message};
+      	  }
+          throw exception; //reraise
 	    }
 	);
     },
