@@ -1,8 +1,8 @@
 import json
-import requests
 
 from flask import abort
 from flask_security.utils import encrypt_password
+from flask_simple_api import error_abort
 import logbook
 from sqlalchemy.exc import IntegrityError
 
@@ -33,7 +33,7 @@ _DEFAULTS = {
 @API(generates_activity=False, require_login=False)
 def setup(config: dict):
     if not get_runtime_config_private_dict()['setup_needed']:
-        abort(requests.codes.conflict)
+        error_abort('Setup already performed')
 
     unified_config = _DEFAULTS.copy()
     unified_config.update({key: value for key, value in config.items() if key in _DEFAULTS})
