@@ -42,6 +42,9 @@ def create_app(config=None):
     del app.logger.handlers[:]
     redirect_logging()
 
+    if os.environ.get('BACKSLASH_TESTING', '').lower() in {'1', 'yes', 'true'}:
+        app.config['TESTING'] = True
+
     if app.config['TESTING']:
         app.config['TRACEBACK_DIR'] = '/tmp/backslash_tracebacks'
     else:
