@@ -76,6 +76,9 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, PollingRou
         }
     },
 
+    should_auto_refresh: function() {
+      return true;
+    },
 
     setupController(controller, model) {
         controller.set('error', null);
