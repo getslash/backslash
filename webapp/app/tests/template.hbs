@@ -1,9 +1,9 @@
 {{#tool-bar}}
   {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
   <form class="navbar-form" role="search">
-    <div class="input-group col-xs-6 {{if error 'has-error'}}">
-      {{input class="form-control search-bar" placeholder="Search for..." value=entered_search}}
-    </div>
+    {{#escape-focus}}
+      {{input class="form-control search-bar" id="search-field" placeholder="Search for..." value=entered_search}}  
+    {{/escape-focus}}
     <div class="input-group">
       <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
     </div>
