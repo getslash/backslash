@@ -1,3 +1,4 @@
+import json
 import time
 import subprocess
 
@@ -15,13 +16,13 @@ def cleanup_docker(request):
             _stop_docker()
 
 
-@pytest.fixture
-def integration_url(request, capsys, timeout=30):
+@pytest.fixture(scope='session')
+def integration_url(request, timeout=30):
     start_docker = request.config.getoption('--start-docker')
     url = request.config.getoption("--app-url")
 
     if start_docker:
-        _start_docker(capsys)
+        _start_docker()
         if url is None:
             url = 'http://127.0.0.1:8000'
 
@@ -43,20 +44,34 @@ def integration_url(request, capsys, timeout=30):
             continue
 
         if resp.ok:
-            return URLObject(url)
+            returned = URLObject(url)
+            _do_setup_if_needed(returned)
+            return returned
 
     raise RuntimeError(f'URl {url} did not become available in time')
 
 
-def _start_docker(capsys):
+def _do_setup_if_needed(url):
+    with requests.Session() as s:
+        s.headers.update({'Content-type': 'application/json'})
+        if s.post(url.add_path('api/get_app_config'), data='{}').json()['result']['setup_needed']:
+            resp = s.post(
+                url.add_path('api/setup'),
+                data=json.dumps({'config': {
+                    'admin_user_email': 'admin@localhost',
+                    'admin_user_password': '12345678',
+                }}))
+            resp.raise_for_status()
+
+
+def _start_docker():
     global _docker_running
     if _docker_running:
         return
     _docker_running = True
-    with capsys.disabled():
-        _run_docker_compose('build')
-        _run_docker_compose('up -d')
-        _docker_running = True
+    _run_docker_compose('build')
+    _run_docker_compose('up -d')
+    _docker_running = True
 
 def _stop_docker():
     global _docker_running
