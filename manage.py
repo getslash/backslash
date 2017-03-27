@@ -27,6 +27,7 @@ import click
 import requests
 import logbook
 import logbook.compat
+import multiprocessing
 
 ##### ACTUAL CODE ONLY BENEATH THIS POINT ######
 
@@ -62,6 +63,8 @@ def docker_start():
     from flask_app.app import create_app
     from flask_app.models import db
     import flask_migrate
+    import gunicorn.app.base
+
 
     _ensure_conf()
 
@@ -72,9 +75,33 @@ def docker_start():
     with app.app_context():
         flask_migrate.upgrade()
 
-    gunicorn_bin = from_env_bin('gunicorn')
-    cmd = [gunicorn_bin, 'flask_app.wsgi:app', '--bind', '0.0.0.0:8000', '--chdir', from_project_root('.')]
-    os.execv(gunicorn_bin, cmd)
+    workers_count = (multiprocessing.cpu_count() * 2) + 1
+
+    class StandaloneApplication(gunicorn.app.base.BaseApplication):
+
+        def __init__(self, app, options=None):
+            self.options = options or {}
+            self.application = app
+            super(StandaloneApplication, self).__init__()
+
+        def load_config(self):
+            config = dict([(key, value) for key, value in self.options.items()
+                           if key in self.cfg.settings and value is not None])
+            for key, value in config.items():
+                self.cfg.set(key.lower(), value)
+
+        def load(self):
+            return self.application
+
+    options = {
+        'bind': '0.0.0.0:8000',
+        'workers': workers_count,
+    }
+    logbook.StderrHandler(level=logbook.DEBUG).push_application()
+    if app.config['TESTING']:
+        logbook.warning('Testing mode is active!')
+    StandaloneApplication(app, options).run()
+
 
 
 @cli.command(name='docker-nginx-start')
