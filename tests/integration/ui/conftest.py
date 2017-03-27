@@ -42,31 +42,13 @@ class _UI:
         self.driver.implicitly_wait(10)
         self.url = integration_url
         self.driver.get(self.url)
-        self.admin_email = 'admin@organization.com'
-        self.admin_password = 'password'
+        self.admin_email = 'admin@localhost'
+        self.admin_password = '12345678'
         self.login()
 
-    def login(self, did_setup=False):
-        try:
-            login_input = self.driver.find_element_by_id('username')
-        except NoSuchElementException:
-            if did_setup:
-                raise
-            self.setup()
-            return self.login(did_setup=True)
-
+    def login(self):
+        login_input = self.driver.find_element_by_id('username')
         login_input.send_keys(self.admin_email)
         password_input = self.driver.find_element_by_id('password')
         password_input.send_keys(self.admin_password)
         self.driver.find_element_by_class_name('btn-success').click()
-
-    def setup(self):
-
-        admin_email = self.driver.find_element_by_id('admin-email')
-        admin_email.send_keys(self.admin_email)
-        for i in range(2):
-            input = self.driver.find_element_by_id(f'admin-password-{i+1}')
-            input.send_keys(self.admin_password)
-
-        btn = self.driver.find_element_by_class_name('btn-lg')
-        btn.click()
