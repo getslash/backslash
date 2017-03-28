@@ -18,6 +18,7 @@ RUN apt-get -y install nginx
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get -y install nodejs
+RUN npm --version
 
 RUN add-apt-repository ppa:fkrull/deadsnakes
 RUN apt-get update

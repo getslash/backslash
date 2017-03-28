@@ -48,4 +48,5 @@ install:
 script:
   # frontend test
   - python manage.py ember test
-  - travis_retry .env/bin/py.test tests --app-url http://127.0.0.1:8000
+  - .env/bin/py.test tests
+  - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000
