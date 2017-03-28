@@ -1,31 +1,20 @@
 import pytest
 
 from munch import Munch
-
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-from selenium.common.exceptions import NoSuchElementException
-
 from ..utils import run_suite
 
 
 @pytest.fixture(scope='session')
-def recorded_session(recorded_sessions):
-    return recorded_sessions.successful
-
-
-@pytest.fixture(scope='session')
-def recorded_sessions(request, integration_url):
-    run_suite(integration_url)
-
-    return Munch({'successful': None})
-
+def recorded_session(integration_url):
+    session_id = run_suite(integration_url)
+    return Munch(id=session_id)
 
 @pytest.fixture
-def ui(has_selenium, selenium, integration_url):
+def ui_session(recorded_session, ui):
+    return ui.driver.find_element_by_css_selector('a.item.session')
+
+@pytest.fixture
+def ui(has_selenium, selenium, integration_url): # pylint: disable=unused-argument
     return _UI(selenium, integration_url)
 
 @pytest.fixture

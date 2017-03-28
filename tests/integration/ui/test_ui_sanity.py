@@ -4,5 +4,5 @@ def test_logout(ui):
     assert ui.driver.find_element_by_id('username')
 
 
-def test_recorded_sessions_visible(recorded_session):
+def test_recorded_sessions_visible(ui_session):
     pass
