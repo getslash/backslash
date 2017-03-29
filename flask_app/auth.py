@@ -6,6 +6,7 @@ from flask_security import SQLAlchemyUserDatastore
 from itsdangerous import BadSignature, TimedSerializer
 
 from flask_login import logout_user
+from flask_simple_api import error_abort
 from flask_security.utils import login_user, verify_password
 
 from .config import get_runtime_config_private_dict
@@ -44,7 +45,7 @@ def login():
 
     credentials = request.get_json(silent=True)
     if not isinstance(credentials, dict):
-        abort(requests.codes.bad_request)
+        error_abort('Credentials provided are not a JSON object')
 
     if credentials.get('username'):
         return _login_with_credentials(credentials)
@@ -53,7 +54,7 @@ def login():
     if auth_code:
         return _login_with_google_oauth2(auth_code)
 
-    abort(requests.codes.unauthorized)
+    error_abort('No credentials were specified', code=requests.codes.unauthorized)
 
 
 def _login_with_credentials(credentials):
@@ -82,9 +83,14 @@ def _fix_email(email, runtime_config):
 
 def _login_with_ldap(email, password, config):
     _logger.debug('Attempting login via LDAP for {}...', email)
+
+    _login_failed = faunctools.partial(
+        error_abort,
+        'Username or password are incorrect for {}'.format(email), code=requests.codes.unauthorized)
+
     if not config['ldap_login_enabled'] or not email or not password:
         _logger.debug('Rejecting login because LDAP is disabled or no username/password')
-        abort(requests.codes.unauthorized)
+        _login_failed()
 
     try:
 
@@ -93,7 +99,8 @@ def _login_with_ldap(email, password, config):
         ldap_infos = ldap_obj.search_s(config['ldap_base_dn'], ldap.SCOPE_SUBTREE, 'userPrincipalName={}'.format(email))
         if not ldap_infos:
             _logger.error('Could not authenticate via LDAP - no records found')
-            abort(requests.codes.unauthorized)
+            _login_failed()
+
         ldap_info = ldap_infos[0][1]
         user_info = {
             'email': ldap_info['mail'][0].decode('utf-8'),
@@ -105,13 +112,13 @@ def _login_with_ldap(email, password, config):
         return _make_success_login_response(user, user_info)
     except ldap.INVALID_CREDENTIALS:
         _logger.error('LDAP Invalid credentials', exc_info=True)
-        abort(requests.codes.unauthorized)
+        _login_failed()
 
 
 def _login_with_google_oauth2(auth_code):
     user_info = get_oauth2_identity(auth_code)
     if not user_info:
-        abort(requests.codes.unauthorized)
+        error_abort('Could not complete OAuth2 exchange', code=requests.codes.unauthorized)
 
     _check_alowed_email_domain(user_info)
 
@@ -143,12 +150,12 @@ def _make_success_login_response(user, user_info=None):
 def reauth():
     token = (request.json or {}).get('auth_token')
     if token is None:
-        abort(requests.codes.bad_request)
+        error_abort('Missing reauth token')
     try:
         token_data = _get_token_serializer().loads(
             token, max_age=_MAX_TOKEN_AGE)
     except BadSignature:
-        abort(requests.codes.unauthorized)
+        error_abort('Reauth token invalid', code=requests.codes.unauthorized)
     user = User.query.get_or_404(token_data['user_id'])
 
     login_user(user)
@@ -179,8 +186,8 @@ def get_or_create_user(user_info):
         user_datastore.db.session.commit()
 
     if user.first_name is None:
-        user.first_name = user_info.get('given_name', None)
-        user.last_name = user_info.get('family_name', None)
+        user.first_name = user_info.get('given_name', user_info.get('first_name'))
+        user.last_name = user_info.get('family_name', user_info.get('last_name'))
         user_datastore.db.session.commit()
 
     user_info['user_id'] = user.id
@@ -200,5 +207,4 @@ def _check_alowed_email_domain(user_info):
     if allowed is None:
         return
     if domain not in allowed:
-        _logger.error('User {} has a disallowed email domain!', email)
-        abort(requests.codes.unauthorized)
+        error_abort('Disallowed email domain for {}'.format(email), code=requests.codes.unauthorized)
