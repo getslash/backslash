@@ -32,17 +32,23 @@ before_install:
   - nvm install node
 
 install:
+  # db and env setup
   - psql -c 'create database backslash;' -U postgres
   - pip install virtualenv
-  - mkdir static
-  - touch static/index.html
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
+
+  # install latest backlash-python
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
+
+  # build and run docker-compose setup in testing mode
   - sudo docker-compose -f docker/docker-compose.yml build
-  - sudo docker-compose -f docker/docker-compose.yml up -d
+  - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
 
 script:
+  # frontend test
   - python manage.py ember test
+  # build the frontend to make sure we can serve '/' in the unit tests
   - python manage.py frontend build
-  - travis_retry .env/bin/py.test tests --app-url http://127.0.0.1:8000
+  - .env/bin/py.test tests
+  - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000

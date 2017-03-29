@@ -10,4 +10,10 @@ def test_oauth_client_id(app_config):
 
 @pytest.fixture
 def app_config(client):
+    cfg = client.api.call.get_app_config()
+    if cfg['setup_needed']:
+        client.api.call.setup(config={
+            'admin_email': 'admin@localhost',
+            'admin_password': '123456',
+        })
     return client.api.call.get_app_config()

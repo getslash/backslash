@@ -164,13 +164,6 @@ def invalidate_cache():
     cache.invalidate()
 
 
-def pytest_addoption(parser):
-    parser.addoption("--app-url", action="store", default=None,
-                     help="Integration App URL")
-    parser.addoption("--start-docker", action="store_true", default=False)
-
-
-
 @pytest.fixture(scope='session', autouse=True)
 def redirect_logging():
     logbook.compat.redirect_logging()

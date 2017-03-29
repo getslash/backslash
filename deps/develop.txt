@@ -1,5 +1,6 @@
 pytest
 pytest-cov
+pytest-selenium
 Flask-Loopback
 backslash>=2.15.0
 tmuxp
