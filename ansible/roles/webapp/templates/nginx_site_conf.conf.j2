@@ -23,7 +23,7 @@ server {
     }
 
     location ~ /rest/tracebacks/(..)(.*) {
-    	add_header Content-Type application/json;
+    	default_type application/json;
         add_header Content-Encoding gzip;
         gzip off;
         alias /opt/backslash/tracebacks/$1/$1$2.gz;
