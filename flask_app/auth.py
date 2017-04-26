@@ -1,12 +1,13 @@
+import functools
 import ldap
 import logbook
 import requests
 from flask import (abort, Blueprint, current_app, jsonify, request)
-from flask_security import SQLAlchemyUserDatastore
 from itsdangerous import BadSignature, TimedSerializer
 
 from flask_login import logout_user
 from flask_simple_api import error_abort
+from flask_security import SQLAlchemyUserDatastore
 from flask_security.utils import login_user, verify_password
 
 from .config import get_runtime_config_private_dict
