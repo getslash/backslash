@@ -84,7 +84,7 @@ def _fix_email(email, runtime_config):
 def _login_with_ldap(email, password, config):
     _logger.debug('Attempting login via LDAP for {}...', email)
 
-    _login_failed = faunctools.partial(
+    _login_failed = functools.partial(
         error_abort,
         'Username or password are incorrect for {}'.format(email), code=requests.codes.unauthorized)
 
