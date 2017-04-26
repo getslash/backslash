@@ -79,7 +79,7 @@ def report_test_start(
         name: str,
         file_name: (str, NoneType)=None,
         class_name: (str, NoneType)=None,
-        test_logical_id: str=None,
+        test_logical_id: (str, NoneType)=None,
         scm: (str, NoneType)=None,
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
