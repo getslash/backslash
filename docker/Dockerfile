@@ -36,8 +36,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # build frontend
-RUN npm install -g ember-cli
-RUN npm install -g bower
+RUN npm install -g ember-cli bower
 
 ADD ./webapp/ /tmp/frontend/
 RUN cd /tmp/frontend/ && npm install && bower install --allow-root
