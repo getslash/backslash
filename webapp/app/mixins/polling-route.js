@@ -17,5 +17,10 @@ export default Ember.Mixin.create({
 	    }
         }
     }).on('init'),
+    actions: {
+    error: function () {
+      return false;
+    }
+  }
 
 });

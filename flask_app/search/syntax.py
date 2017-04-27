@@ -7,6 +7,7 @@ from .exceptions import UnknownField, UnknownOperator, SearchSyntaxError
 from pyparsing import infixNotation, opAssoc, Word, alphanums, oneOf, Keyword, ParseException, Suppress, Group
 
 import sqlalchemy
+from sqlalchemy.sql.elements import BinaryExpression, UnaryExpression
 
 import logbook
 
@@ -80,11 +81,17 @@ def _handle_binop(tokens):
 
 
 def _handle_and(tokens):
-    return functools.reduce(sqlalchemy.and_, list(tokens)[0][::2])
+    return functools.reduce(sqlalchemy.and_, [_handle_logical_argument(arg) for arg in list(tokens)[0][::2]])
 
 
 def _handle_or(tokens):
-    return functools.reduce(sqlalchemy.or_, list(tokens)[0][::2])
+    return functools.reduce(sqlalchemy.or_, [_handle_logical_argument(arg) for arg in list(tokens)[0][::2]])
+
+def _handle_logical_argument(arg):
+    if not isinstance(arg, (BinaryExpression, UnaryExpression, bool)):
+        assert isinstance(arg, str)
+        arg = get_current_logic().get_fallback_filter(arg)
+    return arg
 
 alphanums_plus = alphanums + '_-/@.:'
 identifier = Word(alphanums_plus)

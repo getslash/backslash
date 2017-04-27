@@ -19,6 +19,7 @@
     "Faker": "~3.1.0",
     "ember-qunit-notifications": "0.1.0",
     "loader.js": "ember-cli/loader.js#3.4.0",
-    "showdown": "^1.5.4"
+    "showdown": "^1.5.4",
+    "Heyoffline": "^1.1.1"
   }
 }

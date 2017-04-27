@@ -2,6 +2,7 @@ import functools
 
 import requests
 from flask import request, abort, g
+from flask_simple_api import error_abort
 from flask_login import login_user, logout_user, current_user
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -49,7 +50,7 @@ def requires_login_or_runtoken(func, allow_runtoken=True):
     def new_func(*args, **kwargs):
         if not current_user.is_authenticated:
             if not allow_runtoken:
-                abort(requests.codes.unauthorized)
+                error_abort('Run token not alowed for API', code=requests.codes.unauthorized)
             g.token_user = _get_user_from_run_token()
         try:
             return func(*args, **kwargs)
