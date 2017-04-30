@@ -13,7 +13,9 @@ export default Ember.Mixin.create({
 	    let pred = self.should_auto_refresh;
 
 	    if (pred !== undefined && pred.bind(self)()) {
-		self.refresh();
+                Ember.run.once(function() {
+		    self.refresh();
+                });
 	    }
         }
     }).on('init'),
