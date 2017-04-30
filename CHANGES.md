@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.6.3
+
+* Many small UI/UX fixes and tweaks
+
 ## Version 2.6.0
 
 * Support test parameters display for parameetrized tests
