@@ -19,15 +19,20 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ScrollToTopMixin, Pol
       });
     },
 
+    refresh() {
+        this._super();
+        this.modelFor('session').session_model.reload();
+    },
+
     should_auto_refresh: function() {
 	const end_time = this.modelFor('session').session_model.get('end_time');
 	return end_time === null;
     },
 
     setupController: function(controller, model) {
-      this._super(controller, model);
-      controller.setProperties(model);
-      this.get('offline');
+        this._super(controller, model);
+        controller.setProperties(model);
+        this.get('offline');
     },
 
     resetController(controller) {
