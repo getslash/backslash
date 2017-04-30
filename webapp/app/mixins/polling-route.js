@@ -8,14 +8,17 @@ export default Ember.Mixin.create({
 
     refresh_loop: task(function * () {
         let self = this;
+
+        let callback = function() {
+	    self.refresh();
+        }
+        
         while (true) {
             yield timeout(self.get('INTERVAL_SECONDS') * 1000);
 	    let pred = self.should_auto_refresh;
 
 	    if (pred !== undefined && pred.bind(self)()) {
-                Ember.run.once(function() {
-		    self.refresh();
-                });
+                Ember.run.once(callback);
 	    }
         }
     }).on('init'),
