@@ -11,7 +11,7 @@ export default Ember.Mixin.create({
 
         let callback = function() {
 	    self.refresh();
-        }
+        };
         
         while (true) {
             yield timeout(self.get('INTERVAL_SECONDS') * 1000);
