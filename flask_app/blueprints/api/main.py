@@ -12,7 +12,6 @@ from sqlalchemy.exc import DataError
 
 from .blueprint import API
 from ... import activity
-from ... import stats
 from ... import models
 from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
@@ -293,24 +292,6 @@ def get_user_run_tokens(user_id: int):
     if not has_role(current_user, 'admin') and current_user.id != user_id:
         abort(requests.codes.forbidden)
     return [t.token for t in User.query.get_or_404(user_id).run_tokens]
-
-################################################################################
-## Stats
-
-@API(require_real_login=True)
-@requires_role('admin')
-def get_admin_stats():
-    history = []
-    for stat in models.Stat.query.order_by('timestamp asc').all():
-        item = {'timestamp': stat.timestamp}
-        item.update({name: getattr(stat, 'stat_' + name) for name in stats.iter_stat_names()})
-        history.append(item)
-    returned = {
-        'current': stats.get_current_stats_dict(),
-        'history': history,
-        'cpu_count': multiprocessing.cpu_count(),
-    }
-    return returned
 
 
 ################################################################################

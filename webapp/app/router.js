@@ -38,7 +38,6 @@ Router.map(function() {
   this.route('subjects');
   this.route('subject', { path: '/subjects/:name' });
   this.route('test_info', { path: '/test_info/:id' });
-  this.route('stats');
   this.route('component-proofing');
   this.route('setup');
   this.route('not-found', { path: '/*:unknown' });

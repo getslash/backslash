@@ -29,6 +29,4 @@ CAPABILITIES = {
     'comment_test': _ALL,
     'comment_session': _ALL,
     'edit_user_roles': _ADMINS,
-    'view_platform_stats': _ADMINS,
-    'view_stats': _MODERATORS,
 }
