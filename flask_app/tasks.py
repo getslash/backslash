@@ -26,13 +26,6 @@ queue.conf.update(
     CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
     CELERY_RESULT_SERIALIZER='json',
     CELERY_ENABLE_UTC=True,
-    CELERYBEAT_SCHEDULE={
-        'stats': {
-            'task': 'flask_app.tasks.collect_stats',
-            'schedule': timedelta(seconds=stats.SAMPLE_FREQENCY_SECONDS),
-        },
-    },
-
 )
 
 def setup_log(**args):
@@ -66,9 +59,3 @@ def needs_app_context(f):
 
 after_setup_logger.connect(setup_log)
 after_setup_task_logger.connect(setup_log)
-
-@queue.task
-@needs_app_context
-def collect_stats():
-    logbook.info('bla')
-    stats.collect_stats()
