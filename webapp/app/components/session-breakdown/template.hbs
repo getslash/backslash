@@ -25,6 +25,14 @@
   </div>
 {{/if}}
 
+{{#if session.num_interrupted_tests}}
+  <div class="interrupted">
+    {{#elements/tool-tip title=(concat session.num_interrupted_tests " interrupted tests")}}
+    <i class="fa fa-exclamation-circle"></i> {{session.num_interrupted_tests}}
+    {{/elements/tool-tip}}
+  </div>
+{{/if}}
+
 {{#with (sub (or session.total_num_tests session.num_finished_tests) session.num_finished_tests) as |num_not_run|}}
   <div class="not-run">
     {{#elements/tool-tip title=(concat num_not_run " tests not run")}}

@@ -1,13 +1,16 @@
 {{#tool-bar}}
-  {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
+  <div class="filter-controls">
+{{outlet "filter-controls"}}
+  </div>
   {{#if (not hide_search)}}
     <form class="navbar-form" role="search">
-      <div class="input-group col-xs-6 {{if error 'has-error'}}">
-        {{input class="form-control search-bar" placeholder="Search for..." value=entered_search}}
-      </div>
+      {{#escape-focus}}
+        {{input class="form-control search-bar" id="search-field" placeholder="Search for..." value=entered_search}}
+      {{/escape-focus}}
       <div class="input-group">
         <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
       </div>
+
       {{#search-help}}
         <table class="table table-striped">
           <tbody>
@@ -30,6 +33,10 @@
             <tr>
               <td><code>subject = microwave01</code></td>
               <td>Find sessions which ran on <code>microwave01</code></td>
+            </tr>
+            <tr>
+              <td><code>related = some_related</code></td>
+              <td>Find tests which with <code>some_related</code></td>
             </tr>
             <tr>
               <td><code>product_version = 1.0.0</code></td>
@@ -55,5 +62,9 @@
     results=sessions
     page=(mut page)
     page_size=(mut page_size)
+    show_successful=show_successful
+    show_unsuccessful=show_unsuccessful
+    show_abandoned=show_abandoned
+    show_skipped=show_skipped
   }}
 {{/if}}

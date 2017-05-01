@@ -7,6 +7,7 @@ from ...models import db
 
 @API(generates_activity=False)
 def quick_search(term: str):
+    term = term.strip()
     num_hits = 10
     query = text(
         """SELECT * from
