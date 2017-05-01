@@ -32,7 +32,7 @@ def report_session_start(logical_id: str=None,
     # fix user identification
     if user_email is not None and user_email != g.token_user.email:
         if not has_role(g.token_user.id, 'proxy'):
-            error_abort('User is not authorized to run tests on others behalf',
+            error_abort('User {} is not authorized to run tests on others behalf. Tried running as {}'.format(g.token_user.email, user_email),
                         code=requests.codes.forbidden)
         real_user_id = g.token_user.id
         user_id = get_or_create_user({'email': user_email}).id

@@ -79,7 +79,7 @@ def report_test_start(
         name: str,
         file_name: (str, NoneType)=None,
         class_name: (str, NoneType)=None,
-        test_logical_id: str=None,
+        test_logical_id: (str, NoneType)=None,
         scm: (str, NoneType)=None,
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
@@ -168,6 +168,9 @@ def updating_session_counters(test):
         if was_running:
             session_update[
                 'num_finished_tests'] = Session.num_finished_tests + 1
+
+        if test.interrupted and was_running:
+            session_update['num_interrupted_tests'] = Session.num_interrupted_tests + 1
 
         if test.errored and (was_running or was_success):
             session_update['num_error_tests'] = Session.num_error_tests + 1
