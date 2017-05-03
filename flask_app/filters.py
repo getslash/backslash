@@ -14,6 +14,8 @@ def filter_by_statuses(cursor, model):
         cursor = cursor.filter(model.status.in_((statuses.SUCCESS, statuses.SKIPPED, statuses.RUNNING)))
     if not _get_boolean_filter('show_successful', True):
         cursor = cursor.filter(model.status != statuses.SUCCESS)
+    if not _get_boolean_filter('show_planned', False):
+        cursor = cursor.filter(model.status != statuses.PLANNED)
     if not _get_boolean_filter('show_abandoned', True):
         if model is not Test:
             cursor = cursor.filter(

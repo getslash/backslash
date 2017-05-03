@@ -27,6 +27,12 @@ export default Ember.Mixin.create({
         }
     },
 
+    filter_none_except(filter_name) {
+        for (let name of this.get_filters()) {
+            this.set('show_' + name, name !== filter_name);
+        }
+    },
+
     get_filters() {
         let returned = [];
 

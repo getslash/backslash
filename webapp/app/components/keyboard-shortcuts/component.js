@@ -170,7 +170,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
         filter_none() {
             this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
-                controller.filter_none();
+                controller.filter_none_except('planned');
             });
         },
 

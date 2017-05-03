@@ -6,7 +6,11 @@ import StatusFilterableRoute from '../../mixins/status-filterable/route';
 export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, StatusFilterableRoute, {
 
     title: 'Session',
-
+    queryParams: {
+        show_planned: {
+            refreshModel: true
+        },
+    },
 
     model: function(params) {
         let session = this.modelFor('session').session_model;
