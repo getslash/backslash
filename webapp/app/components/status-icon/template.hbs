@@ -6,7 +6,7 @@
     <i class="fa fa-share"></i>
   {{else}}
     {{#if (eq status_lower "running")}}
-      <i class="fa fa-spin fa-circle-o-notch faint"></i>
+      {{animated-spinner}}
     {{else}}
       <i class="fa fa-times"></i>
     {{/if}}

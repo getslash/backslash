@@ -34,6 +34,7 @@ module.exports = function(defaults) {
   app.import('bower_components/js-md5/js/md5.min.js');
   app.import('bower_components/moment/moment.js');
   app.import('bower_components/twix/dist/twix.min.js')
+  app.import('bower_components/Heyoffline/heyoffline.js')
 
 
   var mergeTrees = require('broccoli-merge-trees');

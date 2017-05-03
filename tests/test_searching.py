@@ -25,6 +25,8 @@ def test_parsing_simple_exression():
     'start_time < "12/1/2016"',
     'start_time = "26/11/2016 13:08:40"',
     "start_time = '26/11/2016 13:08:40'",
+    'user=some_identifier and user=vmalloc@gmail.com',
+
 ])
 def test_test_search(q):
     query = get_orm_query_from_search_string('test', q)

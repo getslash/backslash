@@ -120,7 +120,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     num_error_tests = db.Column(db.Integer, default=0)
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
-
+    num_interrupted_tests = db.Column(db.Integer, server_default="0")
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
     num_test_warnings = db.Column(db.Integer, nullable=False, server_default="0")
 

@@ -16,7 +16,7 @@
 </table>
 
 {{#if loading}}
-  <i class="fa fa-refresh fa-spin fa-5x faint"></i>
+  {{animated-spinner}}
 {{else}}
   {{#if (and error.traceback_url (not error.traceback))  }}
     <div class="box error">

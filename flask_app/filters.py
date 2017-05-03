@@ -4,7 +4,7 @@ import sqlalchemy
 
 from flask import request
 
-from .models import Test
+from .models import Test, Session
 
 from .utils import statuses
 
@@ -23,7 +23,10 @@ def filter_by_statuses(cursor, model):
                         model.next_keepalive != None,
                         model.next_keepalive < flux.current_timeline.time())))
     if not _get_boolean_filter('show_skipped', True):
-        cursor = cursor.filter(model.status != statuses.SKIPPED)
+        if model is Session:
+            cursor = cursor.filter(model.num_skipped_tests == 0)
+        elif model is Test:
+            cursor = cursor.filter(model.status != statuses.SKIPPED)
     return cursor
 
 def _get_boolean_filter(name, default):

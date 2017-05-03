@@ -51,18 +51,6 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
         return (this.get('status') === 'SUCCESS');
     }.property('status'),
 
-    is_unsuccessful: function() {
-        let status = this.get('status').toLowerCase();
-        switch (status) {
-        case 'error':
-        case 'failure':
-        case 'failed':
-            return true;
-        default:
-            return false;
-        }
-    }.property('status'),
-
 
     is_skipped: function() {
         return (this.get('status') === 'SKIPPED');

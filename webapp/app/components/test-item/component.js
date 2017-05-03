@@ -6,7 +6,7 @@ export default Ember.Component.extend({
     tagName: 'a',
     classNames: ['item', 'test', 'clickable'],
 
-    classNameBindings: ['test.computed_status', 'has_any_error:unsuccessful'],
+    classNameBindings: ['test.computed_status', 'test.has_any_error:unsuccessful'],
 
     test: Ember.computed.oneWay('item'),
     session_model: null,
