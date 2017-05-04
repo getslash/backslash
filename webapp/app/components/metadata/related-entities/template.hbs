@@ -3,7 +3,7 @@
     <tbody>
       {{#each-in groups as |name value|}}
         <tr>
-          <td>{{pluralize-word value.length name omitCount=true}}</td>
+          <td>{{pluralize value.length name omitCount=true}}</td>
           {{# if (eq value.length 1)}}
             <td>{{value}}</td>
           {{ else }}
