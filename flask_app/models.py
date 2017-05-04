@@ -597,24 +597,6 @@ class Activity(db.Model, TypenameMixin):
         return '<{} {} {}>'.format(self.user_id, self.action_string(), self.what())
 
 
-class Stat(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    timestamp = db.Column(db.Float, default=get_current_time, index=True)
-
-    __table_args__ = (
-        Index('ix_stat_timestamp', timestamp.desc()),
-    )
-
-    ### statistics
-    stat_db_size = db.Column(db.BIGINT, server_default="0")
-    stat_num_new_sessions = db.Column(db.Integer, server_default="0")
-    stat_system_load_avg = db.Column(db.Float, server_default="0")
-    stat_num_redis_keys = db.Column(db.Integer, server_default="0")
-    stat_redis_memory_usage = db.Column(db.Integer, server_default="0")
-
-
 class UserPreference(db.Model):
 
     user_id = db.Column(
