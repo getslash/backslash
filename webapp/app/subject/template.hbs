@@ -1,6 +1,6 @@
 {{#tool-bar}}
   <p class="navbar-text">
-    Subjects / {{subject.name}}
+    {{capitalize (pluralize (display-name "subject"))}} / {{subject.name}}
   </p>
 
   {{outlet "filter-controls"}}

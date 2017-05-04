@@ -19,5 +19,10 @@ export default Ember.Service.extend({
 	});
     },
 
+    get_cached(name) {
+
+        return this.get(`_cache.${name}`);
+    },
+
 
 });

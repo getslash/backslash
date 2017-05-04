@@ -1,5 +1,7 @@
 from sqlalchemy.sql import text
 
+from flask import current_app
+
 from .blueprint import API
 
 from ...models import db
