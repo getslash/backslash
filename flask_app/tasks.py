@@ -15,7 +15,6 @@ from celery.log import redirect_stdouts_to_logger
 
 
 from .app import create_app
-from . import stats
 
 _logger = logbook.Logger(__name__)
 
