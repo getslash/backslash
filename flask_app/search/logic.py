@@ -1,7 +1,9 @@
 import threading
 import operator
 
+from flask import current_app
 from sqlalchemy import func
+
 from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision
 from . import value_parsers
 from .exceptions import UnknownField
@@ -67,6 +69,13 @@ class SearchContext(object):
         return returned
 
     def resolve_search_clause(self, lhs, op, rhs):
+
+        if lhs != 'subject' and lhs == current_app.config['display_names']['subject']:
+            return self.resolve_search_clause('subject', op, rhs)
+
+        if lhs != 'related' and lhs == current_app.config['display_names']['related_entity']:
+            return self.resolve_search_clause('related', op, rhs)
+
         field = self.SEARCHABLE_FIELDS.get(lhs)
         if field is True:
             field = getattr(self.MODEL, lhs)
