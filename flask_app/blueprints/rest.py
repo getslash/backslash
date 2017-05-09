@@ -214,7 +214,7 @@ def get_traceback(uuid):
     return Response(sender(), headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/json'})
 
 
-def _get_traceback_path(traceback_uuid):
+def _get_traceback_path(uuid):
     return os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
 
 

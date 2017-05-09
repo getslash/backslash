@@ -1,3 +1,4 @@
+from contextlib import ExitStack, contextmanager
 import gzip
 import json
 import os
@@ -67,11 +68,11 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
 def upload_traceback(error_id):
     error = Error.query.get_or_404(error_id)
     if error.traceback_url is not None:
-        error_abort('Error already has an associated traceback')
+        error_abort('Error already has an associated traceback', requests.codes.conflict)
     temporary_location = os.path.join(current_app.config['TRACEBACK_DIR'], 'incomplete', str(error.id))
     _ensure_dir(os.path.dirname(temporary_location))
     try:
-        with open(temporary_location, 'wb') as outfile:
+        with _compressed_output(request.stream, temporary_location) as outfile:
             shutil.copyfileobj(request.stream, outfile)
         url, location = _get_new_traceback_save_location()
         _ensure_dir(os.path.dirname(location))
@@ -84,6 +85,20 @@ def upload_traceback(error_id):
     db.session.add(error)
     db.session.commit()
     return jsonify({'traceback_url': error.traceback_url})
+
+
+@contextmanager
+def _compressed_output(input_stream, output_path):
+    header = input_stream.read(3)
+    with ExitStack() as stack:
+        f = stack.enter_context(open(output_path, 'wb'))
+        if header != b'\x1f\x8b\x08':
+            # not compressed already
+            f = stack.enter_context(gzip.GzipFile(fileobj=f))
+
+        f.write(header)
+        yield f
+
 
 
 def _normalize_traceback_get_url(traceback_json):
