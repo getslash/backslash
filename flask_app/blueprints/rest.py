@@ -196,11 +196,12 @@ class ErrorResource(ModelResource):
             return Error.query.filter_by(test_id=args.test_id)
         abort(requests.codes.bad_request)
 
+
 @blueprint.route('/tracebacks/<uuid>')
 def get_traceback(uuid):
     if not current_app.config['DEBUG'] and not current_app.config['TESTING']:
         abort(requests.codes.not_found)
-    path = os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
+    path = _get_traceback_path(uuid)
     if not os.path.isfile(path):
         abort(requests.codes.not_found)
     def sender():
@@ -211,6 +212,10 @@ def get_traceback(uuid):
                     break
                 yield buff
     return Response(sender(), headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/json'})
+
+
+def _get_traceback_path(traceback_uuid):
+    return os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
 
 
 @_resource('/users', '/users/<object_id>')
