@@ -43,7 +43,7 @@ def suite(name, args, interactive=False, debug=False, use_subjects=False, use_re
                 self.session.add_related_entity(entity_type='toaster', entity_name='toaster01')
 
 
-    plugin = _Plugin('http://127.0.0.1:8000', keepalive_interval=10)
+    plugin = _Plugin('http://127.0.0.1:8000', keepalive_interval=10, propagate_exceptions=True)
 
     @gossip.register('backslash.session_start')
     def configure(session):
