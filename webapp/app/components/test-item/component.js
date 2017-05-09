@@ -13,8 +13,13 @@ export default Ember.Component.extend({
 
   test: Ember.computed.oneWay("item"),
   session_model: null,
-
   is_running: Ember.computed.equal("test.computed_status", "running"),
+
+  is_parallel_view: function() {
+      return (this.get('test.session_id').toString() === this.get('session_model.id'));
+}.property('session_model', 'test'),
+
+
 
   href: function() {
     let returned = `/#/sessions/${this.get("test.session_display_id")}/tests/${this.get("test.display_id")}`;

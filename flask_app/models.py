@@ -88,7 +88,11 @@ session_subject = db.Table('session_subject',
 class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
-    logical_id = db.Column(db.String(256), index=True)
+    logical_id = db.Column(db.String(256), unique=True, index=True)
+
+    parent_logical_id = db.Column(db.String(256), db.ForeignKey('session.logical_id'), default=None, index=True)
+    children = db.relationship('Session', backref=backref('parent', remote_side=[logical_id]))
+
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None, index=True)
     hostname = db.Column(db.String(100))

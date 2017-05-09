@@ -207,8 +207,11 @@ def updating_session_counters(test):
             session_update['num_skipped_tests'] = Session.num_skipped_tests + 1
 
     if session_update:
-        Session.query.filter(
-            Session.id == test.session_id).update(session_update)
+        session = Session.query.filter(Session.id == test.session_id)
+        session.update(session_update)
+        parent_session = session.first().parent
+        if parent_session:
+            Session.query.filter(Session.id == parent_session.id).update(session_update)
 
 
 @API

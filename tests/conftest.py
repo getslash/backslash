@@ -60,6 +60,17 @@ def advance_timeline():
 
 
 @pytest.fixture
+def started_parallel_session(client):
+    parent_logical_id = str(uuid4())
+    child_logical_id = str(uuid4())
+    parent_session = client.report_session_start(logical_id=parent_logical_id)
+    assert parent_session
+    child_session = client.report_session_start(parent_logical_id=parent_logical_id, logical_id=child_logical_id)
+    assert child_session
+    return (parent_session, child_session)
+
+
+@pytest.fixture
 def started_session(client):
     return client.report_session_start()
 

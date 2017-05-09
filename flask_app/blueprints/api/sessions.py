@@ -4,7 +4,7 @@ from flask import g, request
 from flask_simple_api import error_abort
 
 from sqlalchemy.orm.exc import NoResultFound
-
+from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
 from ...models import Session, db, SessionMetadata
@@ -17,8 +17,9 @@ from .blueprint import API
 NoneType = type(None)
 
 
-@API
+@API(version=2)
 def report_session_start(logical_id: str=None,
+                         parent_logical_id: (NoneType, str)=None,
                          hostname: str=None,
                          total_num_tests: int=None,
                          metadata: dict=None,
@@ -43,6 +44,7 @@ def report_session_start(logical_id: str=None,
 
     returned = Session(
         hostname=hostname,
+        parent_logical_id=parent_logical_id,
         total_num_tests=total_num_tests,
         infrastructure=infrastructure,
         user_id=user_id,
@@ -74,8 +76,14 @@ def report_session_start(logical_id: str=None,
                 session=returned, key=key, metadata_item=value))
 
     db.session.add(returned)
-    db.session.commit()
     metrics.num_new_sessions.increment()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        if parent_logical_id:
+            Session.query.filter_by(logical_id=parent_logical_id).first_or_404()
+        error_abort('Tried to report a session which conflicts with an existing session', code=requests.codes.conflict)
     return returned
 
 
@@ -134,5 +142,7 @@ def report_session_interrupted(id: int):
         error_abort('Ended session cannot be marked as interrupted',
                     code=requests.codes.conflict)
     s.status = statuses.INTERRUPTED
+    if s.parent:
+        s.parent.status = statuses.INTERRUPTED
     db.session.add(s)
     db.session.commit()

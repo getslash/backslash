@@ -53,9 +53,13 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
                     obj.session.num_failed_tests = Session.num_failed_tests + 1
                 elif not is_failure and obj.status != statuses.ERROR:
                     if obj.status == statuses.FAILURE:
-                        db.session.num_failed_tests = Session.num_failed_tests - 1
+                        obj.session.num_failed_tests = Session.num_failed_tests - 1
+                        if obj.session.parent:
+                            obj.session.parent.num_failed_tests = obj.session.parent.num_failed_tests + 1
                     obj.status = statuses.ERROR
                     obj.session.num_error_tests = Session.num_error_tests + 1
+                    if obj.session.parent:
+                        obj.session.parent.num_error_tests = obj.session.parent.num_error_tests + 1
         db.session.add(obj)
 
     except NoResultFound:
