@@ -1,6 +1,13 @@
+from uuid import uuid4
 import requests
+from contextlib import ExitStack
+
+from gzip import GzipFile
+from io import TextIOWrapper
+import json
 
 import flux
+import pytest
 
 from .utils import raises_not_found
 
@@ -77,3 +84,47 @@ def test_add_error_nonexistent(nonexistent_error_container, error_data):
         nonexistent_error_container.add_error(error_data['exception'],
                                               error_data['exception_type'],
                                               error_data['traceback'])
+
+def test_add_error_stream_upload_traceback(error_container, traceback_file, error_data, compress_traceback_file):
+    error = error_container.add_error(error_data['exception'], error_data['exception_type'])
+    assert error.id
+    error_container.client.api.session.put(error.api_url.add_path('traceback'), data=traceback_file)
+    url = error.refresh().traceback_url
+    url = error_container.client.api.url.add_path(url)
+
+    traceback_file.seek(0)
+
+    got_contents = error_container.client.api.session.get(url).content
+    if compress_traceback_file:
+        assert got_contents  == GzipFile(fileobj=traceback_file).read()
+    else:
+        assert got_contents == traceback_file.read()
+
+def test_add_error_upload_not_allowed_twice(error_container, error_data, traceback_file):
+    error = error_container.add_error(error_data['exception'], error_data['exception_type'], error_data['traceback'])
+    assert error.traceback_url
+    traceback_url = error.api_url.add_path('traceback')
+    resp = error_container.client.api.session.put(traceback_url, data=traceback_file)
+    assert resp.status_code == requests.codes.conflict
+
+
+
+@pytest.fixture
+def traceback_file(error_data, tmpdir, request, compress_traceback_file):
+    path = tmpdir.join(str(uuid4()))
+
+    with ExitStack() as stack:
+        f = stack.enter_context(path.open('wb'))
+        if compress_traceback_file:
+            f = stack.enter_context(GzipFile(fileobj=f))
+        f = stack.enter_context(TextIOWrapper(f))
+
+        json.dump(error_data['traceback'], f)
+
+    returned = path.open('rb')
+    request.addfinalizer(returned.close)
+    return returned
+
+@pytest.fixture(params=[True, False])
+def compress_traceback_file(request):
+    return request.param

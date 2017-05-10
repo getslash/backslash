@@ -156,7 +156,7 @@ def patch_proxy_bypass():
     """Work around a bug causing should_bypass_proxies to take forever when VPN is active
     """
     import requests
-    requests.utils.should_bypass_proxies = lambda url: True
+    requests.utils.should_bypass_proxies = lambda url, **kw: True
 
 
 @pytest.fixture(scope='session', autouse=True)

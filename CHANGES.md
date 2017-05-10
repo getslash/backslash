@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.7.0
+
+* Backslash now supports a newer way of uploading tracebacks via streaming uploads, improving performance on large tracebacks
+* Deployment moved to Docker, ditched Ansible
+
 ## Version 2.6.3
 
 * Many small UI/UX fixes and tweaks
