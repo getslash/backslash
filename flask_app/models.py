@@ -146,14 +146,15 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
 
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
+        Index('ix_session_status_lower', func.lower(status)),
     )
 
 
     last_comment_obj = db.relationship(lambda: Comment,
                                   primaryjoin=lambda: and_(
-                                      Session.id == Comment.session_id,
+                                      Session.id == Comment.session_id, # pylint: disable=undefined-variable
                                       Comment.timestamp == select([func.max(Comment.timestamp)]).
-                                      where(Comment.session_id==Session.id).
+                                      where(Comment.session_id == Session.id).
                                       correlate(Session.__table__)
                                   ),
                                   uselist=False,
@@ -351,9 +352,9 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     first_error_obj = db.relationship(lambda: Error,
                                   primaryjoin=lambda: and_(
-                                      Test.id == Error.test_id,
+                                      Test.id == Error.test_id, # pylint: disable=undefined-variable
                                       Error.timestamp == select([func.min(Error.timestamp)]).
-                                      where(Error.test_id==Test.id).
+                                      where(Error.test_id == Test.id).
                                       correlate(Test.__table__)
                                   ),
                                   uselist=False,
@@ -370,7 +371,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
                                   primaryjoin=lambda: and_(
                                       Test.id == Comment.test_id,
                                       Comment.timestamp == select([func.max(Comment.timestamp)]).
-                                      where(Comment.test_id==Test.id).
+                                      where(Comment.test_id == Test.id).
                                       correlate(Test.__table__)
                                   ),
                                   uselist=False,
