@@ -50,6 +50,7 @@
     "ember-data": "^2.10.0",
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.5",
+    "ember-font-awesome": "3.0.5",
     "ember-infinity": "0.2.6",
     "ember-inflector": "^2.0.0",
     "ember-keyboard-shortcuts": "0.3.0",

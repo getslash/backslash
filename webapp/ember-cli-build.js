@@ -4,6 +4,9 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
   var app = new EmberApp({
+      'ember-font-awesome': {
+          useScss: true,
+      },
       'ember-cli-bootstrap-sassy': {
           'quiet': true
       },
@@ -30,7 +33,6 @@ module.exports = function(defaults) {
   // modules that you would like to import into your application
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
-  app.import('bower_components/fontawesome/css/font-awesome.min.css');
   app.import('bower_components/js-md5/js/md5.min.js');
   app.import('bower_components/moment/moment.js');
   app.import('bower_components/twix/dist/twix.min.js')
@@ -40,17 +42,11 @@ module.exports = function(defaults) {
   var mergeTrees = require('broccoli-merge-trees');
   var pickFiles = require('broccoli-static-compiler');
 
-  var fontTree = pickFiles('bower_components/fontawesome/fonts', {
-    srcDir: '/',
-    files: ['fontawesome-webfont.eot','fontawesome-webfont.ttf','fontawesome-webfont.svg','fontawesome-webfont.woff', 'fontawesome-webfont.woff2'],
-    destDir: '/fonts'
-  });
-
   var images = pickFiles('public/assets/img', {
       srcDir: '/',
       files: ['*'],
       destDir: '/img'
   });
 
-  return mergeTrees([app.toTree(), fontTree, images]);
+  return mergeTrees([app.toTree(), images]);
 };
