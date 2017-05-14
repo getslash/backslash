@@ -135,7 +135,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     # status
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
 
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
@@ -147,6 +147,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
+        Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
     )
 
 
@@ -392,7 +393,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
-    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
 
     skip_reason = db.Column(db.Text(), nullable=True)
 
@@ -404,6 +405,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
         Index('ix_test_session_id_start_time', session_id, start_time),
+        Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
     )
 
     @rendered_field
