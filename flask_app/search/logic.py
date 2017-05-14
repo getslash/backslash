@@ -9,6 +9,8 @@ from . import value_parsers
 from .exceptions import UnknownField
 from .helpers import only_ops
 
+from ..filters import builders as filter_builders
+
 _current = threading.local()
 
 
@@ -154,6 +156,14 @@ class SessionSearchContext(SearchContext):
     def search__label(self, op, value): # pylint: disable=unused-argument
         return db.session.query(session_label).join(Label).filter((session_label.c.session_id == Session.id) & (Label.name == value)).exists().correlate(Session)
 
+    @only_ops(['=', '!='])
+    def search__status(self, op, value):
+        if value in {'success', 'successful'}:
+            return _negate_maybe(op, filter_builders.build_successful_query(Session))
+        elif value in {'fail', 'failed', 'failure', 'error'}:
+            return _negate_maybe(op, filter_builders.build_unsuccessful_query(Session))
+        returned = _negate_maybe(op, filter_builders.build_status_query(Session, value))
+        return returned
 
     def get_base_query(self):
         return Session.query.join(User, Session.user_id == User.id)
@@ -165,9 +175,7 @@ class SessionSearchContext(SearchContext):
     def search__subject(self, op, value): # pylint: disable=unused-argument
         subquery = db.session.query(session_subject).join(SubjectInstance).join(Subject).filter(
             Subject.name == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
-        if op.op == '!=':
-            subquery = ~subquery
-        return subquery
+        return _negate_maybe(op, subquery)
 
     @only_ops(['=', '!='])
     def search__related(self, op, value): # pylint: disable=unused-argument
@@ -175,13 +183,14 @@ class SessionSearchContext(SearchContext):
         if not entity:
             return op.op == '!='
         subquery = db.session.query(session_entity).filter_by(entity_id=entity.id, session_id=Session.id).exists().correlate(Session)
-        if op.op == '!=':
-            subquery = ~subquery
-        return subquery
+        return _negate_maybe(op, subquery)
 
     @only_ops(['=', '!='])
     def search__product_version(self, op, value):
         subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
-        if op.op == '!=':
-            subquery = ~subquery
-        return subquery
+        return _negate_maybe(op, subquery)
+
+def _negate_maybe(op, query):
+    if op.op == '!=':
+        query = ~query
+    return query
