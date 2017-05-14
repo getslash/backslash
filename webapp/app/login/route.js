@@ -13,7 +13,6 @@ export default Ember.Route.extend(UnauthenticatedRouteMixin, {
 
     setupController(controller, model) {
         this._super(controller, model, ...arguments);
-        controller.set('loading', false);
         controller.set('torii', this.get('torii'));
 	controller.setProperties(model);
     }

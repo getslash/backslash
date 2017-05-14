@@ -54,19 +54,19 @@ export default Ember.Component.extend({
 
     }.property('email'),
 
-    didInsertElement: function() {
-        let self = this;
-        this.$().on('error', function() {
-            let fallback = self.get('fallback_img_url');
-            if (fallback) {
-		self._remember_fallback();
-		self.refresh_src();
-            }
-        }.bind(this));
-    },
+    // didInsertElement: function() {
+    //     let self = this;
+    //     this.$().on('error', function() {
+    //         let fallback = self.get('fallback_img_url');
+    //         if (fallback) {
+    //     	self._remember_fallback();
+    //     	self.refresh_src();
+    //         }
+    //     }.bind(this));
+    // },
 
-    willDestroyElement: function(){
-        this.$().off();
-    }
+    // willDestroyElement: function(){
+    //     this.$().off();
+    // }
 
 });

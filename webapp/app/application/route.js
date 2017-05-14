@@ -11,7 +11,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     session: Ember.inject.service(),
     runtime_config: Ember.inject.service(),
     user_prefs: Ember.inject.service(),
-    state: Ember.inject.service(),
 
     title(tokens) {
         return tokens.join(' - ') + ' - Backslash';
@@ -55,16 +54,6 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     setupController(controller, model) {
         controller.setProperties(model);
         controller.set('version', model.runtime_config.version);
-    },
-
-    actions: {
-        loading: function(transition) {
-            let state = this.get('state');
-            state.set('loading', true);
-            transition.promise.finally(function() {
-                state.set('loading', false);
-            });
-        },
     },
 
 });
