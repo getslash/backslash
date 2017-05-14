@@ -61,7 +61,7 @@
     "ember-source": "~2.13.0",
     "ember-truth-helpers": "1.2.0",
     "ember-welcome-page": "^3.0.0",
-    "liquid-fire": "0.26.5",
+    "liquid-fire": "0.27.3",
     "loader.js": "^4.2.3",
     "showdown": "1.5.4",
     "torii": "^0.8.0",
