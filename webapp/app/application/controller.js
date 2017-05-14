@@ -13,6 +13,16 @@ export default BaseController.extend({
 
     actions: {
 
+        loading(transition) {
+            let self = this;
+            self.set('loading', true);
+            transition.promise.finally(function() {
+                self.set('loading', false);
+            });
+
+
+        },
+
         logout: function() {
             let self = this;
             Ember.$.ajax({
