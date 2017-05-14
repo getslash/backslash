@@ -45,9 +45,6 @@ class builders:
         return func.lower(model.status) == status.lower()
 
 
-
-
-
 def filter_by_statuses(cursor, model):
 
     if not _get_boolean_filter('show_unsuccessful', True):
