@@ -41,6 +41,7 @@
     "ember-cli-sass": "5.5.1",
     "ember-cli-showdown": "^3.1.0",
     "ember-cli-sri": "^2.1.0",
+    "ember-cli-string-helpers": "1.2.1",
     "ember-cli-test-loader": "^1.1.0",
     "ember-cli-tooltipster": "0.5.3",
     "ember-cli-uglify": "^1.2.0",
