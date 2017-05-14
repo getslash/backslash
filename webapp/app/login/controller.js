@@ -6,8 +6,6 @@ export default Ember.Controller.extend(UnauthenticatedRouteMixin, {
 
     session: Ember.inject.service(),
 
-    loading: false,
-
     actions: {
 
 	login() {
