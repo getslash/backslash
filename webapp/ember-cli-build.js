@@ -16,7 +16,7 @@ module.exports = function(defaults) {
       vendorFiles: {
           'handlebars.js': null
       },
-      babel: {
+      'ember-cli-babel': {
           includePolyfill: true,
       },
   });
