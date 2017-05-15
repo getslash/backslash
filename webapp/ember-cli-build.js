@@ -21,7 +21,7 @@ module.exports = function(defaults) {
           'handlebars.js': null
       },
       'ember-cli-babel': {
-          includePolyfill: not_testing,
+        includePolyfill: true
       },
   });
 
