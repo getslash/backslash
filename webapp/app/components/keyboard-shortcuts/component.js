@@ -1,5 +1,4 @@
 import Ember from "ember";
-import _ from "lodash";
 const { getOwner } = Ember;
 import KeyboardShortcuts from "ember-keyboard-shortcuts/mixins/component";
 import { timeout, task } from "ember-concurrency";
@@ -135,7 +134,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     let filters = { session_id: test.get("session_id") };
     filters[direction + "_index"] = test.get("test_index");
 
-    _.assign(filters, session_controller.get("test_filters"));
+    Object.assign(filters, session_controller.get("test_filters"));
 
     self.get("store").queryRecord("test", filters).then(function(test) {
       if (test) {
