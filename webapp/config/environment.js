@@ -19,10 +19,6 @@ module.exports = function(environment) {
 
     APP: {
 
-        avatars: {
-            fallback_image_url: null,
-        },
-
 	available_page_sizes: [25, 50, 100, 200],
 	default_page_size: 25,
 
