@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    tagName: 'span',
+  tagName: "span",
 
-    classNames: ['clickable'],
-    classNameBindings: ['value:enabled'],
-    value: false,
+  classNames: ["clickable"],
+  classNameBindings: ["value:enabled"],
+  value: false,
 
-    click() {
-        this.toggleProperty('value');
-        return false;
-    },
+  click() {
+    this.toggleProperty("value");
+    return false;
+  }
 });

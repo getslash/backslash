@@ -1,33 +1,32 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    tagName: 'th',
-    classNames: ['clickable'],
+  tagName: "th",
+  classNames: ["clickable"],
 
-    sort: null,
+  sort: null,
 
-    click() {
-        this.sendAction('set_sort', this.get('sort_field'));
-    },
+  click() {
+    this.sendAction("set_sort", this.get("sort_field"));
+  },
 
-    title: null,
+  title: null,
 
-    name: null,
+  name: null,
 
-    sort_field: function() {
+  sort_field: function() {
+    let name = this.get("name");
 
-        let name = this.get('name');
+    if (name) {
+      return name;
+    }
 
-        if (name) {
-            return name;
-        }
+    let title = this.get("title");
 
-        let title = this.get('title');
+    if (!title) {
+      return null;
+    }
 
-        if (!title) {
-            return null;
-        }
-
-        return title.toLowerCase().replace(" ", "_");
-    }.property('title')
+    return title.toLowerCase().replace(" ", "_");
+  }.property("title")
 });

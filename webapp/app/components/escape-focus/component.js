@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    classNames: ["input-group col-xs-6 {{if error 'has-error'}}"],
-    keyUp: function(e) {
-      if (e.keyCode === 27) {
-        this.$('input.search-bar').blur();
-      }
+  classNames: ["input-group col-xs-6 {{if error 'has-error'}}"],
+  keyUp: function(e) {
+    if (e.keyCode === 27) {
+      this.$("input.search-bar").blur();
     }
+  }
 });
