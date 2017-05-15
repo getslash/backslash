@@ -1,6 +1,5 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Service.extend({
-
-    path: null
+  path: null
 });

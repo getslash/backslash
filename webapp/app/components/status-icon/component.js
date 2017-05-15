@@ -1,19 +1,18 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    status: null,
+  status: null,
 
-    status_lower: function() {
-	let returned = this.get('status');
-	if (returned) {
-	    returned = returned.toLowerCase();
-	}
-	return returned;
+  status_lower: function() {
+    let returned = this.get("status");
+    if (returned) {
+      returned = returned.toLowerCase();
+    }
+    return returned;
+  }.property("status"),
 
-    }.property('status'),
-
-    spaced: true,
-    classNames: 'status-icon',
-    classNameBindings: ['spaced:spaced', 'status_lower'],
-    tagName: 'span',
+  spaced: true,
+  classNames: "status-icon",
+  classNameBindings: ["spaced:spaced", "status_lower"],
+  tagName: "span"
 });

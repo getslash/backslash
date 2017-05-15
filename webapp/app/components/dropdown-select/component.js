@@ -1,16 +1,13 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  value: null,
+  title: null,
+  options: [],
 
-    value: null,
-    title: null,
-    options: [],
-
-
-    actions: {
-        select(item) {
-            this.set('value', item);
-        },
-    },
-
+  actions: {
+    select(item) {
+      this.set("value", item);
+    }
+  }
 });
