@@ -48,8 +48,7 @@ install:
 
 script:
   # frontend test
-  - cd webapp && yarn install && bower install 
-  #- cd webapp &&  node_modules/.bin/ember test
+  - cd webapp && yarn install && bower install && node_modules/.bin/ember test
   # build the frontend to make sure we can serve '/' in the unit tests
   - cd webapp && node_modules/.bin/ember build
   - .env/bin/py.test tests
