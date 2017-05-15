@@ -3,6 +3,10 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
+
+  var env = EmberApp.env();
+  var not_testing = env !== 'test';
+
   var app = new EmberApp({
       'ember-font-awesome': {
           useScss: true,
@@ -18,7 +22,7 @@ module.exports = function(defaults) {
       },
       'ember-cli-babel': {
         includePolyfill: true
-      }
+      },
   });
 
   // Use `app.import` to add additional libraries to the generated

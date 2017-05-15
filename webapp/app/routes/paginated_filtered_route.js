@@ -1,23 +1,27 @@
-import Ember from 'ember';
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import RefreshableRouteMixin from '../mixins/refreshable-route';
+import Ember from "ember";
+import AuthenticatedRouteMixin
+  from "ember-simple-auth/mixins/authenticated-route-mixin";
+import RefreshableRouteMixin from "../mixins/refreshable-route";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, RefreshableRouteMixin, {
+export default Ember.Route.extend(
+  AuthenticatedRouteMixin,
+  RefreshableRouteMixin,
+  {
     queryParams: {
-        page: {
-            refreshModel: true,
-        },
-        page_size: {
-            refreshModel: true,
-        },
-        filter: {
-            refreshModel: true,
-        }
+      page: {
+        refreshModel: true
+      },
+      page_size: {
+        refreshModel: true
+      },
+      filter: {
+        refreshModel: true
+      }
     },
 
     resetController(controller) {
-        controller.set('filter', undefined);
-        controller.set('page', 1);
-    },
-
-});
+      controller.set("filter", undefined);
+      controller.set("page", 1);
+    }
+  }
+);

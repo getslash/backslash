@@ -30,6 +30,7 @@ before_install:
   - sudo apt-get -y install "docker-engine=1.13.1-0~ubuntu-$(lsb_release -cs)"
 
   - nvm install node
+  - npm install -g yarn bower
 
 install:
   # db and env setup
@@ -47,8 +48,9 @@ install:
 
 script:
   # frontend test
-  - python manage.py ember test
+  - cd webapp && yarn install && bower install 
+  #- cd webapp &&  node_modules/.bin/ember test
   # build the frontend to make sure we can serve '/' in the unit tests
-  - python manage.py frontend build
+  - cd webapp && node_modules/.bin/ember build
   - .env/bin/py.test tests
   - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000

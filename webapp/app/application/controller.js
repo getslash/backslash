@@ -1,27 +1,34 @@
-import Ember from 'ember';
-import BaseController from '../controllers/base';
+import Ember from "ember";
+import BaseController from "../controllers/base";
 
 export default BaseController.extend({
+  session: Ember.inject.service(),
 
-    session: Ember.inject.service(),
-    state: Ember.inject.service(),
+  path_tracker: Ember.inject.service(),
 
-    path_tracker: Ember.inject.service(),
+  _path_observer: function() {
+    this.get("path_tracker").set("path", this.get("currentPath"));
+  }.observes("currentPath"),
 
-    _path_observer: function() {
-        this.get('path_tracker').set('path', this.get('currentPath'));
-    }.observes('currentPath'),
+  actions: {
+    loading(transition) {
+      let self = this;
+      self.set("loading", true);
+      transition.promise.finally(function() {
+        self.set("loading", false);
+      });
+    },
 
-    actions: {
-
-        logout: function() {
-            let self = this;
-            Ember.$.ajax({
-                url: '/logout',
-                type: 'POST',
-            }).then(function() {
-                self.get('session').invalidate();
-            });
-        }
+    logout: function() {
+      let self = this;
+      Ember.$
+        .ajax({
+          url: "/logout",
+          type: "POST"
+        })
+        .then(function() {
+          self.get("session").invalidate();
+        });
     }
+  }
 });

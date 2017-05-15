@@ -1,35 +1,30 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  saving: false,
 
-    saving: false,
+  display: null,
+  options: null,
 
-    display: null,
-    options: null,
+  options_and_display: function() {
+    let display = this.get("display");
+    let options = this.get("options");
 
-    options_and_display: function() {
+    if (!display) {
+      display = options;
+    }
 
-	let display = this.get('display');
-	let options = this.get('options');
+    let returned = {};
 
-	if (!display) {
-	    display = options;
-	}
+    for (let i = 0; i < options.length; ++i) {
+      returned[options[i]] = display[i];
+    }
+    return returned;
+  }.property("options", "display"),
 
-	let returned = {};
-
-	for (let i = 0; i < options.length; ++i) {
-	    returned[options[i]] = display[i];
-	}
-	return returned;
-    }.property('options', 'display'),
-
-
-    actions: {
-
-	choose: function(option) {
-	    this.sendAction("action", option);
-	},
-    },
-
+  actions: {
+    choose: function(option) {
+      this.sendAction("action", option);
+    }
+  }
 });

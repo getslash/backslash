@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 var InfrastructureIconComponent = Ember.Component.extend({
-    tagName: 'span',
+  tagName: "span"
 });
 
 InfrastructureIconComponent.reopenClass({
-    positionalParams: ['infrastructure'],
+  positionalParams: ["infrastructure"]
 });
-
 
 export default InfrastructureIconComponent;
