@@ -1,55 +1,52 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 /* global moment */
 
 export default Ember.Component.extend({
+  user_prefs: Ember.inject.service(),
 
-    user_prefs: Ember.inject.service(),
+  classNames: ["times"],
 
-    classNames: ['times'],
+  start: null,
+  end: null,
+  humanize: true,
 
-    start: null,
-    end: null,
-    humanize: true,
+  raw_times_text: function() {
+    let start = this.get("start");
+    let end = this.get("end");
 
-    raw_times_text: function() {
-        let start = this.get('start');
-        let end = this.get('end');
+    let returned = this._format(start) + " - ";
+    if (end) {
+      returned += this._format(end);
+    } else {
+      returned += "...";
+    }
 
-        let returned = this._format(start) + ' - ';
-        if (end) {
-            returned += this._format(end);
-        } else {
-            returned += '...';
-        }
+    return returned;
+  }.property("start", "end"),
 
-        return returned;
+  humanized_text: function() {
+    let start = this.get("start");
+    let end = this.get("end");
 
-    }.property('start', 'end'),
+    if (!end) {
+      return "Started " + this._humanize(start);
+    }
+    return "Finished " + this._humanize(end);
+  }.property("start", "end"),
 
-    humanized_text: function() {
-        let start = this.get('start');
-        let end = this.get('end');
+  _humanize(t) {
+    let now = moment();
+    t = moment.unix(t);
 
-        if (!end) {
-            return 'Started ' + this._humanize(start);
-        }
-        return 'Finished ' + this._humanize(end);
+    if (t.isAfter(now)) {
+      t = now;
+    }
+    return t.fromNow();
+  },
 
-    }.property('start', 'end'),
-
-    _humanize(t) {
-        let now = moment();
-        t = moment.unix(t);
-
-        if (t.isAfter(now)) {
-            t = now;
-        }
-        return t.fromNow();
-    },
-
-    _format(t) {
-	const format = this.get('user_prefs').get_cached('time_format');
-        return moment.unix(t).format(format);
-    },
+  _format(t) {
+    const format = this.get("user_prefs").get_cached("time_format");
+    return moment.unix(t).format(format);
+  }
 });

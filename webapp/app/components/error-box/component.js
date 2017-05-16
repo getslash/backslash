@@ -1,16 +1,15 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  classNames: ["error", "box"],
 
-    classNames: ['error', 'box'],
+  classNameBindings: ["expanded"],
 
-    classNameBindings: ['expanded'],
+  expanded: false,
 
-    expanded: false,
-
-    actions: {
-	toggle_expanded() {
-	    this.toggleProperty('expanded');
-	},
-    },
+  actions: {
+    toggle_expanded() {
+      this.toggleProperty("expanded");
+    }
+  }
 });

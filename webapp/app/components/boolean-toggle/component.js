@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  enabled: true,
 
-    enabled: true,
-
-    actions: {
-        toggle: function() {
-            this.sendAction();
-        }
+  actions: {
+    toggle: function() {
+      this.sendAction();
     }
+  }
 });

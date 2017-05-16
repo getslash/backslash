@@ -1,11 +1,10 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  classNames: ["container-fluid"],
 
-    classNames: ['container-fluid'],
+  side: { side: true, main: false },
+  main: { side: false, main: true },
 
-    side: {side: true, main: false},
-    main: {side: false, main: true},
-
-    collapsed: false,
+  collapsed: false
 });

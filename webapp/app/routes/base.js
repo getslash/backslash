@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Route.extend({
+  title: null,
 
-    title: null,
-
-    afterModel: function() {
-
-        this.controllerFor('application').set('title', this.get('title'));
-    }
+  afterModel: function() {
+    this.controllerFor("application").set("title", this.get("title"));
+  }
 });

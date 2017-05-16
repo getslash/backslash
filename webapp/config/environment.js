@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* eslint-env node */
 
 module.exports = function(environment) {
   var ENV = {
@@ -18,10 +18,6 @@ module.exports = function(environment) {
     },
 
     APP: {
-
-        avatars: {
-            fallback_image_url: null,
-        },
 
 	available_page_sizes: [25, 50, 100, 200],
 	default_page_size: 25,
@@ -49,7 +45,7 @@ module.exports = function(environment) {
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
   }
