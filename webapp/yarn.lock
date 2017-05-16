@@ -2692,7 +2692,7 @@ ember-load@0.0.11:
     ember-cli-htmlbars "^1.0.10"
     ember-cli-version-checker "^1.1.4"
 
-ember-lodash@4.17.2, ember-lodash@^4.0:
+ember-lodash@^4.0, ember-lodash@^4.17.2:
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/ember-lodash/-/ember-lodash-4.17.2.tgz#0ed40ab89c2f9846765fc2504c0034000f666933"
   dependencies:
