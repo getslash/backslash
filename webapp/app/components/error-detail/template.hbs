@@ -1,32 +1,14 @@
-<table class="table">
-  <tbody>
-    <tr>
-      <td><strong>Exception type</strong></td>
-      <td>{{error.exception_type}}</td>
-    </tr>
-    <tr>
-      <td><strong>Exception Message</strong></td>
-      <td><pre class="vw-50">{{error.message}}</pre></td>
-    </tr>
-    <tr>
-      <td><strong>Timestamp</strong></td>
-      <td>{{moment-time unix=error.timestamp}}</td>
-    </tr>
-  </tbody>
-</table>
-
-{{#if loading}}
-  {{animated-spinner}}
-{{else}}
-  {{#if (and error.traceback_url (not error.traceback))  }}
-    <div class="box error">
-      <div class="info">
-	Could not load traceback
-      </div>
+{{#if (and error.traceback_url (not error.traceback))  }}
+  <div class="box error">
+    <div class="info">
+      Could not load traceback
     </div>
-  {{else}}
-    {{#each error.traceback as |frame|}}
-      {{errors/traceback-frame frame=frame}}
-    {{/each}}
-  {{/if}}
+  </div>
+{{else}}
+  <p>
+    Traceback (<a class="clickable" {{action "toggle_all_frames"}}>{{if all_expanded 'collapse' 'expand'}} all</a>):
+  </p>
+  {{#each error.traceback as |frame|}}
+    {{errors/traceback-frame frame=frame override_expand=override_expand}}
+  {{/each}}
 {{/if}}

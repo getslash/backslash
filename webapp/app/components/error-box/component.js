@@ -1,10 +1,6 @@
 import Ember from "ember";
 
 export default Ember.Component.extend({
-  classNames: ["error", "box"],
-
-  classNameBindings: ["expanded"],
-
   expanded: false,
 
   actions: {

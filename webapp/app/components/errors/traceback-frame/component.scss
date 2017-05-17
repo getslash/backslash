@@ -1,5 +1,5 @@
 & {
-    border: 1px solid $gray-light;
+    border: 1px dotted #aaa;
     margin: 0.5em;
 
     .btn-expand {
@@ -17,13 +17,16 @@
 }
 
 .frame-info {
-    color: $gray-light;
-    font-size: small;
+    background: $gray-lighter;
+    font-size: x-small;
     padding: 0.5em;
 }
 
 .frame-code {
     @extend .mono;
+    font-size: x-small;
+    border: 1px solid $gray-lighter;
+    margin: 0.5em;
 
     .line {
         padding: 0.3em;
@@ -38,7 +41,7 @@
         &.around {
             background-color: lighten($gray-lighter, 4%);
             color: silver;
-            display: none;
+            display: block;
         }
 
         &.main {
@@ -54,12 +57,6 @@
     }
 
 
-    &.expanded .line {
-
-        & {
-            display: block;
-        }
-    }
 }
 
 
@@ -69,22 +66,27 @@
     margin: 0.5em;
     border: 1px solid $gray-lighter;
     color: $gray-light;
+    font-size: x-small;
 
     .variable {
-        @extend .col-sm-12;
-        @extend .row;
-
-        .name {
+        border-top: 1px dotted #bbb;
+        display: flex;
+        padding-left: 1em;
+        .name , .attribute{
             @extend .mono;
-            @extend .col-sm-2;
             @extend .pad-medium;
+            flex: 0 0 25em;
+
+        }
+        .attribute {
+            padding-left: 3em !important;
         }
         .value {
             background: lighten($gray-lighter, 20%);
             @extend .pad-medium;
-            @extend .col-sm-10;
             @extend .pre;
             @extend .mono;
+            flex: 1;
         }
     }
 }

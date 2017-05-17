@@ -1,0 +1,24 @@
+& {
+    margin-top: 0.5em;
+    border: 1px solid #ddd;
+    border-left-color: $brand-danger;
+    border-left-width: 7px;
+
+    .copy-btn {
+        margin-top: -0.2em;
+        margin-left: 1em;
+    }
+
+    .info {
+        padding: 0.5em;
+        font-weight: bold;
+        font-size: small;
+    }
+
+    .message {
+        padding: 1em;
+        font-size: small;
+        padding: 1em;
+        white-space: pre;
+    }
+}

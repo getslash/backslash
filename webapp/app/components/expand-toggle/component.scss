@@ -1,0 +1,16 @@
+& {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    background: white;
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    margin-right: 0.5em;
+    padding-left: 0.1em;
+
+    &.expanded {
+        background: #ccc;
+    }
+}
