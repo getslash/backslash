@@ -1,47 +1,41 @@
-<div class="traceback-frame {{if frame.is_in_test_code 'test-code'}}">
-  {{#if (or has_globals has_locals)}}
-  <button class="btn btn-default btn-expand pull-right" {{action "toggle"}}>
-    {{#if show_vars }}
-    <i class="fa fa-compress"></i> Collapse variables
-    {{else}}
-    <i class="fa fa-expand"></i> Expand variables
-    {{/if}}
-  </button>
-  {{else}}
-  <span class="pull-right pad-small faint"> <i class="fa fa-warning"></i> Frame variable information unavailable</span>
-  {{/if}}
-
   <div class="frame-info">
-
-    {{frame.filename}}, line <strong>{{frame.lineno}}</strong> (in <strong>{{frame.func_name}}</strong>)
+    {{expand-toggle expanded=(mut frame.expanded)}}
+    <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
   </div>
 
-  <div class="frame-code {{if code_expanded 'expanded'}}">
-    {{#each frame.code_lines_before as |line num|}}
-      <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
-    {{/each}}
-    <div class="line main {{if (or frame.code_lines_before frame.code_lines_after) 'clickable'}}" {{action (toggle "code_expanded" this)}}><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
-    {{#each frame.code_lines_after as |line num|}}
-      <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
-    {{/each}}
-  </div>
+  {{# if frame.expanded }}
 
-  {{#if show_vars}}
+    <div class="frame-code">
+      {{#each frame.code_lines_before as |line num|}}
+        <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
+      {{/each}}
+      <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
+      {{#each frame.code_lines_after as |line num|}}
+        <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
+      {{/each}}
+    </div>
+
     {{#if (or has_globals has_locals)}}
       <div class="traceback-frame-vars">
-        {{#each-in frame.locals as |name value|}}
+        {{#each sorted_locals as |var|}}
+          {{#if (or (not var.is_attribute) self_expanded)}}
+	    <div class="variable">
+	      <div class="{{if var.is_attribute 'attribute' 'name'}}">
+                {{#if (eq var.name 'self')}}
+                  <i class="clickable fa fa-caret-{{if self_expanded 'down' 'right'}}" {{action (toggle "self_expanded" this)}}></i>
+                {{/if}}
+                {{var.display_name}}
+              </div>
+	      <div class="value">{{var.value.value}}</div>
+	    </div>
+          {{/if}}
+        {{/each}}
+        {{#each sorted_globals as |var|}}
 	  <div class="variable">
-	    <div class="name">{{name}}</div>
-	    <div class="value">{{value.value}}</div>
+	    <div class="name">{{var.name}}</div>
+	    <div class="value">{{var.value.value}}</div>
 	  </div>
-        {{/each-in}}
-	{{#each-in frame.globals as |name value|}}
-	  <div class="variable">
-	    <div class="name">{{name}}</div>
-	    <div class="value">{{value.value}}</div>
-	  </div>
-        {{/each-in}}
+        {{/each}}
       </div>
     {{/if}}
   {{/if}}
-</div>

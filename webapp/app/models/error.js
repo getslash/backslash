@@ -17,7 +17,7 @@ export default DS.Model.extend({
   }.property("exception_type", "message"),
 
   abbreviated_message: function() {
-    let returned = this.get("full_message");
+    let returned = this.get("message");
     let lines = returned.split(/\n/);
     let truncated = false;
     while (lines.length > _MAX_NUM_ERROR_LINES) {

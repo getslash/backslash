@@ -2,6 +2,7 @@
 
 ## Version 2.7.0
 
+* Tracebacks and errors are significantly improved, and now support collapsing of `self` attributes, copying the full exception to the clipboard and more
 * Backslash now supports a newer way of uploading tracebacks via streaming uploads, improving performance on large tracebacks
 * You can now search for sessions by status
 * Deployment moved to Docker, ditched Ansible
