@@ -138,9 +138,17 @@ class TestSearchContext(SearchContext):
     @only_ops(['=', '!='])
     def search__product_version(self, op, value):
         subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Test.session_id).exists().correlate(Test)
-        if op.op == '!=':
-            subquery = ~subquery
-        return subquery
+        return _negate_maybe(op, subquery)
+
+    @only_ops(['=', '!='])
+    def search__label(self, op, value):
+        labels = Label.query.filter(Label.name==value).all()
+        if not labels:
+            return op.op == '!='
+
+        subquery = db.session.query(session_label).filter(session_label.c.session_id == Test.session_id, session_label.c.label_id == labels[0].id).exists().correlate(Test)
+        return _negate_maybe(op, subquery)
+
 
 
 
@@ -152,9 +160,14 @@ class SessionSearchContext(SearchContext):
 
     MODEL = Session
 
-    @only_ops(['='])
+    @only_ops(['=', '!='])
     def search__label(self, op, value): # pylint: disable=unused-argument
-        return db.session.query(session_label).join(Label).filter((session_label.c.session_id == Session.id) & (Label.name == value)).exists().correlate(Session)
+        labels = Label.query.filter(Label.name==value).all()
+        if not labels:
+            return op.op == '!='
+
+        returned = db.session.query(session_label).filter((session_label.c.session_id == Session.id) & (session_label.c.label_id == labels[0].id)).exists().correlate(Session)
+        return _negate_maybe(op, returned)
 
     @only_ops(['=', '!='])
     def search__status(self, op, value):

@@ -621,10 +621,12 @@ class Label(db.Model):
 
 
 session_label = db.Table('session_label',
-                           db.Column('session_id',
+                         db.Column('session_id',
                                      db.Integer,
                                      db.ForeignKey('session.id', ondelete='CASCADE')),
-                           db.Index('ix_session_label_session_id', 'session_id'),
-                           db.Column('label_id',
+                         db.Index('ix_session_label_session_id', 'session_id'),
+                         db.Column('label_id',
                                      db.Integer,
-                                     db.ForeignKey('label.id', ondelete='CASCADE')))
+                                     db.ForeignKey('label.id', ondelete='CASCADE')),
+                        db.Index('ix_session_label_session_id_label_id', 'session_id', 'label_id'),
+)
