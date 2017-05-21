@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+import math
 import os
 
 import requests
@@ -69,6 +70,7 @@ class SessionResource(ModelResource):
 
         return returned
 
+
 test_query_parser = reqparse.RequestParser()
 test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
@@ -117,6 +119,17 @@ class TestResource(ModelResource):
             elif args.before_index is not None:
                 returned = returned.filter(self.MODEL.test_index < args.before_index).order_by(self.MODEL.test_index.desc()).limit(1).all()
 
+        return returned
+
+    def _paginate(self, query, metadata):
+        count_pages = bool(request.args.get('session_id'))
+        if count_pages:
+            num_objects = query.count()
+        else:
+            num_objects = None
+        returned = super()._paginate(query, metadata)
+        if count_pages:
+            metadata['num_pages'] = math.ceil(num_objects / metadata['page_size']) or 1
         return returned
 
 

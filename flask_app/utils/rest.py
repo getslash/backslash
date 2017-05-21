@@ -44,7 +44,7 @@ class RestResource(Resource):
             return iterator
         return self.FILTER_CONFIG.filter(iterator, metadata)
 
-    def _sort(self, iterator, metadata):
+    def _sort(self, iterator, metadata): # pylint: disable=unused-argument
         return iterator
 
     def _get_object_by_id(self, object_id):
