@@ -1,15 +1,14 @@
 from uuid import uuid4
 
-import os
 import requests
 
 from flask import Blueprint, abort, jsonify, request, url_for
 from flask_security.core import current_user
 from flask_security.decorators import login_required
-from redis import Redis
 from urlobject import URLObject as URL
 
 from ..models import RunToken, db
+from ..utils.redis import get_redis_client
 
 _REDIS_TOKEN_TTL = 15 * 60
 _REDIS_REQUEST_TTL = 5 * 60
@@ -29,7 +28,7 @@ def runtoken_request(request_id=None):
 @blueprint.route('/runtoken/request/<request_id>/complete', methods=['POST'])
 @login_required
 def complete_runtoken_request(request_id):
-    redis = _get_redis_client()
+    redis = get_redis_client()
     key = _get_request_key(request_id)
     if redis.get(key) is None:
         abort(requests.codes.not_found) # pylint: disable=no-member
@@ -52,7 +51,7 @@ def create_new_runtoken(user):
 
 def _create_new_runtoken_request():
     request_id = str(uuid4())
-    _get_redis_client().setex(
+    get_redis_client().setex(
         _get_request_key(request_id), '', _REDIS_REQUEST_TTL)
     return request_id
 
@@ -61,7 +60,7 @@ def _get_request_key(request_id):
 
 def _get_runtoken_request_status(request_id):
     request_key = 'request:{}'.format(request_id)
-    value = _get_redis_client().get(request_key)
+    value = get_redis_client().get(request_key)
     if value is None:
         abort(requests.codes.not_found) # pylint: disable=no-member
     return jsonify({
@@ -69,6 +68,3 @@ def _get_runtoken_request_status(request_id):
         'url': URL(request.host_url).add_path(url_for('runtoken.runtoken_request', request_id=request_id)),
         'complete': request.host_url + '#/runtoken/' + request_id + '/authorize',
     })
-
-def _get_redis_client():
-    return Redis(os.environ.get('BACKSLASH_REDIS_SERVER'))

@@ -13,6 +13,7 @@ from sqlalchemy.exc import DataError
 from .blueprint import API
 from ... import activity
 from ... import models
+from ... import metrics
 from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
@@ -152,6 +153,7 @@ def report_test_start(
         returned.test_variation.variation = sanitize_json(variation)
         db.session.add(returned)
         db.session.commit()
+    metrics.num_new_tests.increment()
     return returned
 
 
