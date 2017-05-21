@@ -13,6 +13,7 @@ from flask_security import current_user
 from .. import models
 from ..models import Error, Session, Test, User, Subject
 from .. import activity
+from ..utils.identification import parse_test_id, parse_session_id
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
 from ..search import get_orm_query_from_search_string
@@ -168,6 +169,10 @@ session_test_query_parser = reqparse.RequestParser()
 session_test_query_parser.add_argument('session_id', type=int, default=None)
 session_test_query_parser.add_argument('test_id', type=int, default=None)
 
+errors_query_parser = reqparse.RequestParser()
+errors_query_parser.add_argument('session_id', default=None)
+errors_query_parser.add_argument('test_id', default=None)
+
 
 @_resource('/warnings', '/warnings/<int:object_id>')
 class WarningsResource(ModelResource):
@@ -188,12 +193,12 @@ class ErrorResource(ModelResource):
     DEFAULT_SORT = (Error.timestamp.asc(),)
 
     def _get_iterator(self):
-        args = session_test_user_query_parser.parse_args()
+        args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            return Error.query.filter_by(session_id=args.session_id)
+            return Error.query.filter_by(session_id=parse_session_id(args.session_id))
         elif args.test_id is not None:
-            return Error.query.filter_by(test_id=args.test_id)
+            return Error.query.filter_by(test_id=parse_test_id(args.test_id))
         abort(requests.codes.bad_request)
 
 
