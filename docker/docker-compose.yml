@@ -33,6 +33,15 @@ services:
   redis:
     image: "redis"
 
+  monitor:
+    image: "wrouesnel/postgres_exporter"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://backslash@db:5432/backslash?sslmode=disable
+    ports:
+      - "9187:9187"
+    depends_on:
+      - db
+
   nginx:
     image: "backslash"
     volumes:
