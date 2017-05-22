@@ -10,17 +10,18 @@
         visibility: visible;
     }
 
-    .test-code .frame-code {
+    .frame-info {
+        background: $gray-lighter;
 
-        background-color: $mild-red;
+        font-size: x-small;
+        padding: 0.5em;
+    }
+
+    &.test-code .frame-info {
+        box-shadow: inset 0px 0px 10px $brand-danger;
     }
 }
 
-.frame-info {
-    background: $gray-lighter;
-    font-size: x-small;
-    padding: 0.5em;
-}
 
 .frame-code {
     @extend .mono;
