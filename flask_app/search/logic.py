@@ -203,6 +203,10 @@ class SessionSearchContext(SearchContext):
         subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
         return _negate_maybe(op, subquery)
 
+    @only_ops(['='])
+    def search__test(self, op, value): # pylint: disable=unused-argument
+        return db.session.query(Test).join(TestInformation).filter(Test.session_id == Session.id, TestInformation.name == value).exists().correlate(Session)
+
 def _negate_maybe(op, query):
     if op.op == '!=':
         query = ~query
