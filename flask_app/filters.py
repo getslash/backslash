@@ -35,10 +35,13 @@ class builders:
 
     @classmethod
     def build_abandoned_filter(cls, model):
-        return sqlalchemy.and_(
-            model.end_time == None,
-            model.next_keepalive != None,
-            model.next_keepalive < flux.current_timeline.time())
+
+        filters = [model.end_time == None]
+        if hasattr(model, 'next_keepalive'):
+            filters.extend([model.next_keepalive != None,
+                            model.next_keepalive < flux.current_timeline.time()]) # pylint: disable=no-member
+
+        return sqlalchemy.and_(*filters)
 
     @classmethod
     def build_status_query(cls, model, status):
