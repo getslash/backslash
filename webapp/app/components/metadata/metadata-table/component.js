@@ -1,16 +1,33 @@
 import Ember from "ember";
 
+const _MAX_VALUE_SIZE = 100;
+
 export default Ember.Component.extend({
   additional: {},
   metadata: {},
 
   all_metadata: function() {
-    let returned = {};
+    let returned = [];
 
     [this.get("additional"), this.get("metadata")].forEach(function(obj) {
       for (var attrname in obj) {
-        returned[attrname] = obj[attrname];
+        let value = obj[attrname];
+        if (typeof(value) === "object") {
+          value = JSON.stringify(value, null, 2);
+        }
+        let short_value = value;
+        if (value.length > _MAX_VALUE_SIZE) {
+          short_value = short_value.substr(0, _MAX_VALUE_SIZE) + '...';
+        }
+        returned.push(Ember.Object.create({
+          name: attrname,
+          value: value,
+          short_value: short_value,
+          expanded: false,
+          expandable: short_value !== value,
+        }));
       }
+      return returned;
     });
     return returned;
   }.property("additional", "metadata"),

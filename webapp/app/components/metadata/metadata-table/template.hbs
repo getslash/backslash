@@ -2,14 +2,19 @@
 <div class="container-fluid">
   <table class="table data">
     <tbody>
-      {{#each-in all_metadata as |name value|}}
-	{{#if (and (not (s-starts-with name "slash::")) (not (eq name "slash")))}}
+      {{#each all_metadata as |item|}}
+	{{#if (and (not (s-starts-with item.name "slash::")) (not (eq item.name "slash")))}}
           <tr>
-            <td>{{capitalize (undasherize name)}}</td>
-            <td>{{elements/copyable-text value=value}}</td>
+            <td>
+              <i class="fa fa-fw {{if item.expandable (if item.expanded 'fa-caret-down clickable' 'fa-caret-right clickable')}}" {{action (toggle "expanded" item)}}></i>
+              {{#if item.expandable}}
+              {{/if}}
+              {{capitalize (undasherize item.name)}}
+            </td>
+            <td>{{elements/copyable-text value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
           </tr>
         {{/if}}
-      {{/each-in}}
+      {{/each}}
     </tbody>
   </table>
 </div>
