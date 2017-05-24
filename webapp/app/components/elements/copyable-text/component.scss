@@ -1,4 +1,4 @@
-$copyable-text-margin: 2px;
+$copy-button-margin: 2px;
 
 
 & {
@@ -8,15 +8,16 @@ $copyable-text-margin: 2px;
   border-bottom: 1px dashed silver;
   position: relative;
 
-  margin: -$copyable-text-margin;
-  margin-top: -$copyable-text-margin + 1px;
-  padding: $copyable-text-margin;
+  margin: -$copy-button-margin;
+  margin-top: -$copy-button-margin + 1px;
+  padding: $copy-button-margin;
 
   font-size: small;
 
-  .inner {
-      display: none;
+  .ember-tether-element {
+      visibility: hidden;
   }
+
 
   &.preformatted {
       font-family: monospace;
@@ -29,14 +30,5 @@ $copyable-text-margin: 2px;
 
       border: 1px dashed silver;
 
-      .inner {
-          display: inline-block;
-          position: absolute;
-          top: $copyable-text-margin;
-          right: 0;
-          top: 0;
-          color: black;
-      }
   }
-
 }

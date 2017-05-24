@@ -62,9 +62,14 @@
     @extend .btn;
     cursor: pointer;
     padding: 1px 4px 1px 4px;
+    background: white;
+    color: $gray-light;
+    font-size: x-small;
 
     &:hover {
-	background: $gray-lighter;
+	color: black;
+        background: $gray-lighter;
+        border: 1px solid $gray-light;
     }
 
     &:focus, &:active {
