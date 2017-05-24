@@ -1,7 +1,7 @@
 $copyable-text-margin: 2px;
 
 
-.copyable-text {
+& {
   box-sizing: border-box;
   display: inline-block;
   border: 1px solid rgba(0, 0, 0, 0);
@@ -12,24 +12,31 @@ $copyable-text-margin: 2px;
   margin-top: -$copyable-text-margin + 1px;
   padding: $copyable-text-margin;
 
+  font-size: small;
+
   .inner {
       display: none;
+  }
+
+  &.preformatted {
+      font-family: monospace;
+      white-space: pre;
   }
 
   &:hover {
       background: $gray-lighter;
       //border-radius: 2px;
-      
+
       border: 1px dashed silver;
 
       .inner {
-	  display: inline-block;
-	  position: absolute;
-	  top: $copyable-text-margin;
-	  right: 0;
-	  top: 0;
-	  color: black;
+          display: inline-block;
+          position: absolute;
+          top: $copyable-text-margin;
+          right: 0;
+          top: 0;
+          color: black;
       }
   }
-  
+
 }
