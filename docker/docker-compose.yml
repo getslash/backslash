@@ -51,7 +51,7 @@ services:
       - BACKSLASH_HOSTNAME=
       - BACKSLASH_USE_SSL=
     command: ["dockerize",
-              "-timeout", "60s",
+              "-timeout", "3600s",
               "-wait", "http://webapp:8000",
               "-stdout", "/var/log/nginx/access.log", "-stderr", "/var/log/nginx/error.log",
               ".env/bin/python", "manage.py", "docker-nginx-start"]
