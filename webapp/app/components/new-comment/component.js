@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  text: null,
 
-    text: null,
-
-    can_commit: Ember.computed.notEmpty('text'),
-
+  can_commit: Ember.computed.notEmpty("text")
 });

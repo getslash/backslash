@@ -1,7 +1,10 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    classNames: 'copyable-text',
-    value: null,
-    copy_value: null,
+  classNames: "copyable-text",
+  classNameBindings: ['preformatted'],
+
+  value: null,
+  copy_value: null,
+  preformatted: false,
 });

@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
+  session: null,
+  show_total_count: true,
 
-    session: null,
-    show_total_count: true,
-
-    classNames: ['session-breakdown'],
-
-
+  classNames: ["session-breakdown"]
 });

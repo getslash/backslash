@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Route.extend({
+  needs: ["session"],
 
-    needs: ['session'],
-
-    model: function() {
-        return this.modelFor('session');
-    }
+  model: function() {
+    return this.modelFor("session");
+  }
 });

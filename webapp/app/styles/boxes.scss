@@ -36,8 +36,4 @@
 	@include colorize-box($backslash-orange);
     }
 
-    &.error {
-	@include colorize-box($brand-danger);
-
-    }
 }

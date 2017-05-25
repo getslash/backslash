@@ -26,6 +26,8 @@ def test_parsing_simple_exression():
     'start_time = "26/11/2016 13:08:40"',
     "start_time = '26/11/2016 13:08:40'",
     'user=some_identifier and user=vmalloc@gmail.com',
+    'label = testing',
+    'label != testing',
 
 ])
 def test_test_search(q):
@@ -63,6 +65,8 @@ def test_subject_search(started_session, started_test, subjects, objtype, negate
     'start_time < "-2d"',
     'user = bla',
     'user != bla',
+    'label = bla',
+    'label != bla',
 ])
 def test_session_search(q):
     query = get_orm_query_from_search_string('session', q)

@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+import math
 import os
 
 import requests
@@ -13,6 +14,7 @@ from flask_security import current_user
 from .. import models
 from ..models import Error, Session, Test, User, Subject
 from .. import activity
+from ..utils.identification import parse_test_id, parse_session_id
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
 from ..search import get_orm_query_from_search_string
@@ -68,6 +70,7 @@ class SessionResource(ModelResource):
 
         return returned
 
+
 test_query_parser = reqparse.RequestParser()
 test_query_parser.add_argument('session_id', default=None)
 test_query_parser.add_argument('info_id', type=int, default=None)
@@ -116,6 +119,17 @@ class TestResource(ModelResource):
             elif args.before_index is not None:
                 returned = returned.filter(self.MODEL.test_index < args.before_index).order_by(self.MODEL.test_index.desc()).limit(1).all()
 
+        return returned
+
+    def _paginate(self, query, metadata):
+        count_pages = bool(request.args.get('session_id'))
+        if count_pages:
+            num_objects = query.count()
+        else:
+            num_objects = None
+        returned = super()._paginate(query, metadata)
+        if count_pages:
+            metadata['num_pages'] = math.ceil(num_objects / metadata['page_size']) or 1
         return returned
 
 
@@ -168,6 +182,10 @@ session_test_query_parser = reqparse.RequestParser()
 session_test_query_parser.add_argument('session_id', type=int, default=None)
 session_test_query_parser.add_argument('test_id', type=int, default=None)
 
+errors_query_parser = reqparse.RequestParser()
+errors_query_parser.add_argument('session_id', default=None)
+errors_query_parser.add_argument('test_id', default=None)
+
 
 @_resource('/warnings', '/warnings/<int:object_id>')
 class WarningsResource(ModelResource):
@@ -188,19 +206,20 @@ class ErrorResource(ModelResource):
     DEFAULT_SORT = (Error.timestamp.asc(),)
 
     def _get_iterator(self):
-        args = session_test_user_query_parser.parse_args()
+        args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            return Error.query.filter_by(session_id=args.session_id)
+            return Error.query.filter_by(session_id=parse_session_id(args.session_id))
         elif args.test_id is not None:
-            return Error.query.filter_by(test_id=args.test_id)
+            return Error.query.filter_by(test_id=parse_test_id(args.test_id))
         abort(requests.codes.bad_request)
+
 
 @blueprint.route('/tracebacks/<uuid>')
 def get_traceback(uuid):
     if not current_app.config['DEBUG'] and not current_app.config['TESTING']:
         abort(requests.codes.not_found)
-    path = os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
+    path = _get_traceback_path(uuid)
     if not os.path.isfile(path):
         abort(requests.codes.not_found)
     def sender():
@@ -211,6 +230,10 @@ def get_traceback(uuid):
                     break
                 yield buff
     return Response(sender(), headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/json'})
+
+
+def _get_traceback_path(uuid):
+    return os.path.join(current_app.config['TRACEBACK_DIR'], uuid[:2], uuid + '.gz')
 
 
 @_resource('/users', '/users/<object_id>')

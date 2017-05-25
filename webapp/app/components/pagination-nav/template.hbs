@@ -2,3 +2,4 @@
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "prev_page")}} title="Go to previous page"><i class="fa fa-angle-left"></i></a>
 
 <a class="btn btn-default next {{if (not has_next) 'disabled'}}" onclick={{if has_next (action "next_page")}} title="Go to next page"><i class="fa fa-angle-right"></i></a>
+<a class="btn btn-default next {{if (or (not has_last) (eq page num_pages)) 'disabled'}}" onclick={{if has_last (action "last_page")}} title="Go to last page"><i class="fa fa-angle-double-right"></i></a>

@@ -23,11 +23,8 @@
             <ul class="nav navbar-nav">
               {{#nav-link to="sessions"}}Sessions{{/nav-link}}
 	      {{#nav-link to="tests"}}Tests{{/nav-link}}
-              {{#nav-link to="subjects"}}Subjects{{/nav-link}}
+              {{#nav-link to="subjects"}}{{capitalize (pluralize (display_name "subject"))}}{{/nav-link}}
               {{#nav-link to="users"}}Users{{/nav-link}}
-              {{# if (can "view_stats") }}
-		{{#nav-link to="stats"}}Stats{{/nav-link}}
-              {{/if}}
               {{# if (can "admin") }}
 		<li class="dropdown">
 		  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

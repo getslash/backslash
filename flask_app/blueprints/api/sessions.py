@@ -11,6 +11,7 @@ from ...models import Session, db, SessionMetadata
 from ...utils import get_current_time, statuses
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
+from ... import metrics
 from .blueprint import API
 
 NoneType = type(None)
@@ -74,6 +75,7 @@ def report_session_start(logical_id: str=None,
 
     db.session.add(returned)
     db.session.commit()
+    metrics.num_new_sessions.increment()
     return returned
 
 

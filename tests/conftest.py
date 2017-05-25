@@ -156,16 +156,12 @@ def patch_proxy_bypass():
     """Work around a bug causing should_bypass_proxies to take forever when VPN is active
     """
     import requests
-    requests.utils.should_bypass_proxies = lambda url: True
+    requests.utils.should_bypass_proxies = lambda url, **kw: True
 
 
 @pytest.fixture(scope='session', autouse=True)
 def invalidate_cache():
     cache.invalidate()
-
-
-def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default=None)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -193,14 +189,6 @@ def client(webapp_without_login, runtoken, testuser_id):
 @pytest.fixture
 def real_login(client):
     client.do_real_login()
-
-
-@pytest.fixture
-def backslash_url(request):
-    url = request.config.getoption("--url")
-    if url is None:
-        pytest.skip()
-    return URL(url)
 
 
 @pytest.fixture

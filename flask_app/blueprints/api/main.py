@@ -12,8 +12,8 @@ from sqlalchemy.exc import DataError
 
 from .blueprint import API
 from ... import activity
-from ... import stats
 from ... import models
+from ... import metrics
 from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
@@ -71,7 +71,34 @@ def add_related_entity(type: str, name: str, test_id: int=None, session_id: int=
     obj.related_entities.append(entity)
     db.session.commit()
 
+def _validate_session(session_id):
+    session = Session.query.get(session_id)
+    if session is None:
+        abort(requests.codes.not_found)
+    if session.end_time is not None:
+        error_abort('Session already ended', code=requests.codes.conflict)
+    return session
 
+@API
+def append_upcoming_tests(tests: list, session_id: int):
+    session = _validate_session(session_id)
+    new_tests = []
+    for test in tests:
+        test_info_id = get_or_create_test_information_id(file_name=test['file_name'], name=test['name'], class_name=test['class_name'])
+        new_test = Test(
+            session_id=session.id,
+            logical_id=test['test_logical_id'],
+            test_info_id=test_info_id,
+            status=statuses.PLANNED
+        )
+        if 'variation' in test:
+            new_test.test_variation = TestVariation(variation=sanitize_json(test['variation']))
+        new_tests.append(new_test)
+    try:
+        db.session.add_all(new_tests)
+        db.session.commit()
+    except DataError:
+        raise
 
 @API(version=2)
 def report_test_start(
@@ -90,35 +117,31 @@ def report_test_start(
         test_index: (int, NoneType)=None,
         parameters: (dict, NoneType)=None,
 ):
-    session = Session.query.get(session_id)
-    if session is None:
-        abort(requests.codes.not_found)
-    if session.end_time is not None:
-        error_abort('Session already ended', code=requests.codes.conflict)
-    test_info_id = get_or_create_test_information_id(
-        file_name=file_name, name=name, class_name=class_name)
-
+    session = _validate_session(session_id)
     if test_index is None:
         test_index = Test.query.filter(Test.session_id == session_id).count() + 1
     if is_interactive:
         session.total_num_tests = Session.total_num_tests + 1
         db.session.add(session)
-    returned = Test(
-        session_id=session.id,
-        logical_id=test_logical_id,
-        test_info_id=test_info_id,
-        status=statuses.RUNNING,
-        scm_dirty=scm_dirty,
-        scm_revision=scm_revision,
-        scm=scm,
-        is_interactive=is_interactive,
-        file_hash=file_hash,
-        test_index=test_index,
-        parameters=sanitize_json(parameters),
-    )
-    if variation is not None:
-        returned.test_variation = TestVariation(variation=sanitize_json(variation))
-
+    returned = Test.query.filter(Test.logical_id == test_logical_id).first()
+    if not returned or not test_logical_id:
+        test_info_id = get_or_create_test_information_id(
+            file_name=file_name, name=name, class_name=class_name)
+        returned = Test(
+            session_id=session.id,
+            logical_id=test_logical_id,
+            test_info_id=test_info_id,
+        )
+        if variation is not None:
+            returned.test_variation = TestVariation(variation=sanitize_json(variation))
+    returned.status = statuses.RUNNING
+    returned.scm_dirty = scm_dirty
+    returned.scm_revision = scm_revision
+    returned.scm = scm
+    returned.is_interactive = is_interactive
+    returned.file_hash = file_hash
+    returned.test_index = test_index
+    returned.parameters = sanitize_json(parameters)
     if metadata is not None:
         for key, value in metadata.items():
             returned.metadatas.append(TestMetadata(key=key, metadata_item=value))
@@ -130,6 +153,7 @@ def report_test_start(
         returned.test_variation.variation = sanitize_json(variation)
         db.session.add(returned)
         db.session.commit()
+    metrics.num_new_tests.increment()
     return returned
 
 
@@ -296,24 +320,6 @@ def get_user_run_tokens(user_id: int):
     if not has_role(current_user, 'admin') and current_user.id != user_id:
         abort(requests.codes.forbidden)
     return [t.token for t in User.query.get_or_404(user_id).run_tokens]
-
-################################################################################
-## Stats
-
-@API(require_real_login=True)
-@requires_role('admin')
-def get_admin_stats():
-    history = []
-    for stat in models.Stat.query.order_by('timestamp asc').all():
-        item = {'timestamp': stat.timestamp}
-        item.update({name: getattr(stat, 'stat_' + name) for name in stats.iter_stat_names()})
-        history.append(item)
-    returned = {
-        'current': stats.get_current_stats_dict(),
-        'history': history,
-        'cpu_count': multiprocessing.cpu_count(),
-    }
-    return returned
 
 
 ################################################################################

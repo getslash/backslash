@@ -33,6 +33,7 @@ body {
 @import 'proofing.scss';
 
 @import 'fonts.scss';
+@import 'font-awesome';
 
 @import 'base.scss';
 @import 'modules.scss';
@@ -50,14 +51,10 @@ body {
 
 @import 'boxes.scss';
 
-@import 'stats.scss';
-
 @import 'navigation.scss';
 
 @import 'components/tabs.scss';
 @import 'components/boolean-toggle.scss';
-@import 'components/elements/copyable-text.scss';
-
 
 @import 'components/warnings/warnings.scss';
 

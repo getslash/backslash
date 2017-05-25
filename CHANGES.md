@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 2.7.0
+
+* You can now search for sessions by contained test name via the `test = my_test_name` search clause
+* You can now jump to the "last" page in the session tests view
+* Added monitoring compatible with Prometheus (both natively via `/metrics` and the postgres exporter on port 9187)
+* Tracebacks and errors are significantly improved, and now support collapsing of `self` attributes, copying the full exception to the clipboard and more
+* Backslash now supports a newer way of uploading tracebacks via streaming uploads, improving performance on large tracebacks
+* You can now search for sessions by status
+* Deployment moved to Docker, ditched Ansible
+
 ## Version 2.6.3
 
 * Many small UI/UX fixes and tweaks

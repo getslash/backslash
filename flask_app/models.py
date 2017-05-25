@@ -135,7 +135,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
     # status
     num_errors = db.Column(db.Integer, default=0)
     num_failures = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
 
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
@@ -146,14 +146,16 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
 
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
+        Index('ix_session_status_lower', func.lower(status)),
+        Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
     )
 
 
     last_comment_obj = db.relationship(lambda: Comment,
                                   primaryjoin=lambda: and_(
-                                      Session.id == Comment.session_id,
+                                      Session.id == Comment.session_id, # pylint: disable=undefined-variable
                                       Comment.timestamp == select([func.max(Comment.timestamp)]).
-                                      where(Comment.session_id==Session.id).
+                                      where(Comment.session_id == Session.id).
                                       correlate(Session.__table__)
                                   ),
                                   uselist=False,
@@ -342,7 +344,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     session_id = db.Column(
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
 
-    logical_id = db.Column(db.String(256), index=True)
+    logical_id = db.Column(db.String(256), index=True, unique=True)
     start_time = db.Column(db.Float, default=get_current_time, index=True)
     end_time = db.Column(db.Float, default=None, index=True)
 
@@ -351,9 +353,9 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     first_error_obj = db.relationship(lambda: Error,
                                   primaryjoin=lambda: and_(
-                                      Test.id == Error.test_id,
+                                      Test.id == Error.test_id, # pylint: disable=undefined-variable
                                       Error.timestamp == select([func.min(Error.timestamp)]).
-                                      where(Error.test_id==Test.id).
+                                      where(Error.test_id == Test.id).
                                       correlate(Test.__table__)
                                   ),
                                   uselist=False,
@@ -370,7 +372,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
                                   primaryjoin=lambda: and_(
                                       Test.id == Comment.test_id,
                                       Comment.timestamp == select([func.max(Comment.timestamp)]).
-                                      where(Comment.test_id==Test.id).
+                                      where(Comment.test_id == Test.id).
                                       correlate(Test.__table__)
                                   ),
                                   uselist=False,
@@ -391,7 +393,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
 
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
-    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED, index=True)
+    status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
 
     skip_reason = db.Column(db.Text(), nullable=True)
 
@@ -403,6 +405,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
         Index('ix_test_session_id_start_time', session_id, start_time),
+        Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
     )
 
     @rendered_field
@@ -597,24 +600,6 @@ class Activity(db.Model, TypenameMixin):
         return '<{} {} {}>'.format(self.user_id, self.action_string(), self.what())
 
 
-class Stat(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    timestamp = db.Column(db.Float, default=get_current_time, index=True)
-
-    __table_args__ = (
-        Index('ix_stat_timestamp', timestamp.desc()),
-    )
-
-    ### statistics
-    stat_db_size = db.Column(db.BIGINT, server_default="0")
-    stat_num_new_sessions = db.Column(db.Integer, server_default="0")
-    stat_system_load_avg = db.Column(db.Float, server_default="0")
-    stat_num_redis_keys = db.Column(db.Integer, server_default="0")
-    stat_redis_memory_usage = db.Column(db.Integer, server_default="0")
-
-
 class UserPreference(db.Model):
 
     user_id = db.Column(
@@ -636,10 +621,12 @@ class Label(db.Model):
 
 
 session_label = db.Table('session_label',
-                           db.Column('session_id',
+                         db.Column('session_id',
                                      db.Integer,
                                      db.ForeignKey('session.id', ondelete='CASCADE')),
-                           db.Index('ix_session_label_session_id', 'session_id'),
-                           db.Column('label_id',
+                         db.Index('ix_session_label_session_id', 'session_id'),
+                         db.Column('label_id',
                                      db.Integer,
-                                     db.ForeignKey('label.id', ondelete='CASCADE')))
+                                     db.ForeignKey('label.id', ondelete='CASCADE')),
+                        db.Index('ix_session_label_session_id_label_id', 'session_id', 'label_id'),
+)

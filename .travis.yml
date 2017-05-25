@@ -1,23 +1,55 @@
 language: python
 sudo: required
-dist: precise
+dist: trusty
 python:
-  - 3.5
+  - 3.6
 addons:
     postgresql: "9.5"
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.11.2
+  DOCKER_HOST: tcp://127.0.0.1:2375
+
 services:
   - redis-server
   - postgresql
+
 before_install:
+
+  # update docker
+  - curl https://releases.rancher.com/install-docker/17.05.sh | sudo bash -
+
+  # update docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+
   - nvm install node
+  - npm install -g yarn bower
+
 install:
+  # db and env setup
   - psql -c 'create database backslash;' -U postgres
   - pip install virtualenv
-  - mkdir static
-  - touch static/index.html
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
+
+  # install latest backlash-python
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
+
+  # build and run docker-compose setup in testing mode
+  - sudo docker-compose -f docker/docker-compose.yml build
+  - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
+
 script:
-  - python manage.py ember test
-  - travis_retry .env/bin/py.test tests
+  # frontend test
+  - cd webapp
+  - yarn install
+  - bower install
+  #- node_modules/.bin/ember test
+  # build the frontend to make sure we can serve '/' in the unit tests
+  - node_modules/.bin/ember build
+  - cd ..
+  - .env/bin/py.test tests
+  - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000

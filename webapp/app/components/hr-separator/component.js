@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export default Ember.Component.extend({
-    classNames: ["sub-section-heading"],
+  classNames: ["sub-section-heading"],
 
-    title: 'Section'
+  title: "Section"
 });

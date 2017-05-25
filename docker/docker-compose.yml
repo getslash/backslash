@@ -1,0 +1,64 @@
+version: '3'
+services:
+
+  webapp:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    image: backslash
+    command: [
+        "dockerize",
+        "-timeout", "60s",
+        "-wait", "tcp://db:5432",
+        ".env/bin/python", "manage.py", "docker-start"
+        ]
+    volumes:
+      - "conf:/conf"
+      - "uploads:/uploads"
+    environment:
+      - BACKSLASH_REDIS_SERVER=redis
+      - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
+      - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: "postgres:9.6"
+    environment:
+      - POSTGRES_USER=backslash
+      - POSTGRES_DB=backslash
+    volumes:
+      - "db:/var/lib/postgresql/data"
+  redis:
+    image: "redis"
+
+  monitor:
+    image: "wrouesnel/postgres_exporter"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://backslash@db:5432/backslash?sslmode=disable
+    ports:
+      - "9187:9187"
+    depends_on:
+      - db
+
+  nginx:
+    image: "backslash"
+    volumes:
+      - "conf:/conf"
+      - "uploads:/uploads"
+    environment:
+      - BACKSLASH_HOSTNAME=
+      - BACKSLASH_USE_SSL=
+    command: ["dockerize",
+              "-timeout", "3600s",
+              "-wait", "http://webapp:8000",
+              "-stdout", "/var/log/nginx/access.log", "-stderr", "/var/log/nginx/error.log",
+              ".env/bin/python", "manage.py", "docker-nginx-start"]
+    ports:
+      - "8000:80"
+
+volumes:
+  uploads:
+  conf:
+  db:

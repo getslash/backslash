@@ -1,86 +1,103 @@
-import DS from 'ember-data';
-import Ember from 'ember';
-import HasLogicalId from '../mixins/has-logical-id';
-import HasComputedStatus from '../mixins/has-computed-status';
-
+import DS from "ember-data";
+import Ember from "ember";
+import HasLogicalId from "../mixins/has-logical-id";
+import HasComputedStatus from "../mixins/has-computed-status";
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
+  archived: DS.attr("boolean"),
+  investigated: DS.attr("boolean"),
 
-    archived: DS.attr('boolean'),
-    investigated: DS.attr('boolean'),
+  start_time: DS.attr("number"),
+  end_time: DS.attr("number"),
 
-    start_time: DS.attr('number'),
-    end_time: DS.attr('number'),
+  is_abandoned: DS.attr("boolean"),
 
-    is_abandoned: DS.attr('boolean'),
+  in_pdb: DS.attr("boolean"),
 
-    in_pdb: DS.attr('boolean'),
+  infrastructure: DS.attr(),
 
-    infrastructure: DS.attr(),
+  num_error_tests: DS.attr("number"),
+  num_interrupted_tests: DS.attr("number"),
+  num_errors: DS.attr("number"),
+  num_failed_tests: DS.attr("number"),
+  num_finished_tests: DS.attr("number"),
+  num_skipped_tests: DS.attr("number"),
 
-    num_error_tests: DS.attr('number'),
-    num_interrupted_tests: DS.attr('number'),
-    num_errors: DS.attr('number'),
-    num_failed_tests: DS.attr('number'),
-    num_finished_tests: DS.attr('number'),
-    num_skipped_tests: DS.attr('number'),
+  last_comment: DS.attr(),
 
-    last_comment: DS.attr(),
+  num_successful_tests: function() {
+    return (
+      this.get("num_finished_tests") -
+      this.get("num_error_tests") -
+      this.get("num_failed_tests") -
+      this.get("num_skipped_tests") -
+      this.get("num_interrupted_tests")
+    );
+  }.property(
+    "num_finished_tests",
+    "num_error_tests",
+    "num_failed_tests",
+    "num_skipped_tests",
+    "num_interrupted_tests"
+  ),
 
-    num_successful_tests: function() {
-        return this.get('num_finished_tests') - this.get('num_error_tests') - this.get('num_failed_tests') - this.get('num_skipped_tests') - this.get('num_interrupted_tests');
-    }.property('num_finished_tests', 'num_error_tests', 'num_failed_tests', 'num_skipped_tests', 'num_interrupted_tests'),
+  ran_all_tests: function() {
+    if (this.get("total_num_tests") === null) {
+      return true;
+    }
+    return (
+      parseInt(this.get("num_finished_tests")) ===
+      parseInt(this.get("total_num_tests"))
+    );
+  }.property("num_finished_tests", "total_num_tests"),
 
-    ran_all_tests: function() {
-        if (this.get('total_num_tests') === null) {
-            return true;
-        }
-        return parseInt(this.get('num_finished_tests')) === parseInt(this.get('total_num_tests'));
-    }.property('num_finished_tests', 'total_num_tests'),
+  has_tests_left_to_run: Ember.computed.not("ran_all_tests"),
 
-    has_tests_left_to_run: Ember.computed.not('ran_all_tests'),
+  total_num_tests: DS.attr("number"),
+  hostname: DS.attr(),
 
+  num_warnings: DS.attr("number"),
+  num_test_warnings: DS.attr("number"),
+  num_comments: DS.attr("number"),
 
-    total_num_tests: DS.attr('number'),
-    hostname: DS.attr(),
+  next_keepalive: DS.attr("number"),
+  related: DS.attr(),
+  labels: DS.attr(),
 
-    num_warnings: DS.attr('number'),
-    num_test_warnings: DS.attr('number'),
-    num_comments:DS.attr('number'),
+  total_num_warnings: function() {
+    return this.get("num_warnings") + this.get("num_test_warnings");
+  }.property("num_warnings", "num_test_warnings"),
 
-    next_keepalive: DS.attr('number'),
-    related: DS.attr(),
-    labels: DS.attr(),
+  status: DS.attr("string"),
 
-    total_num_warnings: function() {
-        return this.get('num_warnings') + this.get('num_test_warnings');
-    }.property('num_warnings', 'num_test_warnings'),
+  is_interrupted: function() {
+    return (
+      (this.get("end_time") != null && this.get("has_tests_left_to_run")) ||
+      this.get("status") === "INTERRUPTED" ||
+      this.get("num_interrupted_tests")
+    );
+  }.property(
+    "end_time",
+    "has_tests_left_to_run",
+    "status",
+    "num_interrupted_tests"
+  ),
 
-    status: DS.attr('string'),
+  subjects: DS.attr(),
 
-    is_interrupted: function() {
-	     return (this.get('end_time') != null && this.get('has_tests_left_to_run')) ||
-              this.get('status') === 'INTERRUPTED' ||
-              this.get('num_interrupted_tests');
-    }.property('end_time', 'has_tests_left_to_run', 'status', 'num_interrupted_tests'),
+  type: DS.attr(),
 
-    subjects: DS.attr(),
+  user_id: DS.attr(),
+  user_email: DS.attr(),
+  user_display_name: DS.attr(),
 
-    type: DS.attr(),
+  real_email: DS.attr(),
 
-    user_id: DS.attr(),
-    user_email: DS.attr(),
-    user_display_name: DS.attr(),
+  is_delegate: Ember.computed.notEmpty("real_email"),
 
-    real_email: DS.attr(),
+  is_running: function() {
+    return this.get("status") === "RUNNING";
+  }.property("status"),
 
-    is_delegate: Ember.computed.notEmpty('real_email'),
-
-    is_running: function() {
-        return this.get('status') === 'RUNNING';
-    }.property('status'),
-
-    finished_running: Ember.computed.not('is_running'),
-
-
+  finished_running: Ember.computed.not("is_running")
 });

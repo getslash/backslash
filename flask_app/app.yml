@@ -15,3 +15,7 @@ TRACEBACK_DIR: /opt/backslash/tracebacks
 DEFAULT_PREFERENCES:
   time_format: "DD/MM/YYYY HH:mm:ss"
   start_page: 'default'
+
+display_names:
+  subject: subject
+  related_entity: related

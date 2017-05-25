@@ -1,0 +1,34 @@
+$copy-button-margin: 2px;
+
+
+& {
+  box-sizing: border-box;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-bottom: 1px dashed silver;
+  position: relative;
+
+  margin: -$copy-button-margin;
+  margin-top: -$copy-button-margin + 1px;
+  padding: $copy-button-margin;
+
+  font-size: small;
+
+  .ember-tether-element {
+      visibility: hidden;
+  }
+
+
+  &.preformatted {
+      font-family: monospace;
+      white-space: pre;
+  }
+
+  &:hover {
+      background: $gray-lighter;
+      //border-radius: 2px;
+
+      border: 1px dashed silver;
+
+  }
+}

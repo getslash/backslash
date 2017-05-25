@@ -1,5 +1,0 @@
-[webapp]
-#my-host001 ansible_ssh_user=root
-
-[db]
-#my-db-host002 ansible_ssh_user=root

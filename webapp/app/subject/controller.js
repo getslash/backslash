@@ -1,17 +1,18 @@
-import Ember from 'ember';
+import Ember from "ember";
 
-import PaginatedFilteredController from '../controllers/paginated_filtered_controller';
-import StatusFilterableController from '../mixins/status-filterable/controller';
+import PaginatedFilteredController
+  from "../controllers/paginated_filtered_controller";
+import StatusFilterableController from "../mixins/status-filterable/controller";
 
-import config from '../config/environment';
+import config from "../config/environment";
 
 export default PaginatedFilteredController.extend(StatusFilterableController, {
-    queryParms: ['page', 'page_size'],
+  queryParms: ["page", "page_size"],
 
-    collection: Ember.computed.oneWay('sessions'),
+  collection: Ember.computed.oneWay("sessions"),
 
-    display: Ember.inject.service(),
+  display: Ember.inject.service(),
 
-    available_page_sizes: config.APP.available_page_sizes,
-    page_size: config.APP.default_page_size,
+  available_page_sizes: config.APP.available_page_sizes,
+  page_size: config.APP.default_page_size
 });

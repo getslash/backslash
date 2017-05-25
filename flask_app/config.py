@@ -8,6 +8,7 @@ def get_runtime_config_private_dict():
         'debug': current_app.config['DEBUG'],
         'version': __version__,
         'setup_needed': True,
+        'display_names': current_app.config['display_names'],
     }
     returned.update(
         (cfg.key, cfg.value)
