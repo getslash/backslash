@@ -345,7 +345,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasS
         db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), index=True)
 
     logical_id = db.Column(db.String(256), index=True, unique=True)
-    start_time = db.Column(db.Float, default=get_current_time, index=True)
+    start_time = db.Column(db.Float, default=None, index=True)
     end_time = db.Column(db.Float, default=None, index=True)
 
     errors = db.relationship('Error')
