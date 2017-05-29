@@ -134,6 +134,7 @@ def report_test_start(
         )
         if variation is not None:
             returned.test_variation = TestVariation(variation=sanitize_json(variation))
+    returned.start_time = get_current_time()
     returned.status = statuses.RUNNING
     returned.scm_dirty = scm_dirty
     returned.scm_revision = scm_revision
