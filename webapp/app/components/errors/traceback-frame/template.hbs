@@ -9,7 +9,7 @@
       {{#each frame.code_lines_before as |line num|}}
         <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
       {{/each}}
-      <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_string}}</div>
+      <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
       {{#each frame.code_lines_after as |line num|}}
         <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
       {{/each}}
