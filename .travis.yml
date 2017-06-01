@@ -25,7 +25,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
 
-  - nvm install node
+  - nvm install 7.6
   - npm install -g yarn bower
 
 install:
@@ -49,7 +49,7 @@ script:
   - bower install
   #- node_modules/.bin/ember test
   # build the frontend to make sure we can serve '/' in the unit tests
-  - node_modules/.bin/ember build
+  - ./node_modules/.bin/ember build
   - cd ..
   - .env/bin/py.test tests
   - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000
