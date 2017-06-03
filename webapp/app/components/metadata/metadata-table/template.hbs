@@ -11,7 +11,7 @@
               {{/if}}
               {{capitalize (undasherize item.name)}}
             </td>
-            <td>{{elements/copyable-text value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
+            <td>{{elements/copyable-text copy_value=item.value value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
           </tr>
         {{/if}}
       {{/each}}
