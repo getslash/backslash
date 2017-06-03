@@ -6,5 +6,14 @@ export default Ember.Component.extend({
 
   value: null,
   copy_value: null,
+
+  clipboard_text: function() {
+    let returned = this.get('copy_value');
+    if (returned) {
+      return returned;
+    }
+    return this.get('value');
+  }.property('value', 'copy_value'),
+
   preformatted: false,
 });
