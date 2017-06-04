@@ -24,12 +24,16 @@ def get_oauth2_identity(auth_code):
         _logger.error('No OAuth2 client secret configured')
         return
 
+    redirect_uri = request.host_url[:-1]
+
+    _logger.debug('get_oauth2_identity: Using redirect URI {!r}', redirect_uri)
+
     flow = OAuth2WebServerFlow(
         client_id=client_id,
         client_secret=client_secret,
 
         scope='https://www.googleapis.com/auth/userinfo.profile',
-        redirect_uri=request.host_url[:-1])
+        redirect_uri=redirect_uri)
 
     credentials = flow.step2_exchange(auth_code)
 
