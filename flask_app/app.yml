@@ -19,3 +19,5 @@ DEFAULT_PREFERENCES:
 display_names:
   subject: subject
   related_entity: related
+
+test_metadata_links: []
