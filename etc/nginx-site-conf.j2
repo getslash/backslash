@@ -52,8 +52,8 @@ server {
        gzip_static on;
     }
 
-    location /assets {
-       alias /src/webapp/dist/assets;
+    location ~ ^/(img|fonts|assets)/ {
+       root /src/webapp/dist/;
        gzip_static on;
     }
 
