@@ -9,6 +9,7 @@ def get_runtime_config_private_dict():
         'version': __version__,
         'setup_needed': True,
         'display_names': current_app.config['display_names'],
+        'test_metadata_links': current_app.config['test_metadata_links'],
     }
     returned.update(
         (cfg.key, cfg.value)

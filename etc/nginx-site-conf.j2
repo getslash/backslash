@@ -52,6 +52,12 @@ server {
        gzip_static on;
     }
 
+    location /assets {
+       alias /src/webapp/dist/assets;
+       gzip_static on;
+    }
+
+
     location ~ /rest/tracebacks/(..)(.*) {
         default_type application/json;
         add_header Content-Encoding gzip;

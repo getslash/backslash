@@ -3,8 +3,8 @@ FROM node:7 as frontend-builder
 RUN npm install -g ember-cli bower
 
 ADD ./webapp/ /frontend/
-RUN cd /frontend/ && npm install && bower install --allow-root
-RUN cd /frontend/ && ember build
+RUN cd /frontend/ && yarn install && bower install --allow-root
+RUN cd /frontend/ && node_modules/.bin/ember build
 
 
 

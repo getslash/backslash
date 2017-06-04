@@ -2,10 +2,7 @@ version: '3'
 services:
 
   webapp:
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile
-    image: backslash
+    image: getslash/backslash
     command: [
         "dockerize",
         "-timeout", "60s",
@@ -43,7 +40,7 @@ services:
       - db
 
   nginx:
-    image: "backslash"
+    image: getslash/backslash
     volumes:
       - "conf:/conf"
       - "uploads:/uploads"
