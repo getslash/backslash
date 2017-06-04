@@ -19,13 +19,17 @@ before_install:
   # update docker
   - curl https://releases.rancher.com/install-docker/17.05.sh | sudo bash -
 
+  # build the Backslash docker image
+  - sudo docker build -f ./docker/Dockerfile -t getslash/backslash .
+
+
   # update docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
 
-  - nvm install node
+  - nvm install 7.6
   - npm install -g yarn bower
 
 install:
@@ -38,7 +42,7 @@ install:
   # install latest backlash-python
   - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
 
-  # build and run docker-compose setup in testing mode
+  # run docker-compose setup in testing mode
   - sudo docker-compose -f docker/docker-compose.yml build
   - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
 
@@ -49,7 +53,10 @@ script:
   - bower install
   #- node_modules/.bin/ember test
   # build the frontend to make sure we can serve '/' in the unit tests
-  - node_modules/.bin/ember build
+  - ./node_modules/.bin/ember build
   - cd ..
   - .env/bin/py.test tests
   - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000
+
+after_success:
+  - .env/bin/python scripts/travis_docker_publish.py
