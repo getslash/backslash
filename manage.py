@@ -68,7 +68,7 @@ def docker_start():
 
     _ensure_conf()
 
-    app = create_app()
+    app = create_app(config={'PROPAGATE_EXCEPTIONS': True})
 
     flask_migrate.Migrate(app, db)
 
@@ -96,6 +96,7 @@ def docker_start():
     options = {
         'bind': '0.0.0.0:8000',
         'workers': workers_count,
+        'capture_output': True,
     }
     logbook.StderrHandler(level=logbook.DEBUG).push_application()
     if app.config['TESTING']:
