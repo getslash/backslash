@@ -14,7 +14,8 @@ Router.map(function() {
     this.route("single_error", { path: "/errors/:index" });
     this.route("warnings");
     this.route("info");
-    this.route("test", { path: "/tests/:test_id" }, function() {
+    this.route("children");
+    this.route("test", {path: "/tests/:test_id"}, function() {
       this.route("errors");
       this.route("warnings");
       this.route("comments");

@@ -1,0 +1,11 @@
+<div class="container-fluid">
+  <table class="table data">
+    <tbody>
+      {{#each children as |child|}}
+        <tr>
+          <td class="value">{{#link-to "session" child.id}}{{child.display_id}}{{/link-to}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
