@@ -1,30 +1,24 @@
 #! /usr/bin/python
 from __future__ import print_function
-import json
 import os
 import sys
-import time
 import random
 import string
 import subprocess
-from contextlib import contextmanager
 from collections import defaultdict
 
 from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
-from _lib.ansible import ensure_ansible
 bootstrap_env(["base"])
 
 
 from _lib.params import APP_NAME
-from _lib.frontend import frontend, ember, build_frontend
-from _lib.source_package import prepare_source_package
+from _lib.frontend import frontend, ember
 from _lib.db import db
 from _lib.users import user
 from _lib.celery import celery
 from _lib.slash_running import suite
 from _lib.utils import interact
 import click
-import requests
 import logbook
 import logbook.compat
 import multiprocessing
