@@ -92,6 +92,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, H
 
     parent_logical_id = db.Column(db.String(256), db.ForeignKey('session.logical_id'), default=None, index=True)
     children = db.relationship('Session', backref=backref('parent', remote_side=[logical_id]))
+    is_parent_session = db.Column(db.Boolean, server_default='FALSE')
+    child_id = db.Column(db.String(20), default=None)
 
     start_time = db.Column(db.Float, default=get_current_time)
     end_time = db.Column(db.Float, default=None, index=True)

@@ -22,7 +22,9 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   num_failed_tests: DS.attr("number"),
   num_finished_tests: DS.attr("number"),
   num_skipped_tests: DS.attr("number"),
-
+  is_parent_session: DS.attr("boolean"),
+  parent_logical_id: DS.attr("string"),
+  child_id: DS.attr("string"),
   last_comment: DS.attr(),
 
   num_successful_tests: function() {

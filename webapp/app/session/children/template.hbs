@@ -3,7 +3,7 @@
     <tbody>
       {{#each children as |child|}}
         <tr>
-          <td class="value">{{#link-to "session" child.id}}{{child.display_id}}{{/link-to}}</td>
+          <td class="value">{{#link-to "session" child.id}}Child ID {{child.child_id}}: {{child.display_id}}{{/link-to}}</td>
         </tr>
       {{/each}}
     </tbody>
