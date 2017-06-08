@@ -14,6 +14,17 @@
     {{/if}}
   </form>
   <p class="navbar-text">Session {{elements/copyable-text value=session_model.display_id}}</p>
+  {{#if session_model.parent_logical_id}}
+    <p class="navbar-text">
+      {{#link-to 'session' session_model.parent_logical_id}}
+      <a href>Parent Session: {{session_model.parent_logical_id}}
+      </a>
+      {{/link-to}}
+    </p>
+    <p class="navbar-text">
+      Child ID: {{session_model.child_id}}
+    </p>
+  {{/if}}
 
 {{/tool-bar}}
 
@@ -45,11 +56,12 @@
 	    <a href>Info
 	    </a>
 	  {{/link-to}}
-
-    {{#link-to 'session.children' tagName='li'}}
-     <a href>Child Sessions
-     </a>
-   {{/link-to}}
+    {{#if session_model.is_parent_session}}
+      {{#link-to 'session.children' tagName='li'}}
+      <a href>Child Sessions
+      </a>
+      {{/link-to}}
+    {{/if}}
 
 	  {{#link-to 'session.comments' tagName='li'}}
 	    <a href>Comments

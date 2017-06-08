@@ -13,7 +13,15 @@ export default Ember.Route.extend(ComplexModelRoute, {
           entity_type: "session",
           entity_id: parseInt(session_model.id)
         })
-        .then(r => r.result)
+        .then(
+          function(r)
+          {
+            if (session_model.data.child_id != null) {
+              delete r.result['slash::commandline'];
+            }
+            return r.result;
+          }
+        )
     });
   }
 });
