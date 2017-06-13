@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.8.0
+
+* Initial support for parallel runs
+* Add option to configure auxiliary services for supporting custom APIs
+* Added documentation for installation, deployment and configuration (See https://backslash.readthedocs.org)
+
 ## Version 2.7.0
 
 * You can now search for sessions by contained test name via the `test = my_test_name` search clause
