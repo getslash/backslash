@@ -102,17 +102,35 @@ def docker_start():
 
 
 @cli.command(name='docker-nginx-start')
-def docker_nginx_start():
+@click.option('--only-print', is_flag=True, default=False)
+def docker_nginx_start(only_print):
     import jinja2
     with open('etc/nginx-site-conf.j2') as f:
         template = jinja2.Template(f.read())
 
     environ = defaultdict(str, os.environ)
+    template_args = {'environ': environ, 'hostname': environ['BACKSLASH_HOSTNAME']}
+    template_args['additional_routes'] = _parse_environment_routes()
+    config = template.render(**template_args)
+    if only_print:
+        print(config)
+        return
+
     with open('/etc/nginx/conf.d/backslash.conf', 'w') as f:
-        f.write(template.render({'environ': environ, 'hostname': environ['BACKSLASH_HOSTNAME']}))
+        f.write(config)
 
     nginx_path = '/usr/sbin/nginx'
     os.execv(nginx_path, [nginx_path, '-g', 'daemon off;'])
+
+
+def _parse_environment_routes():
+    rule_string = os.environ.get('BACKSLASH_ADDITIONAL_ROUTES')
+    if rule_string:
+        returned = [rule.split(':', 1) for rule in rule_string.split(',')]
+        for rule in returned:
+            assert len(rule) == 2, 'Invalid additional routes specified: {!r}'.format(rule_string)
+        return returned
+    return []
 
 
 def _ensure_conf():
