@@ -93,3 +93,36 @@ page, you can specify it via the ``test_metadata_links`` variable::
 
 The above will add a link to the test page pointing at the Jenkins
 build whenever a "jenkins_url" metadata key is found for a test
+
+Deployment Customization
+------------------------
+
+Auxiliary Services
+~~~~~~~~~~~~~~~~~~
+
+In some extreme cases you might want specific APIs or routes served by external containers running customized code. This can be done through customizing the ``docker-compose`` configuration.
+
+First, create an empty docker-compose file acting as your override (we will be using it as an additional ``-f`` argument to ``docker-compose``)::
+
+  # compose-override.yml
+  version: '3'
+
+
+Now, create your custom container running your own extension, e.g. a customized Flask app serving ``/api/your_custom_api``::
+
+  # compose-override.yml
+  version: '3'
+  services:
+    my_custom_service:
+       image: your-server/image-name
+       command: "your-command-here"
+
+Now we can use the ``BACKSLASH_ADDITIONAL_ROUTES`` environment variable to the ``nginx`` container to make it forward your new API to your custom container::
+
+  # compose-override.yml
+  version: '3'
+  services:
+     ...
+     nginx:
+       environment:
+       - "BACKSLASH_ADDITIONAL_ROUTES=/api/your_custom_api:http://my_custom_service:8000"
