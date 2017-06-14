@@ -8,15 +8,19 @@
   </div>
 </div>
 <div class="main-info">
-  {{status-icon status=session.computed_status}}
-  {{#elements/tool-tip title=session.user_display_name}}
-    {{#link-to 'user' session.user_email}}
-      {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
-    {{/link-to}}
-  {{/elements/tool-tip}}
-  <div class="user-info">
-    <small>{{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
-  </div>
+  {{#if session.child_id}}
+    Child ID: {{session.child_id}}, Session ID: {{session.display_id}}
+  {{else}}
+    {{status-icon status=session.computed_status}}
+    {{#elements/tool-tip title=session.user_display_name}}
+      {{#link-to 'user' session.user_email}}
+        {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
+      {{/link-to}}
+    {{/elements/tool-tip}}
+    <div class="user-info">
+      <small>{{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
+    </div>
+  {{/if}}
 </div>
 
 
