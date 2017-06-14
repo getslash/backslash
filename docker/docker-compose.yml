@@ -20,7 +20,7 @@ services:
       - db
       - redis
     logging:
-      driver: journald
+      driver: syslog
 
   db:
     image: "postgres:9.6"
