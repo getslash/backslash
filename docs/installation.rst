@@ -55,8 +55,12 @@ directory as ``/etc/systemd/system/backslash-docker.service``::
   After=docker.service
 
   [Service]
+  Type=oneshot
+  RemainAfterExit=yes
   WorkingDirectory=/opt/backslash/docker
-  ExecStart=/usr/local/bin/docker-compose -f docker-compose.yml -f infinidat-overrides.yml -p backslash up
+  ExecStartPre=-/usr/local/bin/docker-compose -f docker-compose.yml -p backslash down
+  ExecStart=/usr/local/bin/docker-compose  -f docker-compose.yml -p backslash up -d
+  ExecStop=/usr/local/bin/docker-compose -f docker-compose.yml -p backslash down
 
   [Install]
   WantedBy=multi-user.target
