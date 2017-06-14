@@ -2,6 +2,7 @@
 
 ## Version 2.8.0
 
+* Favicon now displays an error/success icon for sessions and tests
 * Initial support for parallel runs
 * Add option to configure auxiliary services for supporting custom APIs
 * Added documentation for installation, deployment and configuration (See https://backslash.readthedocs.org)

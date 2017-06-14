@@ -27,6 +27,10 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   child_id: DS.attr("string"),
   last_comment: DS.attr(),
 
+  is_ok() {
+    return !(this.get('num_errors') || this.get('num_error_tests') || this.get('num_failed_tests') || this.get('num_failures') || this.get('is_abandoned') || this.get('is_interrupted'));
+  },
+
   num_successful_tests: function() {
     return (
       this.get("num_finished_tests") -

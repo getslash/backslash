@@ -5,7 +5,7 @@ import ComplexModelRoute from "../../mixins/complex-model-route";
 export default Ember.Route.extend(ComplexModelRoute, {
 
   api: Ember.inject.service(),
-
+  favicon: Ember.inject.service(),
 
   parent_controller: function() {
     return this.controllerFor("session");
@@ -34,6 +34,15 @@ export default Ember.Route.extend(ComplexModelRoute, {
       });
 
     });
+  },
+
+  afterModel({test_model}) {
+    let favicon = this.get('favicon');
+    favicon.set_by_test(test_model);
+  },
+
+  deactivate() {
+    this.get('favicon').set_by_session(this.modelFor('session').session_model);
   },
 
 });
