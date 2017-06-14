@@ -19,6 +19,8 @@ services:
     depends_on:
       - db
       - redis
+    logging:
+      driver: journald
 
   db:
     image: "postgres:9.6"
