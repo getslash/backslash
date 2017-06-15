@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Service.extend({
 
   set_by_session(session) {
+    this.reset();
     let status = session.get('computed_status');
 
     if (status) {
@@ -16,6 +17,7 @@ export default Ember.Service.extend({
   },
 
   set_by_test(test) {
+    this.reset();
     let status = test.get('computed_status');
 
     if (status) {
