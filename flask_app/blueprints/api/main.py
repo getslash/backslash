@@ -120,9 +120,6 @@ def report_test_start(
     session = _validate_session(session_id)
     if test_index is None:
         test_index = Test.query.filter(Test.session_id == session_id).count() + 1
-    if is_interactive:
-        session.total_num_tests = Session.total_num_tests + 1
-        db.session.add(session)
     returned = Test.query.filter(Test.logical_id == test_logical_id).first()
     if not returned or not test_logical_id:
         test_info_id = get_or_create_test_information_id(

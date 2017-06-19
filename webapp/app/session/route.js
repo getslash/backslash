@@ -16,7 +16,7 @@ export default Ember.Route.extend(
 
     model({ id }) {
       let self = this;
-      return self.store.findRecord("session", id).then(function(session) {
+      return self.store.queryRecord("session", {id: id}).then(function(session) {
         return Ember.RSVP.hash({
           session_model: session,
           user: self.store.find("user", session.get("user_id"))
