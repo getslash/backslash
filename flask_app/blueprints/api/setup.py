@@ -30,7 +30,6 @@ _DEFAULTS = {
     'ldap_login_enabled': False,
     'ldap_uri': None,
     'ldap_base_dn': None,
-    'display_names': None,
 }
 
 @API(generates_activity=False, require_login=False)

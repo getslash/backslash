@@ -13,7 +13,18 @@
       {{/if}}
     {{/if}}
   </form>
-  <p class="navbar-text">Session {{elements/copyable-text value=session_model.display_id}}</p>
+  <p class="navbar-text">
+    {{#if session_model.parent_logical_id}}
+        {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
+          <i class="fa fa-arrows-alt"></i>
+        {{/link-to}}
+    {{else}}
+        {{#if session_model.is_parent_session}}
+          <i class="fa fa-arrows-alt" title="Parallel session"></i>
+        {{/if}}
+    {{/if}}
+
+    Session {{elements/copyable-text value=session_model.display_id}}</p>
 
 {{/tool-bar}}
 
@@ -45,7 +56,12 @@
 	    <a href>Info
 	    </a>
 	  {{/link-to}}
-
+    {{#if session_model.is_parent_session}}
+      {{#link-to 'session.children' tagName='li'}}
+      <a href>Child Sessions
+      </a>
+      {{/link-to}}
+    {{/if}}
 
 	  {{#link-to 'session.comments' tagName='li'}}
 	    <a href>Comments

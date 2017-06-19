@@ -7,12 +7,12 @@ import requests
 from flask import Blueprint, abort, request, jsonify, current_app, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import aliased
 
 from flask_simple_api import error_abort
 from flask_security import current_user
-
 from .. import models
-from ..models import Error, Session, Test, User, Subject
+from ..models import Error, Session, Test, User, Subject, db
 from .. import activity
 from ..utils.identification import parse_test_id, parse_session_id
 from ..utils.rest import ModelResource
@@ -37,6 +37,8 @@ session_parser = reqparse.RequestParser()
 session_parser.add_argument('user_id', type=int, default=None)
 session_parser.add_argument('subject_name', type=str, default=None)
 session_parser.add_argument('search', type=str, default=None)
+session_parser.add_argument('parent_logical_id', type=str, default=None)
+session_parser.add_argument('id', type=str, default=None)
 
 @_resource('/sessions', '/sessions/<object_id>')
 class SessionResource(ModelResource):
@@ -50,12 +52,18 @@ class SessionResource(ModelResource):
     def _get_iterator(self):
         args = session_parser.parse_args()
 
+        if args.id is not None:
+            return _get_query_by_id_or_logical_id(self.MODEL, args.id)
         if args.search:
             returned = get_orm_query_from_search_string('session', args.search, abort_on_syntax_error=True)
         else:
             returned = super(SessionResource, self)._get_iterator()
 
         returned = returned.filter(Session.archived == False) # pylint: disable=singleton-comparison
+        if args.parent_logical_id is not None:
+            returned =  returned.filter(Session.parent_logical_id == args.parent_logical_id)
+        else:
+            returned = returned.filter(Session.parent_logical_id == None)
         if args.subject_name is not None:
             returned = (
                 returned
@@ -100,13 +108,24 @@ class TestResource(ModelResource):
         else:
             returned = super(TestResource, self)._get_iterator()
 
+
+        #get session
         if args.session_id is not None:
+            using_logical_id = False
             try:
                 session_id = int(args.session_id)
+                stmt = db.session.query(Session).filter(Session.id == session_id).subquery()
+                children = db.session.query(Session.id).filter(Session.parent_logical_id == stmt.c.logical_id).all()
             except ValueError:
-                returned = Test.query.join(Session).filter(Session.logical_id == args.session_id)
+                using_logical_id = True
+                children = db.session.query(Session.id).filter(Session.parent_logical_id == args.session_id).all()
+
+            if children:
+                children_ids = [child[0] for child in children]
+                returned = Test.query.filter(Test.session_id.in_(children_ids))
             else:
-                returned = returned.filter(Test.session_id == session_id)
+                returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
+                            returned.filter(Test.session_id == session_id)
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
@@ -159,7 +178,7 @@ class SubjectResource(ModelResource):
             return self.MODEL.query.get_or_404(object_id)
 
 
-def _get_object_by_id_or_logical_id(model, object_id):
+def _get_query_by_id_or_logical_id(model, object_id):
     query_filter = model.logical_id == object_id
     try:
         numeric_object_id = int(object_id)
@@ -167,7 +186,10 @@ def _get_object_by_id_or_logical_id(model, object_id):
         pass
     else:
         query_filter = (model.id == numeric_object_id) | query_filter
-    returned = model.query.filter(query_filter).first()
+    return model.query.filter(query_filter)
+
+def _get_object_by_id_or_logical_id(model, object_id):
+    returned = _get_query_by_id_or_logical_id(model, object_id).first()
     if returned is None:
         abort(requests.codes.not_found) # pylint: disable=no-member
     return returned

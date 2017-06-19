@@ -120,9 +120,6 @@ def report_test_start(
     session = _validate_session(session_id)
     if test_index is None:
         test_index = Test.query.filter(Test.session_id == session_id).count() + 1
-    if is_interactive:
-        session.total_num_tests = Session.total_num_tests + 1
-        db.session.add(session)
     returned = Test.query.filter(Test.logical_id == test_logical_id).first()
     if not returned or not test_logical_id:
         test_info_id = get_or_create_test_information_id(
@@ -207,8 +204,11 @@ def updating_session_counters(test):
             session_update['num_skipped_tests'] = Session.num_skipped_tests + 1
 
     if session_update:
-        Session.query.filter(
-            Session.id == test.session_id).update(session_update)
+        session = Session.query.filter(Session.id == test.session_id)
+        session.update(session_update)
+        parent_session = session.first().parent
+        if parent_session:
+            Session.query.filter(Session.id == parent_session.id).update(session_update)
 
 
 @API

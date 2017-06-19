@@ -27,11 +27,8 @@ def suite(name, args, interactive=False, debug=False, use_subjects=False, use_re
         def _get_initial_session_metadata(self):
             returned = super()._get_initial_session_metadata()
             returned.update({"users": {
-                "builtin_users": [
-                    {"id":-1, "name": "infinidat", "role": "INFINIDAT", "email": "dev.mgmt@infinidat.com", "password": "123456"},
-                    {"id":-2, "name": "admin", "role": "ADMIN", "email": "dev.mgmt@infinidat.com", "password": "123456"},
-                    {"id":-3, "name": "technician", "role": "TECHNICIAN", "email": "dev.mgmt@infinidat.com", "password": "123456"},
-                    {"id":-4, "name": "tablet", "role": "READ_ONLY", "email": "dev.mgmt@infinidat.com", "password": "123456"},
+                "some_data": [
+                    {'bla': '2', 'j': 3},
                 ]
             }})
             return returned

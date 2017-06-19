@@ -12,15 +12,25 @@ export default Ember.Route.extend(
     offline: Ember.inject.service(),
     api: Ember.inject.service(),
     title: "Session Tests",
+    favicon: Ember.inject.service(),
 
     model({ id }) {
       let self = this;
-      return self.store.findRecord("session", id).then(function(session) {
+      return self.store.queryRecord("session", {id: id}).then(function(session) {
         return Ember.RSVP.hash({
           session_model: session,
           user: self.store.find("user", session.get("user_id"))
         });
       });
+    },
+
+    afterModel(model) {
+      let session = model.session_model;
+      this.get('favicon').set_by_session(session);
+    },
+
+    deactivate() {
+      this.get('favicon').reset();
     },
 
     should_auto_refresh: function() {

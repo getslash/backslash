@@ -22,8 +22,14 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   num_failed_tests: DS.attr("number"),
   num_finished_tests: DS.attr("number"),
   num_skipped_tests: DS.attr("number"),
-
+  is_parent_session: DS.attr("boolean"),
+  parent_logical_id: DS.attr("string"),
+  child_id: DS.attr("string"),
   last_comment: DS.attr(),
+
+  is_ok() {
+    return !(this.get('num_errors') || this.get('num_error_tests') || this.get('num_failed_tests') || this.get('num_failures') || this.get('is_abandoned') || this.get('is_interrupted'));
+  },
 
   num_successful_tests: function() {
     return (

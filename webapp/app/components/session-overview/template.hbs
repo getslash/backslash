@@ -23,6 +23,20 @@
   </p>
 {{/if}}
 
+{{#if session_model.is_parent_session}}
+  <p>
+    <i class="fa fa-arrows-alt"></i> This session was run in parallel mode. Actual tests run by child sessions.
+  </p>
+{{/if}}
+
+{{#if session_model.parent_logical_id}}
+  <p>
+    <i class="fa fa-arrows-alt"></i> This session is a part of a {{#link-to "session" session_model.parent_logical_id}}parallel session{{/link-to}}.
+  </p>
+  <p>Child ID: #{{session_model.child_id}}</p>
+{{/if}}
+
+
 <p class="add-margin-bottom">
   {{session-breakdown session=session_model}}
 </p>

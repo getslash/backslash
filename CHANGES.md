@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.8.0
+
+* Favicon now displays an error/success icon for sessions and tests
+* Initial support for parallel runs
+* Add option to configure auxiliary services for supporting custom APIs
+* Added documentation for installation, deployment and configuration (See https://backslash.readthedocs.org)
+* *NOTE*: It is recommended to run Slash 1.2.4 or above with this release, to avoid a bug involving test counts and interactive sessions
+
 ## Version 2.7.0
 
 * You can now search for sessions by contained test name via the `test = my_test_name` search clause
