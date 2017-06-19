@@ -1,11 +1,9 @@
-<div class="container-fluid">
-  <table class="table data">
-    <tbody>
-      {{#each children as |child|}}
-        <tr>
-          <td class="value">{{#link-to "session" child.id}}Child ID {{child.child_id}}: {{child.display_id}}{{/link-to}}</td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
-</div>
+{{query-results
+  results=sortedModel
+  page=(mut page)
+  page_size=(mut page_size)
+  show_successful=show_successful
+  show_unsuccessful=show_unsuccessful
+  show_abandoned=show_abandoned
+  show_skipped=show_skipped
+}}

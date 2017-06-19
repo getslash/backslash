@@ -38,6 +38,7 @@ session_parser.add_argument('user_id', type=int, default=None)
 session_parser.add_argument('subject_name', type=str, default=None)
 session_parser.add_argument('search', type=str, default=None)
 session_parser.add_argument('parent_logical_id', type=str, default=None)
+session_parser.add_argument('id', type=str, default=None)
 
 @_resource('/sessions', '/sessions/<object_id>')
 class SessionResource(ModelResource):
@@ -51,6 +52,8 @@ class SessionResource(ModelResource):
     def _get_iterator(self):
         args = session_parser.parse_args()
 
+        if args.id is not None:
+            return _get_query_by_id_or_logical_id(self.MODEL, args.id)
         if args.search:
             returned = get_orm_query_from_search_string('session', args.search, abort_on_syntax_error=True)
         else:
@@ -175,7 +178,7 @@ class SubjectResource(ModelResource):
             return self.MODEL.query.get_or_404(object_id)
 
 
-def _get_object_by_id_or_logical_id(model, object_id):
+def _get_query_by_id_or_logical_id(model, object_id):
     query_filter = model.logical_id == object_id
     try:
         numeric_object_id = int(object_id)
@@ -183,7 +186,10 @@ def _get_object_by_id_or_logical_id(model, object_id):
         pass
     else:
         query_filter = (model.id == numeric_object_id) | query_filter
-    returned = model.query.filter(query_filter).first()
+    return model.query.filter(query_filter)
+
+def _get_object_by_id_or_logical_id(model, object_id):
+    returned = _get_query_by_id_or_logical_id(model, object_id).first()
     if returned is None:
         abort(requests.codes.not_found) # pylint: disable=no-member
     return returned
