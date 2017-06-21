@@ -25,10 +25,11 @@
 
 
       </form>
-      <p class="text-center">
-	Or
-      </p>
       {{#if runtime_config.google_oauth2_enabled}}
+        <p class="text-center">
+	  Or
+        </p>
+
 	<div class="form-group">
 	  <button class="btn btn-lg btn-default full-width" {{action "login_google"}}>
 	    <i class="fa fa-google"></i> Sign in with Google
