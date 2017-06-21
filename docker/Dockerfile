@@ -18,7 +18,7 @@ env LC_ALL C.UTF-8
 env LANG C.UTF-8
 
 RUN apt-get update
-RUN apt-get -y install build-essential rsync software-properties-common libpq-dev nginx curl redis-server gcc sudo libsasl2-dev libldap2-dev wget git
+RUN apt-get -y install build-essential software-properties-common libpq-dev nginx curl redis-server gcc sudo libsasl2-dev libldap2-dev wget git
 
 
 # nginx
