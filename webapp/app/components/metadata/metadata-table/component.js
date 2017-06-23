@@ -6,6 +6,25 @@ export default Ember.Component.extend({
   additional: {},
   metadata: {},
 
+  related_entities: null,
+
+  related_groups: function() {
+    let related = this.get("related_entities");
+    if (!related) {
+      return {};
+    }
+    let returned = {};
+    related.map(function(entity) {
+      let existing = returned[entity.get('entty_type')];
+      if (existing === undefined) {
+        existing = returned[entity.get('entity_type')] = [];
+      }
+      existing.push(entity.get('name'));
+    });
+    return returned;
+  }.property("related_entities"),
+
+
   all_metadata: function() {
     let returned = [];
 

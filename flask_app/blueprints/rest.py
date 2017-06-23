@@ -321,6 +321,30 @@ class CommentResource(ModelResource):
         return jsonify({'comment': self._render_single(comment, in_collection=False)})
 
 
+related_entity_parser = reqparse.RequestParser()
+related_entity_parser.add_argument('session_id', default=None, type=int)
+related_entity_parser.add_argument('test_id', default=None, type=int)
+
+
+@_resource('/entities', '/entities/<int:object_id>')
+class RelatedEntityResource(ModelResource):
+
+    MODEL = models.Entity
+
+    def _get_iterator(self):
+        args = related_entity_parser.parse_args()
+
+        if not ((args.session_id is None) ^ (args.test_id is None)):
+            error_abort('Either test_id or session_id must be provided')
+
+        if args.session_id is not None:
+            return models.Entity.query.join(models.session_entity).filter(models.session_entity.c.session_id == args.session_id)
+        elif args.test_id is not None:
+            return models.Entity.query.join(models.test_entity).filter(models.test_entity.c.test_id == args.test_id)
+        else:
+            raise NotImplementedError() # pragma: no cover
+
+
 @blueprint.route('/activities')
 def get_activities():
     args = session_test_user_query_parser.parse_args()

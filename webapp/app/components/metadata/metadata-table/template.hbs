@@ -2,6 +2,23 @@
 <div class="container-fluid">
   <table class="table data">
     <tbody>
+
+      {{#each-in related_groups as |name value|}}
+        <tr>
+          <td><i class="fa fa-fw"></i>{{pluralize value.length name omitCount=true}}</td>
+          {{# if (eq value.length 1)}}
+            <td>{{value}}</td>
+            {{ else }}
+            <td>
+              <ul>
+                {{#each value as |v|}}
+                  <li>{{v}}</li>
+                {{/each}}
+              </ul>
+            </td>
+          {{/if}}
+        </tr>
+      {{/each-in}}
       {{#each all_metadata as |item|}}
 	{{#if (and (not (s-starts-with item.name "slash::")) (not (eq item.name "slash")))}}
           <tr>
