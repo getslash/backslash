@@ -2,6 +2,10 @@
 
 {{#each results as |result|}}
   {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model show_user=show_users}}
+{{else}}
+  <div class="text-center faint">
+    No results found
+  </div>
 {{/each}}
 
 {{pagination-nav page=(mut page) has_next=results.meta.has_more num_pages=results.meta.num_pages }}
