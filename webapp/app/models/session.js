@@ -67,7 +67,6 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   num_comments: DS.attr("number"),
 
   next_keepalive: DS.attr("number"),
-  related: DS.attr(),
   labels: DS.attr(),
 
   total_num_warnings: function() {
