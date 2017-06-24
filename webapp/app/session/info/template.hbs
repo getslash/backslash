@@ -23,9 +23,4 @@
   </div>
 {{/if}}
 
-{{#if session_model.related}}
-  {{metadata/related-entities related=session_model.related}}
-{{/if}}
-
-
-{{metadata/metadata-table metadata=metadata additional=additional_metadata}}
+{{metadata/metadata-table metadata=metadata additional=additional_metadata related_entities=related_entities}}

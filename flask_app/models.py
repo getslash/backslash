@@ -37,13 +37,6 @@ class UserDetailsMixin(object):
         return self.user.display_name()
 
 
-
-class HasRelatedMixin(object):
-
-    @rendered_only_on_single
-    def related(self):
-        return [{'name': obj.name, 'type': obj.type} for obj in self.related_entities]
-
 class HasSubjectsMixin(object):
 
     @rendered_field
@@ -85,7 +78,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), unique=True, index=True)
@@ -212,10 +205,14 @@ class SubjectInstance(db.Model):
         return self.subject.name
 
 
-class Entity(db.Model):
+class Entity(db.Model, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text(), nullable=False)
     type = db.Column(db.String(256), nullable=False)
+
+    @rendered_field
+    def entity_type(self):
+        return self.type
 
     __table_args__ = (
         Index('ix_entity', name, type, unique=True),
@@ -306,7 +303,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasRelatedMixin, HasSubjectsMixin, UserDetailsMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
