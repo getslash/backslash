@@ -1,10 +1,10 @@
-import Ember from "ember";
-
+import PaginatedFilteredRoute from "../routes/paginated_filtered_route";
 import ComplexModelRoute from "../mixins/complex-model-route";
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
+import StatusFilterableRoute from "./../mixins/status-filterable/route";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexModelRoute, StatusFilterableRoute, {
   titleToken: "Tests",
 
   queryParams: {
@@ -25,6 +25,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
     if (params.search) {
       query.search = params.search;
     }
+    this.transfer_filter_params(params, query);
     return this.store
       .query("test", query)
       .then(function(tests) {
@@ -41,5 +42,14 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
         }
         throw exception; // reraise
       });
+  },
+
+  renderTemplate() {
+    this._super(...arguments);
+    this.render("filter-controls", {
+      into: "tests",
+      outlet: "filter-controls"
+    });
   }
+
 });
