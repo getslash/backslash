@@ -102,6 +102,7 @@ class TestSearchContext(SearchContext):
         'file': TestInformation.file_name,
         'class': TestInformation.class_name,
         'status': func.lower(Test.status),
+        'test_info_id': Test.test_info_id,
     }
 
 

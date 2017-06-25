@@ -13,9 +13,9 @@
   {{/if}}
 
   <div class="row add-margin-top add-margin-bottom">
-    <div class="col-sm-12"><strong>Test ID</strong>: {{elements/copyable-text value=test_model.display_id}} {{#link-to 'test_info' test_model.test_info_id classNames="add-margin-left"}}
+    <div class="col-sm-12"><strong>Test ID</strong>: {{elements/copyable-text value=test_model.display_id}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="add-margin-left">
       <i class="fa fa-history"></i> Previous executions...
-    {{/link-to}}
+    </a>
 
     {{#each metadata_links as |metadata_link|}}
       <a href="{{metadata_link.url}}" class="add-margin-left" target="_blank" rel=noopener><img src="{{metadata_link.icon}}" class="text-height"/> {{metadata_link.name}}</a>
