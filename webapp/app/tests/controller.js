@@ -1,7 +1,9 @@
 import Ember from "ember";
 import config from "../config/environment";
+import StatusFilterableController
+  from "./../mixins/status-filterable/controller";
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(StatusFilterableController, {
   queryParams: ["search", "page", "page_size"],
 
   search: "",

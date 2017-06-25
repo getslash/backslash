@@ -26,11 +26,17 @@ export default Ember.Mixin.create({
   },
 
   transfer_filter_params(from_params, to_params) {
+    let returned = to_params;
+    if (to_params === undefined) {
+      returned = {};
+    }
+
     let query_params = this.get("queryParams");
     for (let key in query_params) {
       if (key.startsWith("show_")) {
-        to_params[key] = from_params[key];
+        returned[key] = from_params[key];
       }
     }
+    return returned;
   }
 });
