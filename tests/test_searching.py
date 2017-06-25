@@ -67,6 +67,7 @@ def test_subject_search(started_session, started_test, subjects, objtype, negate
     'user != bla',
     'label = bla',
     'label != bla',
+    'commandline = bla',
 ])
 def test_session_search(q):
     query = get_orm_query_from_search_string('session', q)

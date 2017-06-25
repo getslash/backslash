@@ -4,7 +4,7 @@ import operator
 from flask import current_app
 from sqlalchemy import func
 
-from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision
+from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision, SessionMetadata
 from . import value_parsers
 from .exceptions import UnknownField
 from .helpers import only_ops
@@ -206,6 +206,27 @@ class SessionSearchContext(SearchContext):
     @only_ops(['='])
     def search__test(self, op, value): # pylint: disable=unused-argument
         return db.session.query(Test).join(TestInformation).filter(Test.session_id == Session.id, TestInformation.name == value).exists().correlate(Session)
+
+    @only_ops(['=', '!=', '~'])
+    def search__commandline(self, op, value):
+        return self._metadata_query(op, 'slash::commandline', None, value)
+
+    @only_ops(['=', '!=', '<', '>'])
+    def search__python_version(self, op, value):
+        return self._metadata_query(op, 'python_version', None, value)
+
+    def _metadata_query(self, op, key, subkey, value):
+        op_func = op.func if op != '!=' else operator.eq
+        filter_expression = (SessionMetadata.key == key)
+        if subkey:
+            filter_expression &= op_func(SessionMetadata.metadata_item[key].astext, value)
+        else:
+
+            filter_expression &= op_func(SessionMetadata.metadata_item[0].astext, value)
+        returned = db.session.query(SessionMetadata).filter(SessionMetadata.session_id == Session.id, filter_expression).exists().correlate(Session)
+        return _negate_maybe(op, returned)
+
+
 
 def _negate_maybe(op, query):
     if op.op == '!=':
