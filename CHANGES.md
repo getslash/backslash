@@ -7,6 +7,9 @@
 * You can now search by ``test_info_id``, "previous executions" now lead to test search screen
 * Added "Display" filter dropdown to test search view
 * When no search results are found, Backslash now emits a descriptive message indicating it
+
+## Version 2.8.2
+
 * Dramatically improved the performance of searching for previous executions of a test
 
 ## Version 2.8.0
