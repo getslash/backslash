@@ -127,3 +127,9 @@ def test_cannot_report_interrupted_ended_session(started_session):
     started_session.report_end()
     with raises_conflict():
         started_session.report_interrupted()
+
+
+@pytest.mark.parametrize('has_fatal_errors', [True, False])
+def test_session_end_with_fatal_errors(started_session, has_fatal_errors):
+    started_session.report_end(has_fatal_errors=has_fatal_errors)
+    assert started_session.refresh().has_fatal_errors == has_fatal_errors
