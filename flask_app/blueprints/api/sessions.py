@@ -91,8 +91,8 @@ def report_session_start(logical_id: str=None,
     return returned
 
 
-@API
-def report_session_end(id: int, duration: (int, NoneType)=None):
+@API(version=2)
+def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors: bool=False):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
@@ -110,6 +110,7 @@ def report_session_end(id: int, duration: (int, NoneType)=None):
         session.status = statuses.FAILURE
     elif session.status != statuses.INTERRUPTED:
         session.status = statuses.SUCCESS
+    session.has_fatal_errors = has_fatal_errors
     session.in_pdb = False
     db.session.add(session)
     db.session.commit()

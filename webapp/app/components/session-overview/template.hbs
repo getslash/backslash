@@ -23,6 +23,12 @@
   </p>
 {{/if}}
 
+{{#if session_model.has_fatal_errors}}
+  <p class="faint">
+    The session was terminated due to a fatal error encountered during its execution.
+  </p>
+{{/if}}
+
 {{#if session_model.is_parent_session}}
   <p>
     <i class="fa fa-arrows-alt"></i> This session was run in parallel mode. Actual tests run by child sessions.

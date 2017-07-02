@@ -143,6 +143,8 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     # activity
     num_comments = db.Column(db.Integer, default=0)
 
+    has_fatal_errors = db.Column(db.Boolean, default=False)
+
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
