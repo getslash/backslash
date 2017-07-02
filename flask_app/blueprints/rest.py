@@ -120,12 +120,12 @@ class TestResource(ModelResource):
                 using_logical_id = True
                 children = db.session.query(Session.id).filter(Session.parent_logical_id == args.session_id).all()
 
+            returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
+                        returned.filter(Test.session_id == session_id)
             if children:
                 children_ids = [child[0] for child in children]
-                returned = Test.query.filter(Test.session_id.in_(children_ids))
-            else:
-                returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
-                            returned.filter(Test.session_id == session_id)
+                returned = returned.union(Test.query.filter(Test.session_id.in_(children_ids)))
+
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
