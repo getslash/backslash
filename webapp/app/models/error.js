@@ -41,5 +41,6 @@ export default DS.Model.extend({
   timestamp: DS.attr(),
   traceback: DS.attr(),
   traceback_url: DS.attr(),
+  exception_attributes: DS.attr(),
   type: DS.attr("string")
 });

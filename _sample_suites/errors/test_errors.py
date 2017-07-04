@@ -11,9 +11,16 @@ def test_3():
     for i in range(30):
         slash.add_error('sample error #{}'.format(i))
 
+
+class CustomException(Exception):
+
+    def __init__(self, message):
+        super().__init__(message)
+        self.message_string = message
+
 def test_4():
     long_variable = "this is a very long variable" * 100
-    raise Exception('this is a very long message ' * 100)
+    raise CustomException('this is a very long message ' * 100)
 
 def f():
     var = 2
