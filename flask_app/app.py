@@ -5,6 +5,7 @@ from flask_security import Security
 from flask_mail import Mail
 import logbook
 from logbook.compat import redirect_logging
+from werkzeug.contrib.fixers import ProxyFix
 
 
 def create_app(config=None):
@@ -14,6 +15,7 @@ def create_app(config=None):
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     app = flask.Flask(__name__, static_folder=None)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
 
     _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "..", "conf.d"))
 
