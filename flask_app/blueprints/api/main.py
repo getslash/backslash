@@ -154,6 +154,22 @@ def report_test_start(
     metrics.num_new_tests.increment()
     return returned
 
+@API
+def report_test_distributed(
+        session_id: int,
+        test_logical_id: (str, NoneType)=None,
+):
+    session = _validate_session(session_id)
+    test = Test.query.filter(Test.logical_id == test_logical_id).first()
+    test.status = statuses.DISTRIBUTED
+
+    try:
+        db.session.add(test)
+        db.session.commit()
+    except DataError:
+        pass
+    return test
+
 
 @API
 def report_test_end(id: int, duration: (float, int)=None):

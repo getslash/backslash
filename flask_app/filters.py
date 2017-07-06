@@ -50,6 +50,7 @@ class builders:
 
 def filter_by_statuses(cursor, model):
 
+    cursor = cursor.filter(~builders.build_status_query(model, statuses.DISTRIBUTED))
     if not _get_boolean_filter('show_unsuccessful', True):
         cursor = cursor.filter(~builders.build_unsuccessful_query(model))
     if not _get_boolean_filter('show_successful', True):
