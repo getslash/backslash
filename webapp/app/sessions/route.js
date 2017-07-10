@@ -5,12 +5,14 @@ import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 import PollingRoute from "../mixins/polling-route";
 import ScrollToTopMixin from "../mixins/scroll-top";
+import SearchRouteMixin from "../mixins/search-route";
 import StatusFilterableRoute from "./../mixins/status-filterable/route";
 
 export default PaginatedFilteredRoute.extend(
   AuthenticatedRouteMixin,
   PollingRoute,
   ScrollToTopMixin,
+  SearchRouteMixin,
   StatusFilterableRoute,
   {
     offline: Ember.inject.service(),
@@ -86,6 +88,7 @@ export default PaginatedFilteredRoute.extend(
     },
 
     setupController(controller, model) {
+      this._super(...arguments);
       controller.set("error", null);
       controller.setProperties(model);
       this.get("offline");

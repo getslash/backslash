@@ -1,0 +1,13 @@
+& {
+
+    .searching-spinner {
+        position: relative;
+        left: -5em;
+        z-index: 9999;
+        visibility: hidden;
+
+        &.visible {
+            visibility: visible;
+        }
+    }
+}

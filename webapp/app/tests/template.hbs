@@ -2,14 +2,7 @@
   <div class="filter-controls">
     {{outlet "filter-controls"}}
   </div>
-  <form class="navbar-form" role="search">
-    {{#escape-focus}}
-      {{input class="form-control search-bar" id="search-field" placeholder="Search for..." value=entered_search}}  
-    {{/escape-focus}}
-    <div class="input-group">
-      <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
-    </div>
-    {{#search-help}}
+  {{#search-bar search=(mut search) searching=searching}}
       <table class="table table-striped">
 	<tbody>
 	  <tr>
@@ -54,10 +47,7 @@
           </tr>
 	</tbody>
       </table>
-
-    {{/search-help}}
-  </form>
-
+  {{/search-bar}}
 {{/tool-bar}}
 
 {{#if error}}

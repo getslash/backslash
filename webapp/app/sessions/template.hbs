@@ -1,17 +1,10 @@
 {{#tool-bar}}
   <div class="filter-controls">
-{{outlet "filter-controls"}}
+    {{outlet "filter-controls"}}
   </div>
   {{#if (not hide_search)}}
-    <form class="navbar-form" role="search">
-      {{#escape-focus}}
-        {{input class="form-control search-bar" id="search-field" placeholder="Search for..." value=entered_search}}
-      {{/escape-focus}}
-      <div class="input-group">
-        <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
-      </div>
+    {{#search-bar search=(mut search) searching=searching}}
 
-      {{#search-help}}
         <table class="table table-striped">
           <tbody>
             <tr>
@@ -50,8 +43,7 @@
           </tbody>
         </table>
 
-      {{/search-help}}
-    </form>
+    {{/search-bar}}
   {{/if}}
 
 {{/tool-bar}}
