@@ -11,4 +11,6 @@ export default Ember.Controller.extend(StatusFilterableController, SearchControl
   available_page_sizes: config.APP.available_page_sizes,
   page_size: config.APP.default_page_size,
 
+  display: Ember.inject.service(),
+
 });
