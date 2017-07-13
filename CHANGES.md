@@ -3,6 +3,7 @@
 
 ## Version 2.9.0
 
+* Time searches with 'at' are now more accurate, and can distinguish between searching for exact times and loose dates
 * Added support for marking sessions as "terminated by fatal errors"
 * Improvements to parallel runs display
 * You can now search by ``test_info_id``, "previous executions" now lead to test search screen

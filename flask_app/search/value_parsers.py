@@ -1,32 +1,19 @@
-import re
-
-import datetime
 import dateparser
-
+import datetime
 from .exceptions import SearchSyntaxError
 
-units = {
-    'd': datetime.timedelta(days=1),
-    'h': datetime.timedelta(hours=1),
-}
 
 def parse_date(value):
-    match = re.match(r"^([\-\+])(\d+)([{}])".format(''.join(units)), value)
-    if not match:
-        returned = dateparser.parse(value)
-        if returned is None:
-            raise SearchSyntaxError('Invalid date provided: {!r}'.format(value))
-        return returned.timestamp()
+    parsed = dateparser.parse(value)
 
-    returned = datetime.datetime.now()
+    if parsed is None:
+        raise SearchSyntaxError('Unknown date/time format')
 
-    sign, num, unit = match.groups()
-    num = int(num)
+    min_parsed = max_parsed = parsed
 
-    diff = num * units[unit]
+    if (parsed.hour, parsed.minute, parsed.second) == (0, 0, 0):
+        if '0:0' not in value:
+            max_parsed += datetime.timedelta(days=1)
 
-    if sign == '-':
-        returned -= diff
-    else:
-        returned += diff
-    return returned.timestamp()
+
+    return min_parsed, max_parsed
