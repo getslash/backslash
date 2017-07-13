@@ -3,8 +3,9 @@ import ComplexModelRoute from "../mixins/complex-model-route";
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 import StatusFilterableRoute from "./../mixins/status-filterable/route";
+import SearchRouteMixin from "./../mixins/search-route";
 
-export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexModelRoute, StatusFilterableRoute, {
+export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexModelRoute, StatusFilterableRoute, SearchRouteMixin, {
   titleToken: "Tests",
 
   queryParams: {
