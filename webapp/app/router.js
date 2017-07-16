@@ -42,6 +42,10 @@ Router.map(function() {
   this.route("setup");
   this.route("not-found", { path: "/*:unknown" });
   this.route("tests");
+
+  this.route('admin', function() {
+    this.route('migrations');
+  });
 });
 
 export default Router;
