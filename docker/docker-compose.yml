@@ -40,6 +40,8 @@ services:
       - "9187:9187"
     depends_on:
       - db
+    logging:
+      driver: syslog
 
   nginx:
     image: getslash/backslash
