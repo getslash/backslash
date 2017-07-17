@@ -366,3 +366,20 @@ def get_activities():
 def _fix_action_string(d):
     d['action'] = activity.get_action_string(d['action'])
     return d
+
+
+@_resource('/migrations', '/migrations/<object_id>')
+class MigrationsResource(ModelResource):
+
+    MODEL = models.BackgroundMigration
+    DEFAULT_SORT = (models.BackgroundMigration.started_time.desc(),)
+    ONLY_FIELDS = [
+        'id',
+        'name',
+        'started',
+        'started_time',
+        'finished',
+        'finished_time',
+        'total_num_objects',
+        'remaining_num_objects'
+    ]

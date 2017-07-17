@@ -1,3 +1,4 @@
+import time
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
 
@@ -12,7 +13,7 @@ from .utils.rendering import rendered_field, render_api_object, rendered_only_on
 from . import activity
 from .capabilities import CAPABILITIES
 
-from sqlalchemy import Index
+from sqlalchemy import Index, CheckConstraint
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 
@@ -636,3 +637,41 @@ session_label = db.Table('session_label',
                                      db.ForeignKey('label.id', ondelete='CASCADE')),
                         db.Index('ix_session_label_session_id_label_id', 'session_id', 'label_id'),
 )
+
+
+class BackgroundMigration(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1024), nullable=False)
+    started = db.Column(db.Boolean, server_default='FALSE', index=True)
+    started_time = db.Column(db.Float)
+    finished = db.Column(db.Boolean, server_default='FALSE', index=True)
+    finished_time = db.Column(db.Float)
+    total_num_objects = db.Column(db.Integer)
+    remaining_num_objects = db.Column(db.Integer)
+    update_query = db.Column(db.Text(), nullable=False)
+    remaining_num_items_query = db.Column(db.Text(), nullable=False)
+    batch_size = db.Column(db.Integer, server_default='100000', nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("update_query like '%\\:batch_size%'", name='check_has_batch_size'),
+    )
+
+    @classmethod
+    def get_typename(cls):
+        return 'migration'
+
+    def do_single_iteration(self):
+        if not self.started:
+            self.started = True
+            self.started_time = time.time()
+            num_rows = db.session.execute(self.remaining_num_items_query).scalar()
+            self.remaining_num_objects = num_rows
+            self.total_num_objects = num_rows
+
+        result = db.session.execute(self.update_query, {'batch_size': self.batch_size})
+        self.remaining_num_objects = self.remaining_num_objects - result.rowcount
+        if result.rowcount < self.batch_size:
+            self.finished = True
+            self.finished_time = time.time()
+        db.session.commit()
