@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     }
     let returned = {};
     related.map(function(entity) {
-      let existing = returned[entity.get('entty_type')];
+      let existing = returned[entity.get('entity_type')];
       if (existing === undefined) {
         existing = returned[entity.get('entity_type')] = [];
       }

@@ -50,6 +50,7 @@ def suite(name, args, interactive=False, debug=False, use_subjects=False, use_re
             super().session_start()
             if use_related:
                 self.session.add_related_entity(entity_type='toaster', entity_name='toaster01')
+                self.session.add_related_entity(entity_type='toaster', entity_name='toaster02')
 
 
     plugin = _Plugin('http://127.0.0.1:8000', keepalive_interval=10, propagate_exceptions=True)
