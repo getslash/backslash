@@ -26,8 +26,8 @@ let _keys = [
     action: "toggle_session_side_labels",
     description: "Toggle the side breakdown panel for Sessions"
   },
-  { key: "j", action: "goto_next", description: "Jump to next item" },
-  { key: "k", action: "goto_prev", description: "Jump to previous item" },
+  { key: "j", action: "jump_one_down", description: "Jump to next item" },
+  { key: "k", action: "jump_one_up", description: "Jump to previous item" },
   { key: "esc", action: "close_boxes_or_home" },
   {
     key: "ctrl+s",
@@ -116,7 +116,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     }
   },
 
-  goto_next_prev(direction) {
+  jump_one(direction) {
     let self = this;
     let appcontroller = getOwner(this).lookup("controller:application");
     let current_path = appcontroller.currentPath;
@@ -244,12 +244,12 @@ export default Ember.Component.extend(KeyboardShortcuts, {
       });
     },
 
-    goto_next() {
-      this.goto_next_prev("after");
+    jump_one_down() {
+      this.jump_one("before");
     },
 
-    goto_prev() {
-      this.goto_next_prev("before");
+    jump_one_up() {
+      this.jump_one("after");
     }
   }
 });
