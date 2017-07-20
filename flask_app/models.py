@@ -20,14 +20,14 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB
 db = SQLAlchemy()
 
 
-class TypenameMixin(object):
+class TypenameMixin:
 
     @classmethod
     def get_typename(cls):
         return cls.__name__.lower()
 
 
-class UserDetailsMixin(object):
+class UserDetailsMixin:
 
     @rendered_field
     def user_email(self):
@@ -38,7 +38,7 @@ class UserDetailsMixin(object):
         return self.user.display_name()
 
 
-class HasSubjectsMixin(object):
+class HasSubjectsMixin:
 
     @rendered_field
     def subjects(self):
@@ -49,7 +49,7 @@ class HasSubjectsMixin(object):
 
 
 
-class StatusPredicatesMixin(object):
+class StatusPredicatesMixin:
 
     @property
     def skipped(self):
