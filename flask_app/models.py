@@ -1,4 +1,4 @@
-import time
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
 
@@ -9,12 +9,13 @@ from sqlalchemy.sql import and_, select, func
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import rendered_field, render_api_object, rendered_only_on_single
+from .utils.rendering import rendered_field, render_api_object
 from . import activity
 from .capabilities import CAPABILITIES
 
+from psycopg2.extras import DateTimeTZRange
 from sqlalchemy import Index, CheckConstraint
-from sqlalchemy.dialects.postgresql import JSON, JSONB
+from sqlalchemy.dialects.postgresql import JSON, JSONB, TSTZRANGE
 
 
 db = SQLAlchemy()
@@ -68,6 +69,25 @@ class StatusPredicatesMixin:
         return self.status == statuses.ERROR
 
 
+class TimespanMixin:
+
+    timespan = db.Column(TSTZRANGE, nullable=True)
+
+    def mark_started(self):
+        self.start_time = get_current_time()
+        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), None)
+
+    def extend_timespan_to(self, timestamp):
+        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), datetime.utcfromtimestamp(timestamp))
+
+    def mark_ended(self):
+        self.mark_ended_at(get_current_time())
+
+    def mark_ended_at(self, timestamp):
+        self.end_time = timestamp
+        self.extend_timespan_to(timestamp)
+
+
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -79,7 +99,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), unique=True, index=True)
@@ -150,6 +170,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
+        Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
     )
 
 
@@ -306,7 +327,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -413,6 +434,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_session_id_start_time', session_id, start_time),
         Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
+        Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
     )
 
     @rendered_field
@@ -664,14 +686,15 @@ class BackgroundMigration(db.Model):
     def do_single_iteration(self):
         if not self.started:
             self.started = True
-            self.started_time = time.time()
+            self.started_time = get_current_time()
             num_rows = db.session.execute(self.remaining_num_items_query).scalar()
             self.remaining_num_objects = num_rows
             self.total_num_objects = num_rows
 
         result = db.session.execute(self.update_query, {'batch_size': self.batch_size})
         self.remaining_num_objects = self.remaining_num_objects - result.rowcount
-        if result.rowcount < self.batch_size:
+        if result.rowcount == 0:
+            self.remaining_num_objects = 0
             self.finished = True
-            self.finished_time = time.time()
+            self.finished_time = get_current_time()
         db.session.commit()

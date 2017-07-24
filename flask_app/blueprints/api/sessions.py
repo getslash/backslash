@@ -60,6 +60,8 @@ def report_session_start(logical_id: str=None,
         keepalive_interval,
     )
 
+    returned.mark_started()
+
     if subjects:
         for subject_data in subjects:
             subject_name = subject_data.get('name', None)
@@ -101,8 +103,11 @@ def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
         error_abort('Session is not running', code=requests.codes.conflict)
 
-    session.end_time = get_current_time(
-    ) if duration is None else session.start_time + duration
+    if duration is None:
+        session.mark_ended()
+    else:
+        session.mark_ended_at(session.start_time + duration)
+
     # TODO: handle interrupted sessions
     if session.num_error_tests or session.num_errors:
         session.status = statuses.ERROR
@@ -135,7 +140,13 @@ def report_not_in_pdb(session_id: int):
 @API
 def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
-    s.next_keepalive = get_current_time() + s.keepalive_interval
+    if s.end_time is not None:
+        return
+    timestamp = get_current_time() + s.keepalive_interval
+    s.next_keepalive = timestamp
+    s.extend_timespan_to(timestamp)
+    for test in Test.query.filter(session_id=session_id, end_time=None):
+        test.extend_timespan_to(timestamp)
     db.session.add(s)
     db.session.commit()
 

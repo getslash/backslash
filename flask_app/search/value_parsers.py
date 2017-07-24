@@ -4,7 +4,7 @@ from .exceptions import SearchSyntaxError
 
 
 def parse_date(value):
-    parsed = dateparser.parse(value)
+    parsed = dateparser.parse(value, settings={'RETURN_AS_TIMEZONE_AWARE': True})
 
     if parsed is None:
         raise SearchSyntaxError('Unknown date/time format')
