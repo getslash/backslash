@@ -72,7 +72,7 @@ def started_parallel_session(client):
 
 @pytest.fixture
 def started_session(client):
-    return client.report_session_start()
+    return client.report_session_start(keepalive_interval=300)
 
 
 @pytest.fixture
@@ -153,8 +153,12 @@ def metadata():
         }}
 
 
+@pytest.fixture
+def metadata_holder(session_or_test):
+    return session_or_test
+
 @pytest.fixture(params=['session', 'test'])
-def metadata_holder(request, client, test_info):
+def session_or_test(request, client, test_info):
     session = client.report_session_start(logical_id=str(uuid4()))
     if request.param == 'session':
         return session
@@ -200,6 +204,15 @@ def client(webapp_without_login, runtoken, testuser_id):
 @pytest.fixture
 def real_login(client):
     client.do_real_login()
+
+
+@pytest.fixture
+def get_real_object(db_context):
+
+    def get_real_object(api_object):
+        with db_context():
+            return getattr(models, api_object.type.title()).query.get(api_object.id)
+    return get_real_object
 
 
 @pytest.fixture

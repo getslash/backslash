@@ -3,6 +3,7 @@ import operator
 
 from flask import current_app
 from sqlalchemy import func
+from psycopg2.extras import DateTimeTZRange
 
 from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision, SessionMetadata
 from . import value_parsers
@@ -53,8 +54,9 @@ class SearchContext(object):
 
     @only_ops(['='])
     def search__at(self, op, value): # pylint: disable=unused-argument
-        value = value_parsers.parse_date(value)
-        return (self.MODEL.end_time >= value) & (self.MODEL.start_time <= value)
+        min_value, max_value = value_parsers.parse_date(value)
+        date_range = DateTimeTZRange(min_value, max_value, '[]')
+        return self.MODEL.timespan.overlaps(date_range)
 
     def _search_time_field(self, field, op, value):
         return op.func(field, value_parsers.parse_date(value))
