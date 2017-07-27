@@ -75,10 +75,10 @@ class TimespanMixin:
 
     def mark_started(self):
         self.start_time = get_current_time()
-        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), None)
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), None)
 
     def extend_timespan_to(self, timestamp):
-        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), datetime.utcfromtimestamp(timestamp))
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), datetime.fromtimestamp(timestamp))
 
     def mark_ended(self):
         self.mark_ended_at(get_current_time())

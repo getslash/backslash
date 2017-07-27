@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
-from ...models import Session, db, SessionMetadata
+from ...models import Session, Test, db, SessionMetadata
 from ...utils import get_current_time, statuses
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
@@ -145,9 +145,8 @@ def send_keepalive(session_id: int):
     timestamp = get_current_time() + s.keepalive_interval
     s.next_keepalive = timestamp
     s.extend_timespan_to(timestamp)
-    for test in Test.query.filter(session_id=session_id, end_time=None):
+    for test in Test.query.filter_by(session_id=session_id, end_time=None):
         test.extend_timespan_to(timestamp)
-    db.session.add(s)
     db.session.commit()
 
 
