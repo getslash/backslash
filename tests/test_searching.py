@@ -6,7 +6,6 @@ import pytest
 from flask_app import models
 from flask_app.search import get_orm_query_from_search_string
 from flask_app.search.logic import TestSearchContext
-from flask_app.search.value_parsers import parse_date
 from flask_app.search.exceptions import SearchSyntaxError
 
 
@@ -32,7 +31,7 @@ def test_parsing_simple_exression():
 ])
 def test_test_search(q):
     query = get_orm_query_from_search_string('test', q)
-    unused = query.limit(5).all()
+    _ = query.limit(5).all()
 
 
 @pytest.mark.parametrize('q', [
@@ -45,7 +44,7 @@ def test_test_search(q):
 @pytest.mark.parametrize('objtype', ['test', 'session'])
 def test_related_subject_searches(objtype, q):
     query = get_orm_query_from_search_string(objtype, q)
-    unused = query.limit(5).all()
+    _ = query.limit(5).all()
 
 
 @pytest.mark.parametrize('objtype', ['session', 'test'])
@@ -67,18 +66,11 @@ def test_subject_search(started_session, started_test, subjects, objtype, negate
     'user != bla',
     'label = bla',
     'label != bla',
+    'commandline = bla',
 ])
 def test_session_search(q):
     query = get_orm_query_from_search_string('session', q)
-    unused = query.limit(5).all()
-
-@pytest.mark.parametrize('date', [
-    '-2d',
-    '2 days ago',
-    '12/1/2016',
-])
-def test_date_parser(date):
-    assert isinstance(parse_date(date), float)
+    _ = query.limit(5).all()
 
 
 @pytest.mark.parametrize('q', [

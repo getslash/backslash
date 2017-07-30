@@ -16,11 +16,26 @@ services:
       - BACKSLASH_REDIS_SERVER=redis
       - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
       - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
+      - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
     depends_on:
       - db
       - redis
     logging:
       driver: syslog
+
+  worker:
+    image: getslash/backslash
+    command: .env/bin/celery -A flask_app.tasks worker -B --loglevel=info
+    logging:
+      driver: syslog
+    environment:
+      - BACKSLASH_REDIS_SERVER=redis
+      - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
+      - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
+      - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
+
+  rabbitmq:
+    image: rabbitmq
 
   db:
     image: "postgres:9.6"
@@ -40,6 +55,8 @@ services:
       - "9187:9187"
     depends_on:
       - db
+    logging:
+      driver: syslog
 
   nginx:
     image: getslash/backslash

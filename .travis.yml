@@ -40,7 +40,7 @@ install:
   - python manage.py db upgrade
 
   # install latest backlash-python
-  - .env/bin/pip install -e git://github.com/slash-testing/backslash-python.git@master#egg=backslash-python
+  - .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
 
   # run docker-compose setup in testing mode
   - sudo docker-compose -f docker/docker-compose.yml build

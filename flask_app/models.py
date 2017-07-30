@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
 
@@ -8,25 +9,26 @@ from sqlalchemy.sql import and_, select, func
 from .utils import statuses
 
 from .utils import get_current_time
-from .utils.rendering import rendered_field, render_api_object, rendered_only_on_single
+from .utils.rendering import rendered_field, render_api_object
 from . import activity
 from .capabilities import CAPABILITIES
 
-from sqlalchemy import Index
-from sqlalchemy.dialects.postgresql import JSON, JSONB
+from psycopg2.extras import DateTimeTZRange
+from sqlalchemy import Index, CheckConstraint
+from sqlalchemy.dialects.postgresql import JSON, JSONB, TSTZRANGE
 
 
 db = SQLAlchemy()
 
 
-class TypenameMixin(object):
+class TypenameMixin:
 
     @classmethod
     def get_typename(cls):
         return cls.__name__.lower()
 
 
-class UserDetailsMixin(object):
+class UserDetailsMixin:
 
     @rendered_field
     def user_email(self):
@@ -37,7 +39,7 @@ class UserDetailsMixin(object):
         return self.user.display_name()
 
 
-class HasSubjectsMixin(object):
+class HasSubjectsMixin:
 
     @rendered_field
     def subjects(self):
@@ -48,7 +50,7 @@ class HasSubjectsMixin(object):
 
 
 
-class StatusPredicatesMixin(object):
+class StatusPredicatesMixin:
 
     @property
     def skipped(self):
@@ -67,6 +69,25 @@ class StatusPredicatesMixin(object):
         return self.status == statuses.ERROR
 
 
+class TimespanMixin:
+
+    timespan = db.Column(TSTZRANGE, nullable=True)
+
+    def mark_started(self):
+        self.start_time = get_current_time()
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), None)
+
+    def extend_timespan_to(self, timestamp):
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), datetime.fromtimestamp(timestamp))
+
+    def mark_ended(self):
+        self.mark_ended_at(get_current_time())
+
+    def mark_ended_at(self, timestamp):
+        self.end_time = timestamp
+        self.extend_timespan_to(timestamp)
+
+
 session_subject = db.Table('session_subject',
                            db.Column('session_id',
                                      db.Integer,
@@ -78,7 +99,7 @@ session_subject = db.Table('session_subject',
 
 
 
-class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
+class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), unique=True, index=True)
@@ -143,10 +164,13 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     # activity
     num_comments = db.Column(db.Integer, default=0)
 
+    has_fatal_errors = db.Column(db.Boolean, default=False)
+
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
+        Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
     )
 
 
@@ -303,7 +327,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -410,6 +434,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_session_id_start_time', session_id, start_time),
         Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
+        Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
     )
 
     @rendered_field
@@ -634,3 +659,26 @@ session_label = db.Table('session_label',
                                      db.ForeignKey('label.id', ondelete='CASCADE')),
                         db.Index('ix_session_label_session_id_label_id', 'session_id', 'label_id'),
 )
+
+
+class BackgroundMigration(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1024), nullable=False)
+    started = db.Column(db.Boolean, server_default='FALSE', index=True)
+    started_time = db.Column(db.Float)
+    finished = db.Column(db.Boolean, server_default='FALSE', index=True)
+    finished_time = db.Column(db.Float)
+    total_num_objects = db.Column(db.Integer)
+    remaining_num_objects = db.Column(db.Integer)
+    update_query = db.Column(db.Text(), nullable=False)
+    remaining_num_items_query = db.Column(db.Text(), nullable=False)
+    batch_size = db.Column(db.Integer, server_default='100000', nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("update_query like '%\\:batch_size%'", name='check_has_batch_size'),
+    )
+
+    @classmethod
+    def get_typename(cls):
+        return 'migration'

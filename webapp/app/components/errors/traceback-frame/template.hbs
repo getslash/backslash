@@ -16,26 +16,8 @@
     </div>
 
     {{#if (or has_globals has_locals)}}
-      <div class="traceback-frame-vars">
-        {{#each sorted_locals as |var|}}
-          {{#if (or (not var.is_attribute) self_expanded)}}
-	    <div class="variable">
-	      <div class="{{if var.is_attribute 'attribute' 'name'}}">
-                {{#if (eq var.name 'self')}}
-                  <i class="clickable fa fa-caret-{{if self_expanded 'down' 'right'}}" {{action (toggle "self_expanded" this)}}></i>
-                {{/if}}
-                {{var.display_name}}
-              </div>
-	      <div class="value">{{var.value.value}}</div>
-	    </div>
-          {{/if}}
-        {{/each}}
-        {{#each sorted_globals as |var|}}
-	  <div class="variable">
-	    <div class="name">{{var.name}}</div>
-	    <div class="value">{{var.value.value}}</div>
-	  </div>
-        {{/each}}
-      </div>
+
+      {{variable-list vars=sorted_locals}}
+      {{variable-list vars=sorted_globals}}
     {{/if}}
   {{/if}}

@@ -4,12 +4,23 @@ import datetime
 from .english import plural_noun
 
 
+
 def render_api_object(obj, only_fields=None, extra_fields=None, is_single=False):
     if only_fields is None:
         only_fields = [c.name for c in obj.__table__.columns]
     returned = {}
     for field_name in only_fields:
-        returned[field_name] = render_api_value(obj.__getattribute__(field_name))
+        column = obj.__table__.columns[field_name]
+        value = render_api_value(obj.__getattribute__(field_name))
+
+        try:
+            python_type = column.type.python_type
+        except NotImplementedError:
+            continue
+
+        if value is None and python_type is bool and column.default is not None:
+            value = column.default.arg
+        returned[field_name] = value
 
     if extra_fields is not None:
         for field_name, attr in extra_fields.items():

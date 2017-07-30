@@ -120,12 +120,12 @@ class TestResource(ModelResource):
                 using_logical_id = True
                 children = db.session.query(Session.id).filter(Session.parent_logical_id == args.session_id).all()
 
+            returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
+                        returned.filter(Test.session_id == session_id)
             if children:
                 children_ids = [child[0] for child in children]
-                returned = Test.query.filter(Test.session_id.in_(children_ids))
-            else:
-                returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
-                            returned.filter(Test.session_id == session_id)
+                returned = returned.union(Test.query.filter(Test.session_id.in_(children_ids)))
+
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
@@ -366,3 +366,20 @@ def get_activities():
 def _fix_action_string(d):
     d['action'] = activity.get_action_string(d['action'])
     return d
+
+
+@_resource('/migrations', '/migrations/<object_id>')
+class MigrationsResource(ModelResource):
+
+    MODEL = models.BackgroundMigration
+    DEFAULT_SORT = (models.BackgroundMigration.started_time.desc(),)
+    ONLY_FIELDS = [
+        'id',
+        'name',
+        'started',
+        'started_time',
+        'finished',
+        'finished_time',
+        'total_num_objects',
+        'remaining_num_objects'
+    ]

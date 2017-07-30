@@ -20,7 +20,7 @@ from ..rest import blueprint as rest_blueprint
 NoneType = type(None)
 
 
-@API(version=2)
+@API(version=3)
 def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False): # pylint: disable=bad-whitespace
     # pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):

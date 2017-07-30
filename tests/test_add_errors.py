@@ -26,7 +26,7 @@ def test_add_error(error_container, error_data, webapp):
     assert first_error.traceback is None
     resp = requests.get(webapp.url.add_path(first_error.traceback_url))
     resp.raise_for_status()
-    assert resp.json() == error_data['traceback']
+    assert resp.json()['traceback'] == error_data['traceback']
 
 
 def test_add_error_just_msg(error_container):
@@ -76,7 +76,7 @@ def test_add_error_no_timestamp(error_container, error_data, webapp):
     assert first_error.message == error_data['exception']
     assert first_error.exception_type == error_data['exception_type']
     assert first_error.timestamp == flux.current_timeline.time()
-    assert requests.get(webapp.url.add_path(first_error.traceback_url)).json() == error_data['traceback']
+    assert requests.get(webapp.url.add_path(first_error.traceback_url)).json()['traceback'] == error_data['traceback']
 
 
 def test_add_error_nonexistent(nonexistent_error_container, error_data):
@@ -86,7 +86,7 @@ def test_add_error_nonexistent(nonexistent_error_container, error_data):
                                               error_data['traceback'])
 
 def test_add_error_stream_upload_traceback(error_container, traceback_file, error_data, compress_traceback_file):
-    error = error_container.add_error(error_data['exception'], error_data['exception_type'])
+    error = error_container.add_error(error_data['exception'], error_data['exception_type'], traceback=error_data['traceback'])
     assert error.id
     error_container.client.api.session.put(error.api_url.add_path('traceback'), data=traceback_file)
     url = error.refresh().traceback_url
@@ -111,6 +111,7 @@ def test_add_error_upload_not_allowed_twice(error_container, error_data, traceba
 
 @pytest.fixture
 def traceback_file(error_data, tmpdir, request, compress_traceback_file):
+    assert error_data['traceback']
     path = tmpdir.join(str(uuid4()))
 
     with ExitStack() as stack:
@@ -119,8 +120,7 @@ def traceback_file(error_data, tmpdir, request, compress_traceback_file):
             f = stack.enter_context(GzipFile(fileobj=f))
         f = stack.enter_context(TextIOWrapper(f))
 
-        json.dump(error_data['traceback'], f)
-
+        json.dump({'traceback': error_data['traceback'], 'exception': {'attributes': None}}, f)
     returned = path.open('rb')
     request.addfinalizer(returned.close)
     return returned

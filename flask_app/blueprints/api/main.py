@@ -131,7 +131,7 @@ def report_test_start(
         )
         if variation is not None:
             returned.test_variation = TestVariation(variation=sanitize_json(variation))
-    returned.start_time = get_current_time()
+    returned.mark_started()
     returned.status = statuses.RUNNING
     returned.scm_dirty = scm_dirty
     returned.scm_revision = scm_revision
@@ -154,6 +154,22 @@ def report_test_start(
     metrics.num_new_tests.increment()
     return returned
 
+@API
+def report_test_distributed(
+        session_id: int,
+        test_logical_id: (str, NoneType)=None,
+):
+    session = _validate_session(session_id)
+    test = Test.query.filter(Test.logical_id == test_logical_id).first()
+    test.status = statuses.DISTRIBUTED
+
+    try:
+        db.session.add(test)
+        db.session.commit()
+    except DataError:
+        pass
+    return test
+
 
 @API
 def report_test_end(id: int, duration: (float, int)=None):
@@ -166,8 +182,11 @@ def report_test_end(id: int, duration: (float, int)=None):
         error_abort('Test already ended', code=requests.codes.conflict)
 
     with updating_session_counters(test):
-        test.end_time = get_current_time() if duration is None else Test.start_time + \
-            duration
+        if duration is None:
+            test.mark_ended()
+        else:
+            test.mark_ended_at(test.start_time + duration)
+
         if test.num_errors:
             test.status = statuses.ERROR
         elif test.num_failures:

@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
-from ...models import Session, db, SessionMetadata
+from ...models import Session, Test, db, SessionMetadata
 from ...utils import get_current_time, statuses
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
@@ -60,6 +60,8 @@ def report_session_start(logical_id: str=None,
         keepalive_interval,
     )
 
+    returned.mark_started()
+
     if subjects:
         for subject_data in subjects:
             subject_name = subject_data.get('name', None)
@@ -91,8 +93,8 @@ def report_session_start(logical_id: str=None,
     return returned
 
 
-@API
-def report_session_end(id: int, duration: (int, NoneType)=None):
+@API(version=2)
+def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors: bool=False):
     try:
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
@@ -101,8 +103,11 @@ def report_session_end(id: int, duration: (int, NoneType)=None):
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
         error_abort('Session is not running', code=requests.codes.conflict)
 
-    session.end_time = get_current_time(
-    ) if duration is None else session.start_time + duration
+    if duration is None:
+        session.mark_ended()
+    else:
+        session.mark_ended_at(session.start_time + duration)
+
     # TODO: handle interrupted sessions
     if session.num_error_tests or session.num_errors:
         session.status = statuses.ERROR
@@ -110,6 +115,7 @@ def report_session_end(id: int, duration: (int, NoneType)=None):
         session.status = statuses.FAILURE
     elif session.status != statuses.INTERRUPTED:
         session.status = statuses.SUCCESS
+    session.has_fatal_errors = has_fatal_errors
     session.in_pdb = False
     db.session.add(session)
     db.session.commit()
@@ -134,8 +140,13 @@ def report_not_in_pdb(session_id: int):
 @API
 def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
-    s.next_keepalive = get_current_time() + s.keepalive_interval
-    db.session.add(s)
+    if s.end_time is not None:
+        return
+    timestamp = get_current_time() + s.keepalive_interval
+    s.next_keepalive = timestamp
+    s.extend_timespan_to(timestamp)
+    for test in Test.query.filter_by(session_id=session_id, end_time=None):
+        test.extend_timespan_to(timestamp)
     db.session.commit()
 
 

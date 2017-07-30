@@ -1,5 +1,21 @@
 # Changelog
 
+
+## Version 2.9.0
+
+* Time searches with 'at' are now more accurate, and can distinguish between searching for exact times and loose dates
+* Added support for marking sessions as "terminated by fatal errors"
+* Improvements to parallel runs display
+* You can now search by ``test_info_id``, "previous executions" now lead to test search screen
+* Added "Display" filter dropdown to test search view
+* When no search results are found, Backslash now emits a descriptive message indicating it
+* Minor UI fixes for searching
+
+
+## Version 2.8.2
+
+* Dramatically improved the performance of searching for previous executions of a test
+
 ## Version 2.8.0
 
 * Favicon now displays an error/success icon for sessions and tests

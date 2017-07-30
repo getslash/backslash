@@ -15,10 +15,6 @@ export default Ember.Component.extend({
   session_model: null,
   is_running: Ember.computed.equal("test.computed_status", "running"),
 
-  is_parallel_view: function() {
-      return (this.get('test.session_id').toString() === this.get('session_model.id'));
-}.property('session_model', 'test'),
-
 
 
   href: function() {

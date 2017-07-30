@@ -1,10 +1,12 @@
+import time
 import threading
 import operator
 
 from flask import current_app
 from sqlalchemy import func
+from psycopg2.extras import DateTimeTZRange
 
-from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision
+from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision, SessionMetadata
 from . import value_parsers
 from .exceptions import UnknownField
 from .helpers import only_ops
@@ -53,11 +55,17 @@ class SearchContext(object):
 
     @only_ops(['='])
     def search__at(self, op, value): # pylint: disable=unused-argument
-        value = value_parsers.parse_date(value)
-        return (self.MODEL.end_time >= value) & (self.MODEL.start_time <= value)
+        min_value, max_value = value_parsers.parse_date(value)
+        date_range = DateTimeTZRange(min_value, max_value, '[]')
+        return self.MODEL.timespan.overlaps(date_range)
 
     def _search_time_field(self, field, op, value):
-        return op.func(field, value_parsers.parse_date(value))
+        min_date, max_date = value_parsers.parse_date(value)
+        if op.op == '<':
+            value = min_date
+        else:
+            value = max_date
+        return op.func(field, time.mktime(value.timetuple()))
 
     @only_ops(['=', '!=', '~'])
     def search__user(self, op, value): # pylint: disable=unused-argument
@@ -102,6 +110,7 @@ class TestSearchContext(SearchContext):
         'file': TestInformation.file_name,
         'class': TestInformation.class_name,
         'status': func.lower(Test.status),
+        'test_info_id': Test.test_info_id,
     }
 
 
@@ -206,6 +215,27 @@ class SessionSearchContext(SearchContext):
     @only_ops(['='])
     def search__test(self, op, value): # pylint: disable=unused-argument
         return db.session.query(Test).join(TestInformation).filter(Test.session_id == Session.id, TestInformation.name == value).exists().correlate(Session)
+
+    @only_ops(['=', '!=', '~'])
+    def search__commandline(self, op, value):
+        return self._metadata_query(op, 'slash::commandline', None, value)
+
+    @only_ops(['=', '!=', '<', '>'])
+    def search__python_version(self, op, value):
+        return self._metadata_query(op, 'python_version', None, value)
+
+    def _metadata_query(self, op, key, subkey, value):
+        op_func = op.func if op != '!=' else operator.eq
+        filter_expression = (SessionMetadata.key == key)
+        if subkey:
+            filter_expression &= op_func(SessionMetadata.metadata_item[key].astext, value)
+        else:
+
+            filter_expression &= op_func(SessionMetadata.metadata_item[0].astext, value)
+        returned = db.session.query(SessionMetadata).filter(SessionMetadata.session_id == Session.id, filter_expression).exists().correlate(Session)
+        return _negate_maybe(op, returned)
+
+
 
 def _negate_maybe(op, query):
     if op.op == '!=':

@@ -5,15 +5,17 @@ from flask_security import Security
 from flask_mail import Mail
 import logbook
 from logbook.compat import redirect_logging
+from werkzeug.contrib.fixers import ProxyFix
 
 
-def create_app(config=None):
+def create_app(config=None, setup_logging=True):
     if config is None:
         config = {}
 
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     app = flask.Flask(__name__, static_folder=None)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
 
     _CONF_D_PATH = os.environ.get('CONFIG_DIRECTORY', os.path.join(ROOT_DIR, "..", "..", "conf.d"))
 
@@ -35,8 +37,9 @@ def create_app(config=None):
     if db_uri is not None or 'SQLALCHEMY_DATABASE_URI' not in app.config:
         app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgresql://localhost/{0}'.format(app.config['app_name'])
 
-    del app.logger.handlers[:]
-    redirect_logging()
+    if setup_logging:
+        del app.logger.handlers[:]
+        redirect_logging()
 
     if os.environ.get('BACKSLASH_TESTING', '').lower() in {'1', 'yes', 'true'}:
         app.config['TESTING'] = True

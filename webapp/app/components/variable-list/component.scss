@@ -1,0 +1,29 @@
+& {
+    @extend .row;
+    margin: 0.5em;
+    border: 1px solid $gray-lighter;
+    color: $gray-light;
+    font-size: x-small;
+
+    .variable {
+        border-top: 1px dotted #bbb;
+        display: flex;
+        padding-left: 1em;
+        .name , .attribute{
+            @extend .mono;
+            @extend .pad-medium;
+            flex: 0 0 25em;
+
+        }
+        .attribute {
+            padding-left: 3em !important;
+        }
+        .value {
+            background: lighten($gray-lighter, 20%);
+            @extend .pad-medium;
+            @extend .pre;
+            @extend .mono;
+            flex: 1;
+        }
+    }
+}

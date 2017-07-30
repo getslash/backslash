@@ -33,7 +33,7 @@
         <small>{{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
       </div>
   {{/if}}
-  <div class="test-index">{{if (and test.test_index is_parallel_view) test.test_index '???'}}</div>
+  <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
   {{tests/test-name info=test.info variation=test.variation parameters=test.parameters}}
 </div>
 

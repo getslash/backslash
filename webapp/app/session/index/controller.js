@@ -9,7 +9,8 @@ import config from "../../config/environment";
 export default PaginatedFilteredController.extend(StatusFilterableController, {
   queryParams: ["show_planned"],
   show_planned: false,
-
+  sortProperties: ['test_index:desc'],
+  sortedTests: Ember.computed.sort('tests', 'sortProperties'),
   collection: Ember.computed.oneWay("tests"),
 
   available_page_sizes: config.APP.available_page_sizes,

@@ -15,40 +15,35 @@ from celery.log import redirect_stdouts_to_logger
 
 
 from .app import create_app
+from . import models
+from .utils import get_current_time
 
 _logger = logbook.Logger(__name__)
 
 
-queue = Celery('tasks', broker='redis://localhost')
+queue = Celery('tasks', broker=os.environ.get('BACKSLASH_CELERY_BROKER_URL', 'amqp://guest:guest@localhost'))
 queue.conf.update(
-    CELERY_TASK_SERIALIZER='json',
-    CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
-    CELERY_RESULT_SERIALIZER='json',
     CELERY_ENABLE_UTC=True,
+    CELERYBEAT_SCHEDULE={
+        'start-live-migrations': {
+            'task': 'flask_app.tasks.start_live_migrations',
+            'schedule': 300,
+        },
+    },
 )
 
 def setup_log(**args):
-    logbook.SyslogHandler().push_application()
-    logbook.StreamHandler(sys.stderr, bubble=True).push_application()
-    redirect_stdouts_to_logger(args['logger']) # logs to local syslog
-    if os.path.exists('/dev/log'):
-        h = logging.handlers.SysLogHandler('/dev/log')
-    else:
-        h = logging.handlers.SysLogHandler()
-    h.setLevel(args['loglevel'])
-    formatter = logging.Formatter(logging.BASIC_FORMAT)
-    h.setFormatter(formatter)
-    args['logger'].addHandler(h)
+    logbook.StreamHandler(sys.stderr).push_application()
 
 APP = None
 
 def needs_app_context(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        global APP
+        global APP              # pylint: disable=global-statement
 
         if APP is None:
-            APP = create_app()
+            APP = create_app(setup_logging=False)
 
         with APP.app_context():
             return f(*args, **kwargs)
@@ -58,3 +53,46 @@ def needs_app_context(f):
 
 after_setup_logger.connect(setup_log)
 after_setup_task_logger.connect(setup_log)
+################################################################################
+
+
+@queue.task
+@needs_app_context
+def start_live_migrations():
+    pending = models.BackgroundMigration.query.filter_by(started=False).all()
+    started = models.BackgroundMigration.query.filter_by(started=True, finished=False).all()
+    if pending and not started:
+        do_live_migrate.delay()
+
+
+@queue.task
+@needs_app_context
+def do_live_migrate():
+    for migration in models.BackgroundMigration.query\
+                                             .filter_by(finished=False)\
+                                             .order_by(models.BackgroundMigration.id.asc()).all():
+        if not migration.started:
+            migration.started = True
+            migration.started_time = get_current_time()
+            num_rows = models.db.session.execute(migration.remaining_num_items_query).scalar()
+            migration.remaining_num_objects = num_rows
+            migration.total_num_objects = num_rows
+            models.db.session.commit()
+
+        num_objects = migration.remaining_num_objects
+
+        _logger.debug('Running migration: {.name}...', migration)
+
+        while True:
+            result = models.db.session.execute(migration.update_query, {'batch_size': migration.batch_size})
+            if result.rowcount == 0:
+                migration.remaining_num_objects = 0
+                migration.finished = True
+                migration.finished_time = get_current_time()
+            else:
+                num_objects = max(0, num_objects - result.rowcount)
+                migration.remaining_num_objects = num_objects
+
+            models.db.session.commit()
+            if result.rowcount == 0:
+                break

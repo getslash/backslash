@@ -1,0 +1,36 @@
+{{#tool-bar}}
+  <p class="navbar-text">
+    Live Migrations
+  </p>
+{{/tool-bar}}
+<div class="container-fluid">
+{{#each migrations as |migration|}}
+  <div class="container-fluid">
+
+    <div class="col-sm-2">
+      {{migration.name}}
+    </div>
+    <div class="col-sm-4">
+      {{#if migration.started_time}}
+        {{#if migration.finished_time}}
+          {{moment-time unix=migration.started_time}} - {{moment-time unix=migration.finished_time}}
+        {{else}}
+          Started at {{moment-time unix=migration.started_time}}
+        {{/if}}
+      {{else}}
+        Pending
+      {{/if}}
+
+    </div>
+    <div class="col-sm-6">
+      <div class="progress">
+        <div class="progress-bar {{if (not migration.finished) 'active progress-bar-striped progress-bar-default' 'progress-bar-success'}}" role="progressbar" aria-valuenow="{{migration.percentage}}"
+          aria-valuemin="0" aria-valuemax="100" style="width:{{migration.percentage}}%">
+          {{migration.num_finished_objects}}/{{migration.total_num_objects}} ({{migration.percentage}}%)
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+</div>
