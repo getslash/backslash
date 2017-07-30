@@ -1,3 +1,4 @@
+import time
 import threading
 import operator
 
@@ -59,7 +60,12 @@ class SearchContext(object):
         return self.MODEL.timespan.overlaps(date_range)
 
     def _search_time_field(self, field, op, value):
-        return op.func(field, value_parsers.parse_date(value))
+        min_date, max_date = value_parsers.parse_date(value)
+        if op.op == '<':
+            value = min_date
+        else:
+            value = max_date
+        return op.func(field, time.mktime(value.timetuple()))
 
     @only_ops(['=', '!=', '~'])
     def search__user(self, op, value): # pylint: disable=unused-argument

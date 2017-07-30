@@ -1,6 +1,9 @@
 import datetime
 import flux
+import pendulum
 
+
+_MIN_THRESHOLD = datetime.timedelta(seconds=0.01)
 
 def test_timespan(session_or_test, get_real_object):
     obj = session_or_test
@@ -11,9 +14,7 @@ def test_timespan(session_or_test, get_real_object):
     assert span_start is not None
     assert timespan.upper is None
 
-    threshold = datetime.timedelta(seconds=0.01)
-
-    assert abs(timespan.lower - datetime.datetime.fromtimestamp(obj.start_time)) < threshold
+    assert abs(timespan.lower - pendulum.fromtimestamp(obj.start_time).astimezone()) < _MIN_THRESHOLD
 
     duration = 10
 
@@ -25,7 +26,7 @@ def test_timespan(session_or_test, get_real_object):
     assert timespan.upper is not None
     assert timespan.lower == span_start
 
-    assert abs((timespan.upper - timespan.lower) - datetime.timedelta(seconds=duration)) < threshold
+    assert abs((timespan.upper - timespan.lower) - datetime.timedelta(seconds=duration)) < _MIN_THRESHOLD
 
 
 def test_timespan_keepalive(started_session, get_real_object):
@@ -38,4 +39,4 @@ def test_timespan_keepalive(started_session, get_real_object):
 
     timespan = get_real_object(obj).timespan
     assert timespan.upper is not None
-    assert abs((timespan.upper - timespan.lower) - datetime.timedelta(seconds=obj.keepalive_interval)) < datetime.timedelta(seconds=0.01)
+    assert abs(timespan.upper - timespan.lower - datetime.timedelta(seconds=obj.keepalive_interval)) < _MIN_THRESHOLD

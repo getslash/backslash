@@ -13,6 +13,7 @@ Flask-Migrate>=1.3.0
 Flask-SQLAlchemy>=2.2
 sqlalchemy>=1.1.0
 munch
+pendulum
 pyparsing
 URLObject
 celery[redis]

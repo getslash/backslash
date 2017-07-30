@@ -14,8 +14,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
-from flask_app import tasks
-
 _NAME_TEMPLATE = 'populate {} timespans'
 
 def upgrade():
@@ -59,9 +57,6 @@ def upgrade():
     'select count(*) from "test" where timespan IS NULL',
     '{update_query}'
     )''')
-
-    tasks.do_live_migrate.delay()
-
 
     # ### end Alembic commands ###
 

@@ -75,10 +75,10 @@ class TimespanMixin:
 
     def mark_started(self):
         self.start_time = get_current_time()
-        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), None)
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), None)
 
     def extend_timespan_to(self, timestamp):
-        self.timespan = DateTimeTZRange(datetime.utcfromtimestamp(self.start_time), datetime.utcfromtimestamp(timestamp))
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), datetime.fromtimestamp(timestamp))
 
     def mark_ended(self):
         self.mark_ended_at(get_current_time())
@@ -682,19 +682,3 @@ class BackgroundMigration(db.Model):
     @classmethod
     def get_typename(cls):
         return 'migration'
-
-    def do_single_iteration(self):
-        if not self.started:
-            self.started = True
-            self.started_time = get_current_time()
-            num_rows = db.session.execute(self.remaining_num_items_query).scalar()
-            self.remaining_num_objects = num_rows
-            self.total_num_objects = num_rows
-
-        result = db.session.execute(self.update_query, {'batch_size': self.batch_size})
-        self.remaining_num_objects = self.remaining_num_objects - result.rowcount
-        if result.rowcount == 0:
-            self.remaining_num_objects = 0
-            self.finished = True
-            self.finished_time = get_current_time()
-        db.session.commit()

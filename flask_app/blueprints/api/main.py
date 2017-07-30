@@ -185,7 +185,7 @@ def report_test_end(id: int, duration: (float, int)=None):
         if duration is None:
             test.mark_ended()
         else:
-            test.mark_ended_at(Test.start_time + duration)
+            test.mark_ended_at(test.start_time + duration)
 
         if test.num_errors:
             test.status = statuses.ERROR
