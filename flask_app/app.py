@@ -6,6 +6,7 @@ from flask_mail import Mail
 import logbook
 from logbook.compat import redirect_logging
 from werkzeug.contrib.fixers import ProxyFix
+from raven.contrib.flask import Sentry
 
 
 def create_app(config=None, setup_logging=True):
@@ -48,6 +49,8 @@ def create_app(config=None, setup_logging=True):
         app.config['TRACEBACK_DIR'] = '/tmp/backslash_tracebacks'
     else:
         _disable_logs(['dogpile.lock'])
+
+    Sentry(app)
 
     override_tb_location = os.environ.get('BACKSLASH_TRACEBACKS_PATH', None)
     if override_tb_location:
