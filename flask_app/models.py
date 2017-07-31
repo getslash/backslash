@@ -78,6 +78,8 @@ class TimespanMixin:
         self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), None)
 
     def extend_timespan_to(self, timestamp):
+        if self.start_time is None:
+            return
         self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), datetime.fromtimestamp(timestamp))
 
     def mark_ended(self):
