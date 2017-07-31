@@ -4,7 +4,11 @@ try:
     from .__version__ import __version__
 except ImportError:
     import subprocess
-    __version__ = subprocess.check_output('git describe --tags', shell=True, encoding='utf-8').strip()
+    status, output = subprocess.getstatusoutput('git describe --tags')
+    if status == 0:
+        __version__ = output.strip()
+    else:
+        __version__ = '?.?.?'
 
 
 def get_runtime_config_private_dict():
