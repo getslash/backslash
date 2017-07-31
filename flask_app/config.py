@@ -1,6 +1,10 @@
 from flask import current_app
 from . import models
-from .__version__ import __version__
+try:
+    from .__version__ import __version__
+except ImportError:
+    import subprocess
+    __version__ = subprocess.check_output('git describe --tags', shell=True, encoding='utf-8').strip()
 
 
 def get_runtime_config_private_dict():
