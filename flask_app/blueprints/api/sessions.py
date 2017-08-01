@@ -145,7 +145,9 @@ def send_keepalive(session_id: int):
     timestamp = get_current_time() + s.keepalive_interval
     s.next_keepalive = timestamp
     s.extend_timespan_to(timestamp)
-    for test in Test.query.filter_by(session_id=session_id, end_time=None):
+    for test in Test.query.filter(Test.session_id==session_id,
+                                  Test.end_time == None,
+                                  Test.start_time != None):
         test.extend_timespan_to(timestamp)
     db.session.commit()
 
