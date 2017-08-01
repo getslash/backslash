@@ -7,6 +7,7 @@ import logbook
 from logbook.compat import redirect_logging
 from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry
+from werkzeug.exceptions import HTTPException
 
 
 def create_app(config=None, setup_logging=True):
@@ -50,7 +51,9 @@ def create_app(config=None, setup_logging=True):
     else:
         _disable_logs(['dogpile.lock'])
 
-    Sentry(app)
+    if not app.config['DEBUG'] and not app.config['TESTING']:
+        app.config['RAVEN_IGNORE_EXCEPTIONS'] = (HTTPException, SystemExit,)
+        sentry = Sentry(app)    # pylint: disable=unused-variable
 
     override_tb_location = os.environ.get('BACKSLASH_TRACEBACKS_PATH', None)
     if override_tb_location:
