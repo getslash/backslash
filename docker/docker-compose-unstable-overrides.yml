@@ -1,0 +1,8 @@
+version: '3'
+services:
+  webapp:
+    image: getslash/backslash:unstable
+  worker:
+    image: getslash/backslash:unstable
+  nginx:
+    image: getslash/backslash:unstable
