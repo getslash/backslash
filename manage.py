@@ -160,6 +160,9 @@ def testserver(tmux, livereload, port):
     ]
 
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
+    logbook.StreamHandler(sys.stderr, level='DEBUG').push_application()
+    logbook.compat.redirect_logging()
+
     if livereload:
         from livereload import Server
         s = Server(app)
@@ -168,8 +171,6 @@ def testserver(tmux, livereload, port):
         s.watch('flask_app')
         for filename in ['webapp.js', 'vendor.js', 'webapp.css']:
             s.watch(os.path.join('static', 'assets', filename), delay=1)
-        logbook.StreamHandler(sys.stderr, level='DEBUG').push_application()
-        logbook.compat.redirect_logging()
         s.serve(port=port, liveport=35729)
     else:
         app.run(port=port, extra_files=extra_files)

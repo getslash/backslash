@@ -435,6 +435,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_start_time', start_time.desc()),
         Index('ix_test_session_id_start_time', session_id, start_time),
         Index('ix_test_status_lower_start_time', func.lower(status), start_time.desc()),
+        Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
         Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
     )
