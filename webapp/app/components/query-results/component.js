@@ -2,6 +2,7 @@ import Ember from "ember";
 
 export default Ember.Component.extend({
   results: null,
+  meta: null,
   show_subjects: true,
   show_users: true,
   session_model: null,

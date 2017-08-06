@@ -1,4 +1,6 @@
-{{query-results results=sortedTests page=(mut page)
+{{query-results
+  results=sortedTests
+  page=(mut page)
   show_users=false
   page_size=(mut page_size)
   show_subjects=false
@@ -8,4 +10,5 @@
   show_skipped=show_skipped
   show_planned=show_planned
   session_model=session_model
+  meta=collection.meta
 }}
