@@ -1,6 +1,10 @@
 # Changelog
 
 
+## Version 2.10.0
+
+* Added pagination navigation to session and test error views
+
 ## Version 2.9.0
 
 * Time searches with 'at' are now more accurate, and can distinguish between searching for exact times and loose dates
