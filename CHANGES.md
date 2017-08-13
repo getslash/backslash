@@ -1,9 +1,9 @@
 # Changelog
 
-
 ## Version 2.10.0
 
 * Added pagination navigation to session and test error views
+* Improved navigation when examining parallel sessions
 
 ## Version 2.9.0
 
