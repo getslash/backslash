@@ -5,8 +5,9 @@ services:
     image: getslash/backslash
     command: [
         "dockerize",
-        "-timeout", "60s",
+        "-timeout", "3600s",
         "-wait", "tcp://db:5432",
+        "-wait", "tcp://rabbitmq:5672",
         ".env/bin/python", "manage.py", "docker-start"
         ]
     volumes:
@@ -25,7 +26,7 @@ services:
 
   worker:
     image: getslash/backslash
-    command: .env/bin/celery -A flask_app.tasks worker -B --loglevel=info
+    command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 .env/bin/celery -A flask_app.tasks worker -B --loglevel=info
     logging:
       driver: syslog
     environment:
