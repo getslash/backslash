@@ -5,6 +5,7 @@
 * Added pagination navigation to session and test error views
 * Improved navigation when examining parallel sessions
 * Pressing 'u' when inside a test will take you back to the session test list
+* Misc. bug fixes
 
 ## Version 2.9.0
 
