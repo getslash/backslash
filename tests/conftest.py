@@ -22,13 +22,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 @pytest.fixture
 def subjects():
     returned = [
-        Munch(name='prod1', product='Car',
-              version=None, revision='120'),
         Munch(name='prod2', product='Car',
+              version=None, revision='120'),
+        Munch(name='prod1', product='Car',
               version='10', revision='1200'),
-        Munch(name='prod3', product='Motorcycle',
+        Munch(name='prod4', product='Motorcycle',
               version='10', revision='1200'),
-        Munch(name='prod4', product='Car',
+        Munch(name='prod3', product='Car',
               version=None, revision='120'),
     ]
     salt = '_{}'.format(uuid4())

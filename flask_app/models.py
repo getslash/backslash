@@ -92,7 +92,10 @@ class TimespanMixin:
         self.extend_timespan_to(timestamp)
 
 
+subject_seq = db.Sequence('subject_seq')
+
 session_subject = db.Table('session_subject',
+                           db.Column('ordinal', db.Integer, subject_seq, server_default=subject_seq.next_value()),
                            db.Column('session_id',
                                      db.Integer,
                                      db.ForeignKey('session.id', ondelete='CASCADE')),
@@ -134,7 +137,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
         'SessionMetadata', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     subject_instances = db.relationship(
-        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined')
+        'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined', order_by=session_subject.c.ordinal)
 
     labels = db.relationship('Label', secondary='session_label', lazy='joined')
 
@@ -344,7 +347,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     test_variation = db.relationship('TestVariation', lazy='joined')
 
     subject_instances = db.relationship(
-        'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined')
+        'SubjectInstance', secondary=session_subject, primaryjoin='Test.session_id==session_subject.c.session_id', lazy='joined', order_by=session_subject.c.ordinal)
 
     user = db.relationship('User', secondary=Session.__table__, primaryjoin='Test.session_id==Session.id', secondaryjoin='Session.user_id==User.id', lazy='joined', uselist=False)
 

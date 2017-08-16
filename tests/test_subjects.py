@@ -1,5 +1,4 @@
 import flux
-import functools
 import pytest
 import requests
 
@@ -11,8 +10,7 @@ def test_start_session_with_subjects(client, subjects):
     session = client.report_session_start(
         subjects=subjects
     )
-    _sorted = functools.partial(sorted, key=lambda d: d['name'])
-    assert _sorted(session.refresh().subjects) == _sorted(dict(s) for s in subjects)
+    assert session.refresh().subjects == [dict(s) for s in subjects]
 
 
 def test_add_subject(started_session, subjects, flask_app):
@@ -33,7 +31,7 @@ def test_product_rendered_field(started_session, subjects):
 
 
 def test_subject_activity(client, subjects, flask_app):
-    current_time = flux.current_timeline.time()
+    current_time = flux.current_timeline.time() # pylint: disable=no-member
     client.report_session_start(subjects=subjects)
     with flask_app.app_context():
         for subject in subjects:
