@@ -44,19 +44,21 @@ class builders:
         return sqlalchemy.and_(*filters)
 
     @classmethod
-    def build_status_query(cls, model, status):
-        return func.lower(model.status) == status.lower()
+    def build_status_query(cls, model, status, negate=False):
+        if negate:
+            return model.status != status
+        return model.status == status
 
 
 def filter_by_statuses(cursor, model):
 
-    cursor = cursor.filter(~builders.build_status_query(model, statuses.DISTRIBUTED))
+    cursor = cursor.filter(builders.build_status_query(model, statuses.DISTRIBUTED, negate=True))
     if not _get_boolean_filter('show_unsuccessful', True):
         cursor = cursor.filter(~builders.build_unsuccessful_query(model))
     if not _get_boolean_filter('show_successful', True):
         cursor = cursor.filter(~builders.build_successful_query(model))
     if not _get_boolean_filter('show_planned', False):
-        cursor = cursor.filter(~builders.build_status_query(model, statuses.PLANNED))
+        cursor = cursor.filter(builders.build_status_query(model, statuses.PLANNED, negate=True))
     if not _get_boolean_filter('show_abandoned', True):
         cursor = cursor.filter(~builders.build_abandoned_filter(model))
     if not _get_boolean_filter('show_skipped', True):
