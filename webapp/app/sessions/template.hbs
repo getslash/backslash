@@ -40,6 +40,18 @@
               <td>Find sessions which contain a test named <code>test_something</code></td>
             </tr>
 
+            {{# if (can "admin")}}
+              <tr>
+                <td><code>python_version &gt; 3.5</code></td>
+                <td>Search by Python version</td>
+              </tr>
+              <tr>
+                <td><code>commandline ~ slash</code></td>
+                <td>Search by command-line substrings</td>
+              </tr>
+
+            {{/if}}
+
           </tbody>
         </table>
 

@@ -28,6 +28,9 @@ let _keys = [
   },
   { key: "j", action: "jump_one_down", description: "Jump to next item" },
   { key: "k", action: "jump_one_up", description: "Jump to previous item" },
+
+  { key: "u", action: "goto_session_tests", description: "Go back to session's test list" },
+
   { key: "esc", action: "close_boxes_or_home" },
   {
     key: "ctrl+s",
@@ -177,6 +180,19 @@ export default Ember.Component.extend(KeyboardShortcuts, {
 
     goto_users() {
       this.router.transitionTo("users");
+    },
+
+    goto_session_tests() {
+      let appcontroller = getOwner(this).lookup("controller:application");
+      let current_path = appcontroller.currentPath;
+
+      if (!current_path.startsWith("session.test.")) {
+        return;
+      }
+
+      let session_controller = getOwner(this).lookup("controller:session");
+      let session = session_controller.get("session_model");
+      this.router.transitionTo("session.index", session.get('display_id'));
     },
 
     toggle_human_times() {

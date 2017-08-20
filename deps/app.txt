@@ -32,3 +32,6 @@ pyldap
 
 #for search
 dateparser
+
+#for interactive investigations inside Docker
+pgcli

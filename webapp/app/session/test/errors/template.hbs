@@ -1,5 +1,4 @@
+{{pagination-nav page=(mut page) has_next=errors.meta.has_more num_pages=errors.meta.num_pages}}
 {{#each errors as |error index|}}
   {{error-box error=error}}
 {{/each}}
-
-{{infinity-loader infinityModel=errors loadingText="Loading..." loadedText=""}}

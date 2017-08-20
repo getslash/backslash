@@ -5,10 +5,17 @@ python:
   - 3.6
 addons:
     postgresql: "9.5"
+    sauce_connect: true
 
 env:
-  DOCKER_COMPOSE_VERSION: 1.11.2
-  DOCKER_HOST: tcp://127.0.0.1:2375
+  global:
+    - DOCKER_COMPOSE_VERSION=1.11.2
+    - DOCKER_HOST=tcp://127.0.0.1:2375
+    - SAUCE_USERNAME=vmalloc
+    - SAUCELABS_USERNAME=vmalloc
+    - secure: UK8uZD6VvqxxosDCsog6cl0hFng1KVerbEPAfulFpMBybPRM6M0ifspl+hK0AfHQvHtA8PMCs+KsZBb3CV2E5RwoIgXWEBC2t8+XsfU3p2fnhbuz/5S2xs/CvGLhMloeIpc8fIQ7qdRk0pdOqkUK5yMkkV7jfJsqw2HyTS5FOAk=
+    - secure: UoIM5vtfs+bBcb63aNa4aFV4lCrwgaABKrdYlqkw+vwE6S212a5ssfIn/41Tw80jZ/qBhSMhylIi2Cp6XWQbuSLjNUK1Ar7O0K8HX69QdcUCnofxwHLKSe7wREYhF6QtAegsw5pmSIYTLvHnp3k+6I0tw2DyvSJejS0dv3WWKzw=
+
 
 services:
   - redis-server
@@ -36,19 +43,18 @@ before_install:
 install:
   # db and env setup
   - psql -c 'create database backslash;' -U postgres
-  - pip install virtualenv
+  - pip install -U setuptools pip virtualenv
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
 
-  # install latest backlash-python
-  - .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
+  # (optional) install latest backlash-python
+  #- .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
 
   # run docker-compose setup in testing mode
   - sudo docker-compose -f docker/docker-compose.yml build
   - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
 
 script:
-  # frontend test
   - cd webapp
   - yarn install
   - bower install
@@ -57,7 +63,7 @@ script:
   - ./node_modules/.bin/ember build
   - cd ..
   - .env/bin/py.test tests
-  - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000
+  - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Chrome --capability platform Linux --capability version 48.0 --capability tunnelIdentifier $TRAVIS_JOB_NUMBER
 
 after_success:
   - .env/bin/python scripts/travis_docker_publish.py

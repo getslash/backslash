@@ -1,21 +1,22 @@
 import Ember from "ember";
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
-import InfinityRoute from "../../mixins/infinity-route";
+import PaginatedRoute from "../../mixins/paginated-route";
 import ComplexModelRoute from "../../mixins/complex-model-route";
 
 export default Ember.Route.extend(
   AuthenticatedRouteMixin,
-  InfinityRoute,
   ComplexModelRoute,
+  PaginatedRoute,
   {
-    model: function() {
+    model: function({page, page_size}) {
       const parent = this.modelFor("session").session_model;
       return Ember.RSVP.hash({
         session: this.modelFor("session").session_model,
-        errors: this.infinityModel("error", {
+        errors: this.store.query("error", {
           session_id: parent.id,
-          modelPath: "controller.errors"
+          page: page,
+          page_size: page_size,
         })
       });
     }
