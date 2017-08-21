@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.0
+
+* Added a view for test cases. This is planned to evolve into a suite management feature over the next releases
+
 ## Version 2.11.1
 
 * Fixed handling of test timespan when the test starts and before a keepalive is received

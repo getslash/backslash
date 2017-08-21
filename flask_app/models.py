@@ -339,7 +339,7 @@ class TestInformation(db.Model):
 
     @classmethod
     def get_typename(cls):
-        return 'test_info'
+        return 'case'
 
 
 

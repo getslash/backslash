@@ -1,0 +1,7 @@
+<div class="row">
+  <div class="col-sm-4">{{item.name}}</div>
+  <div class="col-sm-7 faint">{{#link-to "cases" (query-params search=(concat 'file_name="' item.file_name '"'))}} {{item.file_name}}{{/link-to}}</div>
+  <div class="col-sm-1">
+    {{#link-to "tests" (query-params search=(concat 'test_info_id=' item.id))}}<i class="fa fa-history"></i>{{/link-to}}
+  </div>
+</div>

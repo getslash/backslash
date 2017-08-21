@@ -104,7 +104,7 @@ func_call = Group(oneOf(list(_FUNCTIONS)) + LPAR +
                   identifier + RPAR).setParseAction(_handle_func_call)
 
 
-atom = func_call | identifier | (DQUOTE + Word(alphanums_plus + ' ') + DQUOTE) | (SQUOTE + Word(alphanums_plus + ' ') + SQUOTE)
+atom = func_call | identifier | (DQUOTE + Word(alphanums_plus + ' <>') + DQUOTE) | (SQUOTE + Word(alphanums_plus + ' <>') + SQUOTE)
 binop = oneOf(list(_OPERATORS))
 
 and_ = Keyword("and", caseless=True)

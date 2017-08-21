@@ -370,3 +370,19 @@ class MigrationsResource(ModelResource):
         'total_num_objects',
         'remaining_num_objects'
     ]
+
+
+@_resource('/cases', '/cases/<object_id>')
+class CaseResource(ModelResource):
+
+    MODEL = models.TestInformation
+    DEFAULT_SORT = (models.TestInformation.name, models.TestInformation.file_name, models.TestInformation.class_name)
+
+    def _get_iterator(self):
+        search = request.args.get('search')
+        if search:
+            returned = get_orm_query_from_search_string('case', search, abort_on_syntax_error=True)
+        else:
+            returned = super()._get_iterator()
+        returned = returned.filter(~self.MODEL.file_name.like('/%'))
+        return returned

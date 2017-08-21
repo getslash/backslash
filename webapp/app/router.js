@@ -46,6 +46,7 @@ Router.map(function() {
   this.route('admin', function() {
     this.route('migrations');
   });
+  this.route('cases');
 });
 
 export default Router;
