@@ -373,6 +373,8 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     scm = db.Column(db.String(5), default=None)
     scm_dirty = db.Column(db.Boolean, server_default='false')
     scm_revision = db.Column(db.String(40), default=None)
+    scm_local_branch = db.Column(db.String(256), default=None, nullable=True)
+    scm_remote_branch = db.Column(db.String(256), default=None, nullable=True)
     file_hash = db.Column(db.String(40), default=None)
 
     session_id = db.Column(

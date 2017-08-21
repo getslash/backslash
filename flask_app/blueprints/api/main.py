@@ -100,7 +100,7 @@ def append_upcoming_tests(tests: list, session_id: int):
     except DataError:
         raise
 
-@API(version=2)
+@API(version=3)
 def report_test_start(
         session_id: int,
         name: str,
@@ -111,6 +111,8 @@ def report_test_start(
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
         scm_dirty: bool=False,
+        scm_local_branch: (str, NoneType)=None,
+        scm_remote_branch: (str, NoneType)=None,
         is_interactive: bool=False,
         variation: (dict, NoneType)=None,
         metadata: (dict, NoneType)=None,
@@ -135,6 +137,8 @@ def report_test_start(
     returned.status = statuses.RUNNING
     returned.scm_dirty = scm_dirty
     returned.scm_revision = scm_revision
+    returned.scm_local_branch = scm_local_branch
+    returned.scm_remote_branch = scm_remote_branch
     returned.scm = scm
     returned.is_interactive = is_interactive
     returned.file_hash = file_hash

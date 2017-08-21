@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.11.0
+
+* Support reporting of remote and local SCM branches
+
 ## Version 2.10.0
 
 * Added pagination navigation to session and test error views
