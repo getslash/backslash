@@ -15,10 +15,13 @@ export default Ember.Controller.extend(RelativeItemJump, {
       return {};
     }
 
-    return Ember.Object.create({
+    let returned = Ember.Object.create({
       Revision: test_model.get("scm_revision"),
-      "File Hash": test_model.get("file_hash")
+      "File Hash": test_model.get("file_hash"),
+      "Local Branch": test_model.get("scm_local_branch"),
+      "Remote Branch": test_model.get("scm_remote_branch"),
     });
+    return returned;
   }.property("test_model"),
 
   params: function() {

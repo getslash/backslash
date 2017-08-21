@@ -33,6 +33,8 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   scm: DS.attr(),
   scm_revision: DS.attr(),
   scm_dirty: DS.attr(),
+  scm_local_branch: DS.attr(),
+  scm_remote_branch: DS.attr(),
   file_hash: DS.attr(),
 
   skip_reason: DS.attr(),
