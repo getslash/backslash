@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   ago: null,
   time: null,
   unix: null,
+  allow_future: false,
 
   time_value: function() {
     const ago = this.get("ago");
@@ -19,7 +20,7 @@ export default Ember.Component.extend({
       let value = moment.unix(ago);
       let now = moment();
 
-      if (value.isAfter(now)) {
+      if (value.isAfter(now) && !this.get('allow_future')) {
         value = now;
       }
 

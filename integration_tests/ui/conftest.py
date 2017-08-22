@@ -18,6 +18,16 @@ def ui(has_selenium, selenium, integration_url): # pylint: disable=unused-argume
     return _UI(selenium, integration_url)
 
 @pytest.fixture
+def ui_non_admin(ui, request):
+    ui.logout()
+    ui.login('guest', 'guest')
+
+    @request.addfinalizer
+    def cleanup():
+        ui.logout()
+        ui.login()
+
+@pytest.fixture
 def has_selenium(request):
     if request.config.getoption('driver') is None:
         pytest.skip('Selenium required')
@@ -35,9 +45,19 @@ class _UI:
         self.admin_password = '12345678'
         self.login()
 
-    def login(self):
+    def login(self, username=None, password=None):
+        if username is None:
+            username = self.admin_email
+        if password is None:
+            password = self.admin_password
         login_input = self.driver.find_element_by_id('username')
-        login_input.send_keys(self.admin_email)
+        login_input.send_keys(username)
         password_input = self.driver.find_element_by_id('password')
-        password_input.send_keys(self.admin_password)
+        password_input.send_keys(password)
         self.driver.find_element_by_class_name('btn-success').click()
+
+    def logout(self):
+        self.driver.find_element_by_css_selector("button.logout").click()
+
+    def assert_no_element(self, css_selector):
+        assert self.driver.find_elements_by_css_selector(css_selector) == []

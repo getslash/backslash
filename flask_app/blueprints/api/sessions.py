@@ -1,7 +1,7 @@
-import requests
-
 from flask import g, request
 from flask_simple_api import error_abort
+import flux
+import requests
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
@@ -9,12 +9,15 @@ from ...auth import get_or_create_user
 
 from ...models import Session, Test, db, SessionMetadata
 from ...utils import get_current_time, statuses
+from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
 from ... import metrics
 from .blueprint import API
 
 NoneType = type(None)
+
+_DEFAULT_DELETE_GRACE_PERIOD_SECONDS = 60 * 60 * 24 * 30
 
 
 @API(version=2)
@@ -161,5 +164,20 @@ def report_session_interrupted(id: int):
     s.status = statuses.INTERRUPTED
     if s.parent:
         s.parent.status = statuses.INTERRUPTED
-    db.session.add(s)
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def discard_session(session_id: int, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
+    session = Session.query.get_or_404(session_id)
+    session.delete_at = flux.current_timeline.time() + grace_period_seconds # pylint: disable=undefined-variable
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def preserve_session(session_id: int):
+    session = Session.query.get_or_404(session_id)
+    session.delete_at = None
     db.session.commit()

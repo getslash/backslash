@@ -169,11 +169,14 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
 
     has_fatal_errors = db.Column(db.Boolean, default=False)
 
+    delete_at = db.Column(db.Float, nullable=True)
+
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
+        Index('ix_session_delete_at', delete_at, postgresql_where=(delete_at != None)),
     )
 
 
