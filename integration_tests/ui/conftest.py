@@ -10,8 +10,8 @@ def recorded_session(integration_url):
     return Munch(id=session_id)
 
 @pytest.fixture
-def ui_session(recorded_session, ui):
-    return ui.driver.find_element_by_css_selector('a.item.session')
+def ui_session(recorded_session, ui): # pylint: disable=unused-argument
+    return ui.driver.find_element_by_css_selector(f"a.item.session[href*='/#/sessions/{recorded_session.id}']")
 
 @pytest.fixture
 def ui(has_selenium, selenium, integration_url): # pylint: disable=unused-argument
