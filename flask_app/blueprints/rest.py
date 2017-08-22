@@ -59,7 +59,6 @@ class SessionResource(ModelResource):
         else:
             returned = super(SessionResource, self)._get_iterator()
 
-        returned = returned.filter(Session.archived == False) # pylint: disable=singleton-comparison
         if args.parent_logical_id is not None:
             returned =  returned.filter(Session.parent_logical_id == args.parent_logical_id)
         else:
@@ -343,29 +342,6 @@ class RelatedEntityResource(ModelResource):
             return models.Entity.query.join(models.test_entity).filter(models.test_entity.c.test_id == args.test_id)
         else:
             raise NotImplementedError() # pragma: no cover
-
-
-@blueprint.route('/activities')
-def get_activities():
-    args = session_test_user_query_parser.parse_args()
-
-    if not ((args.session_id is not None) ^
-            (args.test_id is not None) ^
-            (args.user_id is not None)):
-        error_abort('Either test_id, session_id or user_id must be passed to the query')
-
-    results = models.db.session.execute(
-        activity.get_activity_query(user_id=args.user_id, test_id=args.test_id, session_id=args.session_id))
-
-    return jsonify({
-        'activities': [
-            _fix_action_string(dict(obj.items())) for obj in results
-        ]
-    })
-
-def _fix_action_string(d):
-    d['action'] = activity.get_action_string(d['action'])
-    return d
 
 
 @_resource('/migrations', '/migrations/<object_id>')

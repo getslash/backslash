@@ -1,17 +1,5 @@
 {{#tool-bar}}
   <form class="navbar-form navbar-right">
-    {{# if (can "archive_session") }}
-      <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
-
-      {{# if needs_investigation }}
-	<button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as Investigated</button>
-
-      {{else}}
-	{{# if session_model.investigated }}
-	  <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
-	{{/if}}
-      {{/if}}
-    {{/if}}
   </form>
   <p class="navbar-text">
     {{#if session_model.parent_logical_id}}

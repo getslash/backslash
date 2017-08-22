@@ -3,6 +3,7 @@
 ## Version 2.11.0
 
 * Support reporting of remote and local SCM branches
+* Removed the "mark archived" and "mark investigated" features. Investigation will be added in a future release as a part of a stricter workflow, and archiving can now be replaced with discarding sessions
 
 ## Version 2.10.0
 

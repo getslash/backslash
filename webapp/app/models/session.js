@@ -4,8 +4,6 @@ import HasLogicalId from "../mixins/has-logical-id";
 import HasComputedStatus from "../mixins/has-computed-status";
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
-  archived: DS.attr("boolean"),
-  investigated: DS.attr("boolean"),
 
   start_time: DS.attr("number"),
   end_time: DS.attr("number"),
