@@ -1,4 +1,5 @@
 import pytest
+import time
 
 from munch import Munch
 from ..utils import run_suite
@@ -50,14 +51,34 @@ class _UI:
             username = self.admin_email
         if password is None:
             password = self.admin_password
-        login_input = self.driver.find_element_by_id('username')
-        login_input.send_keys(username)
-        password_input = self.driver.find_element_by_id('password')
-        password_input.send_keys(password)
-        self.driver.find_element_by_class_name('btn-success').click()
+
+        for retry in range(3):
+            if retry:
+                self.driver.refresh()
+                time.sleep(1)
+            if self.is_logged_in():
+                assert retry, 'Attempt to log in when we are already logged in'
+                break
+            login_input = self.driver.find_element_by_id('username')
+            login_input.send_keys(username)
+            password_input = self.driver.find_element_by_id('password')
+            password_input.send_keys(password)
+            self.driver.find_element_by_class_name('btn-success').click()
+            if self.is_logged_in():
+                break
+
+        else:
+            assert False, 'Could not log in!'
+
+    def is_logged_in(self):
+        logout_buttons = self.driver.find_elements_by_css_selector("button.logout")
+        return bool(logout_buttons)
 
     def logout(self):
-        self.driver.find_element_by_css_selector("button.logout").click()
+        logout_buttons = self.driver.find_elements_by_css_selector("button.logout")
+        if logout_buttons:
+            logout_buttons[0].click()
+        self.driver.find_element_by_id('username')
 
     def assert_no_element(self, css_selector):
         assert self.driver.find_elements_by_css_selector(css_selector) == []
