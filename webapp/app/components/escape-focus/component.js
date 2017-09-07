@@ -1,7 +1,7 @@
 import Ember from "ember";
 
 export default Ember.Component.extend({
-  classNames: ["input-group col-xs-6"],
+  classNames: ["input-group"],
 
   classNameBindings: ['error:has-error'],
 
