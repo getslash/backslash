@@ -12,7 +12,9 @@ def recorded_session(integration_url):
 
 @pytest.fixture
 def ui_session(recorded_session, ui): # pylint: disable=unused-argument
-    return ui.driver.find_element_by_css_selector(f"a.item.session[href*='/#/sessions/{recorded_session.id}']")
+    assert recorded_session.id is not None
+    ui.driver.refresh()
+    return ui.driver.find_element_by_xpath(f"//a[@href='/#/sessions/{recorded_session.id}']")
 
 @pytest.fixture
 def ui(has_selenium, selenium, integration_url): # pylint: disable=unused-argument
