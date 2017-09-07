@@ -7,6 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
+from ...search import get_orm_query_from_search_string
 from ...models import Session, Test, db, SessionMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
@@ -172,6 +173,19 @@ def report_session_interrupted(id: int):
 def discard_session(session_id: int, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
     session = Session.query.get_or_404(session_id)
     session.delete_at = flux.current_timeline.time() + grace_period_seconds # pylint: disable=undefined-variable
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def discard_sessions_search(search_string: str, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
+    if not search_string:
+        error_abort('Invadlid search string')
+    delete_at = flux.current_timeline.time() + grace_period_seconds
+    search_query = get_orm_query_from_search_string('session', search_string).filter(Session.delete_at == None)
+    Session.query.filter(Session.id.in_(db.session.query(search_query.subquery().c.id))).update({
+        'delete_at': delete_at
+    }, synchronize_session=False)
     db.session.commit()
 
 

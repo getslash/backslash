@@ -56,6 +56,11 @@
         </table>
 
     {{/search-bar}}
+    {{#if (and (can "admin") (and (not searching) search)) }}
+      {{#dropdown-menu align="left" title="Search Results"}}
+        <li><a class="clickable" {{action "discard_results"}}>Discard</a></li>
+      {{/dropdown-menu}}
+    {{/if}}
   {{/if}}
 
 {{/tool-bar}}
