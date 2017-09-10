@@ -6,6 +6,7 @@ export default Ember.Component.extend({
 
   entered_search: null,
   search: null,
+  show_help: true,
 
   init() {
     this._super(...arguments);

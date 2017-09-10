@@ -1,26 +1,27 @@
 import Ember from "ember";
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
+import SearchRoute from "../mixins/search-route";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, {
+export default Ember.Route.extend(AuthenticatedRouteMixin, SearchRoute, {
   titleToken: "Users",
 
   queryParams: {
     page: { refreshModel: true },
+    search: {refreshModel: true },
     page_size: { refreshModel: true },
     sort: {
       refreshModel: true
     }
   },
 
-  model(params) {
-    let sort_order = params.sort;
-
+  model({page_size, page, sort, search}) {
     return Ember.RSVP.hash({
       users: this.store.query("user", {
-        page_size: params.page_size,
-        page: params.page,
-        sort: sort_order
+        filter: search,
+        page_size: page_size,
+        page: page,
+        sort: sort
       })
     });
   },

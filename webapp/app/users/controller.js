@@ -1,8 +1,10 @@
 import Ember from "ember";
 import config from "../config/environment";
 
-export default Ember.Controller.extend({
-  queryParams: ["sort", "page", "page_size"],
+import SearchController from "../mixins/search-controller";
+
+export default Ember.Controller.extend(SearchController, {
+  queryParams: ["sort", "page", "page_size", "search"],
 
   available_page_sizes: config.APP.available_page_sizes,
   page_size: config.APP.default_page_size,
