@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
+import flux
 
 from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
@@ -170,6 +171,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     has_fatal_errors = db.Column(db.Boolean, default=False)
 
     delete_at = db.Column(db.Float, nullable=True)
+    ttl_seconds = db.Column(db.Integer, nullable=True)
 
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
@@ -222,6 +224,14 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     def label_names(self):
         return [l.name for l in self.labels]
 
+
+    def update_keepalive(self):
+        if self.keepalive_interval is not None:
+            next_keepalive = flux.current_timeline.time() + self.keepalive_interval
+            self.next_keepalive = next_keepalive
+            self.extend_timespan_to(next_keepalive)
+            if self.ttl_seconds is not None:
+                self.delete_at = self.next_keepalive + self.ttl_seconds
 
 class SubjectInstance(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -21,7 +21,7 @@ NoneType = type(None)
 _DEFAULT_DELETE_GRACE_PERIOD_SECONDS = 60 * 60 * 24 * 30
 
 
-@API(version=2)
+@API(version=3)
 def report_session_start(logical_id: str=None,
                          parent_logical_id: (NoneType, str)=None,
                          is_parent_session: bool=False,
@@ -33,6 +33,7 @@ def report_session_start(logical_id: str=None,
                          keepalive_interval: (NoneType, int)=None,
                          subjects: (list, NoneType)=None,
                          infrastructure: (str, NoneType)=None,
+                         ttl_seconds: (int, NoneType)=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -48,6 +49,9 @@ def report_session_start(logical_id: str=None,
         user_id = g.token_user.id
         real_user_id = None
 
+    if keepalive_interval is None and ttl_seconds is not None:
+        error_abort("Cannot specify session TTL when keepalive isn't used")
+
     returned = Session(
         hostname=hostname,
         parent_logical_id=parent_logical_id,
@@ -60,9 +64,10 @@ def report_session_start(logical_id: str=None,
         status=statuses.RUNNING,
         logical_id=logical_id,
         keepalive_interval=keepalive_interval,
-        next_keepalive=None if keepalive_interval is None else get_current_time() +
-        keepalive_interval,
+        ttl_seconds=ttl_seconds,
     )
+
+    returned.update_keepalive()
 
     returned.mark_started()
 
@@ -121,6 +126,8 @@ def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors
         session.status = statuses.SUCCESS
     session.has_fatal_errors = has_fatal_errors
     session.in_pdb = False
+    if session.ttl_seconds is not None:
+        session.delete_at = flux.current_timeline.time() + session.ttl_seconds
     db.session.add(session)
     db.session.commit()
 
@@ -147,8 +154,7 @@ def send_keepalive(session_id: int):
     if s.end_time is not None:
         return
     timestamp = get_current_time() + s.keepalive_interval
-    s.next_keepalive = timestamp
-    s.extend_timespan_to(timestamp)
+    s.update_keepalive()
     for test in Test.query.filter(Test.session_id==session_id,
                                   Test.end_time == None,
                                   Test.start_time != None):

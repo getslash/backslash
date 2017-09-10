@@ -2,7 +2,8 @@
 
 ## Version 2.11.0
 
-* Added support for discarding sessions. Admins can now mark sessions for deletion after a certain period of time (30 days by default). This is useful for temporary sessions that are not interesting for keeping forever
+* Added support for discarding sessions. Admins can now mark sessions for deletion after a certain period of time (30 days by default). This is useful for temporary sessions that are not interesting for keeping forever.
+* Sessions can have a TTL, automatically marking their discard date on keepalives and session ends
 * Support reporting of remote and local SCM branches
 * Removed the "mark archived" and "mark investigated" features. Investigation will be added in a future release as a part of a stricter workflow, and archiving can now be replaced with discarding sessions
 

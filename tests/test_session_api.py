@@ -4,7 +4,7 @@ import socket
 import flux
 import pytest
 
-from .utils import raises_conflict, raises_not_found, without_single_rendered_fields
+from .utils import raises_conflict, raises_not_found, without_single_rendered_fields, raises_bad_request
 
 
 def test_start_session(client):
@@ -133,3 +133,37 @@ def test_cannot_report_interrupted_ended_session(started_session):
 def test_session_end_with_fatal_errors(started_session, has_fatal_errors):
     started_session.report_end(has_fatal_errors=has_fatal_errors)
     assert started_session.refresh().has_fatal_errors == has_fatal_errors
+
+
+def test_session_ttl_cant_provide_without_keepalive(client):
+    with raises_bad_request():
+        client.report_session_start(ttl_seconds=100)
+
+
+def test_session_ttl_null_by_default(started_session):
+    assert started_session.ttl_seconds is None
+    assert started_session.delete_at is None
+
+
+def test_session_ttl_on_creation(ttl_session, ttl_seconds, keepalive_interval):
+    assert ttl_session.ttl_seconds == ttl_seconds
+    assert ttl_session.delete_at == flux.current_timeline.time() + ttl_seconds + keepalive_interval
+
+
+def test_session_ttl_on_keepalive(client, ttl_session, ttl_seconds, keepalive_interval):
+    sleep_seconds = 5
+    flux.current_timeline.sleep(sleep_seconds)
+    client.api.call.send_keepalive(session_id=ttl_session.id)
+    ttl_session.refresh()
+    assert ttl_session.ttl_seconds == ttl_seconds
+    assert ttl_session.delete_at == flux.current_timeline.time() + keepalive_interval + ttl_seconds
+    assert ttl_session.delete_at == ttl_session.next_keepalive + ttl_seconds
+
+
+def test_session_ttl_on_session_end(client, ttl_session, ttl_seconds):
+    sleep_seconds = 5
+    flux.current_timeline.sleep(sleep_seconds)
+    ttl_session.report_end()
+    ttl_session.refresh()
+    assert ttl_session.ttl_seconds == ttl_seconds
+    assert ttl_session.delete_at == flux.current_timeline.time() + ttl_seconds
