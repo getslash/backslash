@@ -1,5 +1,4 @@
 & {
-
     .searching-spinner {
         position: relative;
         left: -5em;
@@ -9,5 +8,9 @@
         &.visible {
             visibility: visible;
         }
+    }
+
+    .search-bar {
+        min-width: 50vw;
     }
 }

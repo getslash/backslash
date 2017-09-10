@@ -71,8 +71,23 @@ def started_parallel_session(client):
 
 
 @pytest.fixture
-def started_session(client):
-    return client.report_session_start(keepalive_interval=300)
+def started_session(client, keepalive_interval):
+    return client.report_session_start(keepalive_interval=keepalive_interval)
+
+
+@pytest.fixture
+def keepalive_interval():
+    return 300
+
+
+@pytest.fixture
+def ttl_session(client, ttl_seconds):
+    return client.report_session_start(keepalive_interval=300, ttl_seconds=ttl_seconds)
+
+
+@pytest.fixture
+def ttl_seconds():
+    return 1337
 
 
 @pytest.fixture

@@ -1,6 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+
+  classNames: "nav navbar-nav",
+
   entered_search: null,
   search: null,
 

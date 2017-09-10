@@ -19,7 +19,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
       );
     } else {
       this.transitionTo("sessions", {
-        queryParams: { page: 1, filter: undefined, show_archived: false }
+        queryParams: { page: 1, filter: undefined }
       });
     }
   }

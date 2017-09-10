@@ -11,9 +11,22 @@ export default Ember.Controller.extend(StatusFilterableController, SearchControl
 
   collection: Ember.computed.oneWay("sessions"),
 
+  api: Ember.inject.service(),
   display: Ember.inject.service(),
 
   queryParams: ["search", "page", "page_size"],
+
+  actions: {
+
+    async discard_results() {
+      if (!window.confirm("This will mark all search results for future deletion. Are you sure?")) {
+        return;
+      }
+      await this.get('api').call('discard_sessions_search', {
+        search_string: this.get('search')
+      });
+    },
+  },
 
 
 });

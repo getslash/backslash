@@ -2,7 +2,7 @@ pytest
 pytest-cov
 pytest-selenium
 Flask-Loopback
-backslash>=2.28.0
+backslash>=2.31.0
 tmuxp
 livereload
 ipython

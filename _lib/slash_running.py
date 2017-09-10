@@ -34,7 +34,7 @@ def suite(name, args, interactive=False, debug=False, use_subjects=False, use_re
             return returned
 
         def _get_extra_session_start_kwargs(self):
-            returned = {}
+            returned = super()._get_extra_session_start_kwargs()
             if use_subjects:
                 returned['subjects'] = [
                     {

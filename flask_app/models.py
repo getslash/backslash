@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
+import flux
 
 from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
@@ -10,7 +11,6 @@ from .utils import statuses
 
 from .utils import get_current_time
 from .utils.rendering import rendered_field, render_api_object
-from . import activity
 from .capabilities import CAPABILITIES
 
 from psycopg2.extras import DateTimeTZRange
@@ -124,9 +124,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
 
     infrastructure = db.Column(db.String(50), default=None)
 
-    archived = db.Column(db.Boolean(), server_default="false", nullable=False) # no sense of indexing this since it's usually False
-    investigated = db.Column(db.Boolean(), server_default='false')
-
     tests = db.relationship(
         'Test', backref=backref('session', lazy='joined'), cascade='all, delete, delete-orphan')
     errors = db.relationship(
@@ -173,11 +170,15 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
 
     has_fatal_errors = db.Column(db.Boolean, default=False)
 
+    delete_at = db.Column(db.Float, nullable=True)
+    ttl_seconds = db.Column(db.Integer, nullable=True)
+
     __table_args__ = (
         Index('ix_session_start_time', start_time.desc()),
         Index('ix_session_status_lower', func.lower(status)),
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
+        Index('ix_session_delete_at', delete_at, postgresql_where=(delete_at != None)),
     )
 
 
@@ -223,6 +224,14 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     def label_names(self):
         return [l.name for l in self.labels]
 
+
+    def update_keepalive(self):
+        if self.keepalive_interval is not None:
+            next_keepalive = flux.current_timeline.time() + self.keepalive_interval
+            self.next_keepalive = next_keepalive
+            self.extend_timespan_to(next_keepalive)
+            if self.ttl_seconds is not None:
+                self.delete_at = self.next_keepalive + self.ttl_seconds
 
 class SubjectInstance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -604,39 +613,6 @@ class Comment(db.Model, TypenameMixin):
             'delete': is_mine,
             'edit': is_mine,
         }
-
-
-class Activity(db.Model, TypenameMixin):
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    action = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.Float, default=get_current_time)
-
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=True, index=True)
-    user = db.relationship('User', lazy='joined')
-
-    @rendered_field
-    def what(self):
-        if self.test_id is not None:
-            return 'test'
-        if self.session_id is not None:
-            return 'session'
-        return None
-
-    @rendered_field
-    def user_email(self):
-        return self.user.email
-
-    @rendered_field
-    def action_string(self):
-        return activity.get_action_string(self.action)
-
-    def __repr__(self):
-        return '<{} {} {}>'.format(self.user_id, self.action_string(), self.what())
 
 
 class UserPreference(db.Model):

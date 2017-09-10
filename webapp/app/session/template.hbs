@@ -1,30 +1,32 @@
 {{#tool-bar}}
-  <form class="navbar-form navbar-right">
-    {{# if (can "archive_session") }}
-      <button class="btn" {{action "toggle_archive"}}><i class="fa fa-archive"></i> {{if session_model.archived 'Unarchive' 'Archive'}}</button>
-
-      {{# if needs_investigation }}
-	<button class="btn btn-default" {{action "start_investigating"}}><i class="fa fa-check"></i> Mark as Investigated</button>
-
-      {{else}}
-	{{# if session_model.investigated }}
-	  <button class="btn btn-danger" {{action "toggle_investigated"}}><i class="fa fa-times"></i> Mark not Investigated</button>
-	{{/if}}
-      {{/if}}
-    {{/if}}
-  </form>
-  <p class="navbar-text">
-    {{#if session_model.parent_logical_id}}
-        {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
-          <i class="fa fa-arrows-alt"></i>
-        {{/link-to}}
-    {{else}}
-        {{#if session_model.is_parent_session}}
-          <i class="fa fa-arrows-alt" title="Parallel session"></i>
+      <ul class="nav navbar-nav navbar-right add-margin-right">
+        <p class="navbar-text" >
+          {{#if session_model.delete_at }}
+            <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
+            {{#if (can "admin")}}
+              <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
+            {{/if}}
+          {{else}}
+            {{#if (can "admin")}}
+              <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
+            {{/if}}
+          {{/if}}
+        </p>
+      </ul>
+    <ul class="nav navbar-nav">
+      <p class="navbar-text">
+        {{#if session_model.parent_logical_id}}
+          {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
+            <i class="fa fa-arrows-alt"></i>
+          {{/link-to}}
+        {{else}}
+          {{#if session_model.is_parent_session}}
+            <i class="fa fa-arrows-alt" title="Parallel session"></i>
+          {{/if}}
         {{/if}}
-    {{/if}}
 
-    Session {{elements/copyable-text value=session_model.display_id}}</p>
+        Session {{elements/copyable-text value=session_model.display_id}}</p>
+    </ul>
 
 {{/tool-bar}}
 
