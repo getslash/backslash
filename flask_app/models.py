@@ -413,6 +413,12 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
             return None
         return render_api_object(self.first_error_obj, only_fields={'message', 'exception_type'})
 
+    @rendered_field
+    def first_error_id(self):
+        if self.first_error_obj is None:
+            return None
+        return self.first_error_obj.id
+
     last_comment_obj = db.relationship(lambda: Comment,
                                   primaryjoin=lambda: and_(
                                       Test.id == Comment.test_id,
