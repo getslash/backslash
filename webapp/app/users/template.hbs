@@ -1,7 +1,6 @@
 {{#tool-bar}}
-  <div class="navbar-text">
-    Users
-  </div>
+  {{#search-bar search=(mut search) searching=searching show_help=false}}
+  {{/search-bar}}
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
 {{/tool-bar}}
 

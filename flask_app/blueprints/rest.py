@@ -7,6 +7,7 @@ import requests
 from flask import Blueprint, abort, request, jsonify, current_app, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import func
 from sqlalchemy.orm import aliased
 
 from flask_simple_api import error_abort
@@ -264,6 +265,15 @@ class UserResource(ModelResource):
     SORTABLE_FIELDS = ['last_activity', 'email', 'first_name', 'last_name']
     INVERSE_SORTS = ['last_activity']
     MODEL = User
+
+
+    def _get_iterator(self):
+        returned = super()._get_iterator()
+        filter = request.args.get('filter')
+        if filter:
+            filter = filter.lower()
+            returned = returned.filter(func.lower(User.first_name).contains(filter) | func.lower(User.last_name).contains(filter) | func.lower(User.email).contains(filter))
+        return returned
 
     def _get_object_by_id(self, object_id):
         if object_id == 'self':
