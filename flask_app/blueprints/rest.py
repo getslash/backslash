@@ -265,11 +265,16 @@ class UserResource(ModelResource):
     INVERSE_SORTS = ['last_activity']
     MODEL = User
 
-    def _get_object_by_id(self, object_id):
-        if object_id == 'self':
+    def _get_iterator(self):
+        returned = super()._get_iterator()
+        if request.args.get('current_user'):
             if not current_user.is_authenticated:
-                abort(requests.codes.not_found)
+                return []
             object_id = current_user.id
+            returned = returned.filter(self.MODEL.id == object_id)
+        return returned
+
+    def _get_object_by_id(self, object_id):
         try:
             object_id = int(object_id)
         except ValueError:
