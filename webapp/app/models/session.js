@@ -4,8 +4,6 @@ import HasLogicalId from "../mixins/has-logical-id";
 import HasComputedStatus from "../mixins/has-computed-status";
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
-  archived: DS.attr("boolean"),
-  investigated: DS.attr("boolean"),
 
   start_time: DS.attr("number"),
   end_time: DS.attr("number"),
@@ -26,6 +24,8 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   parent_logical_id: DS.attr("string"),
   child_id: DS.attr("string"),
   last_comment: DS.attr(),
+
+  delete_at: DS.attr("number"),
 
   is_ok() {
     return !(this.get('num_errors') || this.get('num_error_tests') || this.get('num_failed_tests') || this.get('num_failures') || this.get('is_abandoned') || this.get('is_interrupted'));

@@ -7,6 +7,7 @@ import requests
 from flask import Blueprint, abort, request, jsonify, current_app, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import func
 from sqlalchemy.orm import aliased
 
 from flask_simple_api import error_abort
@@ -59,7 +60,6 @@ class SessionResource(ModelResource):
         else:
             returned = super(SessionResource, self)._get_iterator()
 
-        returned = returned.filter(Session.archived == False) # pylint: disable=singleton-comparison
         if args.parent_logical_id is not None:
             returned =  returned.filter(Session.parent_logical_id == args.parent_logical_id)
         else:
@@ -266,11 +266,21 @@ class UserResource(ModelResource):
     INVERSE_SORTS = ['last_activity']
     MODEL = User
 
-    def _get_object_by_id(self, object_id):
-        if object_id == 'self':
+    def _get_iterator(self):
+        returned = super()._get_iterator()
+        if request.args.get('current_user'):
             if not current_user.is_authenticated:
-                abort(requests.codes.not_found)
+                return []
             object_id = current_user.id
+            returned = returned.filter(self.MODEL.id == object_id)
+
+        filter = request.args.get('filter')
+        if filter:
+            filter = filter.lower()
+            returned = returned.filter(func.lower(User.first_name).contains(filter) | func.lower(User.last_name).contains(filter) | func.lower(User.email).contains(filter))
+        return returned
+
+    def _get_object_by_id(self, object_id):
         try:
             object_id = int(object_id)
         except ValueError:
@@ -343,29 +353,6 @@ class RelatedEntityResource(ModelResource):
             return models.Entity.query.join(models.test_entity).filter(models.test_entity.c.test_id == args.test_id)
         else:
             raise NotImplementedError() # pragma: no cover
-
-
-@blueprint.route('/activities')
-def get_activities():
-    args = session_test_user_query_parser.parse_args()
-
-    if not ((args.session_id is not None) ^
-            (args.test_id is not None) ^
-            (args.user_id is not None)):
-        error_abort('Either test_id, session_id or user_id must be passed to the query')
-
-    results = models.db.session.execute(
-        activity.get_activity_query(user_id=args.user_id, test_id=args.test_id, session_id=args.session_id))
-
-    return jsonify({
-        'activities': [
-            _fix_action_string(dict(obj.items())) for obj in results
-        ]
-    })
-
-def _fix_action_string(d):
-    d['action'] = activity.get_action_string(d['action'])
-    return d
 
 
 @_resource('/migrations', '/migrations/<object_id>')

@@ -26,7 +26,7 @@ services:
 
   worker:
     image: getslash/backslash
-    command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 .env/bin/celery -A flask_app.tasks worker -B --loglevel=info
+    command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 .env/bin/celery -A flask_app.tasks worker -B --loglevel=info --max-tasks-per-child=500
     logging:
       driver: syslog
     environment:

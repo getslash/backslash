@@ -7,8 +7,10 @@
     <i class="fa fa-spin fa-circle-o-notch {{if searching 'visible'}} searching-spinner"></i>
   </div>
 
-  {{#search-help}}
-    {{yield}}
+  {{#if show_help}}
+    {{#search-help}}
+      {{yield}}
 
-   {{/search-help}}
+    {{/search-help}}
+  {{/if}}
 </form>

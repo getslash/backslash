@@ -1,14 +1,16 @@
-import requests
-
 from flask import g, request
 from flask_simple_api import error_abort
+import flux
+import requests
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
+from ...search import get_orm_query_from_search_string
 from ...models import Session, Test, db, SessionMetadata
 from ...utils import get_current_time, statuses
+from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
 from ... import metrics
@@ -16,8 +18,10 @@ from .blueprint import API
 
 NoneType = type(None)
 
+_DEFAULT_DELETE_GRACE_PERIOD_SECONDS = 60 * 60 * 24 * 30
 
-@API(version=2)
+
+@API(version=3)
 def report_session_start(logical_id: str=None,
                          parent_logical_id: (NoneType, str)=None,
                          is_parent_session: bool=False,
@@ -29,6 +33,7 @@ def report_session_start(logical_id: str=None,
                          keepalive_interval: (NoneType, int)=None,
                          subjects: (list, NoneType)=None,
                          infrastructure: (str, NoneType)=None,
+                         ttl_seconds: (int, NoneType)=None,
                          ):
     if hostname is None:
         hostname = request.remote_addr
@@ -44,6 +49,9 @@ def report_session_start(logical_id: str=None,
         user_id = g.token_user.id
         real_user_id = None
 
+    if keepalive_interval is None and ttl_seconds is not None:
+        error_abort("Cannot specify session TTL when keepalive isn't used")
+
     returned = Session(
         hostname=hostname,
         parent_logical_id=parent_logical_id,
@@ -56,9 +64,10 @@ def report_session_start(logical_id: str=None,
         status=statuses.RUNNING,
         logical_id=logical_id,
         keepalive_interval=keepalive_interval,
-        next_keepalive=None if keepalive_interval is None else get_current_time() +
-        keepalive_interval,
+        ttl_seconds=ttl_seconds,
     )
+
+    returned.update_keepalive()
 
     returned.mark_started()
 
@@ -117,6 +126,8 @@ def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors
         session.status = statuses.SUCCESS
     session.has_fatal_errors = has_fatal_errors
     session.in_pdb = False
+    if session.ttl_seconds is not None:
+        session.delete_at = flux.current_timeline.time() + session.ttl_seconds
     db.session.add(session)
     db.session.commit()
 
@@ -143,8 +154,7 @@ def send_keepalive(session_id: int):
     if s.end_time is not None:
         return
     timestamp = get_current_time() + s.keepalive_interval
-    s.next_keepalive = timestamp
-    s.extend_timespan_to(timestamp)
+    s.update_keepalive()
     for test in Test.query.filter(Test.session_id==session_id,
                                   Test.end_time == None,
                                   Test.start_time != None):
@@ -161,5 +171,33 @@ def report_session_interrupted(id: int):
     s.status = statuses.INTERRUPTED
     if s.parent:
         s.parent.status = statuses.INTERRUPTED
-    db.session.add(s)
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def discard_session(session_id: int, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
+    session = Session.query.get_or_404(session_id)
+    session.delete_at = flux.current_timeline.time() + grace_period_seconds # pylint: disable=undefined-variable
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def discard_sessions_search(search_string: str, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
+    if not search_string:
+        error_abort('Invadlid search string')
+    delete_at = flux.current_timeline.time() + grace_period_seconds
+    search_query = get_orm_query_from_search_string('session', search_string).filter(Session.delete_at == None)
+    Session.query.filter(Session.id.in_(db.session.query(search_query.subquery().c.id))).update({
+        'delete_at': delete_at
+    }, synchronize_session=False)
+    db.session.commit()
+
+
+@API(require_real_login=True)
+@requires_role('admin')
+def preserve_session(session_id: int):
+    session = Session.query.get_or_404(session_id)
+    session.delete_at = None
     db.session.commit()

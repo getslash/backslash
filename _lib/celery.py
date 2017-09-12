@@ -13,8 +13,9 @@ def celery():
 
 @celery.command()
 @click.argument('name')
+@click.option('--defer', default=False, is_flag=True)
 @requires_env('app')
-def task(name):
+def task(name, defer):
 
     from flask_app import tasks
     from flask_app.app import create_app
@@ -24,5 +25,9 @@ def task(name):
     if task is None:
         click.echo('Could not find task named {}'.format(task))
         raise click.Abort()
-    with create_app().app_context():
-        task()
+
+    with create_app().app_context(), logbook.StderrHandler(level='DEBUG'):
+        if defer:
+            task.delay()
+        else:
+            task()

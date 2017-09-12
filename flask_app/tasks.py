@@ -1,18 +1,20 @@
 from __future__ import absolute_import
 
 from datetime import timedelta
+import errno
+import itertools
 import functools
 import os
 import sys
 
+from flask import current_app
 import logging
 import logging.handlers
 import logbook
 
 from celery import Celery
 from celery.signals import after_setup_logger, after_setup_task_logger
-from celery.log import redirect_stdouts_to_logger
-
+import flux
 
 from .app import create_app
 from . import models
@@ -28,6 +30,10 @@ queue.conf.update(
         'start-live-migrations': {
             'task': 'flask_app.tasks.start_live_migrations',
             'schedule': 300,
+        },
+        'delete_discarded_sessions': {
+            'task': 'flask_app.tasks.delete_discarded_sessions',
+            'schedule': 24 * 60 * 60,
         },
     },
 )
@@ -96,3 +102,29 @@ def do_live_migrate():
             models.db.session.commit()
             if result.rowcount == 0:
                 break
+
+@queue.task
+@needs_app_context
+def delete_discarded_sessions(ignore_date=False):
+    query = models.Session.query
+    if ignore_date:
+        query = query.filter(models.Session.delete_at != None)
+    else:
+        query = query.filter(models.Session.delete_at <= flux.current_timeline.time())
+    sessions = query.all()
+    for session in sessions:
+        tests = models.Test.query.filter(models.Test.session_id == session.id)
+        for error in itertools.chain(session.errors, (error for t in tests for error in t.errors)):
+            if not error.traceback_url:
+                continue
+            traceback_uuid = error.traceback_url.rsplit('/', 1)[-1]
+            traceback_filename = os.path.join(current_app.config['TRACEBACK_DIR'], traceback_uuid[:2], traceback_uuid + '.gz')
+            _logger.debug('Deleting error {.id} ({})', error, traceback_filename)
+            try:
+                os.unlink(traceback_filename)
+            except OSError as e:
+                if e.errno != errno.ENOENT:
+                    raise
+        _logger.debug('Deleting session {0.id} (Logical id {0.logical_id})', session)
+        models.db.session.execute('DELETE FROM SESSION WHERE id = :id', {'id': session.id})
+        models.db.session.commit()

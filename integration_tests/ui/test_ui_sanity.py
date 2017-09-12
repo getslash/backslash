@@ -5,4 +5,4 @@ def test_logout(ui):
 
 
 def test_recorded_sessions_visible(ui_session):
-    pass
+    assert ui_session is not None

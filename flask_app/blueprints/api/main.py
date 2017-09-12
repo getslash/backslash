@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 import logbook
-import multiprocessing
 
 import requests
 from flask import abort, current_app
@@ -11,8 +10,6 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
 
 from .blueprint import API
-from ... import activity
-from ... import models
 from ... import metrics
 from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
@@ -100,7 +97,7 @@ def append_upcoming_tests(tests: list, session_id: int):
     except DataError:
         raise
 
-@API(version=2)
+@API(version=3)
 def report_test_start(
         session_id: int,
         name: str,
@@ -111,6 +108,8 @@ def report_test_start(
         file_hash: (str, NoneType)=None,
         scm_revision: (str, NoneType)=None,
         scm_dirty: bool=False,
+        scm_local_branch: (str, NoneType)=None,
+        scm_remote_branch: (str, NoneType)=None,
         is_interactive: bool=False,
         variation: (dict, NoneType)=None,
         metadata: (dict, NoneType)=None,
@@ -135,6 +134,8 @@ def report_test_start(
     returned.status = statuses.RUNNING
     returned.scm_dirty = scm_dirty
     returned.scm_revision = scm_revision
+    returned.scm_local_branch = scm_local_branch
+    returned.scm_remote_branch = scm_remote_branch
     returned.scm = scm
     returned.is_interactive = is_interactive
     returned.file_hash = file_hash
@@ -242,27 +243,6 @@ def report_test_skipped(id: int, reason: (str, NoneType)=None):
 def report_test_interrupted(id: int):
     _update_running_test_status(id, statuses.INTERRUPTED)
     db.session.commit()
-
-@API(require_real_login=True)
-@requires_role('moderator')
-def toggle_archived(session_id: int):
-    returned = _toggle_session_attribute(session_id, 'archived', activity.ACTION_ARCHIVED, activity.ACTION_UNARCHIVED)
-    db.session.commit()
-    return returned
-
-@API(require_real_login=True)
-def toggle_investigated(session_id: int):
-    _toggle_session_attribute(session_id, 'investigated', activity.ACTION_INVESTIGATED, activity.ACTION_UNINVESTIGATED)
-    db.session.commit()
-
-def _toggle_session_attribute(session_id, attr, on_action, off_action):
-    session = Session.query.get_or_404(session_id)
-    new_value = not getattr(session, attr)
-    setattr(session, attr, new_value)
-    db.session.add(session)
-    activity.register_user_activity(on_action if new_value else off_action, session_id=session_id)
-    return new_value
-
 
 
 def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None):
