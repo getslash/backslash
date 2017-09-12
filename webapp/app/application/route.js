@@ -41,10 +41,10 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
   load_current_user() {
     let self = this;
     if (self.get("session.data.authenticated")) {
-      return retry(() => {
-        return self.store.queryRecord("user", {current_user: true});
-      }).then(function(u) {
-        self.set("session.data.authenticated.current_user", u);
+      return retry(async function() {
+        let users = await self.store.query("user", {current_user: true});
+        let user = await users.get('firstObject');
+        self.set("session.data.authenticated.current_user", user);
         return self.get("user_prefs").get_all();
       });
     }
