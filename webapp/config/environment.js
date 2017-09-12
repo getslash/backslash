@@ -1,11 +1,12 @@
 /* eslint-env node */
+'use strict';
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'webapp',
-    environment: environment,
     rootURL: null,
     locationType: 'hash',
+    environment,
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
