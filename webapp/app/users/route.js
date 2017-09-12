@@ -33,5 +33,11 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, SearchRoute, {
       page_size: model.users.get("meta.page_size"),
       page: model.users.get("meta.page")
     });
+  },
+
+  resetController(controller, isExiting) {
+    if (isExiting) {
+      controller.set('page', 1);
+    }
   }
 });
