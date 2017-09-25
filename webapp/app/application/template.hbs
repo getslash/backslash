@@ -22,7 +22,6 @@
 	  {{#if u.email }}
             <ul class="nav navbar-nav">
               {{#nav-link to="sessions"}}Sessions{{/nav-link}}
-	      {{#nav-link to="tests"}}Tests{{/nav-link}}
               {{#nav-link to="subjects"}}{{capitalize (pluralize (display_name "subject"))}}{{/nav-link}}
               {{#nav-link to="users"}}Users{{/nav-link}}
               {{# if (can "admin") }}
