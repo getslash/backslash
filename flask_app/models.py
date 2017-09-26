@@ -75,7 +75,13 @@ class TimespanMixin:
 
     def mark_started(self):
         self.start_time = get_current_time()
-        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), None)
+        end_time = None
+        session_id = getattr(self, "session_id", None)
+        if session_id is not None:
+            session = Session.query.get(session_id)
+            if session.keepalive_interval is not None:
+                end_time = datetime.fromtimestamp(self.start_time + session.keepalive_interval)
+        self.timespan = DateTimeTZRange(datetime.fromtimestamp(self.start_time), end_time)
 
     def extend_timespan_to(self, timestamp):
         if self.start_time is None:

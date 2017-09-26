@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.11.1
+
+* Fixed handling of test timespan when the test starts and before a keepalive is received
+
 ## Version 2.11.0
 
 * Added search option to user view

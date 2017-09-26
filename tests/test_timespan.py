@@ -40,3 +40,19 @@ def test_timespan_keepalive(started_session, get_real_object):
     timespan = get_real_object(obj).timespan
     assert timespan.upper is not None
     assert abs(timespan.upper - timespan.lower - datetime.timedelta(seconds=obj.keepalive_interval)) < _MIN_THRESHOLD
+
+
+def test_timespan_started_test(started_test, get_real_object):
+    assert get_real_object(started_test).timespan.upper is not None
+
+
+def test_timespan_started_test_session_keepalive(started_session, started_test, get_real_object):
+    test_obj = get_real_object(started_test)
+    original_end = test_obj.timespan.upper
+    original_start = test_obj.timespan.lower
+    flux.current_timeline.sleep(10)
+    started_session.send_keepalive()
+    test_obj = get_real_object(started_test)
+    assert test_obj.timespan.lower == original_start
+    assert test_obj.timespan.upper > original_end
+    assert test_obj.timespan.upper == get_real_object(started_session).timespan.upper
