@@ -451,6 +451,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
+    status_description = db.Column(db.String(1024), nullable=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)
 

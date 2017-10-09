@@ -13,6 +13,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   end_time: DS.attr("number"),
   duration: DS.attr("number"),
   status: DS.attr("string"),
+  status_description: DS.attr(),
 
   num_errors: DS.attr("number"),
   num_warnings: DS.attr("number"),

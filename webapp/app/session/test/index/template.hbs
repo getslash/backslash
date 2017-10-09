@@ -4,6 +4,9 @@
       <p>
 	<i class="fa fa-clock-o"></i> {{humanized-duration start_time=test_model.start_time end_time=test_model.end_time}}
       </p>
+      {{#if test_model.status_description}}
+        <p>Current status: <strong>{{test_model.status_description}}</strong></p>
+      {{/if}}
       <p>
 	<i class="fa fa-hourglass-1"></i> {{moment-time unix=test_model.start_time}}
       </p>
