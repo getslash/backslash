@@ -408,8 +408,6 @@ def invalid_variation(request):
     return request.param
 
 
-
-
 @pytest.fixture
 def test_info(file_name, test_name, class_name):
     return {'file_name': file_name, 'name': test_name, 'class_name': class_name}
@@ -423,6 +421,9 @@ def error_container(request, client):
 def label_container(request, client):
     return _get_api_object_by_typename(client=client, typename=request.param)
 
+@pytest.fixture(params=['session', 'test'])
+def timing_container(request, client):
+    return _get_api_object_by_typename(client=client, typename=request.param)
 
 @pytest.fixture(params=['session', 'test'])
 def related_entity_container(request, client):

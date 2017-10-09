@@ -6,6 +6,7 @@
 * Fixed the order of display of quick-jump items, and they are now sorted by name
 * Added the ability to search by product type
 * Added a "status_description" field for tests, allowing setting more informative information on what the test is currently doing (via API)
+* Added timing metrics API, enabling tests and sessions to display the total time distribution spent while running
 
 ## Version 2.11.1
 

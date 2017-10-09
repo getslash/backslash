@@ -681,3 +681,19 @@ class BackgroundMigration(db.Model):
     @classmethod
     def get_typename(cls):
         return 'migration'
+
+
+class Timing(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1024), nullable=False)
+    total = db.Column(db.Float(), default=0)
+
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=False)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True)
+
+    __table_args__= (
+        Index('ix_timing_test', test_id, name, postgresql_where=(test_id != None), unique=True),
+        Index('ix_timing_session', session_id, name),
+        Index('ix_timing_session_no_test', session_id, name, postgresql_where=(test_id == None), unique=True), # pylint: disable=singleton-comparison
+    )

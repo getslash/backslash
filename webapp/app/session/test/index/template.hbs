@@ -14,6 +14,14 @@
 	<i class="fa fa-hourglass-3"></i> {{moment-time unix=test_model.end_time}}
       </p>
     </div>
+    <div class="col-sm-3">
+      {{#each timings as |timing|}}
+      <div class="row faint">
+        <div class="col-sm-6"><i class="fa fa-clock-o"></i> {{timing.name}}</div>
+        <div class="col-sm-6">{{timing.total}}s</div>
+      </div>
+      {{/each}}
+    </div>
   </div>
 </div>
 
