@@ -57,5 +57,13 @@
     </div>
   </div>
 {{else}}
-  {{query-results results=tests meta=tests.meta page=(mut page) show_user=true}}
+  {{#if (not searching) }}
+    {{# if (not search) }}
+      <div class="text-center container faint">
+        Enter a search query to search for test executions
+      </div>
+    {{else}}
+      {{query-results results=tests meta=tests.meta page=(mut page) show_user=true}}
+    {{/if}}
+  {{/if}}
 {{/if}}
