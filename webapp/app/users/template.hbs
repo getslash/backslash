@@ -4,22 +4,4 @@
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
 {{/tool-bar}}
 
-{{pagination-nav page=(mut page) has_next=users.meta.has_more }}
-
-{{#each users as |user|}}
-  {{#link-to 'user.sessions' user.email classNames="item user"}}
-    {{users/user-avatar user=user}}
-    <div class="name" title="{{user.name}}">
-      {{user.display_name}}
-    </div>
-    <div class="small faint vertical-center-flex margin-left-small last-active">
-      {{#if user.last_activity}}
-        Last active {{moment-time ago=user.last_activity}}
-      {{else}}
-        Last active: N/A
-      {{/if}}
-    </div>
-  {{/link-to}}
-{{/each}}
-
-{{pagination-nav page=(mut page) has_next=users.meta.has_more }}
+{{query-results results=users meta=users.meta page=(mut page) use_item_box=true}}
