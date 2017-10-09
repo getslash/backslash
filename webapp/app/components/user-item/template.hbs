@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-4">
+    {{users/user-avatar user=user}}
+    <span class="add-margin-left">
+      {{#link-to "user.sessions" user.email}}{{user.display_name}}{{/link-to}}
+    </span>
+  </div>
+  <div class="col-sm-8 faint">
+    {{#if user.last_activity}}
+      Last active {{moment-time ago=user.last_activity}}
+    {{else}}
+      Last active: N/A
+    {{/if}}
+  </div>
+</div>
