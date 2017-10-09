@@ -17,7 +17,10 @@ def quick_search(term: str):
 
               (select email as key, CASE WHEN first_name is NULL THEN email
                           ELSE (first_name || ' ' || last_name || ' (' || email || ')') END as name, 'user' as type from "user")) u
-        where u.name ilike :term limit :num_hits""").params(
+        where u.name ilike :term
+        ORDER BY name asc
+        limit :num_hits
+        """).params(
             term='%{}%'.format(term),
             num_hits=num_hits,
     )
