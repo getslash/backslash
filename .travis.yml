@@ -47,8 +47,10 @@ install:
   - python manage.py bootstrap --develop
   - python manage.py db upgrade
 
+  # required to work around https://github.com/dbcli/cli_helpers/issues/25
+  - .env/bin/pip uninstall -y cli_helpers
   # (optional) install latest backlash-python
-  #- .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
+  - .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
 
   # run docker-compose setup in testing mode
   - sudo docker-compose -f docker/docker-compose.yml build
@@ -62,6 +64,7 @@ script:
   # build the frontend to make sure we can serve '/' in the unit tests
   - ./node_modules/.bin/ember build
   - cd ..
+  - .env/bin/pip install -e git+https://github.com/getslash/backslash-python@develop#egg=backslash
   - .env/bin/py.test tests
   - .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Chrome --capability platform Linux --capability version 48.0 --capability tunnelIdentifier $TRAVIS_JOB_NUMBER
 
