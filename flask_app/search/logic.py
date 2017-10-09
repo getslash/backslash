@@ -9,7 +9,7 @@ from psycopg2.extras import DateTimeTZRange
 
 from . import value_parsers
 from ..filters import builders as filter_builders
-from ..models import (Entity, Label, ProductRevision, ProductVersion, Session,
+from ..models import (Entity, Label, Product, ProductRevision, ProductVersion, Session,
                       SessionMetadata, Subject, SubjectInstance, Test,
                       TestInformation, User, db, session_entity, session_label,
                       session_subject)
@@ -155,6 +155,11 @@ class TestSearchContext(SearchContext):
         return _negate_maybe(op, subquery)
 
     @only_ops(['=', '!='])
+    def search__product_type(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(Product).filter(Product.name == value, session_subject.c.session_id == Test.session_id).exists().correlate(Test)
+        return _negate_maybe(op, subquery)
+
+    @only_ops(['=', '!='])
     def search__label(self, op, value):
         labels = Label.query.filter(Label.name==value).all()
         if not labels:
@@ -215,6 +220,11 @@ class SessionSearchContext(SearchContext):
     @only_ops(['=', '!='])
     def search__product_version(self, op, value):
         subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
+        return _negate_maybe(op, subquery)
+
+    @only_ops(['=', '!='])
+    def search__product(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).join(Product).filter(Product.name == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
         return _negate_maybe(op, subquery)
 
     @only_ops(['='])

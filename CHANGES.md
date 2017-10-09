@@ -4,6 +4,7 @@
 
 * Added a view for test cases. This is planned to evolve into a suite management feature over the next releases
 * Fixed the order of display of quick-jump items, and they are now sorted by name
+* Added the ability to search by product type
 
 ## Version 2.11.1
 
