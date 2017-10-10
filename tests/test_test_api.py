@@ -11,6 +11,15 @@ def test_test_information_filename(started_test, file_name):
     assert started_test.info['file_name'] == file_name
 
 
+def test_test_status_description(started_test):
+    assert started_test.status_description is None
+    description = 'blap'
+    started_test.update_status_description(description)
+    assert started_test.refresh().status_description == description
+    started_test.report_end()
+    assert started_test.refresh().status_description is None
+
+
 def test_test_information_classname(started_test, class_name):
     assert started_test.info['class_name'] == class_name
 

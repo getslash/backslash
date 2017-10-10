@@ -173,6 +173,12 @@ def report_test_distributed(
 
 
 @API
+def update_status_description(test_id: int, description: str):
+    Test.query.get_or_404(test_id).status_description = description
+    db.session.commit()
+
+
+@API
 def report_test_end(id: int, duration: (float, int)=None):
     test = Test.query.get(id)
     if test is None:
@@ -195,7 +201,7 @@ def report_test_end(id: int, duration: (float, int)=None):
         elif not test.interrupted and not test.skipped:
             test.status = statuses.SUCCESS
 
-    db.session.add(test)
+    test.status_description = None
     db.session.commit()
 
 
