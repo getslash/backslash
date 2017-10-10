@@ -24,7 +24,7 @@ services:
 before_install:
 
   # update docker
-  - curl https://releases.rancher.com/install-docker/17.05.sh | sudo bash -
+  - curl https://releases.rancher.com/install-docker/17.09.sh | sudo bash -
 
   # build the Backslash docker image
   - python scripts/travis_version_fix.py
