@@ -87,3 +87,14 @@ You can start Backslash by running::
 
 Now that the server is up and running, it's time to configure your
 server. You can read about it in the :ref:`configuration` section.
+
+
+
+Upgrade 
+-------
+
+The way to upgrade an existing deployment to the latest version is:
+1. update the docker image:
+  $ docker pull getslash/backslash
+2. restart the daemon:
+  $ sudo systemctl restart backslash-docker
