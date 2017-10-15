@@ -532,8 +532,13 @@ class Warning(db.Model, TypenameMixin):
     filename = db.Column(db.String(2048), nullable=True)
     lineno = db.Column(db.Integer, nullable=True)
     timestamp = db.Column(db.Float, nullable=False)
+    num_warnings = db.Column(db.Integer, nullable=True, default=1)
 
-
+    __table_args__ = (
+        Index('ix_warning_details',
+              session_id, test_id, filename, lineno,
+              postgresql_where=(session_id == None)), # pylint: disable=singleton-comparison
+    )
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE')),

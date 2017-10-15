@@ -272,21 +272,29 @@ def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int
     # pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either session_id or test_id required')
+
     if session_id is not None:
         obj = Session.query.get_or_404(session_id)
     else:
         obj = Test.query.get_or_404(test_id)
+
     if timestamp is None:
         timestamp = get_current_time()
-    if obj.num_warnings < current_app.config['MAX_WARNINGS_PER_ENTITY']:
-        db.session.add(
-            Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
+
+    warning = Warning.query.filter_by(session_id=session_id, test_id=test_id, lineno=lineno, filename=filename, message=message).first()
+    if warning is None:
+        if obj.num_warnings < current_app.config['MAX_WARNINGS_PER_ENTITY']:
+            warning = Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id)
+            db.session.add(warning)
+    else:
+        warning.num_warnings = Warning.num_warnings + 1
+        warning.timestamp = timestamp
+
     obj.num_warnings = type(obj).num_warnings + 1
     if session_id is None:
         obj.session.num_test_warnings = Session.num_test_warnings + 1
         db.session.add(obj.session)
 
-    db.session.add(obj)
     db.session.commit()
 
 

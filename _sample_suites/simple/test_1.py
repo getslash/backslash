@@ -1,5 +1,7 @@
 import slash
 
+import warnings
+
 
 def test_1():
     pass
@@ -7,7 +9,8 @@ def test_1():
 
 @slash.tag('tag_without_value')
 def test_2():
-    slash.logger.warning('This is a warning')
+    for i in range(5):
+        warnings.warn('This is a warning!')
 
 
 @slash.tag('tag_with_value', 'some_value')
