@@ -24,7 +24,7 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexMod
   model(params) {
     let query = { page: params.page, page_size: params.page_size };
     if (!params.search) {
-      return {tests: null};
+      return {tests: null, error: null};
     }
 
     query.search = params.search;
@@ -34,18 +34,10 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexMod
     return this.store
       .query("test", query)
       .then(function(tests) {
-        return { tests: tests, error: null, search: query.search };
+        return { tests: tests, error: null, search: query.search};
       })
       .catch(function(exception) {
-        let message = null;
-        exception.errors.forEach(function(e) {
-          message = e.detail;
-        });
-
-        if (message) {
-          return { error: message };
-        }
-        throw exception; // reraise
+        return {error: exception.errors.get('firstObject')};
       });
   },
 

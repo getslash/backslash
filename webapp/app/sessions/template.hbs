@@ -70,11 +70,7 @@
 {{/tool-bar}}
 
 {{#if error}}
-  <div class="container">
-    <div class="alert alert-danger text-center">
-      {{error}}
-    </div>
-  </div>
+  {{request-error-details error=error}}
 {{else}}
   {{query-results
     results=sessions

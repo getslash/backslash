@@ -34,6 +34,8 @@ export default Ember.Route.extend(
     return Ember.RSVP.hash({
       search: search,
       cases: this.store.query('case', query),
+    }).catch(function(exception) {
+      return {error: exception.errors.get('firstObject')};
     });
   },
 
