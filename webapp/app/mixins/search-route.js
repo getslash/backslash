@@ -7,7 +7,4 @@ export default Ember.Mixin.create({
     controller.set('searching', false);
   },
 
-  get_syntax_error_details(exception) {
-    console.log('got syntax error:', exception);
-  },
 });
