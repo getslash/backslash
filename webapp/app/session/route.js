@@ -19,7 +19,21 @@ export default Ember.Route.extend(
       return self.store.queryRecord("session", {id: id}).then(function(session) {
         return Ember.RSVP.hash({
           session_model: session,
-          user: self.store.find("user", session.get("user_id"))
+          user: self.store.find("user", session.get("user_id")),
+          metadata: self.get("api")
+            .call("get_metadata", {
+              entity_type: "session",
+              entity_id: parseInt(session.id)
+            })
+            .then(
+              function(r)
+              {
+                if (session.data.child_id != null) {
+                  delete r.result['slash::commandline'];
+                }
+                return r.result;
+              }
+            ),
         });
       });
     },

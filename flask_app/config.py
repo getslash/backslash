@@ -16,8 +16,15 @@ def get_runtime_config_private_dict():
         'debug': current_app.config['DEBUG'],
         'version': __version__,
         'setup_needed': True,
-        'display_names': current_app.config['display_names'],
-        'test_metadata_links': current_app.config['test_metadata_links'],
+        **{
+            key: current_app.config[key]
+            for key in (
+                    'display_names',
+                    'test_metadata_links',
+                    'session_metadata_display_items',
+                    'test_metadata_display_items',
+            )
+        }
     }
     returned.update(
         (cfg.key, cfg.value)

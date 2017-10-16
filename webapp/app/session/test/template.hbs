@@ -24,6 +24,19 @@
 
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12">
+      {{#each metadata_display_items as |item|}}
+        {{#with (get test_metadata item.key) as |value|}}
+          {{#if value}}
+            <p>
+              <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{value}}</strong>
+            </p>
+          {{/if}}
+        {{/with}}
+      {{/each}}
+    </div>
+  </div>
 
 </div>
 
