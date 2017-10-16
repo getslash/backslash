@@ -1,4 +1,7 @@
 <div class="info">
   {{moment-time unix=warning.timestamp}} - From <strong>{{warning.filename}}</strong>, line <strong>{{warning.lineno}}</strong>
+  {{#if (gt warning.num_warnings 1) }}
+    (Repeated {{warning.num_warnings}} times)
+  {{/if}}
 </div>
 <div class="message">{{warning.message}}</div>

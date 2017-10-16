@@ -18,7 +18,7 @@ def render_api_object(obj, only_fields=None, extra_fields=None, is_single=False)
         except NotImplementedError:
             continue
 
-        if value is None and python_type is bool and column.default is not None:
+        if value is None and python_type in (bool, int) and column.default is not None:
             value = column.default.arg
         returned[field_name] = value
 
