@@ -46,6 +46,12 @@
 	    {{/link-to}}
 	  {{/if}}
 
+          {{#if session_model.num_interruptions}}
+	    {{#link-to 'session.interruptions' tagName='li'}}
+	      <a href>Interruptions <span class="label label-danger">{{session_model.num_interruptions}}</span></a>
+	    {{/link-to}}
+	  {{/if}}
+
 	  {{#with session_model.num_warnings as |num_warnings|}}
 	    {{#if num_warnings}}
 	      {{#link-to 'session.warnings' tagName='li'}}

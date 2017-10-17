@@ -10,7 +10,7 @@ from contextlib import ExitStack
 from slash.frontend.slash_run import slash_run
 
 
-def run_suite(backslash_url, name='simple'):
+def run_suite(backslash_url, name='simple', interrupt=False):
 
     session_id = None
 
@@ -26,6 +26,10 @@ def run_suite(backslash_url, name='simple'):
 
         plugins.manager.install(plugin, activate=True)
         stack.callback(plugins.manager.uninstall, plugin)
-        slash_run([os.path.join('_sample_suites', name), '--session-label', 'testing'])
+        try:
+            slash_run([os.path.join('_sample_suites', name), '--session-label', 'testing'])
+        except KeyboardInterrupt:
+            if not interrupt:
+                raise
 
     return session_id

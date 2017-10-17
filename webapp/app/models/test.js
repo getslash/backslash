@@ -16,6 +16,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   status_description: DS.attr(),
 
   num_errors: DS.attr("number"),
+  num_interruptions: DS.attr("number"),
   num_warnings: DS.attr("number"),
   num_comments: DS.attr("number"),
 

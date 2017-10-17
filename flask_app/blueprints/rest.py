@@ -207,6 +207,7 @@ session_test_query_parser.add_argument('test_id', type=int, default=None)
 errors_query_parser = reqparse.RequestParser()
 errors_query_parser.add_argument('session_id', default=None)
 errors_query_parser.add_argument('test_id', default=None)
+errors_query_parser.add_argument('interruptions', default=False, type=bool)
 
 
 @_resource('/warnings', '/warnings/<int:object_id>')
@@ -231,10 +232,14 @@ class ErrorResource(ModelResource):
         args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            return Error.query.filter_by(session_id=parse_session_id(args.session_id))
+            query = Error.query.filter_by(session_id=parse_session_id(args.session_id))
         elif args.test_id is not None:
-            return Error.query.filter_by(test_id=parse_test_id(args.test_id))
-        abort(requests.codes.bad_request)
+            query = Error.query.filter_by(test_id=parse_test_id(args.test_id))
+        else:
+            abort(requests.codes.bad_request)
+
+        query = query.filter_by(is_interruption=args.interruptions)
+        return query
 
 
 @blueprint.route('/tracebacks/<uuid>')

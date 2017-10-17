@@ -10,12 +10,14 @@ Router.map(function() {
   this.route("index", { path: "/" });
   this.route("sessions", { path: "/sessions" });
   this.route("session", { path: "/sessions/:id" }, function() {
+    this.route("interruptions");
     this.route("errors");
     this.route("single_error", { path: "/errors/:index" });
     this.route("warnings");
     this.route("info");
     this.route("children");
     this.route("test", {path: "/tests/:test_id"}, function() {
+      this.route("interruptions");
       this.route("errors");
       this.route("warnings");
       this.route("comments");

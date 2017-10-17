@@ -17,6 +17,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   num_error_tests: DS.attr("number"),
   num_interrupted_tests: DS.attr("number"),
   num_errors: DS.attr("number"),
+  num_interruptions: DS.attr("number"),
   num_failed_tests: DS.attr("number"),
   num_finished_tests: DS.attr("number"),
   num_skipped_tests: DS.attr("number"),

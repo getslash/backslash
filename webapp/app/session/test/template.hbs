@@ -57,6 +57,12 @@
 	{{/link-to}}
       {{/if}}
 
+      {{#if test_model.num_interruptions}}
+	{{#link-to 'session.test.interruptions' tagName='li'}}
+	  <a href>Interruptions <span class="label label-danger">{{test_model.num_interruptions}}</span></a>
+	{{/link-to}}
+      {{/if}}
+
       {{#with test_model.num_warnings as |num_warnings|}}
 	{{#if num_warnings}}
 	  {{#link-to 'session.test.warnings' tagName='li'}}

@@ -20,11 +20,14 @@ from ..rest import blueprint as rest_blueprint
 NoneType = type(None)
 
 
-@API(version=3)
-def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False): # pylint: disable=bad-whitespace
+@API(version=4)
+def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False, is_interruption: bool=False): # pylint: disable=bad-whitespace
     # pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
+
+    if is_failure and is_interruption:
+        error_abort('Interruptions cannot be marked as failures')
 
     if timestamp is None:
         timestamp = get_current_time()
@@ -37,16 +40,22 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
 
     try:
         obj = cls.query.filter(cls.id == object_id).one()
-        increment_field = cls.num_failures if is_failure else cls.num_errors
+        if is_failure:
+            increment_field = cls.num_failures
+        elif is_interruption:
+            increment_field = cls.num_interruptions
+        else:
+            increment_field = cls.num_errors
         cls.query.filter(cls.id == object_id).update(
             {increment_field: increment_field + 1})
         err = Error(message=message,
                     exception_type=exception_type,
                     traceback_url=_normalize_traceback_get_url(traceback),
+                    is_interruption=is_interruption,
                     is_failure=is_failure,
                     timestamp=timestamp)
         obj.errors.append(err)
-        if obj.end_time is not None:
+        if not is_interruption and obj.end_time is not None:
             if cls is Test:
                 if is_failure and obj.status not in (statuses.FAILURE, statuses.ERROR):
                     obj.status = statuses.FAILURE

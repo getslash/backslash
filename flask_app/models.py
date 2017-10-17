@@ -150,6 +150,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     num_error_tests = db.Column(db.Integer, default=0)
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
+    num_interruptions = db.Column(db.Integer, default=0)
     num_interrupted_tests = db.Column(db.Integer, server_default="0")
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
     num_test_warnings = db.Column(db.Integer, nullable=False, server_default="0")
@@ -459,6 +460,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     num_failures = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+    num_interruptions = db.Column(db.Integer, default=0)
 
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
@@ -514,6 +516,7 @@ class Error(db.Model, TypenameMixin):
     message = db.Column(db.Text())
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
+    is_interruption = db.Column(db.Boolean, default=False)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
