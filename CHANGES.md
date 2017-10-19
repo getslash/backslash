@@ -2,7 +2,7 @@
 
 ## Version 2.12.0
 
-* Backslash now supports reporting interruption exceptions to help determine what caused the session to be interrupted
+* Backslash now supports reporting interruption exceptions to help determine what caused the session to be interrupted. When the sessions are reported with a compatible toolchain (for example, Slash >= 1.5.0), the session and test views will show the interruption exceptions and their contexts
 * Added an option to display metadata values in an accessible location for tests and sessions
 * Warnings are now deduplicated within sessions and tests, preventing DB bloat
 * Added a view for test cases. This is planned to evolve into a suite management feature over the next releases
