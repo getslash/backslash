@@ -1,9 +1,13 @@
 import Ember from "ember";
 
 export default Ember.Route.extend({
-  model(params) {
+  model({test_id}) {
     let self = this;
-    return self.store.find("test", params.test_id).then(function(test) {
+    return self.store.query("test", {id: test_id}).then(function(tests) {
+      let test = tests.get('firstObject');
+      if (!test) {
+        return Ember.RSVP.reject({not_found: true});
+      }
       return Ember.RSVP.hash({
         test: test,
         session: self.store.find("session", test.get("session_id"))

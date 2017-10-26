@@ -16,11 +16,15 @@ export default Ember.Route.extend(ComplexModelRoute, {
     this.get("parent_controller").set("current_test", model.test_model);
   },
 
-  model(params) {
+  model({test_id}) {
     let self = this;
     let session = self.modelFor("session").session_model;
 
-    return self.store.find('test', params.test_id).then(function(test) {
+    return self.store.query('test', {id: test_id}).then(function(tests) {
+      let test = tests.get('firstObject');
+      if (!test) {
+        return Ember.RSVP.reject({not_found: true});
+      }
 
       return Ember.RSVP.hash({
         session_model: session,
