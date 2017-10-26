@@ -85,6 +85,7 @@ test_query_parser.add_argument('info_id', type=int, default=None)
 test_query_parser.add_argument('search', type=str, default=None)
 test_query_parser.add_argument('after_index', type=int, default=None)
 test_query_parser.add_argument('before_index', type=int, default=None)
+test_query_parser.add_argument('id', type=str, default=None)
 
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<session_id>/tests')
@@ -99,6 +100,9 @@ class TestResource(ModelResource):
 
     def _get_iterator(self):
         args = test_query_parser.parse_args()
+
+        if args.id is not None:
+            return _get_query_by_id_or_logical_id(self.MODEL, args.id)
 
         if args.session_id is None:
             args.session_id = request.view_args.get('session_id')
