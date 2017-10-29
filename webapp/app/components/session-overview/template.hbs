@@ -75,7 +75,7 @@
     {{#link-to 'subject' subject.name}}
       <strong>{{subject.name}}</strong>
     {{/link-to}}
-    <span class="label-fine">{{subject.version}}</span>
+    <span class="label-fine">{{subject.version}}</span>q
   </p>
 {{/each}}
 
@@ -89,4 +89,14 @@
   <p>
     {{item-label label=label}}
   </p>
+{{/each}}
+
+{{#each metadata_display_items as |item|}}
+  {{#with (get metadata item.key) as |value|}}
+    {{#if value}}
+      <p>
+        <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+      </p>
+    {{/if}}
+  {{/with}}
 {{/each}}

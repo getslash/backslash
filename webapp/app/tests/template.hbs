@@ -45,17 +45,26 @@
             <td><code>product_version = 1.0.0</code></td>
             <td>Find tests which ran on product version <code>1.0.0</code></td>
           </tr>
+          <tr>
+            <td><code>product = Microwave</code></td>
+            <td>Find sessions which ran on a specific product type</td>
+          </tr>
+
 	</tbody>
       </table>
   {{/search-bar}}
 {{/tool-bar}}
 
 {{#if error}}
-  <div class="container">
-    <div class="alert alert-danger text-center">
-      {{error}}
-    </div>
-  </div>
+  {{request-error-details error=error}}
 {{else}}
-  {{query-results results=tests meta=tests.meta page=(mut page) show_user=true}}
+  {{#if (not searching) }}
+    {{# if (not search) }}
+      <div class="text-center container faint">
+        Enter a search query to search for test executions
+      </div>
+    {{else}}
+      {{query-results results=tests meta=tests.meta page=(mut page) show_user=true}}
+    {{/if}}
+  {{/if}}
 {{/if}}

@@ -150,6 +150,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     num_error_tests = db.Column(db.Integer, default=0)
     num_skipped_tests = db.Column(db.Integer, default=0)
     num_finished_tests = db.Column(db.Integer, default=0)
+    num_interruptions = db.Column(db.Integer, default=0)
     num_interrupted_tests = db.Column(db.Integer, server_default="0")
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
     num_test_warnings = db.Column(db.Integer, nullable=False, server_default="0")
@@ -339,7 +340,7 @@ class TestInformation(db.Model):
 
     @classmethod
     def get_typename(cls):
-        return 'test_info'
+        return 'case'
 
 
 
@@ -451,6 +452,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     is_interactive = db.Column(db.Boolean, server_default='FALSE')
 
     status = db.Column(db.String(20), nullable=False, default=statuses.STARTED)
+    status_description = db.Column(db.String(1024), nullable=True)
 
     skip_reason = db.Column(db.Text(), nullable=True)
 
@@ -458,6 +460,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     num_failures = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)
     num_warnings = db.Column(db.Integer, nullable=False, server_default="0")
+    num_interruptions = db.Column(db.Integer, default=0)
 
     __table_args__ = (
         Index('ix_test_start_time', start_time.desc()),
@@ -513,6 +516,7 @@ class Error(db.Model, TypenameMixin):
     message = db.Column(db.Text())
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
+    is_interruption = db.Column(db.Boolean, default=False)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
@@ -531,8 +535,13 @@ class Warning(db.Model, TypenameMixin):
     filename = db.Column(db.String(2048), nullable=True)
     lineno = db.Column(db.Integer, nullable=True)
     timestamp = db.Column(db.Float, nullable=False)
+    num_warnings = db.Column(db.Integer, nullable=True, default=1)
 
-
+    __table_args__ = (
+        Index('ix_warning_details',
+              session_id, test_id, filename, lineno,
+              postgresql_where=(session_id == None)), # pylint: disable=singleton-comparison
+    )
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE')),
@@ -680,3 +689,19 @@ class BackgroundMigration(db.Model):
     @classmethod
     def get_typename(cls):
         return 'migration'
+
+
+class Timing(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1024), nullable=False)
+    total = db.Column(db.Float(), default=0)
+
+    session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=False)
+    test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True)
+
+    __table_args__= (
+        Index('ix_timing_test', test_id, name, postgresql_where=(test_id != None), unique=True),
+        Index('ix_timing_session', session_id, name),
+        Index('ix_timing_session_no_test', session_id, name, postgresql_where=(test_id == None), unique=True), # pylint: disable=singleton-comparison
+    )

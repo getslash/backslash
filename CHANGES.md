@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 2.12.0
+
+* Backslash now supports reporting interruption exceptions to help determine what caused the session to be interrupted. When the sessions are reported with a compatible toolchain (for example, Slash >= 1.5.0), the session and test views will show the interruption exceptions and their contexts
+* Added an option to display metadata values in an accessible location for tests and sessions
+* Warnings are now deduplicated within sessions and tests, preventing DB bloat
+* Added a view for test cases. This is planned to evolve into a suite management feature over the next releases
+* Fixed the order of display of quick-jump items, and they are now sorted by name
+* Added the ability to search by product type
+* Added a "status_description" field for tests, allowing setting more informative information on what the test is currently doing (via API)
+* Added timing metrics API, enabling tests and sessions to display the total time distribution spent while running
+* Fixed indication of search term syntax errors
+
 ## Version 2.11.1
 
 * Fixed handling of test timespan when the test starts and before a keepalive is received

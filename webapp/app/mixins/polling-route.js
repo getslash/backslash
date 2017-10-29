@@ -21,9 +21,4 @@ export default Ember.Mixin.create({
     }
   }).on("init"),
 
-  actions: {
-    error: function(err) {
-      return err.not_found;
-    }
-  }
 });

@@ -4,6 +4,7 @@
 							     copy_value=(format-test-name test_model.info)
 							     value=(format-test-name test_model.info with_filename=false)}}
   </h3>
+ 
   <small>from <strong>{{elements/copyable-text value=test_model.info.file_name}}</strong></small>
 
   {{#if (eq test_model.status "SKIPPED")}}
@@ -23,6 +24,19 @@
 
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12">
+      {{#each metadata_display_items as |item|}}
+        {{#with (get test_metadata item.key) as |value|}}
+          {{#if value}}
+            <p>
+              <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{value}}</strong>
+            </p>
+          {{/if}}
+        {{/with}}
+      {{/each}}
+    </div>
+  </div>
 
 </div>
 
@@ -40,6 +54,12 @@
       {{#if test_model.num_errors}}
 	{{#link-to 'session.test.errors' tagName='li'}}
 	  <a href>Errors <span class="label label-danger">{{test_model.num_errors}}</span></a>
+	{{/link-to}}
+      {{/if}}
+
+      {{#if test_model.num_interruptions}}
+	{{#link-to 'session.test.interruptions' tagName='li'}}
+	  <a href>Interruptions <span class="label label-danger">{{test_model.num_interruptions}}</span></a>
 	{{/link-to}}
       {{/if}}
 

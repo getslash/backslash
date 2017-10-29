@@ -22,4 +22,8 @@ export default Ember.Controller.extend({
 
     }
   }.property('test_metadata'),
+
+  metadata_display_items: function() {
+    return this.get('runtime_config').get_cached('test_metadata_display_items');
+  }.property(),
 });

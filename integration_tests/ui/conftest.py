@@ -7,14 +7,28 @@ from ..utils import run_suite
 
 @pytest.fixture(scope='session')
 def recorded_session(integration_url):
-    session_id = run_suite(integration_url)
+    return _get_recorded_session(integration_url)
+
+
+@pytest.fixture(scope='session')
+def recorded_interrupted_session(integration_url):
+    return _get_recorded_session(integration_url, name='interrupted', interrupt=True)
+
+
+def _get_recorded_session(integration_url, **kwargs):
+    session_id = run_suite(integration_url, **kwargs)
     return Munch(id=session_id)
+
 
 @pytest.fixture
 def ui_session(recorded_session, ui): # pylint: disable=unused-argument
     assert recorded_session.id is not None
     ui.driver.refresh()
-    return ui.driver.find_element_by_xpath(f"//a[@href='/#/sessions/{recorded_session.id}']")
+    return ui.find_session_link(recorded_session)
+
+@pytest.fixture
+def ui_interrupted_session(recorded_interrupted_session, ui):
+    return ui.find_session_link(recorded_interrupted_session)
 
 @pytest.fixture
 def ui(has_selenium, selenium, integration_url): # pylint: disable=unused-argument
@@ -84,3 +98,7 @@ class _UI:
 
     def assert_no_element(self, css_selector):
         assert self.driver.find_elements_by_css_selector(css_selector) == []
+
+    def find_session_link(self, session):
+        self.driver.refresh()
+        return self.driver.find_element_by_xpath(f"//a[@href='/#/sessions/{session.id}']")

@@ -85,6 +85,7 @@ test_query_parser.add_argument('info_id', type=int, default=None)
 test_query_parser.add_argument('search', type=str, default=None)
 test_query_parser.add_argument('after_index', type=int, default=None)
 test_query_parser.add_argument('before_index', type=int, default=None)
+test_query_parser.add_argument('id', type=str, default=None)
 
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<session_id>/tests')
@@ -99,6 +100,9 @@ class TestResource(ModelResource):
 
     def _get_iterator(self):
         args = test_query_parser.parse_args()
+
+        if args.id is not None:
+            return _get_query_by_id_or_logical_id(self.MODEL, args.id)
 
         if args.session_id is None:
             args.session_id = request.view_args.get('session_id')
@@ -207,6 +211,7 @@ session_test_query_parser.add_argument('test_id', type=int, default=None)
 errors_query_parser = reqparse.RequestParser()
 errors_query_parser.add_argument('session_id', default=None)
 errors_query_parser.add_argument('test_id', default=None)
+errors_query_parser.add_argument('interruptions', default=False, type=bool)
 
 
 @_resource('/warnings', '/warnings/<int:object_id>')
@@ -231,10 +236,14 @@ class ErrorResource(ModelResource):
         args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            return Error.query.filter_by(session_id=parse_session_id(args.session_id))
+            query = Error.query.filter_by(session_id=parse_session_id(args.session_id))
         elif args.test_id is not None:
-            return Error.query.filter_by(test_id=parse_test_id(args.test_id))
-        abort(requests.codes.bad_request)
+            query = Error.query.filter_by(test_id=parse_test_id(args.test_id))
+        else:
+            abort(requests.codes.bad_request)
+
+        query = query.filter_by(is_interruption=args.interruptions)
+        return query
 
 
 @blueprint.route('/tracebacks/<uuid>')
@@ -370,3 +379,19 @@ class MigrationsResource(ModelResource):
         'total_num_objects',
         'remaining_num_objects'
     ]
+
+
+@_resource('/cases', '/cases/<object_id>')
+class CaseResource(ModelResource):
+
+    MODEL = models.TestInformation
+    DEFAULT_SORT = (models.TestInformation.name, models.TestInformation.file_name, models.TestInformation.class_name)
+
+    def _get_iterator(self):
+        search = request.args.get('search')
+        if search:
+            returned = get_orm_query_from_search_string('case', search, abort_on_syntax_error=True)
+        else:
+            returned = super()._get_iterator()
+        returned = returned.filter(~self.MODEL.file_name.like('/%'))
+        return returned

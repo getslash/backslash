@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import logbook
 
 import requests
-from flask import abort, current_app
+from flask import abort
 from flask_simple_api import error_abort
 from flask_security import current_user
 
@@ -11,7 +11,7 @@ from sqlalchemy.exc import DataError
 
 from .blueprint import API
 from ... import metrics
-from ...models import db, Session, Test, Comment, User, Role, Warning, Entity, TestVariation, TestMetadata
+from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -29,6 +29,8 @@ from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
 from . import labels # pylint: disable=unused-import
 from . import quick_search # pylint: disable=unused-import
+from . import timing # pylint: disable=unused-import
+from . import warnings # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
 
 
@@ -173,6 +175,12 @@ def report_test_distributed(
 
 
 @API
+def update_status_description(test_id: int, description: str):
+    Test.query.get_or_404(test_id).status_description = description
+    db.session.commit()
+
+
+@API
 def report_test_end(id: int, duration: (float, int)=None):
     test = Test.query.get(id)
     if test is None:
@@ -195,7 +203,7 @@ def report_test_end(id: int, duration: (float, int)=None):
         elif not test.interrupted and not test.skipped:
             test.status = statuses.SUCCESS
 
-    db.session.add(test)
+    test.status_description = None
     db.session.commit()
 
 
@@ -258,30 +266,6 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
                 error_abort('Test already ended', requests.codes.conflict)
         else:
             abort(requests.codes.not_found)
-
-
-@API
-def add_warning(message: str, filename: str=None, lineno: int=None, test_id: int=None, session_id: int=None, timestamp: (int, float)=None):
-    # pylint: disable=superfluous-parens
-    if not ((test_id is not None) ^ (session_id is not None)):
-        error_abort('Either session_id or test_id required')
-    if session_id is not None:
-        obj = Session.query.get_or_404(session_id)
-    else:
-        obj = Test.query.get_or_404(test_id)
-    if timestamp is None:
-        timestamp = get_current_time()
-    if obj.num_warnings < current_app.config['MAX_WARNINGS_PER_ENTITY']:
-        db.session.add(
-            Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id))
-    obj.num_warnings = type(obj).num_warnings + 1
-    if session_id is None:
-        obj.session.num_test_warnings = Session.num_test_warnings + 1
-        db.session.add(obj.session)
-
-    db.session.add(obj)
-    db.session.commit()
-
 
 
 @API(require_real_login=True)

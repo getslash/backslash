@@ -94,6 +94,24 @@ page, you can specify it via the ``test_metadata_links`` variable::
 The above will add a link to the test page pointing at the Jenkins
 build whenever a "jenkins_url" metadata key is found for a test
 
+Metadata Details
+~~~~~~~~~~~~~~~~
+
+Similar to metadata links, you can choose specific metadata keys to be displayed as informational values for tests and/or sessionsL::
+
+  ...
+  test_metadata_display_items:
+     - key: my_metadata_key
+       name: My Metadata Key
+
+Or::
+
+  ...
+  session_metadata_display_items:
+     - key: my_metadata_key
+       name: My Metadata Key
+
+
 Deployment Customization
 ------------------------
 

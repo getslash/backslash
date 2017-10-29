@@ -2,6 +2,11 @@
     margin-top: 0.5em;
     border: 1px solid #ddd;
     border-left-color: $brand-danger;
+
+    &.interruption {
+        border-left-color: gray;
+    }
+
     border-left-width: 7px;
 
     .copy-btn {

@@ -213,6 +213,11 @@ $left-badge-close-width: 10px;
 
     }
 
+    &.condensed .main-info {
+        padding-top: 0.1em;
+        padding-bottom: 0.1em;
+    }
+
     .subject-info {
         align-items: center;
         display: flex;
@@ -314,4 +319,18 @@ $left-badge-close-width: 10px;
     from {flex: 0 0 $left-badge-close-width;}
     50% {flex: 0 0 30px;}
     to {flex: 0 0 $left-badge-close-width;}
+}
+
+
+/* Newer query-item, will eventually replace the older item classes */
+
+.query-item {
+    border: 1px solid $gray-lighter;
+    box-sizing: border-box;
+    padding: 0.5em 1em 0.5em 1em;
+    margin-bottom: 3px;
+
+    &:hover {
+        background: $gray-lighter;
+    }
 }

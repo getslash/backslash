@@ -1,17 +1,20 @@
-import time
-import threading
 import operator
+import threading
+import time
 
 from flask import current_app
 from sqlalchemy import func
+
 from psycopg2.extras import DateTimeTZRange
 
-from ..models import Test, TestInformation, User, Session, db, session_label, Label, session_subject, SubjectInstance, Subject, Entity, session_entity, ProductVersion, ProductRevision, SessionMetadata
 from . import value_parsers
+from ..filters import builders as filter_builders
+from ..models import (Entity, Label, Product, ProductRevision, ProductVersion, Session,
+                      SessionMetadata, Subject, SubjectInstance, Test,
+                      TestInformation, User, db, session_entity, session_label,
+                      session_subject)
 from .exceptions import UnknownField
 from .helpers import only_ops
-
-from ..filters import builders as filter_builders
 
 _current = threading.local()
 
@@ -29,7 +32,7 @@ class SearchContext(object):
     def get_base_query(self):
         raise NotImplementedError() # pragma: no cover
 
-    def get_fallback_filter(self, search_term):
+    def get_fallback_filter(self, term):
         raise NotImplementedError() # pragma: no cover
 
     def __enter__(self):
@@ -45,6 +48,8 @@ class SearchContext(object):
             return TestSearchContext()
         if objtype is Session or (isinstance(objtype, str) and objtype.lower() == 'session'):
             return SessionSearchContext()
+        if objtype is TestInformation or (isinstance(objtype, str) and objtype.lower() == 'case'):
+            return TestCaseSearchContext()
         raise NotImplementedError() # pragma: no cover
 
     def search__start_time(self, op, value):
@@ -150,6 +155,11 @@ class TestSearchContext(SearchContext):
         return _negate_maybe(op, subquery)
 
     @only_ops(['=', '!='])
+    def search__product_type(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(Product).filter(Product.name == value, session_subject.c.session_id == Test.session_id).exists().correlate(Test)
+        return _negate_maybe(op, subquery)
+
+    @only_ops(['=', '!='])
     def search__label(self, op, value):
         labels = Label.query.filter(Label.name==value).all()
         if not labels:
@@ -212,6 +222,11 @@ class SessionSearchContext(SearchContext):
         subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).filter(ProductVersion.version == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
         return _negate_maybe(op, subquery)
 
+    @only_ops(['=', '!='])
+    def search__product(self, op, value):
+        subquery = db.session.query(session_subject).join(SubjectInstance).join(ProductRevision).join(ProductVersion).join(Product).filter(Product.name == value, session_subject.c.session_id == Session.id).exists().correlate(Session)
+        return _negate_maybe(op, subquery)
+
     @only_ops(['='])
     def search__test(self, op, value): # pylint: disable=unused-argument
         return db.session.query(Test).join(TestInformation).filter(Test.session_id == Session.id, TestInformation.name == value).exists().correlate(Session)
@@ -234,6 +249,26 @@ class SessionSearchContext(SearchContext):
             filter_expression &= op_func(SessionMetadata.metadata_item[0].astext, value)
         returned = db.session.query(SessionMetadata).filter(SessionMetadata.session_id == Session.id, filter_expression).exists().correlate(Session)
         return _negate_maybe(op, returned)
+
+
+class TestCaseSearchContext(SearchContext):
+
+    MODEL = TestInformation
+    SEARCHABLE_FIELDS = {
+        'id': True,
+    }
+
+    def get_base_query(self):
+        return TestInformation.query
+
+    def get_fallback_filter(self, term):
+        return TestInformation.name.contains(term) | TestInformation.file_name.contains(term) | TestInformation.class_name.contains(term)
+
+    @only_ops(['=', '!=', '~'])
+    def search__file_name(self, op, value):
+        field = self.MODEL.file_name
+        return _negate_maybe(op, op.func(field, value))
+
 
 
 

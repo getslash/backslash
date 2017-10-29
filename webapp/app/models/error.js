@@ -6,6 +6,7 @@ const _MAX_NUM_ERROR_CHARS = 600;
 export default DS.Model.extend({
   message: DS.attr("string"),
   exception_type: DS.attr("string"),
+  is_interruption: DS.attr("boolean"),
 
   full_message: function() {
     let exc_type = this.get("exception_type");

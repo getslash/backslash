@@ -36,6 +36,10 @@
               <td>Find sessions which ran on product version <code>1.0.0</code></td>
             </tr>
             <tr>
+              <td><code>product = Microwave</code></td>
+              <td>Find sessions which ran on a specific product type</td>
+            </tr>
+            <tr>
               <td><code>test = test_something</code></td>
               <td>Find sessions which contain a test named <code>test_something</code></td>
             </tr>
@@ -66,11 +70,7 @@
 {{/tool-bar}}
 
 {{#if error}}
-  <div class="container">
-    <div class="alert alert-danger text-center">
-      {{error}}
-    </div>
-  </div>
+  {{request-error-details error=error}}
 {{else}}
   {{query-results
     results=sessions
