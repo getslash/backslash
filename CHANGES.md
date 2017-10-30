@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.1
+
+* Fixes a bug in error rendering
+
 ## Version 2.12.0
 
 * Backslash now supports reporting interruption exceptions to help determine what caused the session to be interrupted. When the sessions are reported with a compatible toolchain (for example, Slash >= 1.5.0), the session and test views will show the interruption exceptions and their contexts
