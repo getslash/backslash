@@ -242,7 +242,10 @@ class ErrorResource(ModelResource):
         else:
             abort(requests.codes.bad_request)
 
-        query = query.filter_by(is_interruption=args.interruptions)
+        if args.interruptions:
+            query = query.filter_by(is_interruption=True)
+        else:
+            query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None))
         return query
 
 

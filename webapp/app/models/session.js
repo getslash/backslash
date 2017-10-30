@@ -62,6 +62,8 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   has_tests_left_to_run: Ember.computed.not("ran_all_tests"),
   has_fatal_errors: DS.attr('boolean'),
 
+  has_any_error: Ember.computed.oneWay('num_errors'),
+
   total_num_tests: DS.attr("number"),
   hostname: DS.attr(),
 
