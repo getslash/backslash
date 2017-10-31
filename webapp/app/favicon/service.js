@@ -32,19 +32,19 @@ export default Ember.Service.extend({
   },
 
   set_success() {
-    this._set('backslash-success-favicon.png');
+    this._set('/assets/img/icons/backslash-success-favicon.png');
   },
 
   set_failure() {
-    this._set('backslash-failure-favicon.png');
+    this._set('/assets/img/icons/backslash-failure-favicon.png');
   },
 
   reset() {
-    this._set('backslash-favicon.png');
+    this._set('/assets/img/icons/backslash-favicon.png');
   },
 
-  _set(name) {
+  _set(url) {
 
-    Ember.$('#favicon').attr('href', `/assets/img/icons/${name}`);
+    Ember.$('#favicon').attr('href', url);
   },
 });
