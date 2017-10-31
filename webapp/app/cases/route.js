@@ -13,10 +13,6 @@ export default Ember.Route.extend(
 
 
   queryParams: {
-    filter: {
-      replace: true,
-      refreshModel: true
-    },
     page: {
       refreshModel: true
     },
