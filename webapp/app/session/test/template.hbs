@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <h3>
-    {{status-icon status=test_model.status spaced=false}} {{elements/copyable-text
+    {{status-icon status=test_model.computed_status session_model=session_model spaced=false}} {{elements/copyable-text
 							     copy_value=(format-test-name test_model.info)
 							     value=(format-test-name test_model.info with_filename=false)}}
   </h3>
