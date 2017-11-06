@@ -2,6 +2,7 @@ import Ember from "ember";
 
 export default Ember.Component.extend({
   status: null,
+  session_model: null,
 
   status_lower: function() {
     let returned = this.get("status");
