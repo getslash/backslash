@@ -26,6 +26,7 @@ Contents:
 
    installation
    server_configuration
+   client_configuration
 
 
 
