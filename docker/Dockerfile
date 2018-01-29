@@ -26,7 +26,7 @@ RUN add-apt-repository ppa:chris-lea/nginx-devel
 RUN apt-get update
 RUN apt-get -y install nginx
 
-RUN add-apt-repository ppa:fkrull/deadsnakes
+RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
 RUN apt-get install -y $PYTHON_EXECUTABLE $PYTHON_EXECUTABLE-dev
 
