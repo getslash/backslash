@@ -2,6 +2,7 @@
 
 ## Version 2.12.3
 
+* Fix handling of "status" query for sessions, including an issue where the search was case-sensitive
 * Increased default query timeout to 60 seconds
 
 ## Version 2.12.1
