@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.3
+
+* Increased default query timeout to 60 seconds
+
 ## Version 2.12.1
 
 * Fixes a bug in error rendering
