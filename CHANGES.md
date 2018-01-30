@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.4
+
+* Increased gunicorn worker timeout to handle long queries
+
 ## Version 2.12.3
 
 * Fix URL display and links in metadata listings

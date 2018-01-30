@@ -90,6 +90,7 @@ def docker_start():
         'bind': '0.0.0.0:8000',
         'workers': workers_count,
         'capture_output': True,
+        'timeout': 70,
     }
     logbook.StderrHandler(level=logbook.DEBUG).push_application()
     if app.config['TESTING']:
