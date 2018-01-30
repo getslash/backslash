@@ -23,3 +23,21 @@ test('negative', function(assert) {
 
   assert.equal(this.$().text().trim(), 'false');
 });
+
+test('positive multiple', function(assert) {
+    this.set('s', 'https://blap');
+
+    this.render(hbs`{{s-starts-with s "http://" "https://"}}`);
+
+    assert.equal(this.$().text().trim(), 'false');
+});
+
+test('negative multiple', function(assert) {
+    this.set('s', 's://blap');
+
+    this.render(hbs`{{s-starts-with s "http://" "https://"}}`);
+
+    assert.equal(this.$().text().trim(), 'false');
+});
+
+

@@ -190,12 +190,15 @@ class SessionSearchContext(SearchContext):
 
     @only_ops(['=', '!='])
     def search__status(self, op, value):
+        value = value.lower()
         if value in {'success', 'successful'}:
             return _negate_maybe(op, filter_builders.build_successful_query(Session))
         elif value in {'fail', 'failed', 'failure', 'error'}:
             return _negate_maybe(op, filter_builders.build_unsuccessful_query(Session))
-        returned = _negate_maybe(op, filter_builders.build_status_query(Session, value))
-        return returned
+        elif value in {'running'}:
+            return _negate_maybe(op, filter_builders.build_status_query(Session, value))
+        else:
+            return False
 
     def get_base_query(self):
         return Session.query.join(User, Session.user_id == User.id)
