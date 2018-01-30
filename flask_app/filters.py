@@ -45,9 +45,10 @@ class builders:
 
     @classmethod
     def build_status_query(cls, model, status, negate=False):
+        status = status.lower()
         if negate:
-            return model.status != status
-        return model.status == status
+            return func.lower(model.status) != status
+        return func.lower(model.status) == status
 
 
 def filter_by_statuses(cursor, model):

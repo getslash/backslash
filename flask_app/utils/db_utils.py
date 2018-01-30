@@ -18,7 +18,7 @@ def get_or_create(model, **kwargs):
 
 
 @contextmanager
-def statement_timeout_context(timeout_seconds=20):
+def statement_timeout_context(timeout_seconds=60):
     prev = models.db.session.execute('show statement_timeout').scalar()
     assert prev
     models.db.session.execute('SET statement_timeout={}'.format(timeout_seconds * 1000))

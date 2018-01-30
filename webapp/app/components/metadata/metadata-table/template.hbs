@@ -28,7 +28,11 @@
               {{/if}}
               {{capitalize (undasherize item.name)}}
             </td>
-            <td>{{elements/copyable-text copy_value=item.value value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
+            {{#if (s-starts-with item.value "http://" "https://")}}
+              <td>{{linkify item.value urlLength=50}}</td>
+            {{else}}
+              <td>{{elements/copyable-text copy_value=item.value value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
+            {{/if}}
           </tr>
         {{/if}}
       {{/each}}
