@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.5
+
+* Fixed incorrect previous fix to metadata display
+
 ## Version 2.12.4
 
 * Increased gunicorn worker timeout to handle long queries
