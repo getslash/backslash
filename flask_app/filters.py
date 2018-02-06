@@ -13,11 +13,7 @@ from .utils import statuses
 class builders:
 
     @classmethod
-    def build_successful_query(cls, model):
-        return ~cls.build_unsuccessful_query(model)
-
-    @classmethod
-    def build_unsuccessful_query(cls, model):
+    def get_unsuccessful_filters(cls, model):
         conds = [
             cls.build_status_query(model, statuses.INTERRUPTED),
             cls.build_abandoned_filter(model),
@@ -31,12 +27,22 @@ class builders:
                 sqlalchemy.and_(model.end_time != None, model.num_finished_tests == 0),
                 sqlalchemy.and_(model.total_num_tests != 0, model.total_num_tests != model.num_finished_tests)
             ])
-        return sqlalchemy.or_(*conds)
+        return conds
+
+    @classmethod
+    def build_successful_query(cls, model):
+        conds = cls.get_unsuccessful_filters(model)
+        conds.append(model.start_time == None)
+        return ~sqlalchemy.or_(*conds)
+
+    @classmethod
+    def build_unsuccessful_query(cls, model):
+        return sqlalchemy.or_(*cls.get_unsuccessful_filters(model))
 
     @classmethod
     def build_abandoned_filter(cls, model):
 
-        filters = [model.end_time == None]
+        filters = [model.end_time == None, model.start_time != None]
         if hasattr(model, 'next_keepalive'):
             filters.extend([model.next_keepalive != None,
                             model.next_keepalive < flux.current_timeline.time()]) # pylint: disable=no-member
