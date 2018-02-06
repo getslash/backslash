@@ -16,6 +16,9 @@ export default Ember.Component.extend({
     let end = this.get("end");
 
     let returned = this._format(start) + " - ";
+    if (!start) {
+      return "Not started yet"
+    }
     if (end) {
       returned += this._format(end);
     } else {
@@ -28,7 +31,9 @@ export default Ember.Component.extend({
   humanized_text: function() {
     let start = this.get("start");
     let end = this.get("end");
-
+    if (!start) {
+      return "Not started yet"
+    }
     if (!end) {
       return "Started " + this._humanize(start);
     }
