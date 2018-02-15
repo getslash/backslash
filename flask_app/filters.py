@@ -33,6 +33,11 @@ class builders:
     def build_successful_query(cls, model):
         conds = cls.get_unsuccessful_filters(model)
         conds.append(model.start_time == None)
+        if model is Session:
+            conds.append(model.num_skipped_tests != 0)
+        elif model is Test:
+            conds.append(model.status == 'SKIPPED')
+
         return ~sqlalchemy.or_(*conds)
 
     @classmethod
@@ -58,7 +63,6 @@ class builders:
 
 
 def filter_by_statuses(cursor, model):
-
     cursor = cursor.filter(builders.build_status_query(model, statuses.DISTRIBUTED, negate=True))
     if not _get_boolean_filter('show_unsuccessful', True):
         cursor = cursor.filter(~builders.build_unsuccessful_query(model))
