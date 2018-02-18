@@ -32,7 +32,7 @@
 
 {{#collapsible-sidebar collapsed=(mut display.session_side_bar_collapsed) as |section|}}
   {{#if section.side}}
-    {{session-overview session_model=session_model metadata=metadata user=user}}
+    {{session-overview session_model=session_model metadata=metadata user=user timings=timings}}
   {{else}}
     <div class="navigation">
       <div class="tabs">
