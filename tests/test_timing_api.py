@@ -1,5 +1,7 @@
+# pylint: disable=missing-docstring, redefined-outer-name
 import flux
 import pytest
+from .utils import raises_conflict
 
 
 def test_timing_start_end(timing_container, timing_action):
@@ -10,6 +12,22 @@ def test_timing_start_end(timing_container, timing_action):
     timing_container.report_timing_end(timing_action)
     total_time = flux.current_timeline.time() - start_time
     assert timing_container.get_timings()[timing_action] == total_time
+
+
+def test_timing_start_start_end(timing_container, timing_action):
+    timing_container.report_timing_start(timing_action)
+    with raises_conflict():
+        timing_container.report_timing_start(timing_action)
+
+def test_timing_start_end_start_end(timing_container, timing_action):
+    timing_container.report_timing_start(timing_action)
+    flux.current_timeline.sleep(1)
+    timing_container.report_timing_end(timing_action)
+    flux.current_timeline.sleep(10)
+    timing_container.report_timing_start(timing_action)
+    flux.current_timeline.sleep(1)
+    timing_container.report_timing_end(timing_action)
+    assert timing_container.get_timings()[timing_action] == 2
 
 
 def _validate_timing_ongoing(timing_container, timing_action):

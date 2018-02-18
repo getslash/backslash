@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.6
+
+* Fixed bugs in the timing mechanism
+
 ## Version 2.12.5
 
 * Fixed incorrect previous fix to metadata display
