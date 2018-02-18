@@ -41,7 +41,7 @@ def get_timings(session_id: (int, NoneType)=None, test_id: (int, NoneType)=None)
     now = flux.current_timeline.time()
     total_clause = case(
         [
-            (Timing.total < 0, now - Timing.total)
+            (Timing.total < 0, now + Timing.total)
         ], else_=Timing.total)
     kwargs = {'test_id': test_id}
     if session_id is not None:
