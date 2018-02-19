@@ -58,3 +58,4 @@ def measure_something():
     session.report_timing_start('session-level-timer')
     time.sleep(1)
     session.report_timing_end('session-level-timer')
+    measure_something.unregister()
