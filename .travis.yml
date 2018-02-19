@@ -67,7 +67,7 @@ script:
   - .env/bin/pip install -e git+https://github.com/getslash/backslash-python@develop#egg=backslash
   - .env/bin/pip install -e git+https://github.com/getslash/slash@develop#egg=slash
   - .env/bin/py.test tests
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Chrome --capability platform Linux --capability version 48.0 --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Firefox --capability platform "Windows 10" --capability version latest --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
 
 after_success:
   - .env/bin/python scripts/travis_docker_publish.py

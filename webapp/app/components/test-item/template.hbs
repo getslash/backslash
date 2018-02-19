@@ -22,7 +22,7 @@
 </div>
 
 <div class="main-info">
-  {{status-icon status=test.computed_status}}
+  {{status-icon status=test.computed_status session_model=session_model}}
   {{#if show_user}}
       {{#elements/tool-tip title=test.user_display_name}}
         {{#link-to 'user' test.user_email}}

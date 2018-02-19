@@ -39,6 +39,12 @@ export default PaginatedFilteredRoute.extend(
         filter: params.filter,
         page_size: params.page_size
       };
+      let filters = {};
+      for (let key in params) {
+        if (key.startsWith("show_")) {
+          filters[key] = query_params[key] = params[key];
+        }
+      }
       if (params.search) {
         query_params.search = params.search;
       }
