@@ -33,6 +33,7 @@ def test_timing_start_end_start_end(timing_container, timing_action):
 def _validate_timing_ongoing(timing_container, timing_action):
     prev = None
     for _ in range(3):
+        flux.current_timeline.sleep(1)
         timings = timing_container.get_timings()
         assert len(timings) == 1
         if prev is not None:
@@ -40,7 +41,7 @@ def _validate_timing_ongoing(timing_container, timing_action):
         else:
             prev = timings[timing_action]
             assert prev > 0
-        flux.current_timeline.sleep(1)
+
 
 @pytest.fixture
 def timing_action():
