@@ -18,7 +18,7 @@
       {{#each timings as |timing|}}
       <div class="row faint">
         <div class="col-sm-6"><i class="fa fa-clock-o"></i> {{timing.name}}</div>
-        <div class="col-sm-6">{{timing.total}}s</div>
+        <div class="col-sm-6">{{humanized-duration start_time=0 end_time=timing.total}}</div>
       </div>
       {{/each}}
     </div>

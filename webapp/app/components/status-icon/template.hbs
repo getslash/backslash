@@ -5,7 +5,7 @@
   {{#if (eq status_lower "skipped")}}
     <i class="fa fa-share"></i>
   {{else}}
-    {{#if (eq status_lower "running")}}
+    {{#if (and (not session_model.end_time) (eq status_lower "running"))}}
       {{animated-spinner}}
     {{else}}
       {{#if (eq status_lower "planned")}}
