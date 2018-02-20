@@ -1,10 +1,14 @@
 import slash
+import time
 
 import warnings
 
 
 def test_1():
-    pass
+    test = slash.plugins.manager.get_plugin('backslash').current_test
+    test.report_timing_start('test-level-timer')
+    time.sleep(1)
+    test.report_timing_end('test-level-timer')
 
 
 @slash.tag('tag_without_value')
@@ -46,3 +50,12 @@ def test_4(param):  # pylint: disable=unused-argument
 @slash.hooks.session_start.register
 def emit_warning():
     slash.logger.warning('Session warning here')
+
+
+@slash.hooks.session_start.register
+def measure_something():
+    session = slash.plugins.manager.get_plugin('backslash').session
+    session.report_timing_start('session-level-timer')
+    time.sleep(1)
+    session.report_timing_end('session-level-timer')
+    measure_something.unregister()

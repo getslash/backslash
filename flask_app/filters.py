@@ -32,7 +32,9 @@ class builders:
     @classmethod
     def build_successful_query(cls, model):
         conds = cls.get_unsuccessful_filters(model)
-        conds.append(model.start_time == None)
+        if model is Test:
+            conds.append(cls.build_status_query(model, statuses.PLANNED))
+            conds.append(cls.build_status_query(model, statuses.SKIPPED))
         return ~sqlalchemy.or_(*conds)
 
     @classmethod
@@ -58,7 +60,6 @@ class builders:
 
 
 def filter_by_statuses(cursor, model):
-
     cursor = cursor.filter(builders.build_status_query(model, statuses.DISTRIBUTED, negate=True))
     if not _get_boolean_filter('show_unsuccessful', True):
         cursor = cursor.filter(~builders.build_unsuccessful_query(model))
@@ -69,9 +70,7 @@ def filter_by_statuses(cursor, model):
     if not _get_boolean_filter('show_abandoned', True):
         cursor = cursor.filter(~builders.build_abandoned_filter(model))
     if not _get_boolean_filter('show_skipped', True):
-        if model is Session:
-            cursor = cursor.filter(model.num_skipped_tests == 0)
-        elif model is Test:
+        if model is Test:
             cursor = cursor.filter(~builders.build_status_query(model, statuses.SKIPPED))
     return cursor
 
