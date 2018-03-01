@@ -6,9 +6,10 @@ import StatusFilterableController
   from "../../mixins/status-filterable/controller";
 
 import config from "../../config/environment";
+import SearchController from "../../mixins/search-controller";
 
-export default PaginatedFilteredController.extend(StatusFilterableController, {
-  queryParams: ["show_planned"],
+export default PaginatedFilteredController.extend(StatusFilterableController, SearchController, {
+  queryParams: ["show_planned", "search"],
   show_planned: false,
   sortProperties: ['test_index:desc'],
   sortedTests: sort('tests', 'sortProperties'),
