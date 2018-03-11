@@ -50,7 +50,8 @@ def bootstrap_env(deps=("base",)):
 
     python = os.path.abspath(os.path.join(_ENV_DIR, "bin", "python"))
     if os.path.abspath(sys.executable) != python and _PREVENT_FORK_MARKER not in os.environ:
-        os.execve(python, [python] + sys.argv, dict(os.environ, _PREVENT_FORK_MARKER='true'))
+        os.environ[_PREVENT_FORK_MARKER] = 'true'
+        os.execv(python, [python] + sys.argv)
 
 
 def _is_dep_out_of_date(dep):
