@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.0
+
+* Session overview side panel now summarizes aggregated timings of all timing metrics from all tests and the session itself
+
 ## Version 2.12.6
 
 * Fixed bugs in the timing mechanism
