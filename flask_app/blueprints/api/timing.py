@@ -4,7 +4,7 @@ from ...models import Timing, db
 from ...utils.db_utils import json_object_agg
 from .blueprint import API
 from flask_simple_api import error_abort
-from sqlalchemy import and_, case
+from sqlalchemy import and_, case, func
 from sqlalchemy.exc import IntegrityError
 
 NoneType = type(None)
@@ -43,9 +43,13 @@ def get_timings(session_id: (int, NoneType)=None, test_id: (int, NoneType)=None)
         [
             (Timing.total < 0, now + Timing.total)
         ], else_=Timing.total)
-    kwargs = {'test_id': test_id}
+    if session_id is None and test_id is None:
+        return {}
     if session_id is not None:
-        kwargs['session_id'] = session_id
-    query = db.session.query(json_object_agg(Timing.name, total_clause)).\
-            filter_by(**kwargs)
+        total_sum_subquery = db.session.query(Timing.name, func.sum(total_clause).label('total_time')).\
+                             group_by(Timing.session_id, Timing.name).filter_by(session_id=session_id).subquery()
+        query = db.session.query(json_object_agg(total_sum_subquery.c.name, total_sum_subquery.c.total_time))
+    else:
+        query = db.session.query(json_object_agg(Timing.name, total_clause)).\
+                filter_by(test_id=test_id)
     return query.scalar() or {}
