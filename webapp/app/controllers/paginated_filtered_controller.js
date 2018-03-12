@@ -1,6 +1,8 @@
-import Ember from "ember";
+import $ from 'jquery';
+import { later } from '@ember/runloop';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   queryParams: [
     "page",
     "page_size",
@@ -19,7 +21,7 @@ export default Ember.Controller.extend({
 
   check_paging: function() {
     let self = this;
-    Ember.run.later(function() {
+    later(function() {
       let page = self.get("page");
       let pages_total = self.get("collection.meta.pages_total");
       if (page > pages_total) {
@@ -55,7 +57,7 @@ export default Ember.Controller.extend({
     } else {
       returned[name] = value;
     }
-    if (Ember.$.isEmptyObject(returned)) {
+    if ($.isEmptyObject(returned)) {
       return undefined;
     }
     return JSON.stringify(returned);

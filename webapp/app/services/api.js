@@ -1,8 +1,9 @@
-import Ember from "ember";
+import $ from 'jquery';
+import Service from '@ember/service';
 
-export default Ember.Service.extend({
+export default Service.extend({
   call: function(name, params = {}) {
-    return Ember.$.ajax({
+    return $.ajax({
       type: "POST",
       url: "/api/" + name,
       contentType: "application/json",

@@ -1,18 +1,20 @@
-import Ember from "ember";
+import { reject, hash } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin
 from "ember-simple-auth/mixins/authenticated-route-mixin";
 import ScrollToTopMixin from "../mixins/scroll-top";
 import PollingRoute from "../mixins/polling-route";
 
-export default Ember.Route.extend(
+export default Route.extend(
     AuthenticatedRouteMixin,
     ScrollToTopMixin,
     PollingRoute,
     {
-        offline: Ember.inject.service(),
-        api: Ember.inject.service(),
+        offline: service(),
+        api: service(),
         title: "Session Tests",
-        favicon: Ember.inject.service(),
+        favicon: service(),
 
         model({ id }) {
             let self = this;
@@ -20,10 +22,10 @@ export default Ember.Route.extend(
                 let session = sessions.get('firstObject');
 
                 if (!session) {
-                    return Ember.RSVP.reject({not_found: true});
+                    return reject({not_found: true});
                 }
 
-                return Ember.RSVP.hash({
+                return hash({
                     session_model: session,
                     user: self.store.find("user", session.get("user_id")),
 

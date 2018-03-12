@@ -1,11 +1,12 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 import UnauthenticatedRouteMixin
   from "ember-simple-auth/mixins/unauthenticated-route-mixin";
 
-export default Ember.Controller.extend(UnauthenticatedRouteMixin, {
+export default Controller.extend(UnauthenticatedRouteMixin, {
   authenticator: "authenticator:torii",
 
-  session: Ember.inject.service(),
+  session: service(),
 
   actions: {
     login() {

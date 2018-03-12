@@ -1,5 +1,8 @@
-import Ember from "ember";
-const { getOwner } = Ember;
+import { later } from '@ember/runloop';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { getOwner } from '@ember/application';
 import KeyboardShortcuts from "ember-keyboard-shortcuts/mixins/component";
 import { timeout, task } from "ember-concurrency";
 
@@ -58,15 +61,15 @@ let _FILTERABLE_VIEWS = [
   "test_info"
 ];
 
-export default Ember.Component.extend(KeyboardShortcuts, {
+export default Component.extend(KeyboardShortcuts, {
   help_displayed: false,
 
   keyboardShortcuts: _shortcuts,
   keys: _keys,
 
-  api: Ember.inject.service(),
-  display: Ember.inject.service(),
-  store: Ember.inject.service(),
+  api: service(),
+  display: service(),
+  store: service(),
 
   search(query, sync_callback, async_callback) {
     this.get("async_search").perform(query, async_callback);
@@ -102,7 +105,7 @@ export default Ember.Component.extend(KeyboardShortcuts, {
   }).restartable(),
 
   _close_boxes() {
-    let element = Ember.$("#goto-input");
+    let element = $("#goto-input");
     element.typeahead("destroy");
     element.off();
     this.set("quick_search_open", false);
@@ -218,8 +221,8 @@ export default Ember.Component.extend(KeyboardShortcuts, {
     open_quick_search() {
       let self = this;
       self.set("quick_search_open", true);
-      Ember.run.later(function() {
-        let element = Ember.$("#goto-input");
+      later(function() {
+        let element = $("#goto-input");
         element.typeahead(
           {
             hint: true,

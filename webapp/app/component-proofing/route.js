@@ -1,10 +1,11 @@
-import Ember from "ember";
+import EmberObject from '@ember/object';
+import Route from '@ember/routing/route';
 
 import HasComputedStatus from "../mixins/has-computed-status";
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
-    return Ember.Object.create({
+    return EmberObject.create({
       traceback_frame: this._generate_traceback_frame(),
 
       session_result: this._create_session_result(),
@@ -14,7 +15,7 @@ export default Ember.Route.extend({
   },
 
   _create_session_result() {
-    return Ember.Object
+    return EmberObject
       .extend(HasComputedStatus, {
         num_successful_tests: function() {
           return (
@@ -68,7 +69,7 @@ export default Ember.Route.extend({
   },
 
   _create_test_result() {
-    let cls = Ember.Object.extend(HasComputedStatus, {
+    let cls = EmberObject.extend(HasComputedStatus, {
       first_error: function() {
         let status = this.get("status");
         if (status === "error" || status === "failure") {
@@ -117,7 +118,7 @@ export default Ember.Route.extend({
   },
 
   _generate_traceback_frame() {
-    return Ember.Object.create({
+    return EmberObject.create({
       filename: "/some/path/to/file.py",
       lineno: 666,
 

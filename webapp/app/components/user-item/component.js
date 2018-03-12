@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ["query-item"],
-  user: Ember.computed.alias('item'),
+  user: alias('item'),
 });

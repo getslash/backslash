@@ -1,10 +1,12 @@
 /* global moment */
-import Ember from "ember";
+import { inject as service } from '@ember/service';
 
-export default Ember.Component.extend({
+import Component from '@ember/component';
+
+export default Component.extend({
   tagName: "span",
 
-  user_prefs: Ember.inject.service(),
+  user_prefs: service(),
 
   ago: null,
   time: null,

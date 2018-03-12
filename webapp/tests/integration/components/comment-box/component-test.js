@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -12,7 +12,7 @@ test('it renders', function(assert) {
   // Handle any actions with this.on('myAction', function(val) { ... });
 
     let comment = 'some comment here';
-    this.set('comment', Ember.Object.create({comment: comment, timestamp: 1234567}));
+    this.set('comment', EmberObject.create({comment: comment, timestamp: 1234567}));
 
 
     this.render(hbs`{{comment-box comment=comment}}`);

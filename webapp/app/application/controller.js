@@ -1,10 +1,11 @@
-import Ember from "ember";
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
 import BaseController from "../controllers/base";
 
 export default BaseController.extend({
-  session: Ember.inject.service(),
+  session: service(),
 
-  path_tracker: Ember.inject.service(),
+  path_tracker: service(),
 
   _path_observer: function() {
     this.get("path_tracker").set("path", this.get("currentPath"));
@@ -21,7 +22,7 @@ export default BaseController.extend({
 
     logout: function() {
       let self = this;
-      Ember.$
+      $
         .ajax({
           url: "/logout",
           type: "POST"

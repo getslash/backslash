@@ -1,7 +1,8 @@
-import Ember from "ember";
+import { once } from '@ember/runloop';
+import Mixin from '@ember/object/mixin';
 import { task, timeout } from "ember-concurrency";
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   INTERVAL_SECONDS: 30,
 
   refresh_loop: task(function*() {
@@ -16,7 +17,7 @@ export default Ember.Mixin.create({
       let pred = self.should_auto_refresh;
 
       if (pred !== undefined && pred.bind(self)()) {
-        Ember.run.once(callback);
+        once(callback);
       }
     }
   }).on("init"),

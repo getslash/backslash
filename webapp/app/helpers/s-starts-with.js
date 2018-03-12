@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 
 export function sStartsWith(params /*, hash*/) {
     let [s, ...prefixes] = params;
@@ -14,4 +14,4 @@ export function sStartsWith(params /*, hash*/) {
     return false;
 }
 
-export default Ember.Helper.helper(sStartsWith);
+export default helper(sStartsWith);

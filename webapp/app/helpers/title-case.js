@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 
 export function titleCase(params /*, hash*/) {
   let s = params[0];
@@ -10,4 +10,4 @@ export function titleCase(params /*, hash*/) {
   });
 }
 
-export default Ember.Helper.helper(titleCase);
+export default helper(titleCase);

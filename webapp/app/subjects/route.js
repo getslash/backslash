@@ -1,8 +1,9 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, {
+export default Route.extend(AuthenticatedRouteMixin, {
   titleToken: "Subjects",
 
   queryParams: {
@@ -20,7 +21,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
   model(params) {
     let sort_order = params.sort;
 
-    return Ember.RSVP.hash({
+    return hash({
       subjects: this.store.query("subject", {
         page: params.page,
         page_size: params.page_size,

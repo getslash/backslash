@@ -1,7 +1,8 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
-  display: Ember.inject.service(),
+export default Component.extend({
+  display: service(),
 
   classNames: ["right-label", "fainter", "comments", "expand-on-hover"],
 

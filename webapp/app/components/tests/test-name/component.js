@@ -1,6 +1,7 @@
-import Ember from "ember";
+import { assign } from '@ember/polyfills';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: "span",
   classNames: ["test-name"],
 
@@ -10,7 +11,7 @@ export default Ember.Component.extend({
       return this.get("variation");
     }
 
-    let returned = Ember.assign({}, this.get("variation"), params);
+    let returned = assign({}, this.get("variation"), params);
     return returned;
   }.property("parameters", "variation")
 });

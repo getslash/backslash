@@ -1,12 +1,13 @@
-import Ember from "ember";
+import { underscore } from '@ember/string';
+import { pluralize} from 'ember-inflector';
 import DS from "ember-data";
 
 export default DS.RESTAdapter.extend({
   namespace: "rest",
 
   pathForType: function(type) {
-    var plural = Ember.String.pluralize(type);
-    return Ember.String.underscore(plural);
+    var plural = pluralize(type);
+    return underscore(plural);
   },
 
   ajax: function(url, type, options) {

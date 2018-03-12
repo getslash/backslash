@@ -1,8 +1,8 @@
-import Ember from "ember";
+import Controller from '@ember/controller';
 
 import config from "../config/environment";
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   available_page_sizes: config.APP.available_page_sizes,
   page: 1,
   page_size: config.APP.default_page_size,

@@ -1,4 +1,6 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
 import retry from "ember-retry/retry";
 
@@ -6,18 +8,18 @@ import ApplicationRouteMixin
   from "ember-simple-auth/mixins/application-route-mixin";
 import config from "../config/environment";
 
-export default Ember.Route.extend(ApplicationRouteMixin, {
-  api: Ember.inject.service(),
-  session: Ember.inject.service(),
-  runtime_config: Ember.inject.service(),
-  user_prefs: Ember.inject.service(),
+export default Route.extend(ApplicationRouteMixin, {
+  api: service(),
+  session: service(),
+  runtime_config: service(),
+  user_prefs: service(),
 
   title(tokens) {
     return tokens.join(" - ") + " - Backslash";
   },
 
   model() {
-    return Ember.RSVP.hash({
+    return hash({
       runtime_config: this.get("runtime_config").get_all()
     });
   },

@@ -1,12 +1,14 @@
-import Ember from "ember";
+import { oneWay } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
 /* global moment */
 
-export default Ember.Controller.extend({
-  user_prefs: Ember.inject.service(),
+export default Controller.extend({
+  user_prefs: service(),
   saving: false,
 
-  time_format: Ember.computed.oneWay("model.time_format"),
+  time_format: oneWay("model.time_format"),
 
   time_formats: [
     "DD/MM/YYYY HH:mm:ss",
@@ -16,7 +18,7 @@ export default Ember.Controller.extend({
     "YYYY-MM-DD HH:mm:ss"
   ],
 
-  start_page: Ember.computed.oneWay("model.start_page"),
+  start_page: oneWay("model.start_page"),
 
   start_pages: ["default", "my sessions"],
 

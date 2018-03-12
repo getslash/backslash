@@ -1,4 +1,4 @@
-import Ember from "ember";
+import Mixin from '@ember/object/mixin';
 
 const _ALL_FILTERS = [
   "show_successful",
@@ -7,7 +7,7 @@ const _ALL_FILTERS = [
   "show_skipped"
 ];
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   queryParams: _ALL_FILTERS,
 
   show_successful: true,

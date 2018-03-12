@@ -1,7 +1,9 @@
-import Ember from "ember";
+import { oneWay, equal } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
-  display: Ember.inject.service(),
+export default Component.extend({
+  display: service(),
   attributeBindings: ["href"],
   tagName: "a",
   classNames: ["item", "test", "clickable"],
@@ -11,9 +13,9 @@ export default Ember.Component.extend({
     "test.has_any_error:unsuccessful"
   ],
 
-  test: Ember.computed.oneWay("item"),
+  test: oneWay("item"),
   session_model: null,
-  is_running: Ember.computed.equal("test.computed_status", "running"),
+  is_running: equal("test.computed_status", "running"),
 
 
 

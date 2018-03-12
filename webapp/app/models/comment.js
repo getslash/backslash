@@ -1,5 +1,5 @@
+import $ from 'jquery';
 import DS from "ember-data";
-import Ember from "ember";
 
 export default DS.Model.extend({
   user_id: DS.attr("number"),
@@ -14,7 +14,7 @@ export default DS.Model.extend({
   deleted: DS.attr("boolean"),
 
   has_text: function() {
-    return Ember.$.trim(this.get("comment")) !== "";
+    return $.trim(this.get("comment")) !== "";
   }.property("comment"),
 
   is_committed: function() {

@@ -1,5 +1,5 @@
-import Ember from "ember";
+import Controller from '@ember/controller';
 
 import CommentsController from "../../mixins/comments-controller";
 
-export default Ember.Controller.extend(CommentsController, {});
+export default Controller.extend(CommentsController, {});

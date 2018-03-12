@@ -1,11 +1,13 @@
-import Ember from "ember";
+import { reject, hash } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
 import ComplexModelRoute from "../../mixins/complex-model-route";
 
-export default Ember.Route.extend(ComplexModelRoute, {
+export default Route.extend(ComplexModelRoute, {
 
-  api: Ember.inject.service(),
-  favicon: Ember.inject.service(),
+  api: service(),
+  favicon: service(),
 
   parent_controller: function() {
     return this.controllerFor("session");
@@ -23,10 +25,10 @@ export default Ember.Route.extend(ComplexModelRoute, {
     return self.store.query('test', {id: test_id}).then(function(tests) {
       let test = tests.get('firstObject');
       if (!test) {
-        return Ember.RSVP.reject({not_found: true});
+        return reject({not_found: true});
       }
 
-      return Ember.RSVP.hash({
+      return hash({
         session_model: session,
         test_metadata: (self.get("api")
                         .call("get_metadata", {

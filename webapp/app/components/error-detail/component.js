@@ -1,6 +1,8 @@
-import Ember from "ember";
+import EmberObject from '@ember/object';
+import $ from 'jquery';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   error: null,
   all_expanded: false,
 
@@ -21,7 +23,7 @@ export default Ember.Component.extend({
     let url = self.get("error.traceback_url");
     if (url) {
       self.set("loading", true);
-      Ember.$
+      $
         .ajax(url, { dataType: "json" })
         .then(function(data) {
           let traceback = data;
@@ -30,7 +32,7 @@ export default Ember.Component.extend({
             traceback = data.traceback;
             exception_attributes = self._parse_exception_attributes(data.exception.attributes);
           }
-          self.set("error.traceback", traceback.map(function(f) {return Ember.Object.create(f);}));
+          self.set("error.traceback", traceback.map(function(f) {return EmberObject.create(f);}));
           self.set("error.exception_attributes", exception_attributes);
         })
         .always(function() {

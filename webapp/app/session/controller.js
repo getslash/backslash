@@ -1,11 +1,12 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   current_test: null,
   test_filters: null,
 
-  display: Ember.inject.service(),
-  api: Ember.inject.service(),
+  display: service(),
+  api: service(),
 
   actions: {
     async discard() {

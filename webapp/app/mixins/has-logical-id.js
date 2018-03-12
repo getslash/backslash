@@ -1,7 +1,7 @@
+import Mixin from '@ember/object/mixin';
 import DS from "ember-data";
-import Ember from "ember";
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   logical_id: DS.attr(),
 
   display_id: function() {

@@ -1,9 +1,11 @@
-import Ember from "ember";
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
-  api: Ember.inject.service(),
+export default Controller.extend({
+  api: service(),
   admin_user_password_2: "",
-  admin_user_password: Ember.computed.alias("config.admin_user_password"),
+  admin_user_password: alias("config.admin_user_password"),
 
   passwords_match: function() {
     return (

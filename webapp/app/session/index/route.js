@@ -1,10 +1,11 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 import RefreshableRouteMixin from "../../mixins/refreshable-route";
 import StatusFilterableRoute from "../../mixins/status-filterable/route";
 
-export default Ember.Route.extend(
+export default Route.extend(
   AuthenticatedRouteMixin,
   RefreshableRouteMixin,
   StatusFilterableRoute,
@@ -33,7 +34,7 @@ export default Ember.Route.extend(
         }
       }
 
-      return Ember.RSVP.hash({
+      return hash({
         session_model: session,
         tests: this.store.query("test", query_params),
         filters: filters

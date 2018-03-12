@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 
 export function paginatedEach(params) {
   let index = params[0];
@@ -8,4 +8,4 @@ export function paginatedEach(params) {
   return (page - 1) * page_size + index + 1;
 }
 
-export default Ember.Helper.helper(paginatedEach);
+export default helper(paginatedEach);

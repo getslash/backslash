@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
 
 import PaginatedFilteredRoute from "../routes/paginated_filtered_route";
 import AuthenticatedRouteMixin
@@ -31,7 +31,7 @@ export default PaginatedFilteredRoute.extend(
         page_size: params.page_size
       };
       this.transfer_filter_params(params, query_params);
-      return Ember.RSVP.hash({
+      return hash({
         subject: this.store.find("subject", params.name),
         sessions: this.store.query("session", query_params)
       });

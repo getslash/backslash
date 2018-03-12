@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { observer } from '@ember/object';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
 
   classNames: "nav navbar-nav",
 
@@ -14,7 +15,7 @@ export default Ember.Component.extend({
     this.set('entered_search', this.get('search'));
   },
 
-  on_entered_search_updated: Ember.observer('search', function() {
+  on_entered_search_updated: observer('search', function() {
     if (this.get('update_entered_search')) {
       this.set('entered_search', this.get('search'));
     }

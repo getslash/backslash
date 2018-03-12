@@ -1,7 +1,7 @@
-import Ember from "ember";
+import Service from '@ember/service';
 
 /* global Heyoffline */
-export default Ember.Service.extend({
+export default Service.extend({
   service: null,
 
   init() {

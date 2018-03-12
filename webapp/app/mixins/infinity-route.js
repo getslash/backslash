@@ -1,8 +1,8 @@
-import Ember from "ember";
+import Mixin from '@ember/object/mixin';
 
 import InfinityRoute from "ember-infinity/mixins/route";
 
-export default Ember.Mixin.create(InfinityRoute, {
+export default Mixin.create(InfinityRoute, {
   perPageParam: "page_size",
   pageParam: "page",
   totalPagesParam: "meta.pages_total"

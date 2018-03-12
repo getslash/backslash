@@ -1,12 +1,14 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import UnauthenticatedRouteMixin
   from "ember-simple-auth/mixins/unauthenticated-route-mixin";
 
-export default Ember.Route.extend(UnauthenticatedRouteMixin, {
-  runtime_config: Ember.inject.service(),
+export default Route.extend(UnauthenticatedRouteMixin, {
+  runtime_config: service(),
 
   model() {
-    return Ember.RSVP.hash({
+    return hash({
       runtime_config: this.get("runtime_config").get_all()
     });
   },
