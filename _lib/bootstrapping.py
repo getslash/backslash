@@ -49,7 +49,7 @@ def bootstrap_env(deps=("base",)):
 
     python = os.path.abspath(os.path.join(_ENV_DIR, "bin", "python"))
     if os.path.abspath(sys.executable) != python:
-        os.environ.pop('__PYVENV_LAUNCHER__')
+        os.environ.pop('__PYVENV_LAUNCHER__', None)
         os.execv(python, [python] + sys.argv)
 
 
