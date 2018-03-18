@@ -116,6 +116,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), unique=True, index=True)
+    updated_at = db.Column(db.DateTime(), onupdate=datetime.now, index=True, nullable=True)
 
     parent_logical_id = db.Column(db.String(256), db.ForeignKey('session.logical_id'), default=None, index=True)
     children = db.relationship('Session', backref=backref('parent', remote_side=[logical_id]))
@@ -186,6 +187,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
         Index('ix_session_delete_at', delete_at, postgresql_where=(delete_at != None)),
+        Index('ix_session_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
     )
 
 
@@ -355,7 +357,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     id = db.Column(db.Integer, primary_key=True)
 
     test_index = db.Column(db.Integer)
-
+    updated_at = db.Column(db.DateTime(), onupdate=datetime.now, index=True, nullable=True)
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
 
@@ -469,6 +471,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
         Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
+        Index('ix_test_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
     )
 
     @rendered_field
