@@ -1,6 +1,7 @@
 app_name: backslash
 
 SECURITY_PASSWORD_HASH: sha512_crypt
+SECURITY_BLUEPRINT_NAME: auth
 # Change these settings to your own app credentials
 SQLALCHEMY_TRACK_MODIFICATIONS: false
 
