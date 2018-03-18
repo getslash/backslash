@@ -4,17 +4,23 @@ import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 import RefreshableRouteMixin from "../../mixins/refreshable-route";
 import StatusFilterableRoute from "../../mixins/status-filterable/route";
+import SearchRouteMixin from "../../mixins/search-route";
 
 export default Route.extend(
   AuthenticatedRouteMixin,
   RefreshableRouteMixin,
   StatusFilterableRoute,
+  SearchRouteMixin,
   {
     title: "Session",
     queryParams: {
       show_planned: {
         refreshModel: true
-      }
+      },
+      search: {
+        replace: true,
+        refreshModel: true
+      },
     },
 
     model: function(params) {
@@ -33,11 +39,25 @@ export default Route.extend(
           filters[key] = query_params[key] = params[key];
         }
       }
-
-      return hash({
+      if (params.search) {
+        query_params.search = params.search;
+      }
+      return Ember.RSVP.hash({
         session_model: session,
         tests: this.store.query("test", query_params),
         filters: filters
+      }).catch(function(exception) {
+        let message = exception.errors.get("firstObject");
+        if (message) {
+          if (message.detail === "The adapter operation was aborted") {
+            return false;
+          }
+          if (message.status === "404") {
+            return { error: message.title };
+          }
+          return { error: message };
+        }
+        throw exception; //reraise
       });
     },
 
@@ -54,6 +74,19 @@ export default Route.extend(
       let parent_controller = this.controllerFor("session");
       parent_controller.set("test_filters", model.filters);
       controller.setProperties(model);
-    }
+    },
+    resetController(controller, isExiting) {
+      if (isExiting) {
+        // isExiting would be false if only the route's model was changing
+        controller.set("search", "");
+        controller.set("entered_search", "");
+        let query_params = this.get("queryParams");
+        for (let key in query_params) {
+          if (key.startsWith("show_")) {
+            controller.set(key, true);
+          }
+        }
+      }
+    },
   }
 );

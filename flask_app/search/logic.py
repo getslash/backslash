@@ -10,7 +10,7 @@ from psycopg2.extras import DateTimeTZRange
 from . import value_parsers
 from ..filters import builders as filter_builders
 from ..models import (Entity, Label, Product, ProductRevision, ProductVersion, Session,
-                      SessionMetadata, Subject, SubjectInstance, Test,
+                      SessionMetadata, Subject, SubjectInstance, Test, Error,
                       TestInformation, User, db, session_entity, session_label,
                       session_subject)
 from .exceptions import UnknownField
@@ -123,10 +123,11 @@ class TestSearchContext(SearchContext):
         return (Test.query
                 .join(Session)
                 .join(TestInformation)
+                .outerjoin(Error, Error.test_id == Test.id)
                 .join(User, User.id == Session.user_id))
 
     def get_fallback_filter(self, term):
-        return TestInformation.name.contains(term)
+        return TestInformation.name.contains(term) | Error.message.contains(term)
 
     @only_ops(['=', '!='])
     def search__subject(self, op, value): # pylint: disable=unused-argument
@@ -168,6 +169,9 @@ class TestSearchContext(SearchContext):
         subquery = db.session.query(session_label).filter(session_label.c.session_id == Test.session_id, session_label.c.label_id == labels[0].id).exists().correlate(Test)
         return _negate_maybe(op, subquery)
 
+    @only_ops(['~'])
+    def search__error_message(self, op, value):
+        return Error.message.contains(value)
 
 
 
