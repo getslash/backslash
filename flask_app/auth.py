@@ -69,7 +69,9 @@ def _login_with_credentials(credentials):
     if current_app.config['TESTING']:
         if user is None:
             user = get_or_create_user({'email': email})
-        login_user(user)
+        if not login_user(user):
+            _logger.error('Could not login user {}', email)
+            error_abort('Login failed', code=requests.codes.unauthorized)
         return _make_success_login_response(user)
 
     if user is not None and user.password:
@@ -166,7 +168,8 @@ def reauth():
         error_abort('Reauth token invalid', code=requests.codes.unauthorized)
     user = User.query.get_or_404(token_data['user_id'])
 
-    login_user(user)
+    if not login_user(user):
+        error_abort('Login failed', code=requests.codes.unauthorized)
 
     return jsonify({
         'auth_token': token,
