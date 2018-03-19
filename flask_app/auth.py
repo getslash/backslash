@@ -148,7 +148,7 @@ def _make_success_login_response(user, user_info=None):
     if user_info is None:
         user_info = {'email': user.email, 'given_name': user.first_name, 'last_name': user.last_name}
     token = _generate_token(user, user_info)
-    _logger.debug('OAuth2 login success for {}. Token: {!r}', user_info, token)
+    _logger.debug('Login success for {}. Token: {!r}', user_info, token)
 
     return jsonify({
         'auth_token': token,
