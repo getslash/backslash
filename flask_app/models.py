@@ -242,6 +242,11 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
             if self.ttl_seconds is not None:
                 self.delete_at = self.next_keepalive + self.ttl_seconds
 
+    def notify_subject_activity(self):
+        for subject_instance in self.subject_instances:
+            subject_instance.subject.last_activity = max(subject_instance.subject.last_activity or 0, flux.current_timeline.time())
+
+
 class SubjectInstance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), index=True, nullable=False)
