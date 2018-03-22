@@ -27,6 +27,34 @@ class TypenameMixin:
     def get_typename(cls):
         return cls.__name__.lower()
 
+class TestErrorsMixin:
+
+    @rendered_field
+    def error_messages(self):
+        errors = []
+        for error in self.errors:
+            errors.append(error.message)
+        return errors
+
+
+class TestMetadataMixin:
+
+    @rendered_field
+    def test_metadata(self):
+        metadatas = []
+        for metadata in self.metadatas:
+            metadatas.append({metadata.key: metadata.metadata_item})
+        return metadatas
+
+
+class SessionMetadataMixin:
+
+    @rendered_field
+    def session_metadata(self):
+        metadatas = []
+        for metadata in self.session.metadata_items:
+            metadatas.append({metadata.key: metadata.metadata_item})
+        return metadatas
 
 class UserDetailsMixin:
 
@@ -137,7 +165,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     comments = db.relationship(
         'Comment', primaryjoin='Comment.session_id==Session.id')
     metadata_items = db.relationship(
-        'SessionMetadata', lazy='dynamic', cascade='all, delete, delete-orphan')
+        'SessionMetadata', lazy='joined', cascade='all, delete, delete-orphan')
 
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined', order_by=session_subject.c.ordinal)
@@ -350,7 +378,7 @@ class TestVariation(db.Model):
     variation = db.Column(JSONB)
 
 
-class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin):
+class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, UserDetailsMixin, TimespanMixin, TestMetadataMixin, SessionMetadataMixin, TestErrorsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -367,7 +395,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
 
     user = db.relationship('User', secondary=Session.__table__, primaryjoin='Test.session_id==Session.id', secondaryjoin='Session.user_id==User.id', lazy='joined', uselist=False)
 
-    metadatas = db.relationship('TestMetadata', lazy='dynamic')
+    metadatas = db.relationship('TestMetadata')
 
     parameters = db.Column(JSONB)
 
