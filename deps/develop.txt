@@ -4,7 +4,6 @@ pytest-selenium
 Flask-Loopback
 backslash>=2.31.1
 tmuxp
-livereload
 ipython
 slash
 yarl

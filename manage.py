@@ -147,11 +147,10 @@ def _generate_secret_string(length=50):
 
 
 @cli.command()
-@click.option('--livereload/--no-livereload', is_flag=True, default=True)
 @click.option('-p', '--port', default=8000, envvar='TESTSERVER_PORT')
 @click.option('--tmux/--no-tmux', is_flag=True, default=True)
 @requires_env("app", "develop")
-def testserver(tmux, livereload, port):
+def testserver(tmux, port):
     if tmux:
         return _run_tmux_frontend(port=port)
     from flask_app.app import create_app
@@ -163,18 +162,7 @@ def testserver(tmux, livereload, port):
     app = create_app({'DEBUG': True, 'TESTING': True, 'SECRET_KEY': 'dummy', 'SECURITY_PASSWORD_SALT': 'dummy'})
     logbook.StreamHandler(sys.stderr, level='DEBUG').push_application()
     logbook.compat.redirect_logging()
-
-    if livereload:
-        from livereload import Server
-        s = Server(app)
-        for filename in extra_files:
-            s.watch(filename)
-        s.watch('flask_app')
-        for filename in ['webapp.js', 'vendor.js', 'webapp.css']:
-            s.watch(os.path.join('static', 'assets', filename), delay=1)
-        s.serve(port=port, liveport=35729)
-    else:
-        app.run(port=port, extra_files=extra_files)
+    app.run(port=port, extra_files=extra_files, use_reloader=False)
 
 def _run_tmux_frontend(port):
     tmuxp = from_env_bin('tmuxp')

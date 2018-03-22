@@ -4,7 +4,7 @@ windows:
     layout: even-horizontal
     panes:
       - cd webapp && node_modules/.bin/ember serve --port 8000 --proxy http://127.0.0.1:8800
-      - python manage.py testserver --no-tmux --port 8800 --no-livereload
+      - python manage.py testserver --no-tmux --port 8800
   - window_name: celery worker
     panes:
       - .env/bin/celery -A flask_app.tasks worker --loglevel=info -B --max-tasks-per-child=500
