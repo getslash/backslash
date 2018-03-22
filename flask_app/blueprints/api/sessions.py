@@ -151,7 +151,7 @@ def report_not_in_pdb(session_id: int):
 @API
 def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
-    if s.end_time is not None:
+    if s.end_time is not None or s.keepalive_interval is None:
         return
     timestamp = get_current_time() + s.keepalive_interval
     s.update_keepalive()
