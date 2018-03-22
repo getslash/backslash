@@ -171,9 +171,6 @@ def send_keepalive(session_id: int):
 @API
 def report_session_interrupted(id: int):
     s = Session.query.get_or_404(id)
-    if s.end_time is not None:
-        error_abort('Ended session cannot be marked as interrupted',
-                    code=requests.codes.conflict)
     s.status = statuses.INTERRUPTED
     if s.parent:
         s.parent.status = statuses.INTERRUPTED

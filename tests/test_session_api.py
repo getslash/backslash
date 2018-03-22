@@ -123,10 +123,11 @@ def test_report_interrupted(started_session, report_end):
     assert started_session.refresh().status.lower() == 'interrupted'
 
 
-def test_cannot_report_interrupted_ended_session(started_session):
+def test_report_interrupted_ended_session(started_session):
     started_session.report_end()
-    with raises_conflict():
-        started_session.report_interrupted()
+    started_session.report_interrupted()
+    assert started_session.refresh().status.lower() == 'interrupted'
+
 
 
 @pytest.mark.parametrize('has_fatal_errors', [True, False])

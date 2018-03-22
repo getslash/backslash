@@ -209,10 +209,10 @@ def test_report_interrupted(started_test):
     assert started_test.refresh().status.lower() == 'interrupted'
 
 
-def test_cannot_report_interrupted_ended_test(started_test):
+def test_interruptions_after_test_end(started_test):
     started_test.report_end()
-    with raises_conflict():
-        started_test.report_interrupted()
+    started_test.report_interrupted()
+    assert started_test.refresh().status.lower() == 'interrupted'
 
 
 def test_test_parameters(started_session, test_name, params):
@@ -269,7 +269,7 @@ def test_append_upcoming_report_all_tests(started_session, test_name, file_name,
     assert len(all_tests) == 3
 
 
-def test_append_upcoming_dont_add_error(started_session, test_name, file_name, class_name):
+def test_cannot_report_interruption_on_planned_test(started_session, test_name, file_name, class_name):
     test_logical_id = str(uuid4())
     test1 = {'test_logical_id': test_logical_id,
              'name': test_name,
@@ -281,6 +281,7 @@ def test_append_upcoming_dont_add_error(started_session, test_name, file_name, c
     test = started_session.query_tests(include_planned=True)[0]
     with raises_conflict():
         test.report_interrupted()
+    assert test.refresh().status.lower() != 'interrupted'
 
 
 @pytest.fixture(params=[True, False])

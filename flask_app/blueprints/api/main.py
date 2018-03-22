@@ -249,17 +249,21 @@ def report_test_skipped(id: int, reason: (str, NoneType)=None):
 
 @API
 def report_test_interrupted(id: int):
-    _update_running_test_status(id, statuses.INTERRUPTED)
+    _update_running_test_status(id, statuses.INTERRUPTED, allow_ended=True)
     db.session.commit()
 
 
-def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None):
+def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None, allow_ended=False):
     logbook.debug('marking test {} as {}', test_id, status)
     updates = {'status': status}
     if additional_updates:
         updates.update(additional_updates)
 
-    if not Test.query.filter(Test.id == test_id, Test.status == statuses.RUNNING).update(updates):
+    query = Test.query.filter(Test.id == test_id, Test.status != statuses.PLANNED)
+    if not allow_ended:
+        query = query.filter(Test.status == statuses.RUNNING)
+
+    if not query.update(updates):
         if Test.query.filter(Test.id == test_id).count():
             # we have a test, but it already ended
             if not ignore_conflict:
