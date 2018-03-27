@@ -398,3 +398,18 @@ class CaseResource(ModelResource):
             returned = super()._get_iterator()
         returned = returned.filter(~self.MODEL.file_name.like('/%'))
         return returned
+
+
+@_resource('/replications')
+class ReplicationsResource(ModelResource):
+
+    MODEL = models.Replication
+    ONLY_FIELDS = [
+        'id',
+        'avg_per_second',
+        'backlog_remaining',
+        'last_error',
+        'service_type',
+        'username',
+        'url'
+    ]

@@ -713,3 +713,45 @@ class Timing(db.Model):
         Index('ix_timing_session', session_id, name),
         Index('ix_timing_session_no_test', session_id, name, postgresql_where=(test_id == None), unique=True), # pylint: disable=singleton-comparison
     )
+
+
+class Replication(db.Model, TypenameMixin):
+
+    STALE_TIMEOUT = 5 * 60
+
+    # identity
+    id = db.Column(db.Integer, primary_key=True)
+    service_type = db.Column(db.String(50), server_default='elastic-search', nullable=False)
+    url = db.Column(db.String(1024), nullable=False)
+    index_name = db.Column(db.String(1024), nullable=False, default='backslash')
+    username = db.Column(db.String(1024), nullable=True)
+    password = db.Column(db.String(1024), nullable=True)
+    paused = db.Column(db.Boolean(), server_default='FALSE')
+
+    # indicates whether or not tests remain to be exported for which there is no
+    # 'updated_at' value
+    untimed_done = db.Column(db.Boolean(), server_default='FALSE')
+    backlog_remaining = db.Column(db.Integer(), nullable=True)
+    last_replicated_timestamp = db.Column(db.DateTime(), nullable=True)
+    last_replicated_id = db.Column(db.Integer, nullable=True)
+
+    last_chunk_finished = db.Column(db.Float, server_default='0')
+
+    last_error = db.Column(db.Text(), nullable=True)
+    avg_per_second = db.Column(db.Float(), default=0)
+
+    _client = None
+
+    @rendered_field
+    def active(self):
+        if self.paused:
+            return False
+        if self.last_error is not None:
+            return False
+        return flux.current_timeline.time() - self.last_chunk_finished < self.STALE_TIMEOUT
+
+    def get_client(self):
+        from elasticsearch import Elasticsearch
+        if self._client is None:
+            self._client = Elasticsearch([self.url])
+        return self._client

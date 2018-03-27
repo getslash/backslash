@@ -144,3 +144,12 @@ Now we can use the ``BACKSLASH_ADDITIONAL_ROUTES`` environment variable to the `
      nginx:
        environment:
        - "BACKSLASH_ADDITIONAL_ROUTES=/api/your_custom_api:http://my_custom_service:8000"
+
+
+Data Replication
+----------------
+
+ElasticSearch
+~~~~~~~~~~~~~
+
+Backslash supports replicating data to ElasticSearch. To configure it, click "Replication" under the "Admin menu". This functionality is only accessible to admin users.

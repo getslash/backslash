@@ -2,6 +2,7 @@
 
 ## Version 2.14.0
 
+* Added support for configuring ElasticSearch replication
 * Session ends and keepalives now extend the last activity of the subjects they run on
 
 ## Version 2.13.0

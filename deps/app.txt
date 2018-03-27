@@ -35,3 +35,6 @@ dateparser
 
 #for interactive investigations inside Docker
 pgcli
+
+#for elasticsearch replication
+elasticsearch>=6.0.0,<7.0.0
