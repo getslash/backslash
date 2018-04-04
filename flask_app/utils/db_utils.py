@@ -24,9 +24,3 @@ def statement_timeout_context(timeout_seconds=60):
     models.db.session.execute('SET statement_timeout={}'.format(timeout_seconds * 1000))
     yield
     models.db.session.execute('SET statement_timeout={}'.format(prev))
-
-
-class json_object_agg(GenericFunction):
-    type = sqlalchemy.types.JSON
-
-    name = identifier = 'json_object_agg'

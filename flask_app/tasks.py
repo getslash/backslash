@@ -20,7 +20,6 @@ import flux
 from .app import create_app
 from . import models
 from .utils import get_current_time, statuses
-from .utils.db_utils import json_object_agg
 
 from sqlalchemy import select, or_, and_, func, text
 from sqlalchemy.sql.expression import label
