@@ -6,9 +6,17 @@ export default Component.extend({
   classNames: ["test-name"],
 
   display_params: function() {
+    let variation = this.get("variation");
     let params = this.get("parameters");
     if (!params) {
-      return this.get("variation");
+      params = variation;
+    }
+    if (variation) {
+      for (var key in variation) {
+        if (!Number.isInteger(variation[key])) {
+          params[key] = variation[key]
+        }
+      }
     }
 
     let returned = assign({}, this.get("variation"), params);
