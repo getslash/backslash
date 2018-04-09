@@ -136,8 +136,11 @@ export default Component.extend(KeyboardShortcuts, {
     let session = session_controller.get("session_model");
     console.assert(session_controller); // eslint-disable-line no-console
     console.assert(test); // eslint-disable-line no-console
-
-    let filters = { session_id: test.get("session_id") };
+    let session_id = test.get("session_id");
+    if (session.get('child_id') !== null) {
+      session_id = session.get('parent_logical_id')
+    }
+    let filters = { session_id: session_id };
     filters[direction + "_index"] = test.get("test_index");
 
     Object.assign(filters, session_controller.get("test_filters"));
