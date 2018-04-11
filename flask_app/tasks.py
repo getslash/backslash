@@ -9,8 +9,6 @@ import time
 import traceback
 
 from flask import current_app
-import logging
-import logging.handlers
 import logbook
 
 from celery import Celery
@@ -28,7 +26,8 @@ from elasticsearch import helpers as es_helpers
 _logger = logbook.Logger(__name__)
 
 
-queue = Celery('tasks', broker=os.environ.get('BACKSLASH_CELERY_BROKER_URL', 'amqp://guest:guest@localhost'))
+queue = Celery('tasks', broker=os.environ.get('BACKSLASH_CELERY_BROKER_URL',
+                                              'amqp://guest:guest@localhost'))
 queue.conf.update(
     CELERY_ENABLE_UTC=True,
     CELERYBEAT_SCHEDULE={
@@ -43,7 +42,7 @@ queue.conf.update(
     },
 )
 
-def setup_log(**args):
+def setup_log(**_):
     logbook.StreamHandler(sys.stderr).push_application()
 
 APP = None
@@ -95,7 +94,8 @@ def do_live_migrate():
         _logger.debug('Running migration: {.name}...', migration)
 
         while True:
-            result = models.db.session.execute(migration.update_query, {'batch_size': migration.batch_size})
+            result = models.db.session.execute(migration.update_query,
+                                               {'batch_size': migration.batch_size})
             if result.rowcount == 0:
                 migration.remaining_num_objects = 0
                 migration.finished = True
@@ -123,7 +123,8 @@ def delete_discarded_sessions(ignore_date=False):
             if not error.traceback_url:
                 continue
             traceback_uuid = error.traceback_url.rsplit('/', 1)[-1]
-            traceback_filename = os.path.join(current_app.config['TRACEBACK_DIR'], traceback_uuid[:2], traceback_uuid + '.gz')
+            traceback_filename = os.path.join(
+                current_app.config['TRACEBACK_DIR'], traceback_uuid[:2], traceback_uuid + '.gz')
             _logger.debug('Deleting error {.id} ({})', error, traceback_filename)
             try:
                 os.unlink(traceback_filename)
@@ -171,7 +172,7 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
         else:
             replica.backlog_remaining = 0
 
-    except Exception:
+    except Exception: # pylint: disable=broad-except
         _logger.error('Error during migration', exc_info=True)
         replica.last_error = traceback.format_exc()
     else:
@@ -248,22 +249,22 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
             )
         ]).select_from(test_entities_query.join(models.Entity, models.Entity.id == test_entities_query.c.entity_id)).label('test_entities'),
         select([
-                func.array_agg(
-                    func.json_build_object(
-                        "name", models.Subject.name,
-                        "product", models.Product.name,
-                        "version", models.ProductVersion.version,
-                        "revision", models.ProductRevision.revision,
-                    )
+            func.array_agg(
+                func.json_build_object(
+                    "name", models.Subject.name,
+                    "product", models.Product.name,
+                    "version", models.ProductVersion.version,
+                    "revision", models.ProductRevision.revision,
                 )
-            ]).select_from(
-                models.session_subject
-                .join(models.SubjectInstance)
-                .join(models.Subject)
-                .join(models.ProductRevision)
-                .join(models.ProductVersion)
-                .join(models.Product)
-            ).where(models.session_subject.c.session_id == models.Test.session_id).label('subjects'),
+            )
+        ]).select_from(
+            models.session_subject
+            .join(models.SubjectInstance)
+            .join(models.Subject)
+            .join(models.ProductRevision)
+            .join(models.ProductVersion)
+            .join(models.Product)
+        ).where(models.session_subject.c.session_id == models.Test.session_id).label('subjects'),
     ]).select_from(
         models.Test.__table__.join(models.Session.__table__).join(
             models.User.__table__, models.Session.user_id == models.User.id))
@@ -279,7 +280,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
         query = query.order_by(models.Test.updated_at.asc(), models.Test.id.asc())
     else:
         query = query.where(and_(
-            models.Test.updated_at == None,
+            models.Test.updated_at == None, # pylint: disable=singleton-comparison
             _REPLICATION_TEST_FILTER,
         ))
         if replica.last_replicated_id is not None:

@@ -1,0 +1,10 @@
+[MESSAGES CONTROL]
+disable=R,locally-disabled,invalid-name,wrong-import-order,wrong-import-position,ungrouped-imports,missing-docstring,redefined-outer-name,unneeded-not,property-on-old-class,superfluous-parens,consider-iterating-dictionary,len-as-condition
+
+[TYPECHECK]
+ignored-modules=flux.current_timeline
+ignored-classes=scoped_session
+
+[FORMAT]
+max-line-length=150
+
