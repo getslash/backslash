@@ -413,3 +413,23 @@ class ReplicationsResource(ModelResource):
         'username',
         'url'
     ]
+
+
+@blueprint.route('/admin_alerts')
+def get_admin_alerts():
+    return jsonify({
+        'admin_alerts': [
+            {
+                'id': index,
+                "message": alert,
+            }
+            for index, alert in enumerate(_iter_alerts(), 1)
+        ]
+    })
+
+def _iter_alerts():
+    if models.Replication.query.filter(models.Replication.last_error != None).count():
+        yield "Some data replication services experienced errors"
+
+
+

@@ -20,7 +20,8 @@ export default Route.extend(ApplicationRouteMixin, {
 
   model() {
     return hash({
-      runtime_config: this.get("runtime_config").get_all()
+        runtime_config: this.get("runtime_config").get_all(),
+        admin_alerts: this.store.findAll('admin_alert'),
     });
   },
 
