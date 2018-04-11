@@ -3,7 +3,7 @@ from .blueprint import API
 
 from ...models import Replication, db
 from ...utils.api_utils import requires_role
-from ...tasks import do_elasticsearch_replication
+from ...tasks.replications import do_elasticsearch_replication
 
 NoneType = type(None)
 

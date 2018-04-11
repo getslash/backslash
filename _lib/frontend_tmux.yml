@@ -7,4 +7,4 @@ windows:
       - python manage.py testserver --no-tmux --port 8800
   - window_name: celery worker
     panes:
-      - .env/bin/celery -A flask_app.tasks worker --loglevel=info -B --max-tasks-per-child=500
+      - .env/bin/celery -A flask_app.tasks.main worker --loglevel=info -B --max-tasks-per-child=500
