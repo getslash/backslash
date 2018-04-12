@@ -398,3 +398,38 @@ class CaseResource(ModelResource):
             returned = super()._get_iterator()
         returned = returned.filter(~self.MODEL.file_name.like('/%'))
         return returned
+
+
+@_resource('/replications')
+class ReplicationsResource(ModelResource):
+
+    MODEL = models.Replication
+    ONLY_FIELDS = [
+        'id',
+        'avg_per_second',
+        'backlog_remaining',
+        'last_error',
+        'service_type',
+        'username',
+        'url'
+    ]
+
+
+@blueprint.route('/admin_alerts')
+def get_admin_alerts():
+    return jsonify({
+        'admin_alerts': [
+            {
+                'id': index,
+                "message": alert,
+            }
+            for index, alert in enumerate(_iter_alerts(), 1)
+        ]
+    })
+
+def _iter_alerts():
+    if models.Replication.query.filter(models.Replication.last_error != None).count():
+        yield "Some data replication services experienced errors"
+
+
+

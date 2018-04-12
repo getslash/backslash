@@ -1,11 +1,9 @@
 # Changelog
 
-## Version 2.14.0
-
-* Session ends and keepalives now extend the last activity of the subjects they run on
-
 ## Version 2.13.0
 
+* Added support for configuring ElasticSearch replication
+* Session ends and keepalives now extend the last activity of the subjects they run on
 * Session overview side panel now summarizes aggregated timings of all timing metrics from all tests and the session itself
 
 ## Version 2.12.6

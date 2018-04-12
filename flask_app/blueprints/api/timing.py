@@ -1,7 +1,6 @@
 import flux
 import requests
 from ...models import Timing, db
-from ...utils.db_utils import json_object_agg
 from .blueprint import API
 from flask_simple_api import error_abort
 from sqlalchemy import and_, case, func
@@ -48,8 +47,8 @@ def get_timings(session_id: (int, NoneType)=None, test_id: (int, NoneType)=None)
     if session_id is not None:
         total_sum_subquery = db.session.query(Timing.name, func.sum(total_clause).label('total_time')).\
                              group_by(Timing.session_id, Timing.name).filter_by(session_id=session_id).subquery()
-        query = db.session.query(json_object_agg(total_sum_subquery.c.name, total_sum_subquery.c.total_time))
+        query = db.session.query(func.json_object_agg(total_sum_subquery.c.name, total_sum_subquery.c.total_time))
     else:
-        query = db.session.query(json_object_agg(Timing.name, total_clause)).\
+        query = db.session.query(func.json_object_agg(Timing.name, total_clause)).\
                 filter_by(test_id=test_id)
     return query.scalar() or {}

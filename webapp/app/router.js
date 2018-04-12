@@ -47,6 +47,9 @@ Router.map(function() {
 
   this.route('admin', function() {
     this.route('migrations');
+    this.route('replications', function() {
+      this.route('new');
+    });
   });
   this.route('cases');
 });
