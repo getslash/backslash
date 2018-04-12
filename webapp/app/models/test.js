@@ -47,6 +47,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   variation: DS.attr(),
   parameters: DS.attr(),
   subjects: DS.attr(),
+  is_starred: DS.attr("boolean"),
 
   is_success: function() {
     return this.get("status") === "SUCCESS";

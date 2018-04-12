@@ -4,6 +4,7 @@ import Component from '@ember/component';
 
 export default Component.extend({
   display: service(),
+  api: service(),
   attributeBindings: ["href"],
   tagName: "a",
   classNames: ["item", "test", "clickable"],
@@ -25,5 +26,15 @@ export default Component.extend({
       returned += "/errors";
     }
     return returned;
-  }.property("test")
+  }.property("test"),
+  actions: {
+    toggle_starred: function() {
+      let self = this;
+      return this.get("api")
+        .call("toggle_starred", { object_id: this.get("test.id") })
+        .then(function() {
+            return self.get('test').reload();
+        });
+    },
+  }
 });
