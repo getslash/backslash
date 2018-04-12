@@ -18,8 +18,10 @@ def delete_discarded_sessions(ignore_date=False):
         query = query.filter(models.Session.delete_at != None)
     else:
         query = query.filter(models.Session.delete_at <= flux.current_timeline.time())
-    sessions = query.all()
-    for session in sessions:
+    while True:
+        session = query.first()
+        if not session:
+            return
         tests = models.Test.query.filter(models.Test.session_id == session.id)
         for error in itertools.chain(session.errors, (error for t in tests for error in t.errors)):
             if not error.traceback_url:
