@@ -1,3 +1,4 @@
+from celery.signals import beat_init
 import logbook
 from .main import queue, needs_app_context
 from .. import models
@@ -47,3 +48,8 @@ def do_live_migrate():
             models.db.session.commit()
             if result.rowcount == 0:
                 break
+
+
+@beat_init.connect
+def _on_beat_start(**_):
+    start_live_migrations.delay()
