@@ -22,6 +22,7 @@
 </div>
 
 <div class="main-info">
+  {{star-marker is_starred=test.is_starred toggle=(action "toggle_starred")}}
   {{status-icon status=test.computed_status session_model=session_model}}
   {{#if show_user}}
       {{#elements/tool-tip title=test.user_display_name}}

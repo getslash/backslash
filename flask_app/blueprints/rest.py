@@ -13,7 +13,7 @@ from sqlalchemy.orm import aliased
 from flask_simple_api import error_abort
 from flask_security import current_user
 from .. import models
-from ..models import Error, Session, Test, User, Subject, db
+from ..models import Error, Session, Test, User, Subject, db, UserStarredTests
 from .. import activity
 from ..utils.identification import parse_test_id, parse_session_id
 from ..utils.rest import ModelResource
@@ -86,7 +86,7 @@ test_query_parser.add_argument('search', type=str, default=None)
 test_query_parser.add_argument('after_index', type=int, default=None)
 test_query_parser.add_argument('before_index', type=int, default=None)
 test_query_parser.add_argument('id', type=str, default=None)
-
+test_query_parser.add_argument('starred', type=bool, default=False)
 
 @_resource('/tests', '/tests/<object_id>', '/sessions/<session_id>/tests')
 class TestResource(ModelResource):
@@ -98,12 +98,26 @@ class TestResource(ModelResource):
     def _get_object_by_id(self, object_id):
         return _get_object_by_id_or_logical_id(self.MODEL, object_id)
 
+    def _render_many(self, objects, *, in_collection: bool):
+        rendered_tests = super()._render_many(objects, in_collection=in_collection)
+        if not rendered_tests or not current_user.is_authenticated:
+            return rendered_tests
+        if not in_collection:
+            rendered_tests['is_starred'] = db.session.query(db.session.query(UserStarredTests).filter(UserStarredTests.user_id == current_user.id, UserStarredTests.test_id==rendered_tests['id']).exists()).scalar()
+        else:
+            rendered_test_ids = [test['id'] for test in rendered_tests['tests']]
+            starred_test_ids = set([test_id for (test_id, ) in db.session.query(Test.id).join(UserStarredTests).filter(UserStarredTests.user_id == current_user.id, Test.id.in_(rendered_test_ids)).all()])
+            for test in rendered_tests['tests']:
+                test['is_starred'] = test['id'] in starred_test_ids
+        return rendered_tests
+
     def _get_iterator(self):
         args = test_query_parser.parse_args()
 
         if args.id is not None:
             return _get_query_by_id_or_logical_id(self.MODEL, args.id)
-
+        if args.starred:
+            return Test.query.join(UserStarredTests).filter(UserStarredTests.user_id == current_user.id).order_by(UserStarredTests.star_creation_time.desc()).all()
         if args.session_id is None:
             args.session_id = request.view_args.get('session_id')
 
@@ -430,6 +444,3 @@ def get_admin_alerts():
 def _iter_alerts():
     if models.Replication.query.filter(models.Replication.last_error != None).count():
         yield "Some data replication services experienced errors"
-
-
-

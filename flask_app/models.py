@@ -755,3 +755,14 @@ class Replication(db.Model, TypenameMixin):
         if self._client is None:
             self._client = Elasticsearch([self.url])
         return self._client
+
+class UserStarredTests(db.Model):
+    __tablename__ = "user_starred_tests"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'))
+    star_creation_time = db.Column(db.Float, default=get_current_time)
+
+    __table_args__ = (
+        Index('ix_starred_tests_user_id_test_id', user_id, test_id),
+    )

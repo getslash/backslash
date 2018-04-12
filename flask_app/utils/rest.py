@@ -30,14 +30,7 @@ class RestResource(Resource):
                     returned = self._filter(returned, metadata)
                     returned = self._sort(returned, metadata)
                     returned = self._paginate(returned, metadata)
-            result = {}
-            for obj in returned:
-                key = self._get_collection_key_for_object(obj)
-                collection = result.get(key)
-                if collection is None:
-                    collection = result[key] = []
-                collection.append(self._render_single(obj, in_collection=True))
-            return self._format_result(result, metadata=metadata)
+            return self._format_result(self._render_many(returned, in_collection=True), metadata=metadata)
 
     def _filter(self, iterator, metadata):
         if self.FILTER_CONFIG is None:
@@ -88,8 +81,20 @@ class ModelResource(RestResource):
         assert self.MODEL is not None
         return self.MODEL.query.get(object_id)
 
+    def _render_many(self, objects, *, in_collection: bool):
+        if not in_collection:
+            return render_api_object(objects[0], only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=True)
+        result = {}
+        for obj in objects:
+            key = self._get_collection_key_for_object(obj)
+            collection = result.get(key)
+            if collection is None:
+                collection = result[key] = []
+            collection.append(render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=False))
+        return result
+
     def _render_single(self, obj, *, in_collection: bool):
-        return render_api_object(obj, only_fields=self.ONLY_FIELDS, extra_fields=self.EXTRA_FIELDS, is_single=not in_collection)
+        return self._render_many([obj], in_collection=False)
 
     def _sort(self, iterator, metadata):
         sort_fields_expr = request.args.get('sort', None)
