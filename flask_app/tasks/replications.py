@@ -162,7 +162,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
         .join(models.User.__table__, models.Session.user_id == models.User.id)
         .join(models.TestInformation)
         .join(models.TestVariation)
-    )
+    ).where(_REPLICATION_TEST_FILTER)
 
     if replica.untimed_done:
         if replica.last_replicated_timestamp is not None:
