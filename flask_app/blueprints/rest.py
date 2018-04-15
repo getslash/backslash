@@ -7,7 +7,7 @@ import requests
 from flask import Blueprint, abort, request, jsonify, current_app, Response
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
 
 from flask_simple_api import error_abort
@@ -250,7 +250,10 @@ class ErrorResource(ModelResource):
         args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            query = Error.query.filter_by(session_id=parse_session_id(args.session_id))
+            session_id = parse_session_id(args.session_id)
+            logicl_id_subquery = db.session.query(Session.logical_id).filter(Session.id == session_id).subquery()
+            children_subquery = db.session.query(Session.id).filter(Session.parent_logical_id == logicl_id_subquery.c.logical_id).subquery()
+            query = db.session.query(Error).filter(or_(Error.session_id.in_(children_subquery), Error.session_id==session_id))
         elif args.test_id is not None:
             query = Error.query.filter_by(test_id=parse_test_id(args.test_id))
         else:
