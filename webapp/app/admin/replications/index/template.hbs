@@ -44,6 +44,7 @@
           {{#if replication.active}}
             <a class="clickable" {{action "pauseReplication" replication}}>Pause</a>
           {{else}}
+            <a class="clickable" {{action "resetReplication" replication}}>Reset</a>
             <a class="clickable" {{action "startReplication" replication}}>Start</a>
           {{/if}}
         </div>

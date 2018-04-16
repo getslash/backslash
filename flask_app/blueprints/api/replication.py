@@ -42,3 +42,10 @@ def pause_replication(id: int):
     obj = Replication.query.get_or_404(id)
     obj.paused = True
     db.session.commit()
+
+@API
+@requires_role('admin')
+def reset_replication(id: int):
+    obj = Replication.query.get_or_404(id)
+    obj.reset()
+    db.session.commit()

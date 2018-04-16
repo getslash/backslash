@@ -742,6 +742,13 @@ class Replication(db.Model, TypenameMixin):
 
     _client = None
 
+    def reset(self):
+        self.paused = True
+        self.last_chunk_finished = self.last_replicated_id = self.backlog_remaining = \
+            self.last_error = None
+        self.untimed_done = False
+        self.avg_per_second = 0
+
     @rendered_field
     def active(self):
         if self.paused:
