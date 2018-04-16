@@ -76,7 +76,7 @@ def _estimate_replication(replica):
         replica.backlog_remaining = models.Test.query.filter(_REPLICATION_TEST_FILTER).count()
 
 
-def _get_tests_to_replicate_query(replica, bulk_size=10000):
+def _get_tests_to_replicate_query(replica, bulk_size=200):
 
     session_entities_query = select([
         models.session_entity.c.session_id, models.session_entity.c.entity_id
