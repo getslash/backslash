@@ -35,6 +35,7 @@ Router.map(function() {
     this.route("sessions");
     this.route("admin");
     this.route("preferences");
+    this.route("starred");
   });
   this.route("authorize-runtoken", { path: "/runtoken/:requestid/authorize" });
   this.route("users");

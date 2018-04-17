@@ -11,7 +11,7 @@ from sqlalchemy.exc import DataError
 
 from .blueprint import API
 from ... import metrics
-from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata
+from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata, UserStarredTests
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -291,6 +291,16 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
 
     db.session.commit()
     return returned
+
+
+@API(require_real_login=True)
+def toggle_starred(object_id: str):
+    entry = UserStarredTests.query.filter_by(user_id=current_user.id, test_id=object_id).first()
+    if entry is not None:
+        db.session.delete(entry)
+    else:
+        db.session.add(UserStarredTests(user_id=current_user.id, test_id=object_id))
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('admin')
