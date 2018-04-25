@@ -174,10 +174,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
                 )))
         query = query.order_by(models.Test.updated_at.asc(), models.Test.id.asc())
     else:
-        query = query.where(and_(
-            models.Test.updated_at == None, # pylint: disable=singleton-comparison
-            _REPLICATION_TEST_FILTER,
-        ))
+        query = query.where(models.Test.updated_at == None)
         if replica.last_replicated_id is not None:
             query = query.where(
                 models.Test.id > replica.last_replicated_id)
