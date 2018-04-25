@@ -159,9 +159,9 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
         ).where(models.session_subject.c.session_id == models.Test.session_id).label('subjects'),
     ]).select_from(
         models.Test.__table__.join(models.Session.__table__)
-        .join(models.User.__table__, models.Session.user_id == models.User.id)
-        .join(models.TestInformation)
-        .join(models.TestVariation)
+        .outerjoin(models.User.__table__, models.Session.user_id == models.User.id)
+        .outerjoin(models.TestInformation)
+        .outerjoin(models.TestVariation)
     ).where(_REPLICATION_TEST_FILTER)
 
     if replica.untimed_done:
