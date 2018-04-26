@@ -3,8 +3,9 @@ import flux
 import logbook
 from .main import queue, needs_app_context
 from .. import models
+import sqlalchemy
 from sqlalchemy import select, or_, and_, func, text
-from sqlalchemy.sql.expression import label
+from sqlalchemy.sql.expression import label, cast
 import traceback
 from ..utils import statuses
 
@@ -75,7 +76,7 @@ def _estimate_replication(replica):
         replica.backlog_remaining = models.Test.query.filter(_REPLICATION_TEST_FILTER).count()
 
 
-def _get_tests_to_replicate_query(replica, bulk_size=10000):
+def _get_tests_to_replicate_query(replica, bulk_size=200):
 
     session_entities_query = select([
         models.session_entity.c.session_id, models.session_entity.c.entity_id
@@ -91,8 +92,22 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
         label("_index", text("'backslash'")),
         label("_id", models.Test.id),
 
-        *[getattr(models.Test, column_name) for column_name in models.Test.__table__.columns.keys() if column_name != 'timespan'],
+        *[getattr(models.Test, column_name)
+          for column_name in models.Test.__table__.columns.keys()
+          if column_name not in {'timespan', 'parameters'}],
+
         models.User.email.label('user_email'),
+        cast(models.Test.parameters, sqlalchemy.Text).label('parameters'),
+        func.json_build_object(
+            "file_name",
+            models.TestInformation.file_name,
+            "class_name",
+            models.TestInformation.class_name,
+            "name",
+            models.TestInformation.name,
+            "variation",
+            cast(models.TestVariation.variation, sqlalchemy.Text),
+        ).label('test'),
         select([func.array_agg(
             func.json_build_object(
                 'message', models.Error.message)
@@ -143,8 +158,11 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
             .join(models.Product)
         ).where(models.session_subject.c.session_id == models.Test.session_id).label('subjects'),
     ]).select_from(
-        models.Test.__table__.join(models.Session.__table__).join(
-            models.User.__table__, models.Session.user_id == models.User.id))
+        models.Test.__table__.join(models.Session.__table__)
+        .outerjoin(models.User.__table__, models.Session.user_id == models.User.id)
+        .outerjoin(models.TestInformation)
+        .outerjoin(models.TestVariation)
+    ).where(_REPLICATION_TEST_FILTER)
 
     if replica.untimed_done:
         if replica.last_replicated_timestamp is not None:
@@ -156,10 +174,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=10000):
                 )))
         query = query.order_by(models.Test.updated_at.asc(), models.Test.id.asc())
     else:
-        query = query.where(and_(
-            models.Test.updated_at == None, # pylint: disable=singleton-comparison
-            _REPLICATION_TEST_FILTER,
-        ))
+        query = query.where(models.Test.updated_at == None)
         if replica.last_replicated_id is not None:
             query = query.where(
                 models.Test.id > replica.last_replicated_id)
@@ -207,11 +222,10 @@ def _reconfigure_replica(replica):
 
 def _serialize_test(test):
     test = dict(test.items())
-    params = test['parameters'] or {}
-    for key in list(params):
-        params[key.replace(".", "-")] = str(params.pop(key))
     _truncate(test)
     return test
+
+
 
 
 def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):

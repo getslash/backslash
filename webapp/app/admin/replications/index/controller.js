@@ -18,6 +18,10 @@ export default Controller.extend({
             replication.set('active', false);
         },
 
+        resetReplication(replication) {
+            this.get('api').call('reset_replication', {id: parseInt(replication.id)});
+            replication.set('active', false);
+        },
 
         deleteReplication(replication) {
             if (window.confirm(`Are you sure you want to delete the replication to ${replication.get("url")}?`)) {
