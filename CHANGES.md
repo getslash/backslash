@@ -2,7 +2,8 @@
 
 ## Version 2.13.0
 
-* Added support for configuring ElasticSearch replication
+* Backslash can now be configured to replicate test data to an external ElasticSearch service
+* Added support for "starring" tests, saving them for later reference
 * Session ends and keepalives now extend the last activity of the subjects they run on
 * Session overview side panel now summarizes aggregated timings of all timing metrics from all tests and the session itself
 
