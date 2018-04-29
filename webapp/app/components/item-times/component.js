@@ -1,9 +1,10 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
 /* global moment */
 
-export default Ember.Component.extend({
-  user_prefs: Ember.inject.service(),
+export default Component.extend({
+  user_prefs: service(),
 
   classNames: ["times"],
 

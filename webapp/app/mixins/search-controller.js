@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { observer } from '@ember/object';
+import Mixin from '@ember/object/mixin';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
 
   search: "",
   searching: true,
@@ -9,7 +10,7 @@ export default Ember.Mixin.create({
     this.set("search", "");
   },
 
-  clear_page: Ember.observer('search', function() {
+  clear_page: observer('search', function() {
     this.set('page', 1);
   }),
 });

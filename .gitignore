@@ -62,3 +62,4 @@ webapp/tmp
 .cache
 tests/.cache
 flycheck_*
+/.pytest_cache

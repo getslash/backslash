@@ -1,12 +1,13 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, {
+export default Route.extend(AuthenticatedRouteMixin, {
   model: function(params) {
     let session = this.modelFor("session");
 
-    return Ember.RSVP.hash({
+    return hash({
       index: params.index,
       error: this.store.queryRecord("error", {
         session_id: session.id,

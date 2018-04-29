@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 
 /* global moment */
 
@@ -19,4 +19,4 @@ export function momentRange(params, opts) {
   return range.format();
 }
 
-export default Ember.Helper.helper(momentRange);
+export default helper(momentRange);

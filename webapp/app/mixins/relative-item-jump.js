@@ -1,6 +1,6 @@
-import Ember from "ember";
+import Mixin from '@ember/object/mixin';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   jump_to_relative(offset) {
     let self = this;
     let test = self.get("model.test_model");

@@ -1,10 +1,12 @@
-import Ember from "ember";
+import { oneWay } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   to: null,
   tagName: "li",
-  path_tracker: Ember.inject.service(),
-  current_path: Ember.computed.oneWay("path_tracker.path"),
+  path_tracker: service(),
+  current_path: oneWay("path_tracker.path"),
 
   classNameBindings: ["is_active:active"],
 

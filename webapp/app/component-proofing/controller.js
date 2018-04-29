@@ -1,6 +1,8 @@
-import Ember from "ember";
+import $ from 'jquery';
+import { later } from '@ember/runloop';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   /* Avatar */
   admin: true,
   moderator: false,
@@ -12,9 +14,9 @@ export default Ember.Controller.extend({
 
   toggle_visible: function() {
     let term = this.get("search");
-    Ember.run.later(function() {
-      Ember.$(".proofing-example h3").each(function() {
-        let heading = Ember.$(this);
+    later(function() {
+      $(".proofing-example h3").each(function() {
+        let heading = $(this);
         if (!term || heading.text().indexOf(term) !== -1) {
           heading.parent().css("display", "block");
         } else {

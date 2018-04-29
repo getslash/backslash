@@ -1,6 +1,7 @@
-import Ember from "ember";
+import { scheduleOnce } from '@ember/runloop';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   editing: false,
 
   actions: {
@@ -21,7 +22,7 @@ export default Ember.Component.extend({
     start_editing() {
       let self = this;
       self.set("editing", true);
-      Ember.run.scheduleOnce("afterRender", self, function() {
+      scheduleOnce("afterRender", self, function() {
         self.$("textarea").focus();
       });
     },

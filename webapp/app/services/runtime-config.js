@@ -1,10 +1,11 @@
-import Ember from "ember";
+import EmberObject from '@ember/object';
+import Service, { inject as service } from '@ember/service';
 
-export default Ember.Service.extend({
-  api: Ember.inject.service(),
+export default Service.extend({
+  api: service(),
 
   init() {
-    this.set("_cache", Ember.Object.create());
+    this.set("_cache", EmberObject.create());
   },
 
   get_all() {

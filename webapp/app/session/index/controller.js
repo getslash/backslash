@@ -1,19 +1,21 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import { sort, oneWay } from '@ember/object/computed';
 import PaginatedFilteredController
   from "../../controllers/paginated_filtered_controller";
 import StatusFilterableController
   from "../../mixins/status-filterable/controller";
 
 import config from "../../config/environment";
+import SearchController from "../../mixins/search-controller";
 
-export default PaginatedFilteredController.extend(StatusFilterableController, {
-  queryParams: ["show_planned"],
+export default PaginatedFilteredController.extend(StatusFilterableController, SearchController, {
+  queryParams: ["show_planned", "search"],
   show_planned: false,
   sortProperties: ['test_index:desc'],
-  sortedTests: Ember.computed.sort('tests', 'sortProperties'),
-  collection: Ember.computed.oneWay("tests"),
+  sortedTests: sort('tests', 'sortProperties'),
+  collection: oneWay("tests"),
 
   available_page_sizes: config.APP.available_page_sizes,
 
-  display: Ember.inject.service()
+  display: service()
 });

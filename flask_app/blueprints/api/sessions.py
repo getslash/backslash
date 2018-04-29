@@ -82,8 +82,10 @@ def report_session_start(logical_id: str=None,
                 version=subject_data.get('version', None),
                 revision=subject_data.get('revision', None))
             returned.subject_instances.append(subject)
-            subject.subject.last_activity = get_current_time()
             db.session.add(subject)
+
+        assert list(returned.subject_instances)
+        returned.notify_subject_activity()
 
     if metadata is not None:
         for key, value in metadata.items():
@@ -108,6 +110,7 @@ def report_session_end(id: int, duration: (int, NoneType)=None, has_fatal_errors
         session = Session.query.filter(Session.id == id).one()
     except NoResultFound:
         error_abort('Session not found', code=requests.codes.not_found)
+    session.notify_subject_activity()
 
     if session.status not in (statuses.RUNNING, statuses.INTERRUPTED):
         error_abort('Session is not running', code=requests.codes.conflict)
@@ -153,21 +156,21 @@ def send_keepalive(session_id: int):
     s = Session.query.get_or_404(session_id)
     if s.end_time is not None:
         return
-    timestamp = get_current_time() + s.keepalive_interval
-    s.update_keepalive()
-    for test in Test.query.filter(Test.session_id==session_id,
-                                  Test.end_time == None,
-                                  Test.start_time != None):
-        test.extend_timespan_to(timestamp)
+
+    if s.keepalive_interval is not None:
+        timestamp = get_current_time() + s.keepalive_interval
+        s.update_keepalive()
+        for test in Test.query.filter(Test.session_id==session_id,
+                                      Test.end_time == None,
+                                      Test.start_time != None):
+            test.extend_timespan_to(timestamp)
+    s.notify_subject_activity()
     db.session.commit()
 
 
 @API
 def report_session_interrupted(id: int):
     s = Session.query.get_or_404(id)
-    if s.end_time is not None:
-        error_abort('Ended session cannot be marked as interrupted',
-                    code=requests.codes.conflict)
     s.status = statuses.INTERRUPTED
     if s.parent:
         s.parent.status = statuses.INTERRUPTED

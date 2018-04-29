@@ -35,6 +35,7 @@ Router.map(function() {
     this.route("sessions");
     this.route("admin");
     this.route("preferences");
+    this.route("starred");
   });
   this.route("authorize-runtoken", { path: "/runtoken/:requestid/authorize" });
   this.route("users");
@@ -47,6 +48,9 @@ Router.map(function() {
 
   this.route('admin', function() {
     this.route('migrations');
+    this.route('replications', function() {
+      this.route('new');
+    });
   });
   this.route('cases');
 });

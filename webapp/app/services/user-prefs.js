@@ -1,10 +1,12 @@
-import Ember from "ember";
+import { Promise as EmberPromise } from 'rsvp';
+import EmberObject from '@ember/object';
+import Service, { inject as service } from '@ember/service';
 
-export default Ember.Service.extend({
-  api: Ember.inject.service(),
+export default Service.extend({
+  api: service(),
 
   init() {
-    this.set("_cache", Ember.Object.create());
+    this.set("_cache", EmberObject.create());
   },
 
   _cache_populated: false,
@@ -52,7 +54,7 @@ export default Ember.Service.extend({
       });
     }
 
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new EmberPromise(function(resolve) {
       resolve(returned);
     });
   }

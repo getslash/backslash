@@ -220,7 +220,6 @@ def client(webapp_without_login, runtoken, testuser_id):
 def real_login(client):
     client.do_real_login()
 
-
 @pytest.fixture
 def get_real_object(db_context):
 

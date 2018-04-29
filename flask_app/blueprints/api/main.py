@@ -11,7 +11,7 @@ from sqlalchemy.exc import DataError
 
 from .blueprint import API
 from ... import metrics
-from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata
+from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata, UserStarredTests
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -29,6 +29,7 @@ from . import preferences # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
 from . import labels # pylint: disable=unused-import
 from . import quick_search # pylint: disable=unused-import
+from . import replication # pylint: disable=unused-import
 from . import timing # pylint: disable=unused-import
 from . import warnings # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
@@ -249,17 +250,21 @@ def report_test_skipped(id: int, reason: (str, NoneType)=None):
 
 @API
 def report_test_interrupted(id: int):
-    _update_running_test_status(id, statuses.INTERRUPTED)
+    _update_running_test_status(id, statuses.INTERRUPTED, allow_ended=True)
     db.session.commit()
 
 
-def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None):
+def _update_running_test_status(test_id, status, ignore_conflict=False, additional_updates=None, allow_ended=False):
     logbook.debug('marking test {} as {}', test_id, status)
     updates = {'status': status}
     if additional_updates:
         updates.update(additional_updates)
 
-    if not Test.query.filter(Test.id == test_id, Test.status == statuses.RUNNING).update(updates):
+    query = Test.query.filter(Test.id == test_id, Test.status != statuses.PLANNED)
+    if not allow_ended:
+        query = query.filter(Test.status == statuses.RUNNING)
+
+    if not query.update(updates):
         if Test.query.filter(Test.id == test_id).count():
             # we have a test, but it already ended
             if not ignore_conflict:
@@ -286,6 +291,16 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
 
     db.session.commit()
     return returned
+
+
+@API(require_real_login=True)
+def toggle_starred(object_id: str):
+    entry = UserStarredTests.query.filter_by(user_id=current_user.id, test_id=object_id).first()
+    if entry is not None:
+        db.session.delete(entry)
+    else:
+        db.session.add(UserStarredTests(user_id=current_user.id, test_id=object_id))
+    db.session.commit()
 
 @API(require_real_login=True)
 @requires_role('admin')

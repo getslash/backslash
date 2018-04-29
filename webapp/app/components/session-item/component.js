@@ -1,7 +1,9 @@
-import Ember from "ember";
+import { alias, oneWay, and, notEmpty } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
-  display: Ember.inject.service(),
+export default Component.extend({
+  display: service(),
   tagName: "a",
   attributeBindings: ["href"],
   classNames: ["item", "session", "clickable"],
@@ -17,15 +19,15 @@ export default Ember.Component.extend({
 
   show_labels: true,
 
-  session: Ember.computed.alias("item"),
+  session: alias("item"),
 
   href: function() {
     return "/#/sessions/" + this.get("session.display_id");
   }.property("session.id"),
 
-  in_pdb: Ember.computed.oneWay("session.in_pdb"),
+  in_pdb: oneWay("session.in_pdb"),
 
-  interrupted: Ember.computed.and(
+  interrupted: and(
     "item.finished_running",
     "item.has_tests_left_to_run"
   ),
@@ -44,7 +46,7 @@ export default Ember.Component.extend({
     "item.num_errors"
   ),
 
-  result_type: Ember.computed.oneWay("item.type"),
+  result_type: oneWay("item.type"),
 
   abandoned_reason: function() {
     if (this.get("session.is_abandoned")) {
@@ -57,7 +59,7 @@ export default Ember.Component.extend({
     }
   }.property("session.is_abandoned", "session.num_finished_tests"),
 
-  is_abandoned: Ember.computed.notEmpty("abandoned_reason"),
+  is_abandoned: notEmpty("abandoned_reason"),
 
   total_num_unsuccessful: function() {
     let item = this.get("item");

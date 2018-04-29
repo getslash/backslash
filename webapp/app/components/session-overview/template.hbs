@@ -1,7 +1,7 @@
 {{#if user}}
   <p>
     By {{#link-to "user.sessions" session_model.user_email}}
-    {{user.full_name}} {{users/user-avatar user=user real_email=session_model.real_email}}
+    {{if user.full_name user.full_name user.email}} {{users/user-avatar user=user real_email=session_model.real_email}}
     {{/link-to}}
 
     {{#if (and session_model.real_email (not (eq session_model.real_email user.email))) }}

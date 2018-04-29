@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -25,7 +25,7 @@ test('Session with errors has unsuccessful class', function(assert) {
 
 
 function _normal_session() {
-    return Ember.Object.create({
+    return EmberObject.create({
 	has_tests_left_to_run: false,
 	finished_running: true,
 	num_finished_tests: 10,

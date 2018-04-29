@@ -1,8 +1,8 @@
-import Ember from "ember";
+import Controller from '@ember/controller';
 import config from "../config/environment";
 import SearchControllerMixin from "./../mixins/search-controller";
 
-export default Ember.Controller.extend(SearchControllerMixin, {
+export default Controller.extend(SearchControllerMixin, {
   queryParams: ["search", "page", "page_size"],
 
   page: 1,

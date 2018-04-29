@@ -116,8 +116,9 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
 
     id = db.Column(db.Integer, primary_key=True)
     logical_id = db.Column(db.String(256), unique=True, index=True)
+    updated_at = db.Column(db.DateTime(), onupdate=datetime.now, index=True, nullable=True)
 
-    parent_logical_id = db.Column(db.String(256), db.ForeignKey('session.logical_id'), default=None, index=True)
+    parent_logical_id = db.Column(db.String(256), db.ForeignKey('session.logical_id', ondelete='CASCADE'), default=None, index=True)
     children = db.relationship('Session', backref=backref('parent', remote_side=[logical_id]))
     is_parent_session = db.Column(db.Boolean, server_default='FALSE')
     child_id = db.Column(db.String(20), default=None)
@@ -186,6 +187,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
         Index('ix_session_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_session_timespan', 'timespan', postgresql_using='gist'),
         Index('ix_session_delete_at', delete_at, postgresql_where=(delete_at != None)),
+        Index('ix_session_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
     )
 
 
@@ -239,6 +241,11 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
             self.extend_timespan_to(next_keepalive)
             if self.ttl_seconds is not None:
                 self.delete_at = self.next_keepalive + self.ttl_seconds
+
+    def notify_subject_activity(self):
+        for subject_instance in self.subject_instances:
+            subject_instance.subject.last_activity = max(subject_instance.subject.last_activity or 0, flux.current_timeline.time())
+
 
 class SubjectInstance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -355,7 +362,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
     id = db.Column(db.Integer, primary_key=True)
 
     test_index = db.Column(db.Integer)
-
+    updated_at = db.Column(db.DateTime(), onupdate=datetime.now, index=True, nullable=True)
     test_info_id = db.Column(db.Integer, db.ForeignKey('test_information.id', ondelete='CASCADE'), index=True)
     test_info = db.relationship('TestInformation', lazy='joined')
 
@@ -469,6 +476,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_start_time_status_lower', start_time.desc(), func.lower(status)),
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
         Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
+        Index('ix_test_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
     )
 
     @rendered_field
@@ -704,4 +712,64 @@ class Timing(db.Model):
         Index('ix_timing_test', test_id, name, postgresql_where=(test_id != None), unique=True),
         Index('ix_timing_session', session_id, name),
         Index('ix_timing_session_no_test', session_id, name, postgresql_where=(test_id == None), unique=True), # pylint: disable=singleton-comparison
+    )
+
+
+class Replication(db.Model, TypenameMixin):
+
+    STALE_TIMEOUT = 5 * 60
+
+    # identity
+    id = db.Column(db.Integer, primary_key=True)
+    service_type = db.Column(db.String(50), server_default='elastic-search', nullable=False)
+    url = db.Column(db.String(1024), nullable=False)
+    index_name = db.Column(db.String(1024), nullable=False, default='backslash')
+    username = db.Column(db.String(1024), nullable=True)
+    password = db.Column(db.String(1024), nullable=True)
+    paused = db.Column(db.Boolean(), server_default='FALSE')
+
+    # indicates whether or not tests remain to be exported for which there is no
+    # 'updated_at' value
+    untimed_done = db.Column(db.Boolean(), server_default='FALSE')
+    backlog_remaining = db.Column(db.Integer(), nullable=True)
+    last_replicated_timestamp = db.Column(db.DateTime(), nullable=True)
+    last_replicated_id = db.Column(db.Integer, nullable=True)
+
+    last_chunk_finished = db.Column(db.Float, server_default='0')
+
+    last_error = db.Column(db.Text(), nullable=True)
+    avg_per_second = db.Column(db.Float(), default=0)
+
+    _client = None
+
+    def reset(self):
+        self.paused = True
+        self.last_chunk_finished = self.last_replicated_id = self.backlog_remaining = \
+            self.last_error = None
+        self.untimed_done = False
+        self.avg_per_second = 0
+
+    @rendered_field
+    def active(self):
+        if self.paused:
+            return False
+        if self.last_error is not None:
+            return False
+        return flux.current_timeline.time() - self.last_chunk_finished < self.STALE_TIMEOUT
+
+    def get_client(self):
+        from elasticsearch import Elasticsearch
+        if self._client is None:
+            self._client = Elasticsearch([self.url])
+        return self._client
+
+class UserStarredTests(db.Model):
+    __tablename__ = "user_starred_tests"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id', ondelete='CASCADE'))
+    star_creation_time = db.Column(db.Float, default=get_current_time)
+
+    __table_args__ = (
+        Index('ix_starred_tests_user_id_test_id', user_id, test_id),
     )

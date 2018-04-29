@@ -1,13 +1,14 @@
-import Ember from "ember";
+import { notEmpty, gt } from '@ember/object/computed';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   page: 1,
   has_next: false,
   num_pages: null,
 
-  has_last: Ember.computed.notEmpty('num_pages'),
+  has_last: notEmpty('num_pages'),
 
-  has_prev: Ember.computed.gt("page", 1),
+  has_prev: gt("page", 1),
 
   actions: {
     first_page() {

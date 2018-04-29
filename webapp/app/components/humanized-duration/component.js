@@ -1,9 +1,9 @@
-import Ember from "ember";
+import Component from '@ember/component';
 import momentRange from "../../helpers/moment-range";
 
 /* global moment */
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: "span",
   start_time: null,
   end_time: null,

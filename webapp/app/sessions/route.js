@@ -1,4 +1,5 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import { inject as service } from '@ember/service';
 
 import PaginatedFilteredRoute from "../routes/paginated_filtered_route";
 import AuthenticatedRouteMixin
@@ -15,10 +16,10 @@ export default PaginatedFilteredRoute.extend(
   SearchRouteMixin,
   StatusFilterableRoute,
   {
-    offline: Ember.inject.service(),
+    offline: service(),
     titleToken: "Sessions",
 
-    user_prefs: Ember.inject.service(),
+    user_prefs: service(),
 
     queryParams: {
       search: {
@@ -54,8 +55,7 @@ export default PaginatedFilteredRoute.extend(
       if (user_id !== undefined) {
         query_params.user_id = user_id;
       }
-      return Ember.RSVP
-        .hash({
+      return hash({
           sessions: this.store.query("session", query_params),
           filters: this.transfer_filter_params(params),
           __prefs: this.get("user_prefs").ensure_cache_populated()

@@ -1,9 +1,10 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 import SearchRoute from "../mixins/search-route";
 
-export default Ember.Route.extend(AuthenticatedRouteMixin, SearchRoute, {
+export default Route.extend(AuthenticatedRouteMixin, SearchRoute, {
   titleToken: "Users",
 
   queryParams: {
@@ -16,7 +17,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, SearchRoute, {
   },
 
   model({page_size, page, sort, search}) {
-    return Ember.RSVP.hash({
+    return hash({
       users: this.store.query("user", {
         filter: search,
         page_size: page_size,

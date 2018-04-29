@@ -1,10 +1,12 @@
-import Ember from "ember";
+import { alias, oneWay } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
-  api: Ember.inject.service(),
-  user: Ember.computed.alias("model.user"),
-  tokens: Ember.computed.oneWay("model.tokens"),
-  session: Ember.inject.service(),
+export default Controller.extend({
+  api: service(),
+  user: alias("model.user"),
+  tokens: oneWay("model.tokens"),
+  session: service(),
 
   roles: function() {
     let user_roles = [];

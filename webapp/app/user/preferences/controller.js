@@ -1,52 +1,64 @@
-import Ember from "ember";
+import { oneWay } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
+
 
 /* global moment */
 
-export default Ember.Controller.extend({
-  user_prefs: Ember.inject.service(),
-  saving: false,
+export default Controller.extend({
+    user_prefs: service(),
+    saving: false,
 
-  time_format: Ember.computed.oneWay("model.time_format"),
+    time_format: oneWay("model.time_format"),
 
-  time_formats: [
-    "DD/MM/YYYY HH:mm:ss",
-    "DD/MM/YYYY HH:mm",
-    "DD.MM.YYYY HH:mm:ss",
-    "DD.MM.YYYY HH:mm",
-    "YYYY-MM-DD HH:mm:ss"
-  ],
+    init() {
+        this._super(...arguments);
 
-  start_page: Ember.computed.oneWay("model.start_page"),
+        this.set('time_formats', [
+            "DD/MM/YYYY HH:mm:ss",
+            "DD/MM/YYYY HH:mm",
+            "DD.MM.YYYY HH:mm:ss",
+            "DD.MM.YYYY HH:mm",
+            "YYYY-MM-DD HH:mm:ss"
+        ]);
 
-  start_pages: ["default", "my sessions"],
+        this.set('start_pages', [
+            "default", "my sessions"
+        ]);
+    },
 
-  display_time_formats: function() {
-    let returned = [];
-    let formats = this.get("time_formats");
+    start_page: oneWay("model.start_page"),
 
-    let now = moment();
 
-    for (let fmt of formats) {
-      returned.push(now.format(fmt));
+
+    display_time_formats: computed('time_formats', function() {
+        let returned = [];
+        let formats = this.get("time_formats");
+
+        let now = moment();
+
+        for (let fmt of formats) {
+            returned.push(now.format(fmt));
+        }
+
+        return returned;
+    }),
+
+    actions: {
+        choose_option: function(option_name, value) {
+            let self = this;
+
+            self.set("saving", true);
+            self
+                .get("user_prefs")
+                .set_pref(option_name, value)
+                .then(function(new_value) {
+                    self.set(option_name, new_value);
+                })
+                .always(function() {
+                    self.set("saving", false);
+                });
+        }
     }
-
-    return returned;
-  }.property("time_formats"),
-
-  actions: {
-    choose_option: function(option_name, value) {
-      let self = this;
-
-      self.set("saving", true);
-      self
-        .get("user_prefs")
-        .set_pref(option_name, value)
-        .then(function(new_value) {
-          self.set(option_name, new_value);
-        })
-        .always(function() {
-          self.set("saving", false);
-        });
-    }
-  }
 });

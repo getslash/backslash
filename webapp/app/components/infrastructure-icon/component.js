@@ -1,6 +1,6 @@
-import Ember from "ember";
+import Component from '@ember/component';
 
-var InfrastructureIconComponent = Ember.Component.extend({
+var InfrastructureIconComponent = Component.extend({
   tagName: "span"
 });
 

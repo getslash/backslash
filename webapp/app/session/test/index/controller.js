@@ -1,8 +1,9 @@
-import Ember from "ember";
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
 
 import RelativeItemJump from "../../../mixins/relative-item-jump";
 
-export default Ember.Controller.extend(RelativeItemJump, {
+export default Controller.extend(RelativeItemJump, {
   additional_metadata: function() {
     return {};
   }.property("test_model"),
@@ -15,7 +16,7 @@ export default Ember.Controller.extend(RelativeItemJump, {
       return {};
     }
 
-    let returned = Ember.Object.create({
+    let returned = EmberObject.create({
       Revision: test_model.get("scm_revision"),
       "File Hash": test_model.get("file_hash"),
       "Local Branch": test_model.get("scm_local_branch"),

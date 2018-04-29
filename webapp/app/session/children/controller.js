@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { sort } from '@ember/object/computed';
+import Controller from '@ember/controller';
 
 
-export default Ember.Controller.extend({
+export default Controller.extend({
     sortProperties: ['child_id:asc'],
-    sortedModel: Ember.computed.sort('children', 'sortProperties'),
+    sortedModel: sort('children', 'sortProperties'),
 });

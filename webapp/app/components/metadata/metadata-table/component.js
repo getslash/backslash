@@ -1,8 +1,9 @@
-import Ember from "ember";
+import EmberObject from '@ember/object';
+import Component from '@ember/component';
 
 const _MAX_VALUE_SIZE = 100;
 
-export default Ember.Component.extend({
+export default Component.extend({
   additional: {},
   metadata: {},
 
@@ -38,7 +39,7 @@ export default Ember.Component.extend({
         if (value.length > _MAX_VALUE_SIZE) {
           short_value = short_value.substr(0, _MAX_VALUE_SIZE) + '...';
         }
-        returned.push(Ember.Object.create({
+        returned.push(EmberObject.create({
           name: attrname,
           value: value,
           short_value: short_value,

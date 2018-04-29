@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Service from '@ember/service';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   set_by_session(session) {
     this.reset();
@@ -45,6 +46,6 @@ export default Ember.Service.extend({
 
   _set(url) {
 
-    Ember.$('#favicon').attr('href', url);
+    $('#favicon').attr('href', url);
   },
 });

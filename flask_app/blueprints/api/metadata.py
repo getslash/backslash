@@ -1,5 +1,6 @@
 import requests
 
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -8,7 +9,6 @@ from flask import abort
 from flask_simple_api import error_abort
 
 from ...models import Session, Test, db, SessionMetadata, TestMetadata
-from ...utils.db_utils import json_object_agg
 from .blueprint import API
 
 
@@ -44,7 +44,7 @@ def get_metadata(entity_type: str, entity_id: (int, str)):
 
 def _get_metadata_query(*, entity_type, entity_id):
     model = _get_metadata_model(entity_type)
-    query = db.session.query(json_object_agg(model.key, model.metadata_item))
+    query = db.session.query(func.json_object_agg(model.key, model.metadata_item))
     if entity_type == 'session':
         related = Session
     elif entity_type == 'test':

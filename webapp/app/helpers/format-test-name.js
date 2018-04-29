@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 
 export function formatTestName(params, hash) {
   let [info] = params;
@@ -22,4 +22,4 @@ export function formatTestName(params, hash) {
   return returned;
 }
 
-export default Ember.Helper.helper(formatTestName);
+export default helper(formatTestName);

@@ -1,14 +1,15 @@
-import Ember from "ember";
+import { reject, hash } from 'rsvp';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   model({test_id}) {
     let self = this;
     return self.store.query("test", {id: test_id}).then(function(tests) {
       let test = tests.get('firstObject');
       if (!test) {
-        return Ember.RSVP.reject({not_found: true});
+        return reject({not_found: true});
       }
-      return Ember.RSVP.hash({
+      return hash({
         test: test,
         session: self.store.find("session", test.get("session_id"))
       });

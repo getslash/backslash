@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { hash } from 'rsvp';
 import BaseRoute from "../../../routes/base";
 import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
@@ -12,7 +12,7 @@ export default BaseRoute.extend(
   {
     model: function() {
       const parent = this.modelFor("session.test").test_model;
-      return Ember.RSVP.hash({
+      return hash({
         warnings: this.infinityModel("warning", {
           test_id: parent.id,
           modelPath: "controller.warnings"

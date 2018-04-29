@@ -69,6 +69,11 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
                     obj.session.num_error_tests = Session.num_error_tests + 1
                     if obj.session.parent:
                         obj.session.parent.num_error_tests = obj.session.parent.num_error_tests + 1
+        if cls is Session and obj.parent is not None:
+            if is_failure:
+                obj.parent.num_failures = obj.parent.num_failures + 1
+            else:
+                obj.parent.num_errors = obj.parent.num_errors + 1
         db.session.add(obj)
 
     except NoResultFound:

@@ -1,7 +1,8 @@
-import Ember from "ember";
+import { oneWay } from '@ember/object/computed';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   single_error_route_name: "session.single_error",
 
-  parent_id: Ember.computed.oneWay("session.id")
+  parent_id: oneWay("session.id")
 });

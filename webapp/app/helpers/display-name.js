@@ -1,7 +1,8 @@
-import Ember from "ember";
+import { inject as service } from '@ember/service';
+import Helper from '@ember/component/helper';
 
-export default Ember.Helper.extend({
-  runtime_config: Ember.inject.service(),
+export default Helper.extend({
+  runtime_config: service(),
 
   compute(params /*, hash*/) {
     let cached = this.get("runtime_config").get_cached(

@@ -1,5 +1,5 @@
+import { not, oneWay, notEmpty } from '@ember/object/computed';
 import DS from "ember-data";
-import Ember from "ember";
 import HasLogicalId from "../mixins/has-logical-id";
 import HasComputedStatus from "../mixins/has-computed-status";
 
@@ -59,10 +59,10 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     return finished >= total;
   }.property("num_finished_tests", "total_num_tests"),
 
-  has_tests_left_to_run: Ember.computed.not("ran_all_tests"),
+  has_tests_left_to_run: not("ran_all_tests"),
   has_fatal_errors: DS.attr('boolean'),
 
-  has_any_error: Ember.computed.oneWay('num_errors'),
+  has_any_error: oneWay('num_errors'),
 
   total_num_tests: DS.attr("number"),
   hostname: DS.attr(),
@@ -103,11 +103,11 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
   real_email: DS.attr(),
 
-  is_delegate: Ember.computed.notEmpty("real_email"),
+  is_delegate: notEmpty("real_email"),
 
   is_running: function() {
     return this.get("status") === "RUNNING";
   }.property("status"),
 
-  finished_running: Ember.computed.not("is_running")
+  finished_running: not("is_running")
 });

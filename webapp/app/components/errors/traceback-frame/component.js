@@ -1,14 +1,15 @@
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
 import _ from "lodash";
-import Ember from "ember";
 
-export default Ember.Component.extend({
+export default Component.extend({
   frame: null,
 
   classNames: ['traceback-frame'],
   classNameBindings: ['expanded', 'frame.is_in_test_code:test-code'],
 
-  has_locals: Ember.computed.notEmpty("frame.locals"),
-  has_globals: Ember.computed.notEmpty("frame.globals"),
+  has_locals: notEmpty("frame.locals"),
+  has_globals: notEmpty("frame.globals"),
 
   sorted_globals: function() {
     return this._sort('frame.globals');

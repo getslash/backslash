@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 
 import PaginatedRoute from "../mixins/paginated-route";
 import ComplexModelRoute from "../mixins/complex-model-route";
@@ -7,7 +8,7 @@ import AuthenticatedRouteMixin
   from "ember-simple-auth/mixins/authenticated-route-mixin";
 
 
-export default Ember.Route.extend(
+export default Route.extend(
   PaginatedRoute, AuthenticatedRouteMixin,
   ComplexModelRoute, SearchRouteMixin, {
 
@@ -27,7 +28,7 @@ export default Ember.Route.extend(
   model({search, page, page_size}) {
     let query = { page: page, page_size: page_size, search: search};
 
-    return Ember.RSVP.hash({
+    return hash({
       search: search,
       cases: this.store.query('case', query),
     }).catch(function(exception) {

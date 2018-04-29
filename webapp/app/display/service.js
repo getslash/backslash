@@ -1,4 +1,5 @@
-import Ember from "ember";
+import Service from '@ember/service';
+import { computed } from '@ember/object';
 
 const _DEFAULTS = {
   humanize_times: true,
@@ -9,7 +10,7 @@ const _DEFAULTS = {
 
 let _classvars = {};
 
-let _setting = Ember.computed({
+let _setting = computed({
   set(key, value) {
     localStorage.setItem("display." + key, value === true);
     this.set("_cache_" + key, value);
@@ -37,4 +38,4 @@ for (let field_name in _DEFAULTS) {
   }
 }
 
-export default Ember.Service.extend(_classvars);
+export default Service.extend(_classvars);

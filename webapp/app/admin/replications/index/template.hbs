@@ -1,0 +1,62 @@
+{{#tool-bar}}
+  <p class="navbar-text">
+    Data Replication
+  </p>
+  <p class="navbar-text pull-right">
+    {{#link-to "admin.replications.new" class="btn btn-success"}}
+      <i class="fa fa-plus"></i> Add New...
+    {{/link-to}}
+  </p>
+{{/tool-bar}}
+
+
+<div class="container">
+  {{#each replications as |replication|}}
+    <div class="query-item">
+      <div class="row">
+        <div class="col-sm-10">
+          <div class="row">
+            <div class="col-sm-6">
+              {{if replication.usernam (concat replication.username '@')}}{{replication.url}}
+              {{#if replication.active}}
+                <span class="label label-success">running</span>
+              {{else}}
+                {{#if replication.last_error}}
+                  <span class="label label-danger">error</span>
+                {{else}}
+                  <span class="label label-default">paused</span>
+                {{/if}}
+              {{/if}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-9 faint">
+              {{#if replication.backlog_remaining}}Backlog: {{replication.backlog_remaining}}
+                {{#if replication.active}}
+                  ({{replication.time_remaining}} remaining @ {{trunc replication.avg_per_second}} tests/second)
+                {{/if}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <a class="clickable" {{action "deleteReplication" replication}}>Delete</a>
+          {{#if replication.active}}
+            <a class="clickable" {{action "pauseReplication" replication}}>Pause</a>
+          {{else}}
+            <a class="clickable" {{action "resetReplication" replication}}>Reset</a>
+            <a class="clickable" {{action "startReplication" replication}}>Start</a>
+          {{/if}}
+        </div>
+      </div>
+
+      {{#if replication.last_error}}
+        <div class="row">
+          <div class="col-sm-12">
+            <pre>{{replication.last_error}}</pre>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}}
+</div>

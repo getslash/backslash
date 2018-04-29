@@ -1,19 +1,21 @@
-import Ember from "ember";
+import { and } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ["container-fluid"],
   show_breakdown: true,
   session_model: null,
   user: null,
   metadata: null,
-  runtime_config: Ember.inject.service(),
+  runtime_config: service(),
 
   metadata_display_items: function() {
     let returned = this.get('runtime_config').get_cached('session_metadata_display_items');
     return returned;
   }.property(),
 
-  not_complete: Ember.computed.and(
+  not_complete: and(
     "session_model.finished_running",
     "session_model.has_tests_left_to_run"
   )
