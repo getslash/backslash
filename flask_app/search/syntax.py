@@ -16,6 +16,7 @@ _logger = logbook.Logger(__name__)
 
 _OPERATORS = {
     '~': lambda field, term: field.contains(term),
+    '!~': lambda field, term:  ~field.contains(term),
     '=': operator.eq,
     '!=': operator.ne,
     '<': operator.lt,
