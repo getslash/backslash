@@ -1,8 +1,10 @@
 import DS from "ember-data";
 import HasLogicalId from "../mixins/has-logical-id";
 import HasComputedStatus from "../mixins/has-computed-status";
+import { inject as service } from '@ember/service';
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
+  api: service(),
   session_display_id: DS.attr(),
 
   has_any_error: function() {
@@ -61,5 +63,10 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
     return this.get("status") === "RUNNING";
   }.property("status"),
 
-  is_session_abandoned: DS.attr("boolean")
+  is_session_abandoned: DS.attr("boolean"),
+
+  toggle_starred: function() {
+    return this.get("api")
+      .call("toggle_starred", { object_id: this.get("id") });
+  },
 });
