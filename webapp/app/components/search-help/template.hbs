@@ -1,9 +1,9 @@
-<i class="fa fa-question-circle fa-2x faint clickable" {{action (toggle "show" this)}}></i>
+<i class="fa fa-question-circle fa-2x faint clickable" {{action "toggleModal"}}></i>
 
-{{#if show}}
+{{#if display.show_help}}
 
   {{#modal-dialog
-     close=(toggle "show" this)
+     onClose="toggleModal"
      targetAttachment="center"
      translucentOverlay=true}}
     <div class="container">

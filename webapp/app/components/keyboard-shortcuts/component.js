@@ -109,7 +109,7 @@ export default Component.extend(KeyboardShortcuts, {
     element.typeahead("destroy");
     element.off();
     this.set("quick_search_open", false);
-    this.set("help_displayed", false);
+    this.get("display").set("show_help", false);
   },
 
   _do_if_in(paths, callback) {
@@ -166,7 +166,7 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     close_boxes_or_home() {
-      if (this.get("quick_search_open") || this.get("help_displayed")) {
+      if (this.get("quick_search_open") ||  this.get("display.show_help")) {
         this._close_boxes();
       } else {
         this._do_if_in(["sessions", "session.index"], function(controller) {
@@ -177,7 +177,7 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     display_help() {
-      this.set("help_displayed", true);
+      this.get("display").set('show_help', true);
     },
 
     goto_sessions() {
