@@ -5,7 +5,6 @@ import Controller from '@ember/controller';
 export default Controller.extend({
 
   runtime_config: service(),
-
   metadata_links: function() {
     let returned = [];
     let metadata = this.get('test_metadata');
