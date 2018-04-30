@@ -169,9 +169,9 @@ class TestSearchContext(SearchContext):
         subquery = db.session.query(session_label).filter(session_label.c.session_id == Test.session_id, session_label.c.label_id == labels[0].id).exists().correlate(Test)
         return _negate_maybe(op, subquery)
 
-    @only_ops(['~'])
+    @only_ops(['~', '!~'])
     def search__error_message(self, op, value):
-        return Error.message.contains(value)
+        return op.func(Error.message, value)
 
 
 
