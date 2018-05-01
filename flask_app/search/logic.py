@@ -4,7 +4,7 @@ import time
 
 from flask import current_app
 from sqlalchemy import func
-
+from flask_security import current_user
 from psycopg2.extras import DateTimeTZRange
 
 from . import value_parsers
@@ -12,7 +12,7 @@ from ..filters import builders as filter_builders
 from ..models import (Entity, Label, Product, ProductRevision, ProductVersion, Session,
                       SessionMetadata, Subject, SubjectInstance, Test, Error,
                       TestInformation, User, db, session_entity, session_label,
-                      session_subject)
+                      session_subject, UserStarredTests)
 from .exceptions import UnknownField
 from .helpers import only_ops
 
@@ -127,7 +127,10 @@ class TestSearchContext(SearchContext):
                 .join(User, User.id == Session.user_id))
 
     def get_fallback_filter(self, term):
-        return TestInformation.name.contains(term) | Error.message.contains(term)
+        query = TestInformation.name.contains(term) | Error.message.contains(term)
+        if term == "starred" and current_user and current_user.is_authenticated:
+            query = query | db.session.query(UserStarredTests).filter(UserStarredTests.user_id == current_user.id, UserStarredTests.test_id == Test.id).exists().correlate(Test)
+        return query
 
     @only_ops(['=', '!='])
     def search__subject(self, op, value): # pylint: disable=unused-argument
