@@ -1,10 +1,14 @@
 import Component from '@ember/component';
 
 export default Component.extend({
-  is_starred: false,
+  starred_object: null,
   actions: {
     toggle: function() {
-      this.sendAction('toggle');
+      let object = this.get('starred_object');
+      return object.toggle_starred()
+        .then(function() {
+            return object.reload();
+        });
     },
   },
 });

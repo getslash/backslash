@@ -71,6 +71,7 @@ export default Route.extend(
 
     setupController: function(controller, model) {
       this._super(controller, model);
+      controller.set("error", null);
       let parent_controller = this.controllerFor("session");
       parent_controller.set("test_filters", model.filters);
       controller.setProperties(model);
