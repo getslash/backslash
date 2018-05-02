@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.13.1
+
+* Searching for starred tests is now supported in test search as well
+* Tests can now be search based on them *not* containing a string in their error messages, via the `!~` operator
+* Fixed a UI bug affecting test queries, causing tests to disappear
+* Fixed UI bugs in help display
+
+
 ## Version 2.13.0
 
 * Backslash can now be configured to replicate test data to an external ElasticSearch service
