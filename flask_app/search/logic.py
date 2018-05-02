@@ -123,11 +123,10 @@ class TestSearchContext(SearchContext):
         return (Test.query
                 .join(Session)
                 .join(TestInformation)
-                .outerjoin(Error, Error.test_id == Test.id)
                 .join(User, User.id == Session.user_id))
 
     def get_fallback_filter(self, term):
-        query = TestInformation.name.contains(term) | Error.message.contains(term)
+        query = TestInformation.name.contains(term) | Error.query.filter(Error.test_id == Test.id, Error.message.contains(term)).exists().correlate(Test)
         if term == "starred" and current_user and current_user.is_authenticated:
             query = query | db.session.query(UserStarredTests).filter(UserStarredTests.user_id == current_user.id, UserStarredTests.test_id == Test.id).exists().correlate(Test)
         return query
@@ -174,7 +173,7 @@ class TestSearchContext(SearchContext):
 
     @only_ops(['~', '!~'])
     def search__error_message(self, op, value):
-        return op.func(Error.message, value)
+        return _negate_maybe(op, Error.query.filter(Error.test_id == Test.id, Error.message.contains(value)).exists().correlate(Test))
 
 
 
