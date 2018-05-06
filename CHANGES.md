@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.2
+
+* Fixed `!~` search being broken
+
 ## Version 2.13.1
 
 * Searching for starred tests is now supported in test search as well

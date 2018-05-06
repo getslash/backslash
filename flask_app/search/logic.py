@@ -282,6 +282,6 @@ class TestCaseSearchContext(SearchContext):
 
 
 def _negate_maybe(op, query):
-    if op.op == '!=':
+    if op.op.startswith('!'):
         query = ~query
     return query
