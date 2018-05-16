@@ -14,7 +14,7 @@ def test_timespan(session_or_test, get_real_object):
     assert span_start is not None
     assert timespan.upper is None
 
-    assert abs(timespan.lower - pendulum.fromtimestamp(obj.start_time).astimezone()) < _MIN_THRESHOLD
+    assert abs(timespan.lower - pendulum.from_timestamp(obj.start_time).astimezone()) < _MIN_THRESHOLD
 
     duration = 10
 
