@@ -16,7 +16,7 @@ def quick_search(term: str):
              ((select name as key, name, 'subject' as type from subject) UNION
 
               (select email as key, CASE WHEN first_name is NULL THEN email
-                          ELSE (first_name || ' ' || last_name || ' (' || email || ')') END as name, 'user' as type from "user")) u
+                          ELSE (first_name || ' ' || last_name || ' (' || email || ')') END as name, 'user' as type from "user" where exists(select * from session where user_id = "user".id))) u
         where u.name ilike :term
         ORDER BY name asc
         limit :num_hits

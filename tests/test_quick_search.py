@@ -12,6 +12,7 @@ def test_quick_search_subject(client, subjects, use_spaces):
 
 @pytest.mark.parametrize('use_spaces', [True, False])
 def test_quick_search_user(client, testuser_email, use_spaces):
+    client.report_session_start() # quick search only searches users with existing sessions
     term = testuser_email.split('@')[0][-3:]
     if use_spaces:
         term = ' {} '.format(term)
