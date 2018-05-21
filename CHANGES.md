@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.13.3
+
+* Fixed display issues with child sessions
+* Fixed quick search bar width
+
 ## Version 2.13.2
 
 * Fixed `!~` search being broken
