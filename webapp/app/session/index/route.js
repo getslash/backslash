@@ -81,12 +81,13 @@ export default Route.extend(
         // isExiting would be false if only the route's model was changing
         controller.set("search", "");
         controller.set("entered_search", "");
-        let query_params = this.get("queryParams");
-        for (let key in query_params) {
-          if (key.startsWith("show_")) {
-            controller.set(key, true);
-          }
-        }
+        controller.setProperties({
+          show_successful: true,
+          show_unsuccessful: true,
+          show_abandoned: true,
+          show_skipped: true,
+          show_planned: false,
+        });
       }
     },
   }
