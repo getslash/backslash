@@ -13,7 +13,7 @@ Flask-Migrate>=1.3.0
 Flask-SQLAlchemy>=2.2
 sqlalchemy>=1.1.0
 munch
-pendulum
+pendulum>=2.0.1
 pyparsing
 raven[flask]
 URLObject

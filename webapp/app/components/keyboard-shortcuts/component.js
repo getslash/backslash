@@ -147,9 +147,9 @@ export default Component.extend(KeyboardShortcuts, {
 
     self.get("store").queryRecord("test", filters).then(function(test) {
       if (test) {
-        self.router.transitionTo(
+        return self.router.transitionTo(
           current_path,
-          session.get("display_id"),
+          test.get("session_display_id"),
           test.get("display_id")
         );
       }
