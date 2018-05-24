@@ -6,7 +6,7 @@
           {{users/user-avatar email=comment.user_email}}
           <span>
             <strong>{{comment.user}}</strong> <span class="text-muted">commented {{moment-time ago=comment.timestamp}}</span>
-            {{#if comment.edited}}<span class="label label-default">Edited</span>{{/if}}
+            {{#if comment.edited}}<span class="badge badge-light">Edited</span>{{/if}}
             </span>
           <div class="controls">
             {{#if comment.can.edit}}

@@ -1,9 +1,7 @@
-{{#tool-bar}}
+{{#tool-bar filters=filters pagination=pagination}}
   <p class="navbar-text">
     {{capitalize (pluralize (display-name "subject"))}} / {{subject.name}}
   </p>
-
-  {{outlet "filter-controls"}}
 {{/tool-bar}}
 
 {{hr-separator title="Overview"}}
@@ -11,10 +9,10 @@
 
 {{query-results results=sessions
   meta=sessions.meta
-  page=(mut page)
-  page_size=(mut page_size)
-  show_successful=(mut show_successful)
-  show_unsuccessful=(mut show_unsuccessful)
-  show_abandoned=(mut show_abandoned)
-  show_skipped=(mut show_skipped)
+  page=(mut pagination.page)
+  page_size=(mut pagination.page_size)
+  show_successful=(mut filters.show_successful)
+  show_unsuccessful=(mut filters.show_unsuccessful)
+  show_abandoned=(mut filters.show_abandoned)
+  show_skipped=(mut filters.show_skipped)
 }}

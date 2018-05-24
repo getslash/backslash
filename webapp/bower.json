@@ -1,7 +1,6 @@
 {
   "name": "webapp",
   "dependencies": {
-    "bootstrap-sass": "~3.3.4",
     "c3": "~0.4.10",
     "clipboard": "~1.4.2",
     "d3": "~3.5.0",

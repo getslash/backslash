@@ -1,70 +1,57 @@
-<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-
-  <!-- image preloads in case of disconnection -->
-  <img src="static/assets/img/backslash-fire.jpg" style="display: none">
-  <!-- /image preloads -->
-
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      {{#link-to "index" class="navbar-brand"}}<img id="navbar-brand-img" src="/static/assets/img/backslash-logo.png">{{/link-to}}
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <div class="spinner"></div>
-    </div>
-    <div class="collapse navbar-collapse" id="navbar-collapse">
-      {{#if session.data.authenticated.user_info}}
-	{{# with session.data.authenticated.current_user as |u|}}
-	  {{#if u.email }}
-            <ul class="nav navbar-nav">
-              {{#nav-link to="sessions"}}Sessions{{/nav-link}}
-              {{#nav-link to="tests"}}Tests{{/nav-link}}
-              {{#nav-link to="cases"}}Test Cases{{/nav-link}}
-              {{#nav-link to="subjects"}}{{capitalize (pluralize (display_name "subject"))}}{{/nav-link}}
-              {{#nav-link to="users"}}Users{{/nav-link}}
-              {{# if (can "admin") }}
-		<li class="dropdown">
-		  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    Admin <span class="caret"></span>
-		  </a>
-		  <ul class="dropdown-menu">
-            {{#nav-link to="admin.migrations"}}Migrations{{/nav-link}}
-            {{#nav-link to="admin.replications"}}Replications{{/nav-link}}
-		  </ul>
-		</li>
-              {{/if}}
-              {{# if runtime_config.debug }}
-		        <li class="dropdown">
-		          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    Debug <span class="caret"></span>
-		          </a>
-		          <ul class="dropdown-menu">
-                    {{#nav-link to="component-proofing"}}Component Proofing Page{{/nav-link}}
-		            <li><a href="/styleguide">Style Guide...</a></li>
-		          </ul>
-		        </li>
-              {{/if}}
-            </ul>
-            <form class="navbar-form navbar-right">
-              <button type="submit" class="btn btn-default logout" {{action "logout"}}>Logout</button>
-            </form>
-
-            <p class="navbar-text navbar-right">
-              {{#link-to "user.sessions" u.email tagName="span" class="clickable"}}{{users/user-avatar user=u}} {{u.display_name}} {{/link-to}}
-            </p>
-	  {{/if}}
-	{{/with}}
-      {{/if}}
-    </div>
+{{#bs-navbar type='dark' position='sticky' backgroundColor='dark' as |navbar|}}
+  <div class="navbar-header">
+    {{navbar.toggle}}
+    {{#link-to "index" class="navbar-brand"}}<img id="navbar-brand-img" src="/static/assets/img/backslash-logo.png" style="height: 2em">{{/link-to}}
   </div>
-  {{# if state.loading}}
-    <div class="loading-indicator"></div>
+
+  {{#if session.data.authenticated.user_info}}
+    {{# with session.data.authenticated.current_user as |u|}}
+      {{#navbar.content}}
+        {{#navbar.nav as |nav|}}
+          {{#nav.item}}{{#nav.link-to "sessions"}}Sessions{{/nav.link-to}}{{/nav.item}}
+          {{#nav.item}}{{#nav.link-to "tests"}}Tests{{/nav.link-to}}{{/nav.item}}
+          {{#nav.item}}{{#nav.link-to "cases"}}Test Cases{{/nav.link-to}}{{/nav.item}}
+          {{#nav.item}}{{#nav.link-to "subjects"}}{{capitalize (pluralize (display_name "subject"))}}{{/nav.link-to}}{{/nav.item}}
+          {{#nav.item}}{{#nav.link-to "users"}}Users{{/nav.link-to}}{{/nav.item}}
+
+          {{#if (can "admin")}}
+            {{#nav.dropdown as |dd|}}
+              {{#dd.toggle}}Admin{{/dd.toggle}}
+              {{#dd.menu as |ddm|}}
+                {{#ddm.item}}{{#ddm.link-to "admin.migrations"}}Migrations{{/ddm.link-to}}{{/ddm.item}}
+                {{#ddm.item}}{{#ddm.link-to "admin.replications"}}Replications{{/ddm.link-to}}{{/ddm.item}}
+              {{/dd.menu}}
+            {{/nav.dropdown}}
+
+          {{/if}}
+
+          {{#if runtime_config.debug}}
+            {{#nav.dropdown as |dd|}}
+              {{#dd.toggle}}Debug{{/dd.toggle}}
+              {{#dd.menu as |ddm|}}
+                {{#ddm.item}}{{#ddm.link-to "component-proofing"}}Component Proofing{{/ddm.link-to}}{{/ddm.item}}
+                {{#ddm.item}}<a href="/styleguide" class="dropdown-item">Style Guide...</a>{{/ddm.item}}
+              {{/dd.menu}}
+            {{/nav.dropdown}}
+          {{/if}}
+
+        {{/navbar.nav}}
+      {{/navbar.content}}
+
+
+      {{#navbar.nav as |nav|}}
+        {{#nav.item}}
+          {{#link-to "user.sessions" u.email class="nav-link"}}
+            {{users/user-avatar user=u}} {{u.display_name}}
+          {{/link-to}}
+        {{/nav.item}}
+        <form class="form-inline" class="mr-sm-2">
+          <button type="submit" class="btn btn-default  my-2 my-sm-0 logout" {{action "logout"}}>Logout</button>
+        </form>
+      {{/navbar.nav}}
+    {{/with}}
   {{/if}}
-</nav>
+{{/bs-navbar}}
 
 
 {{keyboard-shortcuts}}
@@ -84,13 +71,13 @@
 {{outlet name="main"}}
 
 {{#if (not loading) }}
-<footer class="footer">
-  <div class="container text-center">
-    <p class="text-muted">
-      Backslash {{version}}
-    </p>
-  </div>
-</footer>
+  <footer class="footer">
+    <div class="container text-center">
+      <p class="text-muted">
+        Backslash {{version}}
+      </p>
+    </div>
+  </footer>
 
 {{/if}}
 

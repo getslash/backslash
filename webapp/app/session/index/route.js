@@ -61,14 +61,6 @@ export default Route.extend(
       });
     },
 
-    renderTemplate() {
-      this._super(...arguments);
-      this.render("filter-controls", {
-        into: "session",
-        outlet: "filter-controls"
-      });
-    },
-
     setupController: function(controller, model) {
       this._super(controller, model);
       controller.set("error", null);

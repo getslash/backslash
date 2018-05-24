@@ -19,12 +19,12 @@
             <div class="col-sm-6">
               {{if replication.usernam (concat replication.username '@')}}{{replication.url}}
               {{#if replication.active}}
-                <span class="label label-success">running</span>
+                <span class="badge badge-success">running</span>
               {{else}}
                 {{#if replication.paused}}
-                  <span class="label label-default">paused</span>
+                  <span class="badge badge-default">paused</span>
                 {{else}}
-                  <span class="label label-danger">error</span>
+                  <span class="badge badge-danger">error</span>
                 {{/if}}
               {{/if}}
               {{#if replication.lagging}}

@@ -108,12 +108,5 @@ export default PaginatedFilteredRoute.extend(
       return undefined;
     },
 
-    renderTemplate() {
-      this._super(...arguments);
-      this.render("filter-controls", {
-        into: "sessions",
-        outlet: "filter-controls"
-      });
-    }
   }
 );

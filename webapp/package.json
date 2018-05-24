@@ -17,15 +17,16 @@
     "test": "ember test"
   },
   "devDependencies": {
+    "bootstrap": "^4.0.0",
     "broccoli-asset-rev": "^2.4.5",
+    "broccoli-funnel": "^2.0.1",
     "broccoli-merge-trees": "^3.0.0",
-    "broccoli-static-compiler": "^0.2.2",
     "ember-ajax": "^3.0.0",
     "ember-aupac-typeahead": "3.0.0",
+    "ember-bootstrap": "^1.2.2",
     "ember-cli": "~3.0.0",
     "ember-cli-app-version": "^3.0.0",
     "ember-cli-babel": "^6.6.0",
-    "ember-cli-bootstrap-sassy": "^0.5.6",
     "ember-cli-clipboard": "^0.8.1",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^4.2.1",

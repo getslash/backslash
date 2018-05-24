@@ -1,15 +1,13 @@
-<nav class="navbar navbar-default tool-bar-nav">
-  {{#if back_button}}
-    <ul class="nav navbar-nav">
-      <button type="button" class="btn btn-default" {{action "back"}}> <i class="fa fa-arrow-left"></i> Back</button>
-    </ul>
-  {{/if}}
+{{#bs-navbar  as |navbar|}}
+  {{#navbar.content}}
+    {{#navbar.nav as |nav|}}
+      {{#if back_button}}
+        {{#nav.item}}
+          <button type="button" class="btn btn-default" {{action "back"}}> <i class="fa fa-arrow-left"></i> Back</button>
+        {{/nav.item}}
+      {{/if}}
 
-  {{#if title}}
-  <p class="navbar-text">
-    {{title}}
-  </p>
-  {{/if}}
-
-{{yield}}
-</nav>
+      {{yield nav}}
+    {{/navbar.nav}}
+  {{/navbar.content}}
+{{/bs-navbar}}
