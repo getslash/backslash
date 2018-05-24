@@ -41,48 +41,47 @@
 </div>
 
 
-<div class="navigation">
-  <div class="tabs">
-    <ul class="nav nav-tabs">
+{{#bs-nav type="tabs" as |nav|}}
 
-      {{#link-to 'session.test.index' tagName='li'}}
-	<a href>
+
+  {{#nav.item}}
+    {{#nav.link-to 'session.test.index'}}
 	  Test Info
-	</a>
-      {{/link-to}}
-
-      {{#if test_model.num_errors}}
-	{{#link-to 'session.test.errors' tagName='li'}}
-	  <a href>Errors <span class="label label-danger">{{test_model.num_errors}}</span></a>
-	{{/link-to}}
-      {{/if}}
-
-      {{#if test_model.num_interruptions}}
+    {{/nav.link-to}}
+  {{/nav.item}}
+  
+  {{#if test_model.num_errors}}
+    {{#nav.item}}
+	  {{#nav.link-to 'session.test.errors'}}
+	    Errors <span class="badge badge-pill badge-danger">{{test_model.num_errors}}</span>
+	  {{/nav.link-to}}
+    {{/nav.item}}
+  {{/if}}
+  
+  {{#if test_model.num_interruptions}}
 	{{#link-to 'session.test.interruptions' tagName='li'}}
-	  <a href>Interruptions <span class="label label-danger">{{test_model.num_interruptions}}</span></a>
+	  Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
 	{{/link-to}}
-      {{/if}}
-
-      {{#with test_model.num_warnings as |num_warnings|}}
+  {{/if}}
+  {{#with test_model.num_warnings as |num_warnings|}}
 	{{#if num_warnings}}
-	  {{#link-to 'session.test.warnings' tagName='li'}}
-	    <a href>Warnings <span class="label label-warning">{{num_warnings}}</span></a>
-	  {{/link-to}}
+      {{#nav.item}}
+	    {{#nav.link-to 'session.test.warnings'}}
+	      Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+	    {{/nav.link-to}}
+      {{/nav.item}}
 	{{/if}}
-      {{/with}}
+  {{/with}}
 
-      {{#link-to 'session.test.comments' tagName='li'}}
-	<a href>Comments
+  {{#nav.item}}
+    {{#nav.link-to 'session.test.comments'}}
+	  Comments
 	  {{#if test_model.num_comments}}
-	    <span class="label label-default"> {{test_model.num_comments}} </span>
+	    <span class="badge badge-pill badge-light"> {{test_model.num_comments}} </span>
 	  {{/if}}
-	</a>
-      {{/link-to}}
+    {{/nav.link-to}}
+  {{/nav.item}}
 
-
-    </ul>
-  </div>
-</div>
-
+{{/bs-nav}}
 
 {{outlet}}

@@ -1,7 +1,5 @@
-@import '_overrides.scss';
-@import 'bootstrap';
+@import "ember-bootstrap/bootstrap";
 @import 'colors.scss';
-
 @import "pod-styles";
 
 // Fonts
@@ -13,12 +11,6 @@ body {
 pre, .mono {
 
     font-family: 'Fira Mono', monospace;
-}
-
-
-// Body padding
-body {
-    padding-top: 52px;
 }
 
 // elements
@@ -47,7 +39,6 @@ body {
 
 @import 'sessions.scss';
 @import 'users.scss';
-@import 'loading-indicator.scss';
 
 @import 'boxes.scss';
 

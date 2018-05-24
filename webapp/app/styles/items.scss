@@ -190,29 +190,23 @@ $left-badge-close-width: 10px;
 	}
     } // end of .right-label
 
-    .main-info {
-        align-items: center;
-        display: flex;
-        flex: 5 1 10em;
-        padding: 1em;
-        @include ellipsis-overflow;
-
-
-        .user-info {
-	    color: $gray-light;
-	    flex: 0 0 5em;
-	    width: 300px;
-	    @include ellipsis-overflow;
-      @extend .hidden-xs;
-      @extend .hidden-sm;
-	}
-        .is-running {
-	    flex: 0 0;
-	    margin-right: 1em;
-	}
-
-    }
-
+   .main-info {
+       align-items: center;
+       display: flex;
+       flex: 5 1 10em;
+       padding: 1em;
+       @include ellipsis-overflow;
+       .user-info {
+	       color: $gray-light;
+	       flex: 0 0 5em;
+	       width: 300px;
+	       @include ellipsis-overflow;
+	   }
+       .is-running {
+	       flex: 0 0;
+	       margin-right: 1em;
+	   }
+   }
     &.condensed .main-info {
         padding-top: 0.1em;
         padding-bottom: 0.1em;
@@ -227,34 +221,26 @@ $left-badge-close-width: 10px;
     .additional-info {
         display: flex;
         flex: 0 0 35em;
-
         &.humanized {
             flex: 0 0 20em;
         }
-
         align-items: center;
 
-        @extend .hidden-xs;
-	@extend .hidden-sm;
         .times {
-	    @extend .hidden-xs;
-	    @extend .hidden-sm;
-	    color: $gray-light;
-	    flex: 0 0 5em;
+	        color: $gray-light;
+	        flex: 0 0 5em;
             justify-content: flex-end;
-	    white-space: nowrap;
-	}
+	        white-space: nowrap;
+	    }
 
         .duration {
-	    color: $gray-light;
-	    display: flex;
-	    flex: 0 0 8em;
-	    justify-content: flex-end;
-	    font-size: xx-small;
-	    align-items: center;
-	}
-
-
+	        color: $gray-light;
+	        display: flex;
+	        flex: 0 0 8em;
+	        justify-content: flex-end;
+	        font-size: xx-small;
+	        align-items: center;
+	    }
     }
 
     &:hover {
