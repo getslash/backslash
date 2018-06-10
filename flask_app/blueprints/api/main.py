@@ -5,7 +5,7 @@ import requests
 from flask import abort
 from flask_simple_api import error_abort
 from flask_security import current_user
-
+import json
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
 
@@ -180,6 +180,12 @@ def update_status_description(test_id: int, description: str):
     Test.query.get_or_404(test_id).status_description = description
     db.session.commit()
 
+@API
+def update_test_parameters(test_id: int, parameters: dict):
+    db.session.execute(
+        "update test set parameters = (case when parameters is null or parameters = 'null' then :update else parameters || :update end) where id = :id",
+        params={'update': json.dumps(parameters), 'id': test_id})
+    db.session.commit()
 
 @API
 def report_test_end(id: int, duration: (float, int)=None):
