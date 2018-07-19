@@ -24,7 +24,7 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
         _logger.debug(f'Replica {replica_id} is paused')
         return
     sleep_time = 60
-    iterator = None
+    results = None
     try:
         if reconfigure:
             _reconfigure_replica(replica)
@@ -32,20 +32,21 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
         start_time = replica.last_chunk_finished or flux.current_timeline.time()
 
         query = _get_tests_to_replicate_query(replica)
-        iterator = StoreLastIterator(_serialize_test(test) for test in models.db.session.execute(query))
+        results = [_serialize_test(test, replica) for test in models.db.session.execute(query)]
         client = replica.get_client()
 
-        num_replicated, _ = es_helpers.bulk(client, iterator)
+
+        num_replicated, _ = es_helpers.bulk(client, results)
         end_time = flux.current_timeline.time()
         replica.avg_per_second = num_replicated / (end_time - start_time)
 
         if not replica.untimed_done and num_replicated == 0:
             replica.untimed_done = True
 
-        if num_replicated:
-            replica.last_replicated_id = iterator.last['id']
-            if iterator.last['updated_at'] is not None:
-                replica.last_replicated_timestamp = iterator.last['updated_at']
+        if results:
+            replica.last_replicated_id = results[-1]['id']
+            if results[-1]['updated_at'] is not None:
+                replica.last_replicated_timestamp = results[-1]['updated_at']
             replica.backlog_remaining = max(0, replica.backlog_remaining - num_replicated)
         else:
             replica.backlog_remaining = 0
@@ -56,7 +57,7 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
     else:
         replica.last_error = None
         replica.last_chunk_finished = flux.current_timeline.time()
-        if iterator and num_replicated > 0:
+        if results:
             sleep_time = 1
 
     models.db.session.commit()
@@ -79,13 +80,12 @@ def _estimate_replication(replica):
 def _get_tests_to_replicate_query(replica, bulk_size=200):
 
     session_entities_query = select([
-        models.session_entity.c.session_id, models.session_entity.c.entity_id
+       models.session_entity.c.session_id, models.session_entity.c.entity_id
     ]).where(models.session_entity.c.session_id == models.Test.session_id).distinct().correlate(models.Test).alias()
 
     test_entities_query = select([
-        models.test_entity.c.test_id, models.test_entity.c.entity_id
+       models.test_entity.c.test_id, models.test_entity.c.entity_id
     ]).where(models.test_entity.c.test_id == models.Test.id).distinct().correlate(models.Test).alias()
-
 
     query = select([
         label("_type", text("'test'")),
@@ -93,8 +93,8 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
         label("_id", models.Test.id),
 
         *[getattr(models.Test, column_name)
-          for column_name in models.Test.__table__.columns.keys()
-          if column_name not in {'timespan', 'parameters'}],
+         for column_name in models.Test.__table__.columns.keys()
+         if column_name not in {'timespan', 'parameters'}],
 
         models.User.email.label('user_email'),
         cast(models.Test.parameters, sqlalchemy.Text).label('parameters'),
@@ -195,13 +195,7 @@ def _reconfigure_replica(replica):
         index=replica.index_name,
         doc_type='test',
         body={
-            'properties': {
-                field: {
-                    "type":   "date",
-                    "format": "epoch_second"
-                }
-                for field in ['start_time', 'end_time']
-            }
+            'properties': _get_properties_definitions()
         })
 
     client.indices.put_mapping(
@@ -214,15 +208,43 @@ def _reconfigure_replica(replica):
                         "match_mapping_type": "string",
                         "mapping": {
                             "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "ignore_above": str(_ES_MAX_STRING_LENGTH),
-                                    "type":  "keyword"}}}}}]})
+                            "ignore_above": str(_ES_MAX_STRING_LENGTH),
+                            }}}]})
 
 
-def _serialize_test(test):
+
+def _get_properties_definitions():
+    returned = {}
+
+    for datetime_field in ['start_time', 'end_time']:
+        returned[datetime_field] = {
+            "type":   "date",
+            "format": "epoch_second"
+        }
+
+    for keyword_field in [
+            'file_hash',
+            'logical_id',
+            'scm_revision',
+            'status',
+            'status',
+            'subjects.name',
+            'test.class_name',
+            'test.file_name',
+            'test.name',
+            'user_email',
+    ]:
+        returned[keyword_field] = {
+            "type": "keyword",
+        }
+
+    return returned
+
+
+def _serialize_test(test, replication):
     test = dict(test.items())
     _truncate(test)
+    test['_index'] = replication.index_name
     return test
 
 
@@ -234,18 +256,3 @@ def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):
             _truncate(value)
         elif isinstance(value, str) and len(value) > max_length:
             test_dict[key] = value[:max_length-3] + '...'
-
-
-class StoreLastIterator: # pylint: disable=too-few-public-methods, missing-docstring
-
-    def __init__(self, iterator):
-        self._iter = iterator
-        self.last = None
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        returned = next(self._iter)
-        self.last = returned
-        return returned
