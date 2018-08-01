@@ -243,11 +243,10 @@ def _get_properties_definitions():
 
 def _serialize_test(test, replication):
     test = dict(test.items())
+    _stringify_fields(test)
     _truncate(test)
     test['_index'] = replication.index_name
     return test
-
-
 
 
 def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):
@@ -256,3 +255,11 @@ def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):
             _truncate(value)
         elif isinstance(value, str) and len(value) > max_length:
             test_dict[key] = value[:max_length-3] + '...'
+
+
+def _stringify_fields(test):
+    for field_name in ("test_metadata", "session_metadata"):
+        field = test.get(field_name)
+        if isinstance(field, dict):
+            for key in list(field):
+                field[key] = str(field[key])
