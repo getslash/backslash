@@ -7,7 +7,7 @@
     {{#if (eq user.email model.email)}}
       {{#nav-link to="user.preferences"}}Preferences{{/nav-link}}
     {{/if}}
-    {{#if user.can.admin }}
+    {{#if (can "admin") }}
       {{#nav-link to="user.admin"}}Admin{{/nav-link}}
     {{/if}}
     {{#nav-link to="user.starred"}}Starred{{/nav-link}}
