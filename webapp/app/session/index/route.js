@@ -42,7 +42,7 @@ export default Route.extend(
       if (params.search) {
         query_params.search = params.search;
       }
-      return Ember.RSVP.hash({
+      return hash({
         session_model: session,
         tests: this.store.query("test", query_params),
         filters: filters

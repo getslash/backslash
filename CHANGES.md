@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.13.4
+
+* Fixed replication of test and session metadata to Elasticsearch
+* Report replication errors to Sentry if one is configured
+
 ## Version 2.13.3
 
 * Fixed display issues with child sessions
