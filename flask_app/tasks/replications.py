@@ -1,4 +1,5 @@
 from elasticsearch import helpers as es_helpers
+from flask import current_app
 import flux
 import logbook
 from .main import queue, needs_app_context
@@ -54,6 +55,8 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
     except Exception: # pylint: disable=broad-except
         _logger.error('Error during migration', exc_info=True)
         replica.last_error = traceback.format_exc()
+        if 'sentry' in current_app.extensions:
+            current_app.extensions['sentry'].captureException()
     else:
         replica.last_error = None
         replica.last_chunk_finished = flux.current_timeline.time()
