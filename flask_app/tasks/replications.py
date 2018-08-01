@@ -1,4 +1,5 @@
 from elasticsearch import helpers as es_helpers
+from flask import current_app
 import flux
 import logbook
 from .main import queue, needs_app_context
@@ -54,6 +55,8 @@ def do_elasticsearch_replication(replica_id, reconfigure=True):
     except Exception: # pylint: disable=broad-except
         _logger.error('Error during migration', exc_info=True)
         replica.last_error = traceback.format_exc()
+        if 'sentry' in current_app.extensions:
+            current_app.extensions['sentry'].captureException()
     else:
         replica.last_error = None
         replica.last_chunk_finished = flux.current_timeline.time()
@@ -243,11 +246,10 @@ def _get_properties_definitions():
 
 def _serialize_test(test, replication):
     test = dict(test.items())
+    _stringify_fields(test)
     _truncate(test)
     test['_index'] = replication.index_name
     return test
-
-
 
 
 def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):
@@ -256,3 +258,11 @@ def _truncate(test_dict, max_length=_ES_MAX_STRING_LENGTH):
             _truncate(value)
         elif isinstance(value, str) and len(value) > max_length:
             test_dict[key] = value[:max_length-3] + '...'
+
+
+def _stringify_fields(test):
+    for field_name in ("test_metadata", "session_metadata"):
+        field = test.get(field_name)
+        if isinstance(field, dict):
+            for key in list(field):
+                field[key] = str(field[key])
