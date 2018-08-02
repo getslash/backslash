@@ -22,13 +22,13 @@ services:
       - db
       - redis
     logging:
-      driver: syslog
+      driver: journald
 
   worker:
     image: getslash/backslash
     command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 .env/bin/celery -A flask_app.tasks.main worker -B --loglevel=info --max-tasks-per-child=500
     logging:
-      driver: syslog
+      driver: journald
     environment:
       - BACKSLASH_REDIS_SERVER=redis
       - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
@@ -57,7 +57,7 @@ services:
     depends_on:
       - db
     logging:
-      driver: syslog
+      driver: journald
 
   nginx:
     image: getslash/backslash

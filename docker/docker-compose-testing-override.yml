@@ -3,3 +3,11 @@ services:
   webapp:
     environment:
       - BACKSLASH_TESTING=1
+    logging:
+      driver: syslog
+  worker:
+    logging:
+      driver: syslog
+  monitor:
+    logging:
+      driver: syslog
