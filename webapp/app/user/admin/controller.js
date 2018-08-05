@@ -23,9 +23,7 @@ export default Controller.extend({
     toggle: function(role) {
       let self = this;
       if (
-        !self
-          .get("session.data.authenticated.user_info.roles")
-          .contains("admin")
+        !self.get("session.data.authenticated.current_user.capabilities.admin")
       ) {
         return;
       }
