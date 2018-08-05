@@ -132,9 +132,8 @@ def _parse_environment_routes():
 
 
 def _ensure_conf():
-    config_directory = os.environ.get('CONFIG_DIRECTORY', None)
-    if config_directory is None:
-        config_directory = os.environ['CONFIG_DIRECTORY'] = '/conf'
+    config_directory = os.environ.get('CONFIG_DIRECTORY')
+    assert config_directory, 'Configuration directory not specified through CONFIG_DIRECTORY'
 
     private_filename = os.path.join(config_directory, '000-private.yml')
     if not os.path.isfile(private_filename):
