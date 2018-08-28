@@ -57,6 +57,8 @@ install:
   - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
 
 script:
+  # Workaround for terminal failures on Travis (See https://github.com/travis-ci/travis-ci/issues/8982)
+  - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
   - cd webapp
   - yarn install
   - bower install
