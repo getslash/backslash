@@ -3,8 +3,7 @@ import logbook
 from flask import jsonify, request, current_app
 
 from flask_restful import reqparse, Resource
-from flask_simple_api import error_abort
-
+from werkzeug.exceptions import HTTPException
 from sqlalchemy.sql.expression import nullslast
 
 from .rendering import render_api_object
@@ -101,7 +100,7 @@ class ModelResource(RestResource):
         if sort_fields_expr:
             sort_fields = sort_fields_expr.split(',')
             if not all((sort_field in self.SORTABLE_FIELDS) for sort_field in sort_fields):
-                error_abort('Cannot sort according to given criteria - can only sort by {}'.format(', '.join(self.SORTABLE_FIELDS)))
+                rest_error_abort('Cannot sort according to given criteria - can only sort by {}'.format(', '.join(self.SORTABLE_FIELDS)))
 
 
             iterator = iterator.order_by(*[self._build_sort_expr(self.MODEL, f) for f in sort_fields])
@@ -120,9 +119,11 @@ class ModelResource(RestResource):
     def _paginate(self, query, metadata):
         args = pagination_parser.parse_args()
         page_size = metadata['page_size'] = args.page_size
+        if page_size <= 0:
+            rest_error_abort('Invalid page size specified')
         max_page_size = current_app.config['MAX_QUERY_PAGE_SIZE']
         if page_size > max_page_size:
-            error_abort('Query attempted to fetch more than the maximum number of results per page ({})'.format(max_page_size))
+            rest_error_abort('Query attempted to fetch more than the maximum number of results per page ({})'.format(max_page_size))
 
         returned = query.offset((args.page - 1) * args.page_size).limit(args.page_size + 1).all()
         metadata['page'] = args.page
@@ -154,3 +155,16 @@ pagination_parser = reqparse.RequestParser()
 pagination_parser.add_argument(
     'page_size', type=int, location='args', default=10)
 pagination_parser.add_argument('page', type=int, location='args', default=1)
+
+
+def rest_error_abort(message, code=400):
+    response = jsonify({
+        'errors': [
+            {'id': 1,
+             'status': code,
+             'title': message,
+            },
+        ],
+    })
+    response.status_code = code
+    raise HTTPException(response=response)
