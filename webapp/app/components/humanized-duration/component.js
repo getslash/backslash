@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import momentRange from "../../helpers/moment-range";
+import {computed} from '@ember/object';
 
 /* global moment */
 
@@ -7,52 +8,43 @@ export default Component.extend({
   tagName: "span",
   start_time: null,
   end_time: null,
+  seconds: null,
 
-  corrected_end_time: function() {
+  _corrected_end_time: computed('end_time', function() {
     return this.get("end_time") ? this.get("end_time") : moment().unix();
-  }.property("end_time"),
+  }),
 
-  humanized_range: function() {
-    return momentRange([], {
-      start_time: this.get("start_time"),
-      end_time: this.get("corrected_end_time")
-    });
-  }.property("start_time", "corrected_end_time"),
+  _computed_duration: computed('start_time', '_corrected_end_time', function() {
+    let start_time = this.get('start_time');
 
-  duration_milliseconds: function() {
-    return moment
-      .unix(this.get("corrected_end_time"))
-      .diff(moment.unix(this.get("start_time")));
-  }.property("start_time", "corrected_end_time"),
-
-  duration_seconds: function() {
-    var d = this.get("duration_milliseconds");
-
-    if (!d) {
+    if (!start_time) {
       return null;
     }
 
-    return d / 1000;
-  }.property("duration_milliseconds"),
+    let end_time = this.get('_corrected_end_time');
+    return moment.unix(end_time).diff(moment.unix(start_time)) / 1000;
+  }),
 
-  duration: function() {
-    return moment.duration(this.get("duration_milliseconds"));
-  }.property("duration_milliseconds"),
+  humanized_duration: computed('_computed_duration', 'seconds', function() {
+    let seconds = this.get("seconds");
 
-  humanized_duration: function() {
-    const d = this.get("duration_seconds");
+    if (seconds === null || seconds === undefined) {
+      seconds = this.get("_computed_duration");
+    }
 
-    if (!d) {
+    if (!seconds) {
       return "-";
     }
 
-    if (d < 60) {
-      return d + " seconds";
+    if (seconds < 60) {
+      return `${seconds} seconds`;
     }
-    let returned = this.get("duration").humanize();
+
+
+    let returned = moment.duration(seconds).humanize()
     if (!this.get("end_time")) {
       returned += " (not finished)";
     }
     return returned;
-  }.property("duration", "duration_seconds")
+  }),
 });
