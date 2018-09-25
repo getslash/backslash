@@ -20,6 +20,10 @@ queue = Celery('tasks', broker=os.environ.get('BACKSLASH_CELERY_BROKER_URL',
 queue.conf.update(
     CELERY_ENABLE_UTC=True,
     CELERYBEAT_SCHEDULE={
+        'rerun_stale_reliable_tasks': {
+            'task': 'flask_app.tasks.maintenance.rerun_stale_tasks',
+            'schedule': 60,
+        },
         'delete_discarded_sessions': {
             'task': 'flask_app.tasks.maintenance.delete_discarded_sessions',
             'schedule': 24 * 60 * 60,

@@ -9,14 +9,20 @@ from sqlalchemy import select, or_, and_, func, text
 from sqlalchemy.sql.expression import label, cast
 import traceback
 from ..utils import statuses
+from .maintenance import reliable_task
 
 
 
 _logger = logbook.Logger(__name__)
 
-@queue.task
+@reliable_task
 @needs_app_context
-def do_elasticsearch_replication(replica_id, reconfigure=True):
+def do_elasticsearch_replication(replica_id=None, reconfigure=True):
+    if replica_id is None:
+        for replica in models.Replication.query.all():
+            do_elasticsearch_replication.apply_async((replica.id,))
+        return
+
     replica = models.Replication.query.get(replica_id)
     if replica is None:
         _logger.debug(f'Replica {replica_id} already deleted. Not doing anything')
