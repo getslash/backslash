@@ -1,14 +1,41 @@
 import errno
 import flux
 from flask import current_app
+import functools
 import itertools
 import logbook
 import os
 from .main import queue, needs_app_context
 from .. import models
+from ..utils.redis import get_redis_client
 
 
 _logger = logbook.Logger(__name__)
+
+_RELIABLE_TASKS = []
+
+
+def reliable_task(task_func, stale_timeout=10 * 60):
+    assert not hasattr(task_func, 'delay'), 'reliable_task decorator must be applied before the celery.task'
+    task_key = f'reliable_{task_func.__module__}_{task_func.__name__}'
+
+    @functools.wraps(task_func)
+    def new_func(*args, **kwargs):
+        get_redis_client().setex(task_key, 'true', time=stale_timeout)
+        return task_func(*args, **kwargs)
+
+    returned = queue.task(new_func)
+    _RELIABLE_TASKS.append((returned, task_key))
+    return returned
+
+@queue.task
+def rerun_stale_tasks():
+    client = get_redis_client()
+    for task_func, key in _RELIABLE_TASKS:
+        if client.get(key) is None:
+            _logger.debug('Rerunning stale task {}...', task_func)
+            task_func.delay()
+
 
 @queue.task
 @needs_app_context
