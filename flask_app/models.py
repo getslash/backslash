@@ -636,7 +636,10 @@ class Comment(db.Model, TypenameMixin):
 
     @rendered_field
     def can(self):
-        is_mine = self.user_id == current_user.id
+        if current_user.is_authenticated:
+            is_mine = self.user_id == current_user.id
+        else:
+            is_mine = False
         return {
             'delete': is_mine,
             'edit': is_mine,
