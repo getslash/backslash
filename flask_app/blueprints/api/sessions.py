@@ -67,9 +67,9 @@ def report_session_start(logical_id: str=None,
         ttl_seconds=ttl_seconds,
     )
 
-    returned.update_keepalive()
-
     returned.mark_started()
+
+    returned.update_keepalive()
 
     if subjects:
         for subject_data in subjects:
