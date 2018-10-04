@@ -1,6 +1,7 @@
 import datetime
 import flux
 import pendulum
+import pytz
 
 
 _MIN_THRESHOLD = datetime.timedelta(seconds=0.01)
@@ -32,14 +33,22 @@ def test_timespan(session_or_test, get_real_object):
 def test_timespan_keepalive(started_session, get_real_object):
     obj = started_session
 
+    def almost_equal(a, b):
+        return abs(a - b) < _MIN_THRESHOLD
+
     assert obj.keepalive_interval
-    assert get_real_object(obj).timespan.upper is None
+
+    assert get_real_object(obj).timespan.upper is not None
+    timespan = get_real_object(obj).timespan
+    assert almost_equal(timespan.upper, timespan.lower + datetime.timedelta(seconds=obj.keepalive_interval))
+    flux.current_timeline.sleep(1)
 
     obj.send_keepalive()
 
     timespan = get_real_object(obj).timespan
     assert timespan.upper is not None
-    assert abs(timespan.upper - timespan.lower - datetime.timedelta(seconds=obj.keepalive_interval)) < _MIN_THRESHOLD
+    now = datetime.datetime.fromtimestamp(flux.current_timeline.time(), pytz.utc)
+    assert almost_equal(timespan.upper, now + datetime.timedelta(seconds=obj.keepalive_interval))
 
 
 def test_timespan_started_test(started_test, get_real_object):
