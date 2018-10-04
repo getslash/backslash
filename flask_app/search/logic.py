@@ -62,7 +62,10 @@ class SearchContext(object):
     def search__at(self, op, value): # pylint: disable=unused-argument
         min_value, max_value = value_parsers.parse_date(value)
         date_range = DateTimeTZRange(min_value, max_value, '[]')
-        return self.MODEL.timespan.overlaps(date_range)
+        returned = self.MODEL.timespan.overlaps(date_range)
+        if self.MODEL is Test:
+            returned &= Session.query.filter(Session.id == Test.session_id).filter(Session.timespan.overlaps(date_range)).exists().correlate(Test)
+        return returned
 
     def _search_time_field(self, field, op, value):
         min_date, max_date = value_parsers.parse_date(value)
