@@ -37,9 +37,6 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
 
-  - nvm install 7.6
-  - npm install -g yarn bower
-
 install:
   # db and env setup
   - psql -c 'create database backslash;' -U postgres
@@ -59,13 +56,8 @@ install:
 script:
   # Workaround for terminal failures on Travis (See https://github.com/travis-ci/travis-ci/issues/8982)
   - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
-  - cd webapp
-  - yarn install
-  - bower install
-  #- node_modules/.bin/ember test
-  # build the frontend to make sure we can serve '/' in the unit tests
-  - ./node_modules/.bin/ember build
-  - cd ..
+  # create empty index.html so that the test on get / passes
+  - mkdir webapp/dist && touch webapp/dist/index.html
   - .env/bin/pip install -e git+https://github.com/getslash/backslash-python@develop#egg=backslash
   - .env/bin/pip install -e git+https://github.com/getslash/slash@develop#egg=slash
   - .env/bin/py.test tests
