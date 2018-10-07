@@ -28,6 +28,11 @@ queue.conf.update(
             'task': 'flask_app.tasks.maintenance.delete_discarded_sessions',
             'schedule': 24 * 60 * 60,
         },
+        'delete_old_planned_distributed_tests': {
+            'task': 'flask_app.tasks.maintenance.delete_old_planned_distributed_tests',
+            'schedule': 60 * 60, # hourly
+        },
+
     },
 )
 
