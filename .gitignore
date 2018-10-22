@@ -37,8 +37,6 @@ src/static/font
 src/static/vendor/pines-notify/oxygen
 src/static/vendor/bootstrap/bootstrap.css
 .DS_Store
-.env
-.ansible-env
 .wheels
 bower_components
 static/js/app.js

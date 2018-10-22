@@ -4,10 +4,10 @@ services:
     environment:
       - BACKSLASH_TESTING=1
     logging:
-      driver: syslog
+      driver: json-file
   worker:
     logging:
-      driver: syslog
+      driver: json-file
   monitor:
     logging:
-      driver: syslog
+      driver: json-file
