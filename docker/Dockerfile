@@ -41,19 +41,20 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-
+RUN pip install pipenv
 
 VOLUME /conf
 VOLUME /uploads
 
 ADD ./manage.py /src/
+ADD ./Pipfile /src
+ADD ./Pipfile.lock /src
 ADD ./etc /src/etc
 ADD ./_lib /src/_lib
-ADD ./deps/ /src/deps
 ADD ./flask_app /src/flask_app
 ADD ./migrations /src/migrations
 
-RUN cd /src && $PYTHON_EXECUTABLE manage.py bootstrap --app
+RUN cd /src && pipenv install -d
 
 COPY --from=frontend-builder /frontend/dist /src/webapp/dist
 

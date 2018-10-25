@@ -1,0 +1,59 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = ">=0.10.1"
+alembic = ">=0.7.3"
+inflect = "*"
+"psycopg2" = "*"
+flux = ">=1.3.0"
+flask-simple-api = ">=1.4.0"
+munch = "*"
+pendulum = ">=2.0.1"
+pyparsing = "*"
+raven = {extras = ["flask"], version = "*"}
+celery = {extras = ["redis"], version = "*"}
+gunicorn = "*"
+watchdog = "*"
+google-api-python-client = "*"
+"oauth2client" = "*"
+pyldap = "*"
+dateparser = "*"
+pgcli = "*"
+elasticsearch = "<7.0.0,>=6.0.0"
+"dogpile.cache" = "*"
+Flask-Mail = "*"
+Flask-RESTful = "*"
+Flask-Login = ">=0.3.0,<0.4.0"
+Flask-Security = ">=1.7.5"
+Flask-Migrate = ">=1.3.0"
+Flask-SQLAlchemy = ">=2.2"
+SQLAlchemy = ">=1.1.0"
+URLObject = "*"
+weber_utils = "*"
+Werkzeug = ">=0.10.2"
+click = "<7"
+redis = "*"
+pyyaml = "*"
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-selenium = "*"
+backslash = ">=2.31.1"
+tmuxp = "*"
+ipython = "*"
+slash = "*"
+yarl = "*"
+Flask-Loopback = "*"
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+testserver = "python manage.py testserver"
+wsgi = "python manage.py testserver --no-tmux --port 8800"
+manage = "python manage.py"
+travis_publish = "python scripts/travis_docker_publish.py"

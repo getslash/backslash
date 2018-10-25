@@ -2,7 +2,7 @@ import click
 
 import logbook
 
-from .bootstrapping import requires_env, from_project_root
+from .bootstrapping import from_project_root
 
 _logger = logbook.Logger(__name__)
 
@@ -13,7 +13,6 @@ _logger = logbook.Logger(__name__)
 @click.option('use_related', '--use-related', default=False, is_flag=True)
 @click.argument('name')
 @click.argument('args', nargs=-1)
-@requires_env('app', 'develop')
 def suite(name, args, interactive=False, debug=False, use_subjects=False, use_related=False):
     import slash
     import gossip

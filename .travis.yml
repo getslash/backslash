@@ -40,28 +40,24 @@ before_install:
 install:
   # db and env setup
   - psql -c 'create database backslash;' -U postgres
-  - pip install -U setuptools pip virtualenv
-  - python manage.py bootstrap --develop
-  - python manage.py db upgrade
-
-  # required to work around https://github.com/dbcli/cli_helpers/issues/25
-  - .env/bin/pip uninstall -y cli_helpers
-  # (optional) install latest backlash-python
-  - .env/bin/pip install -e git://github.com/getslash/backslash-python.git@develop#egg=backslash-python
+  - pip install pipenv
+  - pipenv install -d
+  - pipenv run manage db upgrade
 
   # run docker-compose setup in testing mode
-  - sudo docker-compose -f docker/docker-compose.yml build
-  - sudo docker-compose -f docker/docker-compose.yml -f docker/docker-compose-testing-override.yml up -d
+  - sudo docker-compose -f docker/docker-compose.yml -p backslash build
+  - sudo docker-compose -f docker/docker-compose.yml -p backslash -f docker/docker-compose-testing-override.yml up -d
 
 script:
   # Workaround for terminal failures on Travis (See https://github.com/travis-ci/travis-ci/issues/8982)
   - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
   # create empty index.html so that the test on get / passes
   - mkdir webapp/dist && touch webapp/dist/index.html
-  - .env/bin/pip install -e git+https://github.com/getslash/backslash-python@develop#egg=backslash
-  - .env/bin/pip install -e git+https://github.com/getslash/slash@develop#egg=slash
-  - .env/bin/py.test tests
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then .env/bin/py.test integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Firefox --capability platform "Windows 10" --capability version latest --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
+  - pipenv run pytest tests
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then pipenv run pytest integration_tests --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Firefox --capability platform "Windows 10" --capability version latest --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
+
+after_failure:
+  - sudo docker logs backslash_webapp_1
 
 after_success:
-  - .env/bin/python scripts/travis_docker_publish.py
+  - pipenv run travis_publish
