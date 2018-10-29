@@ -2,6 +2,8 @@ version: '3'
 services:
   webapp:
     image: getslash/backslash:unstable
+  api-server:
+    image: getslash/backslash:unstable
   worker:
     image: getslash/backslash:unstable
   nginx:

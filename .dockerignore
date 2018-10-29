@@ -6,3 +6,4 @@
 webapp/tmp/*
 /docs
 /_assets_src/*
+/api-server/target/*

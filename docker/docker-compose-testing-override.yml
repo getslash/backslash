@@ -5,6 +5,9 @@ services:
       - BACKSLASH_TESTING=1
     logging:
       driver: json-file
+  api-server:
+    logging:
+      driver: json-file
   worker:
     logging:
       driver: json-file

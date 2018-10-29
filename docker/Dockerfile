@@ -6,7 +6,9 @@ ADD ./webapp/ /frontend/
 RUN cd /frontend/ && yarn install && bower install --allow-root
 RUN cd /frontend/ && node_modules/.bin/ember build --environment production
 
-
+FROM rust:1.30 as rust-builder
+ADD ./api-server /api-server
+RUN cd /api-server && rm -rf target && cargo test --release && cargo build --release
 
 
 FROM ubuntu:16.04
@@ -57,6 +59,7 @@ ADD ./migrations /src/migrations
 RUN cd /src && pipenv install -d
 
 COPY --from=frontend-builder /frontend/dist /src/webapp/dist
+COPY --from=rust-builder /api-server/target/release/api-server /api-server
 
 RUN rm -rf /etc/nginx/conf.d/*
 RUN rm -f /etc/nginx/sites-enabled/*
