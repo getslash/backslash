@@ -37,6 +37,7 @@ Werkzeug = ">=0.10.2"
 click = "<7"
 redis = "*"
 pyyaml = "*"
+itsdangerous = "*"
 
 [dev-packages]
 pytest = "*"
