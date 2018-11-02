@@ -28,6 +28,8 @@ RUN add-apt-repository ppa:chris-lea/nginx-devel
 RUN apt-get update
 RUN apt-get -y install nginx
 
+RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
+
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
 RUN apt-get install -y $PYTHON_EXECUTABLE $PYTHON_EXECUTABLE-dev
@@ -60,9 +62,6 @@ RUN cd /src && pipenv install -d
 
 COPY --from=frontend-builder /frontend/dist /src/webapp/dist
 COPY --from=rust-builder /api-server/target/release/api-server /api-server
-
-RUN rm -rf /etc/nginx/conf.d/*
-RUN rm -f /etc/nginx/sites-enabled/*
 
 EXPOSE 80 443
 
