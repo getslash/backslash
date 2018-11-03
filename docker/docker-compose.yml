@@ -93,7 +93,6 @@ services:
               "-timeout", "3600s",
               "-wait", "http://webapp:8000",
               "-wait", "http://api-server:8000",
-              "-stdout", "/var/log/nginx/access.log", "-stderr", "/var/log/nginx/error.log",
               "pipenv", "run", "manage", "docker-nginx-start"]
     ports:
       - "8000:80"

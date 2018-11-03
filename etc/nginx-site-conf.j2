@@ -13,6 +13,11 @@ server {
 
 {% endif %}
 
+log_format timed_combined '$remote_addr - $remote_user [$time_local] '
+    '"$request" $status $body_bytes_sent '
+    '$request_time $upstream_response_time $pipe';
+
+
 server {
     {% if hostname %}
     server_name {{ hostname }};
@@ -27,7 +32,7 @@ server {
     gzip_vary on;
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-    access_log /var/log/nginx/access.log;
+    access_log /var/log/nginx/access.log timed_combined;
     error_log /var/log/nginx/error.log warn;
 
     {% if environ['BACKSLASH_USE_SSL'] %}
