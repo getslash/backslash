@@ -30,6 +30,8 @@ RUN apt-get -y install nginx
 
 RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
 
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
 RUN apt-get install -y $PYTHON_EXECUTABLE $PYTHON_EXECUTABLE-dev
