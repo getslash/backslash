@@ -13,7 +13,6 @@ from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
-from ... import metrics
 from .blueprint import API
 
 NoneType = type(None)
@@ -93,7 +92,6 @@ def report_session_start(logical_id: str=None,
                 session=returned, key=key, metadata_item=value))
 
     db.session.add(returned)
-    metrics.num_new_sessions.increment()
     try:
         db.session.commit()
     except IntegrityError:

@@ -6,10 +6,6 @@ extern crate env_logger;
 extern crate failure;
 extern crate futures;
 extern crate log;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
 extern crate url;
 
 mod aggregators;
@@ -18,25 +14,16 @@ mod stats;
 
 use actix::prelude::*;
 use actix_web::{
-    client, server, App, AsyncResponder, Error, HttpMessage, HttpRequest, HttpResponse, Responder,
+    client, server, App, AsyncResponder, Error, HttpMessage, HttpRequest, HttpResponse,
 };
 use clap::{value_t, Arg};
 use env_logger::Builder;
 use futures::Future;
 use log::{error, info};
-use serde_json::json;
 use state::AppState;
 use stats::{RequestInfo, StatsCollector};
 use std::net::ToSocketAddrs;
 use std::time::{Duration, SystemTime};
-
-fn get_stats(req: &HttpRequest<AppState>) -> impl Responder {
-    req.state()
-        .stats_collector
-        .send(stats::QueryStats)
-        .and_then(|stats| Ok(HttpResponse::Ok().json(json!({ "data":stats.unwrap()}))))
-        .responder()
-}
 
 fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
     let start_time = SystemTime::now();
@@ -49,6 +36,7 @@ fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error
     new_url.set_query(req.uri().query());
 
     client::ClientRequest::build_from(req)
+        .no_default_headers()
         .uri(new_url)
         .streaming(req.payload())
         .unwrap()
@@ -63,6 +51,7 @@ fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error
                     .try_send(RequestInfo {
                         timing,
                         path,
+                        status: resp.status(),
                         peer: peer.map(|a| a.ip()),
                     }).unwrap_or_else(|e| error!("Failed sending request info: {:?}", e));
                 let mut client_resp = HttpResponse::build(resp.status());
@@ -128,7 +117,7 @@ fn main() {
 
     let server = server::new(move || {
         App::with_state(AppState::init(stats_collector.clone(), forwarded_addr))
-            .resource("/api-stats", |r| r.f(get_stats))
+            .resource("/metrics", |r| r.f(stats::render))
             .default_resource(|r| {
                 r.f(forward);
             })
