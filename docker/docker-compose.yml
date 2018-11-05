@@ -42,6 +42,8 @@ services:
 
   rabbitmq:
     image: rabbitmq
+    logging:
+      driver: journald
 
   db:
     image: "postgres:9.6"
@@ -50,8 +52,13 @@ services:
       - POSTGRES_DB=backslash
     volumes:
       - "db:/var/lib/postgresql/data"
+    logging:
+      driver: journald
+
   redis:
     image: "redis"
+    logging:
+      driver: journald
 
   monitor:
     image: "wrouesnel/postgres_exporter"
@@ -64,6 +71,16 @@ services:
     logging:
       driver: journald
 
+  api-server:
+    image: getslash/backslash
+    command: ["dockerize",
+              "-timeout", "3600s",
+              "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000", "webapp", "8000"]
+    logging:
+      driver: journald
+    depends_on:
+      - webapp
+
   nginx:
     image: getslash/backslash
     volumes:
@@ -75,10 +92,12 @@ services:
     command: ["dockerize",
               "-timeout", "3600s",
               "-wait", "http://webapp:8000",
-              "-stdout", "/var/log/nginx/access.log", "-stderr", "/var/log/nginx/error.log",
+              "-wait", "http://api-server:8000/metrics",
               "pipenv", "run", "manage", "docker-nginx-start"]
     ports:
       - "8000:80"
+    logging:
+      driver: journald
 
 volumes:
   uploads:

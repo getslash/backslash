@@ -9,11 +9,12 @@ _logger = logbook.Logger(__name__)
 @click.command()
 @click.option('--interactive', default=False, is_flag=True)
 @click.option('--debug', default=False, is_flag=True)
+@click.option('--backslash-url', default='http://127.0.0.1:8000')
 @click.option('use_subjects', '--use-subjects', default=False, is_flag=True)
 @click.option('use_related', '--use-related', default=False, is_flag=True)
 @click.argument('name')
 @click.argument('args', nargs=-1)
-def suite(name, args, interactive=False, debug=False, use_subjects=False, use_related=False):
+def suite(name, args, backslash_url, interactive=False, debug=False, use_subjects=False, use_related=False):
     import slash
     import gossip
 
@@ -52,7 +53,7 @@ def suite(name, args, interactive=False, debug=False, use_subjects=False, use_re
                 self.session.add_related_entity(entity_type='toaster', entity_name='toaster02')
 
 
-    plugin = _Plugin('http://127.0.0.1:8000', keepalive_interval=10, propagate_exceptions=True)
+    plugin = _Plugin(backslash_url, keepalive_interval=10, propagate_exceptions=True)
 
     @gossip.register('backslash.session_start')
     def configure(session):

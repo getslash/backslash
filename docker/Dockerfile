@@ -6,7 +6,9 @@ ADD ./webapp/ /frontend/
 RUN cd /frontend/ && yarn install && bower install --allow-root
 RUN cd /frontend/ && node_modules/.bin/ember build --environment production
 
-
+FROM rust:1.30 as rust-builder
+ADD ./api-server /api-server
+RUN cd /api-server && rm -rf target && cargo test --release && cargo build --release
 
 
 FROM ubuntu:16.04
@@ -25,6 +27,10 @@ RUN apt-get -y install build-essential software-properties-common libpq-dev ngin
 RUN add-apt-repository ppa:chris-lea/nginx-devel
 RUN apt-get update
 RUN apt-get -y install nginx
+
+RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
@@ -57,9 +63,7 @@ ADD ./migrations /src/migrations
 RUN cd /src && pipenv install -d
 
 COPY --from=frontend-builder /frontend/dist /src/webapp/dist
-
-RUN rm -rf /etc/nginx/conf.d/*
-RUN rm -f /etc/nginx/sites-enabled/*
+COPY --from=rust-builder /api-server/target/release/api-server /api-server
 
 EXPOSE 80 443
 

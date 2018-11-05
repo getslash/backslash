@@ -5,9 +5,27 @@ services:
       - BACKSLASH_TESTING=1
     logging:
       driver: json-file
+  api-server:
+    logging:
+      driver: json-file
   worker:
     logging:
       driver: json-file
+  db:
+    logging:
+      driver: json-file
+  redis:
+    logging:
+      driver: json-file
   monitor:
+    logging:
+      driver: json-file
+  nginx:
+    logging:
+      driver: json-file
+  rabbitmq:
+    logging:
+      driver: json-file
+  worker:
     logging:
       driver: json-file

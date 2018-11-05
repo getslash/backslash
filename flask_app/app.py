@@ -66,14 +66,13 @@ def create_app(config=None, setup_logging=True):
     from . import models
     from .blueprints import rest, views, runtoken
     from .blueprints.api.main import blueprint as api_blueprint
-    from .metrics import metrics_blueprint
 
     models.db.init_app(app)
 
     from . import auth
     Security(app, auth.user_datastore, register_blueprint=False)
 
-    blueprints = [auth.auth, views.blueprint, api_blueprint, rest.blueprint, runtoken.blueprint, metrics_blueprint]
+    blueprints = [auth.auth, views.blueprint, api_blueprint, rest.blueprint, runtoken.blueprint]
 
     from .errors import errors
 
