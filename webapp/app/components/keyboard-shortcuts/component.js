@@ -1,8 +1,8 @@
-import { later } from '@ember/runloop';
-import $ from 'jquery';
-import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-import { getOwner } from '@ember/application';
+import { later } from "@ember/runloop";
+import $ from "jquery";
+import { inject as service } from "@ember/service";
+import Component from "@ember/component";
+import { getOwner } from "@ember/application";
 import KeyboardShortcuts from "ember-keyboard-shortcuts/mixins/component";
 import { timeout, task } from "ember-concurrency";
 
@@ -11,37 +11,41 @@ let _keys = [
   {
     key: "h",
     action: "toggle_human_times",
-    description: "Toggles human-readable times"
+    description: "Toggles human-readable times",
   },
   { key: "a", action: "filter_none", description: "Show all entities" },
   {
     key: "f",
     action: "filter_only_failed",
-    description: "Hide all entities except failed"
+    description: "Hide all entities except failed",
   },
   {
     key: "c",
     action: "toggle_inline_comment",
-    description: "Toggle comment preview for items"
+    description: "Toggle comment preview for items",
   },
   {
     key: "s",
     action: "toggle_session_side_labels",
-    description: "Toggle the side breakdown panel for Sessions"
+    description: "Toggle the side breakdown panel for Sessions",
   },
   { key: "j", action: "jump_one_down", description: "Jump to next item" },
   { key: "k", action: "jump_one_up", description: "Jump to previous item" },
 
-  { key: "u", action: "goto_session_tests", description: "Go back to session's test list" },
+  {
+    key: "u",
+    action: "goto_session_tests",
+    description: "Go back to session's test list",
+  },
 
   { key: "esc", action: "close_boxes_or_home" },
   {
     key: "ctrl+s",
     action: "goto_sessions",
-    description: "Jump to Sessions view"
+    description: "Jump to Sessions view",
   },
   { key: "ctrl+u", action: "goto_users", description: "Jump to Users view" },
-  { key: "?", action: "display_help", description: "Show this help message" }
+  { key: "?", action: "display_help", description: "Show this help message" },
 ];
 
 let _shortcuts = {};
@@ -49,7 +53,7 @@ let _shortcuts = {};
 _keys.forEach(function(k) {
   _shortcuts[k.key] = {
     action: k.action,
-    global: false
+    global: false,
   };
 });
 
@@ -58,7 +62,7 @@ let _FILTERABLE_VIEWS = [
   "session.index",
   "user.sessions",
   "subject",
-  "test_info"
+  "test_info",
 ];
 
 export default Component.extend(KeyboardShortcuts, {
@@ -92,13 +96,13 @@ export default Component.extend(KeyboardShortcuts, {
         type: "session",
         name: "Go to session " + query,
         key: query,
-        route: "session"
+        route: "session",
       });
       res.push({
         type: "test",
         name: "Go to test " + query,
         key: query,
-        route: "test"
+        route: "test",
       });
     }
     callback(res);
@@ -137,23 +141,26 @@ export default Component.extend(KeyboardShortcuts, {
     console.assert(session_controller); // eslint-disable-line no-console
     console.assert(test); // eslint-disable-line no-console
     let session_id = test.get("session_id");
-    if (session.get('child_id') !== null) {
-      session_id = session.get('parent_logical_id')
+    if (session.get("child_id") !== null) {
+      session_id = session.get("parent_logical_id");
     }
     let filters = { session_id: session_id };
     filters[direction + "_index"] = test.get("test_index");
 
     Object.assign(filters, session_controller.get("test_filters"));
 
-    self.get("store").queryRecord("test", filters).then(function(test) {
-      if (test) {
-        return self.router.transitionTo(
-          current_path,
-          test.get("session_display_id"),
-          test.get("display_id")
-        );
-      }
-    });
+    self
+      .get("store")
+      .queryRecord("test", filters)
+      .then(function(test) {
+        if (test) {
+          return self.router.transitionTo(
+            current_path,
+            test.get("session_display_id"),
+            test.get("display_id")
+          );
+        }
+      });
   },
 
   actions: {
@@ -166,7 +173,7 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     close_boxes_or_home() {
-      if (this.get("quick_search_open") ||  this.get("display.show_help")) {
+      if (this.get("quick_search_open") || this.get("display.show_help")) {
         this._close_boxes();
       } else {
         this._do_if_in(["sessions", "session.index"], function(controller) {
@@ -177,7 +184,7 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     display_help() {
-      this.get("display").set('show_help', true);
+      this.toggleProperty("help_displayed");
     },
 
     goto_sessions() {
@@ -198,7 +205,7 @@ export default Component.extend(KeyboardShortcuts, {
 
       let session_controller = getOwner(this).lookup("controller:session");
       let session = session_controller.get("session_model");
-      this.router.transitionTo("session.index", session.get('display_id'));
+      this.router.transitionTo("session.index", session.get("display_id"));
     },
 
     toggle_human_times() {
@@ -230,7 +237,7 @@ export default Component.extend(KeyboardShortcuts, {
           {
             hint: true,
             highlight: true,
-            minLength: 1
+            minLength: 1,
           },
           {
             name: "Suggestions",
@@ -246,8 +253,8 @@ export default Component.extend(KeyboardShortcuts, {
                 }
 
                 return `<div><i class="fa fa-${icon}"></i> ${obj.name}</div>`;
-              }
-            }
+              },
+            },
           }
         );
         element
@@ -260,7 +267,10 @@ export default Component.extend(KeyboardShortcuts, {
             self.select(obj);
           })
           .on("typeahead:render", function() {
-            element.parent().find(".tt-selectable:first").addClass("tt-cursor");
+            element
+              .parent()
+              .find(".tt-selectable:first")
+              .addClass("tt-cursor");
           })
           .focus();
       });
@@ -272,6 +282,6 @@ export default Component.extend(KeyboardShortcuts, {
 
     jump_one_up() {
       this.jump_one("after");
-    }
-  }
+    },
+  },
 });
