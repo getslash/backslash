@@ -21,7 +21,7 @@ use env_logger::Builder;
 use futures::Future;
 use log::{error, info};
 use state::AppState;
-use stats::{RequestInfo, StatsCollector};
+use stats::{RequestEnded, RequestStarted, StatsCollector};
 use std::net::ToSocketAddrs;
 use std::time::{Duration, SystemTime};
 
@@ -35,6 +35,10 @@ fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error
     new_url.set_path(req.uri().path());
     new_url.set_query(req.uri().query());
 
+    stats_collector
+        .try_send(RequestStarted)
+        .unwrap_or_else(|e| error!("Failed sending request start notification: {:?}", e));
+
     client::ClientRequest::build_from(req)
         .no_default_headers()
         .uri(new_url)
@@ -42,26 +46,31 @@ fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error
         .unwrap()
         .send()
         .map_err(Error::from)
-        .and_then(move |resp| {
-            resp.body().from_err().and_then(move |body| {
-                let timing = SystemTime::now()
-                    .duration_since(start_time)
-                    .unwrap_or_else(|_| Duration::new(0, 0));
-                stats_collector
-                    .try_send(RequestInfo {
-                        timing,
-                        path,
-                        status: resp.status(),
-                        peer: peer.map(|a| a.ip()),
-                    }).unwrap_or_else(|e| error!("Failed sending request info: {:?}", e));
-                let mut client_resp = HttpResponse::build(resp.status());
-                for (header_name, header_value) in
-                    resp.headers().iter().filter(|(h, _)| *h != "connection")
-                {
-                    client_resp.header(header_name.clone(), header_value.clone());
-                }
-                Ok(client_resp.body(body))
-            })
+        .then(move |res| {
+            let timing = SystemTime::now()
+                .duration_since(start_time)
+                .unwrap_or_else(|_| Duration::new(0, 0));
+
+            stats_collector
+                .try_send(RequestEnded {
+                    timing,
+                    path,
+                    is_success: res
+                        .as_ref()
+                        .map(|resp| resp.status())
+                        .map(|s| s.is_success())
+                        .unwrap_or(false),
+                    peer: peer.map(|a| a.ip()),
+                }).unwrap_or_else(|e| error!("Failed sending request end notification: {:?}", e));
+            res
+        }).and_then(move |resp| {
+            let mut client_resp = HttpResponse::build(resp.status());
+            for (header_name, header_value) in
+                resp.headers().iter().filter(|(h, _)| *h != "connection")
+            {
+                client_resp.header(header_name.clone(), header_value.clone());
+            }
+            Ok(client_resp.streaming(resp.payload()))
         }).responder()
 }
 

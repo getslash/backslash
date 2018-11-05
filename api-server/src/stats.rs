@@ -1,5 +1,5 @@
 use actix::prelude::*;
-use actix_web::{http::StatusCode, AsyncResponder, HttpRequest, Responder};
+use actix_web::{AsyncResponder, HttpRequest, Responder};
 use aggregators::{CountHistorgram, RequestDurations};
 use failure::Error;
 use futures::Future;
@@ -17,6 +17,7 @@ pub struct StatsCollector {
     clients: HashMap<IpAddr, CountHistorgram>,
     num_sessions: u64,
     num_tests: u64,
+    num_pending_requests: u64,
 }
 
 impl StatsCollector {
@@ -26,6 +27,7 @@ impl StatsCollector {
             clients: HashMap::new(),
             num_tests: 0,
             num_sessions: 0,
+            num_pending_requests: 0,
         }
     }
 }
@@ -46,22 +48,38 @@ impl Actor for StatsCollector {
     }
 }
 
-pub struct RequestInfo {
+pub struct RequestStarted;
+
+impl Message for RequestStarted {
+    type Result = ();
+}
+
+impl Handler<RequestStarted> for StatsCollector {
+    type Result = ();
+
+    fn handle(&mut self, _msg: RequestStarted, _ctx: &mut Context<Self>) {
+        self.num_pending_requests += 1;
+    }
+}
+
+pub struct RequestEnded {
     pub(crate) path: String,
     pub(crate) peer: Option<IpAddr>,
     pub(crate) timing: Duration,
-    pub(crate) status: StatusCode,
+    pub(crate) is_success: bool,
 }
 
-impl Message for RequestInfo {
+impl Message for RequestEnded {
     type Result = ();
 }
 
-impl Handler<RequestInfo> for StatsCollector {
+impl Handler<RequestEnded> for StatsCollector {
     type Result = ();
 
-    fn handle(&mut self, msg: RequestInfo, _ctx: &mut Context<Self>) {
-        if msg.status.is_success() {
+    fn handle(&mut self, msg: RequestEnded, _ctx: &mut Context<Self>) {
+        self.num_pending_requests -= 1;
+
+        if msg.is_success {
             if msg.path == "/api/report_test_start" {
                 self.num_tests += 1;
             } else if msg.path == "/api/report_session_start" {
@@ -98,6 +116,7 @@ impl Handler<QueryStats> for StatsCollector {
         Ok(Stats {
             num_tests: self.num_tests,
             num_sessions: self.num_sessions,
+            num_pending_requests: self.num_pending_requests,
 
             endpoints: self
                 .aggs
@@ -128,6 +147,7 @@ pub struct Stats {
 
     num_sessions: u64,
     num_tests: u64,
+    num_pending_requests: u64,
 }
 
 impl Stats {
@@ -147,6 +167,13 @@ impl Stats {
             "Number of tests started since Backslash came up",
         );
 
+        write_gauge(
+            &mut returned,
+            "backslash_num_pending_requests",
+            self.num_pending_requests,
+            "Number of requests pending or being processed",
+        );
+
         write_gauge_map(
             &mut returned,
             "backslash_request_avg_latency",
@@ -158,7 +185,7 @@ impl Stats {
 
         write_gauge_map(
             &mut returned,
-            "request_min_latency",
+            "backslash_request_min_latency",
             &self.endpoints,
             "endpoint",
             |v| v.min_latency,
