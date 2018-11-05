@@ -149,7 +149,7 @@ impl Stats {
 
         write_gauge_map(
             &mut returned,
-            "request_avg_latency",
+            "backslash_request_avg_latency",
             &self.endpoints,
             "endpoint",
             |v| v.avg_latency,
@@ -167,7 +167,7 @@ impl Stats {
 
         write_gauge_map(
             &mut returned,
-            "request_max_latency",
+            "backslash_request_max_latency",
             &self.endpoints,
             "endpoint",
             |v| v.max_latency,
@@ -176,7 +176,7 @@ impl Stats {
 
         write_gauge_map(
             &mut returned,
-            "client_requests_1m",
+            "backslash_client_requests_1m",
             &self.clients,
             "client",
             |v| v.num_requests_1m,
@@ -185,7 +185,7 @@ impl Stats {
 
         write_gauge_map(
             &mut returned,
-            "client_requests_10m",
+            "backslash_client_requests_10m",
             &self.clients,
             "client",
             |v| v.num_requests_10m,
