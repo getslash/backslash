@@ -21,10 +21,10 @@
               {{#if replication.active}}
                 <span class="label label-success">running</span>
               {{else}}
-                {{#if replication.last_error}}
-                  <span class="label label-danger">error</span>
-                {{else}}
+                {{#if replication.paused}}
                   <span class="label label-default">paused</span>
+                {{else}}
+                  <span class="label label-danger">error</span>
                 {{/if}}
               {{/if}}
             </div>

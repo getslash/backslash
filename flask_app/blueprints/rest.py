@@ -426,6 +426,7 @@ class ReplicationsResource(ModelResource):
     MODEL = models.Replication
     ONLY_FIELDS = [
         'id',
+        'paused',
         'avg_per_second',
         'backlog_remaining',
         'last_error',
