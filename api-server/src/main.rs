@@ -41,6 +41,7 @@ fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error
 
     client::ClientRequest::build_from(req)
         .no_default_headers()
+        .timeout(Duration::from_secs(30))
         .uri(new_url)
         .streaming(req.payload())
         .unwrap()
