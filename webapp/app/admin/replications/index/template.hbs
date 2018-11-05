@@ -31,7 +31,7 @@
           </div>
           <div class="row">
             <div class="col-sm-9 faint">
-              {{#if replication.backlog_remaining}}Backlog: {{replication.backlog_remaining}}
+              {{#if replication.backlog_remaining}}Initializing: {{replication.backlog_remaining}}
                 {{#if replication.active}}
                   ({{replication.time_remaining}} remaining @ {{trunc replication.avg_per_second}} tests/second)
                 {{/if}}
