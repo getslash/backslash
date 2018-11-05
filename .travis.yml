@@ -58,6 +58,7 @@ script:
 
 after_failure:
   - sudo docker logs backslash_webapp_1
+  - sudo docker logs backslash_api-server_1
 
 after_success:
   - pipenv run travis_publish
