@@ -1,7 +1,7 @@
 {{#bs-navbar type='dark' position='sticky' backgroundColor='dark' as |navbar|}}
   <div class="navbar-header">
     {{navbar.toggle}}
-    {{#link-to "index" class="navbar-brand"}}<img id="navbar-brand-img" src="/static/assets/img/backslash-logo.png" style="height: 2em">{{/link-to}}
+    {{#link-to "index" class="navbar-brand"}}<img id="navbar-brand-img" src="assets/img/backslash-logo.png" style="height: 2em">{{/link-to}}
   </div>
 
   {{#if session.data.authenticated.user_info}}
