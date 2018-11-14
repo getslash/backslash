@@ -1,20 +1,7 @@
 {{#tool-bar}}
-  <ul class="nav navbar-nav navbar-right add-margin-right">
-    <p class="navbar-text" >
-      {{#if session_model.delete_at }}
-        <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
-        {{#if (can "admin")}}
-          <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
-        {{/if}}
-      {{else}}
-        {{#if (can "admin")}}
-          <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
-        {{/if}}
-      {{/if}}
-    </p>
-  </ul>
-  <ul class="nav navbar-nav">
-    <p class="navbar-text">
+
+  <ul class="navbar-nav">
+    <span class="navbar-text">
       {{#if session_model.parent_logical_id}}
         {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
           <i class="fa fa-arrows-alt"></i>
@@ -24,9 +11,26 @@
           <i class="fa fa-arrows-alt" title="Parallel session"></i>
         {{/if}}
       {{/if}}
-
-      Session {{elements/copyable-text value=session_model.display_id}}</p>
+      Session {{elements/copyable-text value=session_model.display_id}}
+    </span>
   </ul>
+
+  <ul class="navbar-nav ml-auto">
+
+    {{#if session_model.delete_at }}
+      <span class="navbar-text">
+        <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
+      </span>
+        {{#if (can "admin")}}
+          <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
+        {{/if}}
+    {{else}}
+      {{#if (can "admin")}}
+        <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
+      {{/if}}
+    {{/if}}
+  </ul>
+
 
 {{/tool-bar}}
 
