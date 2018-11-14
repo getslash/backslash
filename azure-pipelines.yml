@@ -7,12 +7,12 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
-- displayName: 'Build docker image'
-  script: docker build -f docker/Dockerfile .
+- script: docker build -f docker/Dockerfile .
+  displayName: 'Build docker image'
 
 
-- displayName: 'Install pipenv'
-  script: pipenv install -d
+- script: pipenv install -d
+  displayName: 'Install pipenv'
 
-- displayName: 'Run unit tests'
-  script: pipenv run pytest tests --tb=line
+- script: pipenv run pytest tests --tb=line
+  displayName: 'Run unit tests'
