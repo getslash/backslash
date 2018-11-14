@@ -8,11 +8,9 @@ pool:
 
 steps:
 - script: docker build -f docker/Dockerfile .
-  displayName: 'Build docker image'
 
-
-- script: pipenv install -d
-  displayName: 'Install pipenv'
+- script: |
+    pip install pipenv
+    pipenv install -d
 
 - script: pipenv run pytest tests --tb=line
-  displayName: 'Run unit tests'
