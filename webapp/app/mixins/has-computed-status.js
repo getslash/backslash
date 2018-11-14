@@ -1,4 +1,4 @@
-import Mixin from '@ember/object/mixin';
+import Mixin from "@ember/object/mixin";
 
 export default Mixin.create({
   computed_status: function() {
@@ -8,7 +8,8 @@ export default Mixin.create({
     }
 
     status = status.toLowerCase();
-    let interrupted = this.get("is_interrupted");
+    let interrupted =
+      this.get("is_interrupted") || this.get("num_interrupted_tests");
     let running = this.get("is_running") || status === "running";
 
     if (
@@ -23,8 +24,8 @@ export default Mixin.create({
     }
 
     if (
-      this.get("has_any_error") ||
-      ["error", "failure"].indexOf(status) !== -1
+      !interrupted &&
+      (this.get("has_any_error") || ["error", "failure"].indexOf(status) !== -1)
     ) {
       return "failed";
     }
@@ -51,6 +52,7 @@ export default Mixin.create({
     "is_abandoned",
     "is_session_abandoned",
     "num_skipped_tests",
+    "num_interrupted_tests",
     "has_any_error",
     "is_running"
   )

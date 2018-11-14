@@ -38,6 +38,7 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
         cls = Session
         object_id = session_id
 
+    message = message.replace("\x00", "\\x00")
     try:
         obj = cls.query.filter(cls.id == object_id).one()
         if is_failure:

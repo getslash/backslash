@@ -1,19 +1,16 @@
 <div class="alert alert-danger text-center">
-    {{#if error.syntax_errorr}}
-  Search syntax error
-{{else}}
-  {{#each-in error as |name value|}}
-    {{#with (capitalize (undasherize name)) as |display_name|}}
-      {{#with (capitalize (undasherize value)) as |display_value|}}
-        <p>
-        {{#if (eq display_name display_value)}}
-          <strong>{{display_name}}</strong>
-        {{else}}
-          <strong>{{capitalize (undasherize name)}}</strong>: {{value}}
-        {{/if}}
-        </p>
-      {{/with}}
-    {{/with}}
-  {{/each-in}}
-{{/if}}
+  {{#if error.syntax_error}}
+    Search syntax error
+  {{else}}
+    {{#if (eq error.status 400) }}
+      <p>
+        <strong>Error:</strong> {{error.title}}
+      </p>
+    {{else}}
+      <p><strong>Unexpected Error:</strong></p>
+      <p>
+        <pre>{{error_string}}</pre>
+      </p>
+    {{/if}}
+  {{/if}}
 </div>

@@ -13,6 +13,11 @@ server {
 
 {% endif %}
 
+log_format timed_combined '$remote_addr - $remote_user [$time_local] '
+    '"$request" $status $body_bytes_sent '
+    '$request_time $upstream_response_time $pipe';
+
+
 server {
     {% if hostname %}
     server_name {{ hostname }};
@@ -21,15 +26,13 @@ server {
     ## regular http - disable for https
     listen 80;
 
-
-
     gzip on;
     gzip_proxied any;
     gzip_types text/plain text/xml text/css application/x-javascript application/javascript;
     gzip_vary on;
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-    access_log /var/log/nginx/access.log;
+    access_log /var/log/nginx/access.log timed_combined;
     error_log /var/log/nginx/error.log warn;
 
     {% if environ['BACKSLASH_USE_SSL'] %}
@@ -84,7 +87,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://webapp:8000;
+        proxy_pass http://api-server:8000;
         client_max_body_size 10m;
     }
 }

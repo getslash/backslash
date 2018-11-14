@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin, current_user
 import flux
 
-from sqlalchemy.orm import backref
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.orm import backref
 from sqlalchemy.sql import and_, select, func
 
 from .utils import statuses
@@ -143,7 +143,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     subject_instances = db.relationship(
         'SubjectInstance', secondary=session_subject, backref=backref('sessions', lazy='dynamic'), lazy='joined', order_by=session_subject.c.ordinal)
 
-    labels = db.relationship('Label', secondary='session_label', lazy='joined')
+    labels = db.relationship('Label', secondary='session_label', lazy='joined', order_by="Label.name")
 
     # test counts
     total_num_tests = db.Column(db.Integer, default=None)
@@ -232,7 +232,6 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     @rendered_field(name='labels')
     def label_names(self):
         return [l.name for l in self.labels]
-
 
     def update_keepalive(self):
         if self.keepalive_interval is not None:
@@ -637,7 +636,10 @@ class Comment(db.Model, TypenameMixin):
 
     @rendered_field
     def can(self):
-        is_mine = self.user_id == current_user.id
+        if current_user.is_authenticated:
+            is_mine = self.user_id == current_user.id
+        else:
+            is_mine = False
         return {
             'delete': is_mine,
             'edit': is_mine,

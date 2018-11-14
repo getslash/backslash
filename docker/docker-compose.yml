@@ -8,7 +8,7 @@ services:
         "-timeout", "3600s",
         "-wait", "tcp://db:5432",
         "-wait", "tcp://rabbitmq:5672",
-        ".env/bin/python", "manage.py", "docker-start"
+        "pipenv", "run", "manage", "docker-start"
         ]
     volumes:
       - "conf:/conf"
@@ -27,7 +27,7 @@ services:
 
   worker:
     image: getslash/backslash
-    command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 .env/bin/celery -A flask_app.tasks.main worker -B --loglevel=info --max-tasks-per-child=500
+    command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 pipenv run celery -A flask_app.tasks.main worker -B --loglevel=info --max-tasks-per-child=500
     logging:
       driver: journald
     environment:
@@ -42,6 +42,8 @@ services:
 
   rabbitmq:
     image: rabbitmq
+    logging:
+      driver: journald
 
   db:
     image: "postgres:9.6"
@@ -50,8 +52,13 @@ services:
       - POSTGRES_DB=backslash
     volumes:
       - "db:/var/lib/postgresql/data"
+    logging:
+      driver: journald
+
   redis:
     image: "redis"
+    logging:
+      driver: journald
 
   monitor:
     image: "wrouesnel/postgres_exporter"
@@ -64,6 +71,16 @@ services:
     logging:
       driver: journald
 
+  api-server:
+    image: getslash/backslash
+    command: ["dockerize",
+              "-timeout", "3600s",
+              "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000", "webapp", "8000"]
+    logging:
+      driver: journald
+    depends_on:
+      - webapp
+
   nginx:
     image: getslash/backslash
     volumes:
@@ -75,10 +92,12 @@ services:
     command: ["dockerize",
               "-timeout", "3600s",
               "-wait", "http://webapp:8000",
-              "-stdout", "/var/log/nginx/access.log", "-stderr", "/var/log/nginx/error.log",
-              ".env/bin/python", "manage.py", "docker-nginx-start"]
+              "-wait", "http://api-server:8000/metrics",
+              "pipenv", "run", "manage", "docker-nginx-start"]
     ports:
       - "8000:80"
+    logging:
+      driver: journald
 
 volumes:
   uploads:

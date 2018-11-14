@@ -10,7 +10,6 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import DataError
 
 from .blueprint import API
-from ... import metrics
 from ...models import db, Session, Test, Comment, User, Role, Entity, TestVariation, TestMetadata, UserStarredTests
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
@@ -22,14 +21,15 @@ from ...utils.json import sanitize_json
 
 ##########################################################################
 
-from . import setup # pylint: disable=unused-import
-from . import sessions # pylint: disable=unused-import
-from . import metadata # pylint: disable=unused-import
-from . import preferences # pylint: disable=unused-import
+from . import comments # pylint: disable=unused-import
 from . import errors # pylint: disable=unused-import
 from . import labels # pylint: disable=unused-import
+from . import metadata # pylint: disable=unused-import
+from . import preferences # pylint: disable=unused-import
 from . import quick_search # pylint: disable=unused-import
 from . import replication # pylint: disable=unused-import
+from . import sessions # pylint: disable=unused-import
+from . import setup # pylint: disable=unused-import
 from . import timing # pylint: disable=unused-import
 from . import warnings # pylint: disable=unused-import
 from .blueprint import blueprint # pylint: disable=unused-import
@@ -155,7 +155,6 @@ def report_test_start(
         returned.test_variation.variation = sanitize_json(variation)
         db.session.add(returned)
         db.session.commit()
-    metrics.num_new_tests.increment()
     return returned
 
 @API
@@ -271,26 +270,6 @@ def _update_running_test_status(test_id, status, ignore_conflict=False, addition
                 error_abort('Test already ended', requests.codes.conflict)
         else:
             abort(requests.codes.not_found)
-
-
-@API(require_real_login=True)
-def post_comment(comment: str, session_id: int=None, test_id: int=None):
-    if not (session_id is not None) ^ (test_id is not None):
-        error_abort('Either session_id or test_id required')
-
-    if session_id is not None:
-        obj = Session.query.get_or_404(session_id)
-    else:
-        obj = Test.query.get_or_404(test_id)
-
-    returned = Comment(user_id=current_user.id, comment=comment)
-    obj.comments.append(returned)
-
-    obj.num_comments = type(obj).num_comments + 1
-    db.session.add(obj)
-
-    db.session.commit()
-    return returned
 
 
 @API(require_real_login=True)

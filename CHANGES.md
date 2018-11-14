@@ -1,5 +1,13 @@
 # Changelog
 
+
+## Version 2.14.0
+
+* UPGRADE NOTE: This version changes the docker-compose.yml used to deploy Backslash. Please update
+  the configuration when performing the upgrade
+* Added API server, written in Rust, to monitor API performance and abusing clients
+* Many bug fixes and small enhancements
+
 ## Version 2.13.4
 
 * Fixed replication of test and session metadata to Elasticsearch

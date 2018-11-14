@@ -6,7 +6,9 @@ ADD ./webapp/ /frontend/
 RUN cd /frontend/ && yarn install && bower install --allow-root
 RUN cd /frontend/ && node_modules/.bin/ember build --environment production
 
-
+FROM rust:1.30 as rust-builder
+ADD ./api-server /api-server
+RUN cd /api-server && rm -rf target && cargo test --release && cargo build --release
 
 
 FROM ubuntu:16.04
@@ -26,6 +28,10 @@ RUN add-apt-repository ppa:chris-lea/nginx-devel
 RUN apt-get update
 RUN apt-get -y install nginx
 
+RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
 RUN apt-get install -y $PYTHON_EXECUTABLE $PYTHON_EXECUTABLE-dev
@@ -41,24 +47,23 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-
+RUN pip install pipenv
 
 VOLUME /conf
 VOLUME /uploads
 
 ADD ./manage.py /src/
+ADD ./Pipfile /src
+ADD ./Pipfile.lock /src
 ADD ./etc /src/etc
 ADD ./_lib /src/_lib
-ADD ./deps/ /src/deps
 ADD ./flask_app /src/flask_app
 ADD ./migrations /src/migrations
 
-RUN cd /src && $PYTHON_EXECUTABLE manage.py bootstrap --app
+RUN cd /src && pipenv install -d
 
 COPY --from=frontend-builder /frontend/dist /src/webapp/dist
-
-RUN rm -rf /etc/nginx/conf.d/*
-RUN rm -f /etc/nginx/sites-enabled/*
+COPY --from=rust-builder /api-server/target/release/api-server /api-server
 
 EXPOSE 80 443
 

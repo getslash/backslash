@@ -1,8 +1,6 @@
 import click
 import logbook
 
-from .bootstrapping import requires_env
-
 
 @click.group()
 def user():
@@ -14,7 +12,6 @@ def token():
 
 @token.command()
 @click.argument('user_email')
-@requires_env("app")
 def create(user_email):
     from flask_app.app import create_app
     from flask_app import models
@@ -34,7 +31,6 @@ def create(user_email):
 
 
 @token.command()
-@requires_env("app")
 def list():
     from flask_app.app import create_app
     from flask_app import models

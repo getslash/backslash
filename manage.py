@@ -7,9 +7,7 @@ import string
 import subprocess
 from collections import defaultdict
 
-from _lib.bootstrapping import bootstrap_env, from_project_root, requires_env, from_env_bin
-bootstrap_env(["base"])
-
+from _lib.bootstrapping import from_project_root, from_env_bin
 
 from _lib.params import APP_NAME
 from _lib.frontend import frontend, ember
@@ -37,19 +35,6 @@ cli.add_command(frontend)
 cli.add_command(ember)
 cli.add_command(celery)
 cli.add_command(suite)
-
-
-@cli.command()
-@click.option("--develop", is_flag=True)
-@click.option("--app", is_flag=True)
-def bootstrap(develop, app):
-    deps = ["base"]
-    if develop:
-        deps.append("develop")
-    if app:
-        deps.append("app")
-    bootstrap_env(deps)
-    click.echo(click.style("Environment up to date", fg='green'))
 
 
 @cli.command(name='docker-start')
@@ -148,7 +133,6 @@ def _generate_secret_string(length=50):
 @cli.command()
 @click.option('-p', '--port', default=8000, envvar='TESTSERVER_PORT')
 @click.option('--tmux/--no-tmux', is_flag=True, default=True)
-@requires_env("app", "develop")
 def testserver(tmux, port):
     if tmux:
         return _run_tmux_frontend(port=port)
@@ -164,7 +148,7 @@ def testserver(tmux, port):
     app.run(port=port, extra_files=extra_files, use_reloader=False)
 
 def _run_tmux_frontend(port):
-    tmuxp = from_env_bin('tmuxp')
+    tmuxp = os.path.join(os.path.dirname(sys.executable), 'tmuxp')
     os.execve(tmuxp, [tmuxp, 'load', from_project_root('_lib', 'frontend_tmux.yml')], dict(os.environ, TESTSERVER_PORT=str(port), CONFIG_DIRECTORY=from_project_root("conf.d")))
 
 
@@ -173,10 +157,9 @@ def unittest():
     _run_unittest()
 
 
-@requires_env("app", "develop")
 def _run_unittest():
     subprocess.check_call(
-        [from_env_bin("py.test"), "tests/", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
+        [sys.executable, '-m', "pytest", "tests/", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
 
 
 @cli.command()
@@ -185,10 +168,9 @@ def pytest(pytest_args):
     _run_pytest(pytest_args)
 
 
-@requires_env("app", "develop")
 def _run_pytest(pytest_args=()):
     subprocess.check_call(
-        [from_env_bin("py.test")]+list(pytest_args), cwd=from_project_root())
+        [sys.executable, '-m', "pytest"]+list(pytest_args), cwd=from_project_root())
 
 
 @cli.command()
@@ -196,15 +178,13 @@ def fulltest():
     _run_fulltest()
 
 
-@requires_env("app", "develop")
 def _run_fulltest(extra_args=()):
-    subprocess.check_call([from_env_bin("py.test"), "tests"]
+    subprocess.check_call([sys.executable, '-m', "pytest", "tests"]
                           + list(extra_args), cwd=from_project_root())
 
 
 
 @cli.command()
-@requires_env("app", "develop")
 def shell():
     from flask_app.app import create_app
     from flask_app import models

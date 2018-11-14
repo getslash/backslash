@@ -13,7 +13,6 @@ from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
-from ... import metrics
 from .blueprint import API
 
 NoneType = type(None)
@@ -67,9 +66,9 @@ def report_session_start(logical_id: str=None,
         ttl_seconds=ttl_seconds,
     )
 
-    returned.update_keepalive()
-
     returned.mark_started()
+
+    returned.update_keepalive()
 
     if subjects:
         for subject_data in subjects:
@@ -93,7 +92,6 @@ def report_session_start(logical_id: str=None,
                 session=returned, key=key, metadata_item=value))
 
     db.session.add(returned)
-    metrics.num_new_sessions.increment()
     try:
         db.session.commit()
     except IntegrityError:
@@ -178,10 +176,16 @@ def report_session_interrupted(id: int):
 
 
 @API(require_real_login=True)
-@requires_role('admin')
-def discard_session(session_id: int, grace_period_seconds: int=_DEFAULT_DELETE_GRACE_PERIOD_SECONDS):
+@requires_role("admin")
+def discard_session(
+    session_id: int, grace_period_seconds: int = _DEFAULT_DELETE_GRACE_PERIOD_SECONDS
+):
     session = Session.query.get_or_404(session_id)
-    session.delete_at = flux.current_timeline.time() + grace_period_seconds # pylint: disable=undefined-variable
+
+    delete_at = flux.current_timeline.time() + grace_period_seconds  # pylint: disable=undefined-variable
+    Session.query.filter(
+        (Session.parent_logical_id == session.logical_id) | (Session.id == session.id)
+    ).update({Session.delete_at: delete_at}, synchronize_session=False)
     db.session.commit()
 
 
@@ -199,8 +203,10 @@ def discard_sessions_search(search_string: str, grace_period_seconds: int=_DEFAU
 
 
 @API(require_real_login=True)
-@requires_role('admin')
+@requires_role("admin")
 def preserve_session(session_id: int):
     session = Session.query.get_or_404(session_id)
-    session.delete_at = None
+    Session.query.filter(
+        (Session.parent_logical_id == session.logical_id) | (Session.id == session.id)
+    ).update({Session.delete_at: None}, synchronize_session=False)
     db.session.commit()
