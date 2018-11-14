@@ -10,6 +10,7 @@ steps:
 - script: docker build -f docker/Dockerfile .
 
 - script: |
+    pip install -U pip virtualenv setuptools
     pip install pipenv
     pipenv install -d
 
