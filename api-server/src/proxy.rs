@@ -1,4 +1,7 @@
-use actix_web::{client, AsyncResponder, Error, HttpMessage, HttpRequest, HttpResponse};
+use actix_web::{
+    client, http::header::HeaderValue, AsyncResponder, Error, HttpMessage, HttpRequest,
+    HttpResponse,
+};
 use futures::future::ok;
 use futures::Future;
 use log::error;
@@ -53,7 +56,9 @@ fn construct_response(
     resp: client::ClientResponse,
 ) -> Box<dyn Future<Item = HttpResponse, Error = Error>> {
     let mut client_resp = HttpResponse::build(resp.status());
-    for (header_name, header_value) in resp.headers().iter().filter(|(h, _)| *h != "connection") {
+    for (header_name, header_value) in resp.headers().iter().filter(|(h, v)| {
+        *h != "connection" && !(*h == "content-encoding" && *v != HeaderValue::from_static("gzip"))
+    }) {
         client_resp.header(header_name.clone(), header_value.clone());
     }
     //    Ok(client_resp.streaming(resp.payload()))
