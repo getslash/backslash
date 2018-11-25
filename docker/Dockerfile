@@ -52,6 +52,7 @@ RUN pip install pipenv
 VOLUME /conf
 VOLUME /uploads
 
+ADD ./tests /src/tests
 ADD ./manage.py /src/
 ADD ./Pipfile /src
 ADD ./Pipfile.lock /src

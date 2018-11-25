@@ -2,7 +2,7 @@ version: '3'
 services:
 
   webapp:
-    image: getslash/backslash
+    image: getslash/backslash:latest
     command: [
         "dockerize",
         "-timeout", "3600s",
@@ -29,7 +29,7 @@ services:
       driver: journald
 
   worker:
-    image: getslash/backslash
+    image: getslash/backslash:latest
     command: dockerize -timeout 3600s -wait tcp://rabbitmq:5672 pipenv run celery -A flask_app.tasks.main worker -B --loglevel=info --max-tasks-per-child=500
     logging:
       driver: journald
@@ -75,15 +75,17 @@ services:
       driver: journald
 
   api-server:
-    image: getslash/backslash
-    command: ["/api-server", "0.0.0.0", "8000"]
+    image: getslash/backslash:latest
+    command: ["dockerize",
+              "-timeout", "3600s",
+              "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000"]
     logging:
       driver: journald
     environment:
       - SENTRY_DSN=
 
   nginx:
-    image: getslash/backslash
+    image: getslash/backslash:latest
     volumes:
       - "conf:/conf"
       - "uploads:/uploads"
