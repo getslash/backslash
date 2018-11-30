@@ -1,3 +1,4 @@
+from uuid import uuid4
 import gzip
 import hashlib
 import os
@@ -14,6 +15,12 @@ from contextlib import contextmanager
 @pytest.fixture(scope="session")
 def proxy_port():
     return int(os.environ.get("PROXY_PORT", 7777))
+
+@pytest.fixture(params=['get', 'put', 'post', 'delete', 'options'])
+def proxy_method(request, proxy):
+    def func(*args, **kwargs):
+        return proxy.request(request.param, *args, **kwargs)
+    return func
 
 
 @pytest.fixture(scope="session")
@@ -165,3 +172,12 @@ def random_stream(request):
     thread.start()
 
     return BackgroundData(thread)
+
+
+@pytest.fixture
+def header_name():
+    return 'X-Example-Header'
+
+@pytest.fixture
+def header_value():
+    return str(uuid4())

@@ -12,6 +12,14 @@ def code(code):
     return (f"code is {code}", code, {})
 
 
+@app.route("/headers", methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+def headers():
+    resp = jsonify({'headers': {str(k): str(v) for k, v in request.headers.items()}})
+    for param_name, param_value in request.args.items():
+        resp.headers[param_name] = param_value
+    return resp
+
+
 @app.route('/do_checksum', methods=['POST', 'PUT'])
 def do_checksum():
     stream = request.stream
