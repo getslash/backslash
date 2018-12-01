@@ -78,6 +78,8 @@ services:
               "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000", "webapp", "8000"]
     logging:
       driver: journald
+    environment:
+      - SENTRY_DSN=
     depends_on:
       - webapp
 
