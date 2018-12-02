@@ -6,25 +6,35 @@ extern crate env_logger;
 extern crate failure;
 extern crate futures;
 extern crate log;
+extern crate sentry;
+extern crate sentry_actix;
 extern crate url;
 
 mod aggregators;
 mod proxy;
 mod state;
 mod stats;
+mod utils;
 
 use actix::prelude::*;
 use actix_web::{server, App};
 use clap::{value_t, Arg};
 use env_logger::Builder;
 use log::info;
+use sentry_actix::SentryMiddleware;
 use state::AppState;
 use stats::StatsCollector;
+use std::env;
 use std::net::ToSocketAddrs;
 
 fn main() {
+    let _guard = sentry::init(env::var("SENTRY_DSN").ok());
+    env::set_var("RUST_BACKTRACE", "1");
+    sentry::integrations::panic::register_panic_handler();
+
     Builder::new()
         .filter_module("api_server", log::LevelFilter::Debug)
+        .filter_module("actix", log::LevelFilter::Debug)
         .init();
 
     info!("Backslash API Backend Starting...");
@@ -74,6 +84,7 @@ fn main() {
 
     let server = server::new(move || {
         App::with_state(AppState::init(stats_collector.clone(), forwarded_addr))
+            .middleware(SentryMiddleware::new())
             .resource("/metrics", |r| r.f(stats::render))
             .default_resource(|r| {
                 r.f(proxy::forward);
