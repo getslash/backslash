@@ -11,6 +11,8 @@ use stats::{RequestEnded, RequestStarted};
 use std::iter::Iterator;
 use std::time::{Duration, SystemTime};
 
+const PROXY_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 // TODO: support compressed data end-to-end (pending on https://github.com/actix/actix-web/issues/350)
 
 pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
@@ -45,7 +47,6 @@ pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
     }
 
     let client_req = req_builder.streaming(req.payload()).unwrap();
-    println!("Client req: {:?}", client_req);
 
     client_req
         .send()
@@ -78,7 +79,8 @@ fn construct_response(
     for (header_name, header_value) in resp.headers().iter().filter(should_pass_header) {
         client_resp.header(header_name.clone(), header_value.clone());
     }
-    //    Ok(client_resp.streaming(resp.payload()))
+    client_resp.header("X-Backslash-API-Server", PROXY_VERSION);
+
     if resp.chunked().unwrap_or(false) {
         Box::new(ok(client_resp.streaming(resp.payload())))
     } else {

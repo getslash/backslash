@@ -18,6 +18,19 @@ log_format timed_combined '$remote_addr - $remote_user [$time_local] '
     '$request_time $upstream_response_time $pipe';
 
 
+upstream webapp-direct {
+    server webapp:8000;
+}
+
+upstream api-server {
+    server api-server:8000;
+}
+
+map $http_x_api_backend_select $backend {
+    default "webapp-direct";
+    apiserver "api-server";
+}
+
 server {
     {% if hostname %}
     server_name {{ hostname }};
@@ -87,7 +100,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://webapp:8000;
+        proxy_pass http://$backend;
         client_max_body_size 10m;
     }
 }
