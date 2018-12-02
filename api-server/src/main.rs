@@ -14,6 +14,7 @@ mod aggregators;
 mod proxy;
 mod state;
 mod stats;
+mod utils;
 
 use actix::prelude::*;
 use actix_web::{server, App};

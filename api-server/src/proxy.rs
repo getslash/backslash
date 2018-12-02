@@ -10,6 +10,7 @@ use state::AppState;
 use stats::{RequestEnded, RequestStarted};
 use std::iter::Iterator;
 use std::time::{Duration, SystemTime};
+use utils::LoggedResult;
 
 const PROXY_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -19,7 +20,12 @@ pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
     let start_time = SystemTime::now();
     let state = req.state();
     let path = req.uri().path().to_string();
-    let peer = req.peer_addr();
+    let peer = req
+        .headers()
+        .get("X-Real-IP")
+        .and_then(|h| h.to_str().log_err().ok())
+        .and_then(|ip| ip.parse().log_err().ok())
+        .or_else(|| req.peer_addr().map(|addr| addr.ip()));
     let mut new_url = state.forward_url.clone();
     let stats_collector = state.stats_collector.clone();
     new_url.set_path(req.uri().path());
@@ -65,7 +71,7 @@ pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
                         .map(|resp| resp.status())
                         .map(|s| s.is_success())
                         .unwrap_or(false),
-                    peer: peer.map(|a| a.ip()),
+                    peer,
                 }).unwrap_or_else(|e| error!("Failed sending request end notification: {:?}", e));
             res
         }).and_then(construct_response)
