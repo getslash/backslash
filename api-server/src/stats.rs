@@ -1,6 +1,9 @@
 use actix::prelude::*;
-use actix_web::{AsyncResponder, HttpRequest, Responder};
-use aggregators::{CountHistorgram, RequestDurations};
+use actix_web::{
+    client::ClientResponse, http::header::HeaderValue, AsyncResponder, HttpMessage, HttpRequest,
+    Responder,
+};
+use aggregators::{CountHistorgram, DurationAggregator};
 use failure::Error;
 use futures::Future;
 use state::AppState;
@@ -13,17 +16,56 @@ const HISTOGRAM_RESOLUTION_SECONDS: usize = 60;
 const HISTOGRAM_NUM_BINS: usize = 10;
 
 pub struct StatsCollector {
-    aggs: HashMap<String, RequestDurations>,
+    total_times: HashMap<String, DurationAggregator>,
+    active_times: HashMap<String, DurationAggregator>,
+    db_times: HashMap<String, DurationAggregator>,
     clients: HashMap<IpAddr, CountHistorgram>,
     num_sessions: u64,
     num_tests: u64,
     num_pending_requests: u64,
 }
 
+/// A distilled snapshot of the stats
+pub struct Stats {
+    request_total_times: HashMap<String, EndpointStats>,
+    request_active_times: HashMap<String, EndpointStats>,
+    request_db_times: HashMap<String, EndpointStats>,
+
+    clients: HashMap<String, ClientStats>,
+
+    num_sessions: u64,
+    num_tests: u64,
+    num_pending_requests: u64,
+}
+
+pub(crate) trait RequestTimesMap {
+    fn ingest<'a>(&mut self, path: &str, timing: Duration);
+
+    fn as_endpoint_stats(&self) -> HashMap<String, EndpointStats>;
+}
+
+impl RequestTimesMap for HashMap<String, DurationAggregator> {
+    fn ingest(&mut self, path: &str, timing: Duration) {
+        if let Some(durations) = self.get_mut(path) {
+            durations.ingest(timing);
+            return;
+        }
+        let mut durations = DurationAggregator::init();
+        durations.ingest(timing);
+        self.insert(path.to_string(), durations);
+    }
+
+    fn as_endpoint_stats(&self) -> HashMap<String, EndpointStats> {
+        self.iter().map(|(k, v)| (k.clone(), v.into())).collect()
+    }
+}
+
 impl StatsCollector {
     pub fn init() -> StatsCollector {
         StatsCollector {
-            aggs: HashMap::new(),
+            total_times: HashMap::new(),
+            active_times: HashMap::new(),
+            db_times: HashMap::new(),
             clients: HashMap::new(),
             num_tests: 0,
             num_sessions: 0,
@@ -65,8 +107,34 @@ impl Handler<RequestStarted> for StatsCollector {
 pub struct RequestEnded {
     pub(crate) path: String,
     pub(crate) peer: Option<IpAddr>,
-    pub(crate) timing: Duration,
+    pub(crate) timing: Option<RequestTimes>,
     pub(crate) is_success: bool,
+}
+
+#[derive(Debug)]
+pub(crate) struct RequestTimes {
+    pub(crate) total: Duration,
+    pub(crate) active: Duration,
+    pub(crate) db: Duration,
+}
+
+impl RequestTimes {
+    pub(crate) fn from_headers(headers: Option<&ClientResponse>) -> Option<Self> {
+        headers.map(|resp| resp.headers()).and_then(|headers| {
+            Some(Self {
+                total: duration_from_header(headers.get("X-Timing-Total"))?,
+                active: duration_from_header(headers.get("X-Timing-Active"))?,
+                db: duration_from_header(headers.get("X-Timing-DB"))?,
+            })
+        })
+    }
+}
+
+fn duration_from_header(value: Option<&HeaderValue>) -> Option<Duration> {
+    value
+        .and_then(|header_value| header_value.to_str().ok())
+        .and_then(|header_str| header_str.parse::<f64>().ok())
+        .map(|secs: f64| Duration::from_millis((secs.max(0.) * 1000.) as u64))
 }
 
 impl Message for RequestEnded {
@@ -87,18 +155,18 @@ impl Handler<RequestEnded> for StatsCollector {
             }
         }
 
-        let agg = self
-            .aggs
-            .entry(msg.path)
-            .or_insert_with(RequestDurations::init);
-        agg.ingest(msg.timing);
+        if let Some(timing) = msg.timing {
+            self.total_times.ingest(&msg.path, timing.total);
+            self.active_times.ingest(&msg.path, timing.active);
+            self.db_times.ingest(&msg.path, timing.db);
 
-        if let Some(addr) = msg.peer {
-            let hist = self
-                .clients
-                .entry(addr)
-                .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
-            hist.inc();
+            if let Some(addr) = msg.peer {
+                let hist = self
+                    .clients
+                    .entry(addr)
+                    .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
+                hist.inc();
+            }
         }
     }
 }
@@ -118,11 +186,9 @@ impl Handler<QueryStats> for StatsCollector {
             num_sessions: self.num_sessions,
             num_pending_requests: self.num_pending_requests,
 
-            endpoints: self
-                .aggs
-                .iter()
-                .map(|(k, v)| (k.to_string(), v.into()))
-                .collect(),
+            request_total_times: self.total_times.as_endpoint_stats(),
+            request_active_times: self.active_times.as_endpoint_stats(),
+            request_db_times: self.db_times.as_endpoint_stats(),
 
             clients: self
                 .clients
@@ -138,16 +204,6 @@ impl Handler<QueryStats> for StatsCollector {
                 }).collect(),
         })
     }
-}
-
-pub struct Stats {
-    endpoints: HashMap<String, EndpointStats>,
-
-    clients: HashMap<String, ClientStats>,
-
-    num_sessions: u64,
-    num_tests: u64,
-    num_pending_requests: u64,
 }
 
 impl Stats {
@@ -174,32 +230,9 @@ impl Stats {
             "Number of requests pending or being processed",
         );
 
-        write_gauge_map(
-            &mut returned,
-            "backslash_request_avg_latency",
-            &self.endpoints,
-            "endpoint",
-            |v| v.avg_latency,
-            "Average API latency per endpoint",
-        );
-
-        write_gauge_map(
-            &mut returned,
-            "backslash_request_min_latency",
-            &self.endpoints,
-            "endpoint",
-            |v| v.min_latency,
-            "Minimum API latency per endpoint",
-        );
-
-        write_gauge_map(
-            &mut returned,
-            "backslash_request_max_latency",
-            &self.endpoints,
-            "endpoint",
-            |v| v.max_latency,
-            "Maximum API latency per endpoint",
-        );
+        write_latency_group(&mut returned, "total", &self.request_total_times);
+        write_latency_group(&mut returned, "active", &self.request_active_times);
+        write_latency_group(&mut returned, "db", &self.request_db_times);
 
         write_gauge_map(
             &mut returned,
@@ -228,6 +261,35 @@ fn write_gauge(writer: &mut Write, name: &str, value: u64, help: &str) {
         writer,
         "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}\n",
         name, help, value
+    );
+}
+
+fn write_latency_group(writer: &mut Write, name: &str, values: &HashMap<String, EndpointStats>) {
+    write_gauge_map(
+        writer,
+        &format!("backslash_request_avg_{}_latency", name),
+        &values,
+        "endpoint",
+        |v| v.avg_latency,
+        &format!("Average API {} latency per endpoint", name),
+    );
+
+    write_gauge_map(
+        writer,
+        &format!("backslash_request_min_{}_latency", name),
+        &values,
+        "endpoint",
+        |v| v.min_latency,
+        &format!("Minimum API {} latency per endpoint", name),
+    );
+
+    write_gauge_map(
+        writer,
+        &format!("backslash_request_max_{}_latency", name),
+        &values,
+        "endpoint",
+        |v| v.max_latency,
+        &format!("Maximum API {} latency per endpoint", name),
     );
 }
 
@@ -268,8 +330,8 @@ pub struct EndpointStats {
     max_latency: f64,
 }
 
-impl<'a> From<&'a RequestDurations> for EndpointStats {
-    fn from(durations: &'a RequestDurations) -> EndpointStats {
+impl<'a> From<&'a DurationAggregator> for EndpointStats {
+    fn from(durations: &'a DurationAggregator) -> EndpointStats {
         EndpointStats {
             avg_latency: durations.average_secs(),
             max_latency: durations.max_secs().unwrap(),

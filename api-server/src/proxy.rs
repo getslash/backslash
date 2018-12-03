@@ -7,9 +7,9 @@ use futures::future::ok;
 use futures::Future;
 use log::error;
 use state::AppState;
-use stats::{RequestEnded, RequestStarted};
+use stats::{RequestEnded, RequestStarted, RequestTimes};
 use std::iter::Iterator;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 use utils::LoggedResult;
 
 const PROXY_VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -17,7 +17,6 @@ const PROXY_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 // TODO: support compressed data end-to-end (pending on https://github.com/actix/actix-web/issues/350)
 
 pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
-    let start_time = SystemTime::now();
     let state = req.state();
     let path = req.uri().path().to_string();
     let peer = req
@@ -58,13 +57,9 @@ pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
         .send()
         .map_err(Error::from)
         .then(move |res| {
-            let timing = SystemTime::now()
-                .duration_since(start_time)
-                .unwrap_or_else(|_| Duration::new(0, 0));
-
             stats_collector
                 .try_send(RequestEnded {
-                    timing,
+                    timing: RequestTimes::from_headers(res.as_ref().ok()),
                     path,
                     is_success: res
                         .as_ref()
