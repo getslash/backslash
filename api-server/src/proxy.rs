@@ -18,7 +18,6 @@ const PROXY_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, Error = Error>> {
     let state = req.state();
-    let path = req.uri().path().to_string();
     let peer = req
         .headers()
         .get("X-Real-IP")
@@ -57,10 +56,16 @@ pub fn forward(req: &HttpRequest<AppState>) -> Box<Future<Item = HttpResponse, E
         .send()
         .map_err(Error::from)
         .then(move |res| {
+            let endpoint = res
+                .as_ref()
+                .ok()
+                .and_then(|resp| resp.headers().get("x-api-endpoint"))
+                .and_then(|header| header.to_str().ok())
+                .map(String::from);
             stats_collector
                 .try_send(RequestEnded {
                     timing: RequestTimes::from_headers(res.as_ref().ok()),
-                    path,
+                    endpoint,
                     is_success: res
                         .as_ref()
                         .map(|resp| resp.status())

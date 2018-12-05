@@ -56,6 +56,8 @@ fn main() {
         .next()
         .unwrap();
 
+    info!("Proxying to {:?}...", forwarded_addr);
+
     let system = System::new("system");
 
     let stats_collector = StatsCollector::init().start();
