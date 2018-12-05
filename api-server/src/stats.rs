@@ -15,6 +15,7 @@ use std::time::Duration;
 const HISTOGRAM_RESOLUTION_SECONDS: usize = 60;
 const HISTOGRAM_NUM_BINS: usize = 10;
 
+// TODO: hashing requests should use Arc's, need to measure if performance justifies it
 pub struct StatsCollector {
     total_times: HashMap<String, DurationAggregator>,
     active_times: HashMap<String, DurationAggregator>,
@@ -45,14 +46,14 @@ pub(crate) trait RequestTimesMap {
 }
 
 impl RequestTimesMap for HashMap<String, DurationAggregator> {
-    fn ingest(&mut self, path: &str, timing: Duration) {
-        if let Some(durations) = self.get_mut(path) {
+    fn ingest(&mut self, endpoint: &str, timing: Duration) {
+        if let Some(durations) = self.get_mut(endpoint) {
             durations.ingest(timing);
             return;
         }
         let mut durations = DurationAggregator::init();
         durations.ingest(timing);
-        self.insert(path.to_string(), durations);
+        self.insert(endpoint.to_string(), durations);
     }
 
     fn as_endpoint_stats(&self) -> HashMap<String, EndpointStats> {
@@ -105,7 +106,7 @@ impl Handler<RequestStarted> for StatsCollector {
 }
 
 pub struct RequestEnded {
-    pub(crate) path: String,
+    pub(crate) endpoint: Option<String>,
     pub(crate) peer: Option<IpAddr>,
     pub(crate) timing: Option<RequestTimes>,
     pub(crate) is_success: bool,
@@ -147,25 +148,27 @@ impl Handler<RequestEnded> for StatsCollector {
     fn handle(&mut self, msg: RequestEnded, _ctx: &mut Context<Self>) {
         self.num_pending_requests -= 1;
 
-        if msg.is_success {
-            if msg.path == "/api/report_test_start" {
-                self.num_tests += 1;
-            } else if msg.path == "/api/report_session_start" {
-                self.num_sessions += 1;
+        if let Some(endpoint) = msg.endpoint {
+            if msg.is_success {
+                if endpoint == "api.report_test_start" {
+                    self.num_tests += 1;
+                } else if endpoint == "api.report_session_start" {
+                    self.num_sessions += 1;
+                }
             }
-        }
 
-        if let Some(timing) = msg.timing {
-            self.total_times.ingest(&msg.path, timing.total);
-            self.active_times.ingest(&msg.path, timing.active);
-            self.db_times.ingest(&msg.path, timing.db);
+            if let Some(timing) = msg.timing {
+                self.total_times.ingest(&endpoint, timing.total);
+                self.active_times.ingest(&endpoint, timing.active);
+                self.db_times.ingest(&endpoint, timing.db);
 
-            if let Some(addr) = msg.peer {
-                let hist = self
-                    .clients
-                    .entry(addr)
-                    .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
-                hist.inc();
+                if let Some(addr) = msg.peer {
+                    let hist = self
+                        .clients
+                        .entry(addr)
+                        .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
+                    hist.inc();
+                }
             }
         }
     }
