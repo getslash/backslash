@@ -9,6 +9,7 @@ from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry
 from werkzeug.exceptions import HTTPException
 
+from .utils.profiling import profile_request_start, profile_request_end
 
 def create_app(config=None, setup_logging=True):
     if config is None:
@@ -34,6 +35,9 @@ def create_app(config=None, setup_logging=True):
                 app.config.update(yaml.load(yaml_file))
 
     app.config.update(config)
+
+    app.before_request(profile_request_start)
+    app.after_request(profile_request_end)
 
     db_uri = os.environ.get('BACKSLASH_DATABASE_URI', None)
     if db_uri is not None or 'SQLALCHEMY_DATABASE_URI' not in app.config:

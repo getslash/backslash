@@ -3,7 +3,8 @@ use std::time::Duration;
 
 const WINDOW_SIZE: usize = 100;
 
-pub struct RequestDurations {
+#[derive(Clone)]
+pub struct DurationAggregator {
     window: VecDeque<Duration>,
     window_size: usize,
     sum: Duration,
@@ -11,13 +12,13 @@ pub struct RequestDurations {
     max: Option<Duration>,
 }
 
-impl RequestDurations {
-    pub fn init() -> RequestDurations {
-        RequestDurations::with_window(WINDOW_SIZE)
+impl DurationAggregator {
+    pub fn init() -> DurationAggregator {
+        DurationAggregator::with_window(WINDOW_SIZE)
     }
 
-    pub fn with_window(window_size: usize) -> RequestDurations {
-        RequestDurations {
+    pub fn with_window(window_size: usize) -> DurationAggregator {
+        DurationAggregator {
             min: None,
             max: None,
             window_size,
@@ -115,8 +116,8 @@ impl CountHistorgram {
 }
 
 #[cfg(test)]
-fn build_durations(secs: &[u64]) -> RequestDurations {
-    let mut returned = RequestDurations::with_window(5);
+fn build_durations(secs: &[u64]) -> DurationAggregator {
+    let mut returned = DurationAggregator::with_window(5);
 
     for duration in secs {
         returned.ingest(Duration::new(*duration, 0));

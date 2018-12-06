@@ -1,13 +1,13 @@
 #![deny(warnings)]
 extern crate actix;
 extern crate actix_web;
-extern crate clap;
 extern crate env_logger;
 extern crate failure;
 extern crate futures;
 extern crate log;
 extern crate sentry;
 extern crate sentry_actix;
+extern crate structopt;
 extern crate url;
 
 mod aggregators;
@@ -18,14 +18,23 @@ mod utils;
 
 use actix::prelude::*;
 use actix_web::{server, App};
-use clap::{value_t, Arg};
 use env_logger::Builder;
 use log::info;
 use sentry_actix::SentryMiddleware;
 use state::AppState;
 use stats::StatsCollector;
 use std::env;
-use std::net::ToSocketAddrs;
+use std::net::{IpAddr, ToSocketAddrs};
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "basic")]
+struct Opt {
+    listen_addr: IpAddr,
+    listen_port: u16,
+    forward_addr: String,
+    forward_port: u16,
+}
 
 fn main() {
     let _guard = sentry::init(env::var("SENTRY_DSN").ok());
@@ -37,46 +46,17 @@ fn main() {
         .filter_module("actix", log::LevelFilter::Debug)
         .init();
 
+    let opt = Opt::from_args();
+
     info!("Backslash API Backend Starting...");
 
-    let matches = clap::App::new("Backslash API Server")
-        .arg(
-            Arg::with_name("listen_addr")
-                .takes_value(true)
-                .value_name("LISTEN ADDR")
-                .index(1)
-                .required(true),
-        ).arg(
-            Arg::with_name("listen_port")
-                .takes_value(true)
-                .value_name("LISTEN PORT")
-                .index(2)
-                .required(true),
-        ).arg(
-            Arg::with_name("forward_addr")
-                .takes_value(true)
-                .value_name("FWD ADDR")
-                .index(3)
-                .required(true),
-        ).arg(
-            Arg::with_name("forward_port")
-                .takes_value(true)
-                .value_name("FWD PORT")
-                .index(4)
-                .required(true),
-        ).get_matches();
-
-    let listen_addr = matches.value_of("listen_addr").unwrap();
-    let listen_port = value_t!(matches, "listen_port", u16).unwrap_or_else(|e| e.exit());
-
-    let forwarded_addr = matches.value_of("forward_addr").unwrap();
-    let forwarded_port = value_t!(matches, "forward_port", u16).unwrap_or_else(|e| e.exit());
-
-    let forwarded_addr = (forwarded_addr, forwarded_port)
+    let forwarded_addr = (opt.forward_addr.as_str(), opt.forward_port)
         .to_socket_addrs()
         .expect("Cannot resolve address")
         .next()
         .unwrap();
+
+    info!("Proxying to {:?}...", forwarded_addr);
 
     let system = System::new("system");
 
@@ -90,7 +70,7 @@ fn main() {
                 r.f(proxy::forward);
             })
     }).workers(32)
-    .bind((listen_addr, listen_port))
+    .bind((opt.listen_addr, opt.listen_port))
     .expect("Cannot bind listening port");
 
     server.system_exit().start();
