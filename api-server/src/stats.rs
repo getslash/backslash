@@ -216,7 +216,8 @@ fn write_gauge(writer: &mut Write, name: &str, value: u64, help: &str) {
         writer,
         "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}\n",
         name, help, value
-    );
+    )
+    .unwrap();
 }
 
 fn write_latency_group(
@@ -264,9 +265,10 @@ fn write_gauge_map<K, V, R, F>(
     R: std::fmt::Display,
     K: Eq + std::hash::Hash + std::fmt::Display,
 {
-    write!(writer, "# HELP {0} {1}\n# TYPE {0} gauge\n", name, help,);
-
-    for (key, value) in values.iter() {
+    for (index, (key, value)) in values.iter().enumerate() {
+        if index == 0 {
+            write!(writer, "# HELP {0} {1}\n# TYPE {0} gauge\n", name, help,).unwrap();
+        }
         write!(
             writer,
             "{}{{{}=\"{}\"}} {}\n",
@@ -274,7 +276,8 @@ fn write_gauge_map<K, V, R, F>(
             key_name,
             key,
             encode(value)
-        );
+        )
+        .unwrap();
     }
 }
 
