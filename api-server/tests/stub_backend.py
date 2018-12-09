@@ -12,6 +12,11 @@ def code(code):
     return (f"code is {code}", code, {})
 
 
+@app.route('/json_echo', methods=['post', 'put'])
+def json_echo():
+    return jsonify({'method': request.method.lower(), 'json': request.get_json(force=True, silent=True)})
+
+
 @app.route("/headers", methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def headers():
     resp = jsonify({'headers': {str(k): str(v) for k, v in request.headers.items()}})
