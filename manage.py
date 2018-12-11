@@ -38,7 +38,8 @@ cli.add_command(suite)
 
 
 @cli.command(name='docker-start')
-def docker_start():
+@click.option('-p', '--port', default=8000, type=int)
+def docker_start(port):
     from flask_app.app import create_app
     from flask_app.models import db
     import flask_migrate
@@ -72,7 +73,7 @@ def docker_start():
             return self.application
 
     options = {
-        'bind': '0.0.0.0:8000',
+        'bind': f'0.0.0.0:{port}',
         'workers': workers_count,
         'capture_output': True,
         'timeout': 70,
