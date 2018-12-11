@@ -1,5 +1,6 @@
 use log::error;
 use std::fmt::Display;
+use std::time::Duration;
 
 pub trait LoggedResult {
     type Item;
@@ -23,4 +24,8 @@ where
             e
         })
     }
+}
+
+pub(crate) fn duration_from_secs(secs: f64) -> Duration {
+    Duration::from_millis((secs.max(0.) * 1000.) as u64)
 }

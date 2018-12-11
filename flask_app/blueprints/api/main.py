@@ -17,6 +17,7 @@ from ...utils.subjects import get_or_create_subject_instance
 from ...utils.test_information import get_or_create_test_information_id
 from ...utils.users import has_role
 from ...utils.json import sanitize_json
+from ...utils import profiling
 
 
 ##########################################################################
@@ -155,6 +156,7 @@ def report_test_start(
         returned.test_variation.variation = sanitize_json(variation)
         db.session.add(returned)
         db.session.commit()
+    profiling.notify_test_start()
     return returned
 
 @API

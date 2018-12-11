@@ -1,3 +1,4 @@
+from yarl import URL
 from flask import current_app
 from . import models
 try:

@@ -4,6 +4,7 @@ import yaml
 from flask_security import Security
 from flask_mail import Mail
 import logbook
+import logging
 from logbook.compat import redirect_logging
 from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry
@@ -54,6 +55,8 @@ def create_app(config=None, setup_logging=True):
         app.config['TRACEBACK_DIR'] = '/tmp/backslash_tracebacks'
     else:
         _disable_logs(['dogpile.lock'])
+
+    logging.getLogger('urllib3').setLevel(logging.WARNING)
 
     if not app.config['DEBUG'] and not app.config['TESTING']:
         app.config['RAVEN_IGNORE_EXCEPTIONS'] = (HTTPException, SystemExit,)
