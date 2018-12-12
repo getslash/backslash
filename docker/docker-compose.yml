@@ -8,6 +8,7 @@ services:
         "-timeout", "3600s",
         "-wait", "tcp://db:5432",
         "-wait", "tcp://rabbitmq:5672",
+        "-wait", "tcp://api-server:8000",
         "pipenv", "run", "manage", "docker-start"
         ]
     volumes:
@@ -19,9 +20,11 @@ services:
       - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
       - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
       - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
+      - METRICS_URL=http://api-server:8000/
     depends_on:
       - db
       - redis
+      - api-server
     logging:
       driver: journald
 
@@ -73,15 +76,11 @@ services:
 
   api-server:
     image: getslash/backslash
-    command: ["dockerize",
-              "-timeout", "3600s",
-              "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000", "webapp", "8000"]
+    command: ["/api-server", "0.0.0.0", "8000"]
     logging:
       driver: journald
     environment:
       - SENTRY_DSN=
-    depends_on:
-      - webapp
 
   nginx:
     image: getslash/backslash
@@ -96,6 +95,10 @@ services:
               "-wait", "http://webapp:8000",
               "-wait", "http://api-server:8000/metrics",
               "pipenv", "run", "manage", "docker-nginx-start"]
+
+    depends_on:
+      - webapp
+      - api-server
     ports:
       - "8000:80"
     logging:

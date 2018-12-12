@@ -5,13 +5,15 @@ extern crate env_logger;
 extern crate failure;
 extern crate futures;
 extern crate log;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 extern crate sentry;
 extern crate sentry_actix;
 extern crate structopt;
 extern crate url;
 
 mod aggregators;
-mod proxy;
 mod state;
 mod stats;
 mod utils;
@@ -24,7 +26,7 @@ use sentry_actix::SentryMiddleware;
 use state::AppState;
 use stats::StatsCollector;
 use std::env;
-use std::net::{IpAddr, ToSocketAddrs};
+use std::net::IpAddr;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -32,8 +34,6 @@ use structopt::StructOpt;
 struct Opt {
     listen_addr: IpAddr,
     listen_port: u16,
-    forward_addr: String,
-    forward_port: u16,
 }
 
 fn main() {
@@ -43,33 +43,32 @@ fn main() {
 
     Builder::new()
         .filter_module("api_server", log::LevelFilter::Debug)
-        .filter_module("actix", log::LevelFilter::Debug)
         .init();
 
     let opt = Opt::from_args();
 
     info!("Backslash API Backend Starting...");
 
-    let forwarded_addr = (opt.forward_addr.as_str(), opt.forward_port)
-        .to_socket_addrs()
-        .expect("Cannot resolve address")
-        .next()
-        .unwrap();
-
-    info!("Proxying to {:?}...", forwarded_addr);
-
     let system = System::new("system");
 
     let stats_collector = StatsCollector::init().start();
 
     let server = server::new(move || {
-        App::with_state(AppState::init(stats_collector.clone(), forwarded_addr))
+        App::with_state(AppState::init(stats_collector.clone()))
             .middleware(SentryMiddleware::new())
-            .resource("/metrics", |r| r.f(stats::render))
-            .default_resource(|r| {
-                r.f(proxy::forward);
+            .resource("/metrics/request", |r| {
+                r.post().with(stats::update);
             })
-    }).workers(32)
+            .resource("/metrics/session_start", |r| {
+                r.post().with(stats::notify_session_start);
+            })
+            .resource("/metrics/test_start", |r| {
+                r.post().with(stats::notify_test_start);
+            })
+            .resource("/metrics", |r| {
+                r.get().f(stats::render);
+            })
+    })
     .bind((opt.listen_addr, opt.listen_port))
     .expect("Cannot bind listening port");
 
