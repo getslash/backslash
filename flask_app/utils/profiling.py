@@ -14,6 +14,13 @@ _ACTIVE_HEADER_NAME = "X-Timing-Active"
 _DB_HEADER_NAME = "X-Timing-DB"
 _API_ENDPOINT_HEADER_NAME = "X-API-Endpoint"
 
+_backend_name = 'python-backend-generic'
+
+def set_backend_name(new_name):
+    global _backend_name
+    if new_name is not None:
+        _backend_name = new_name
+
 _logger = logbook.Logger(__name__)
 
 
@@ -55,6 +62,7 @@ def profile_request_end(response):
     _send_metrics(db=db, active=active, total=total, endpoint=endpoint)
 
     response.headers.extend(profile_data)
+    response.headers['X-Backslash-Backend'] = _backend_name
     return response
 
 

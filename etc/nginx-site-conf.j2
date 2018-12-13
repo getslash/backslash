@@ -17,6 +17,18 @@ log_format timed_combined '$remote_addr - $remote_user [$time_local] '
     '"$request" $status $body_bytes_sent '
     '$request_time $upstream_response_time $pipe';
 
+upstream python-backend-api {
+    server python-backend-api:8000;
+}
+
+upstream python-backend-ui {
+    server python-backend-ui:8000;
+}
+
+map $http_user_agent $upstream {
+    default python-backend-ui;
+    "~*.*python.*" python-backend-api;
+}
 
 server {
     {% if hostname %}
@@ -95,7 +107,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://webapp:8000;
+        proxy_pass http://$upstream;
         client_max_body_size 10m;
     }
 }

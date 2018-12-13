@@ -39,22 +39,27 @@ cli.add_command(suite)
 
 @cli.command(name='docker-start')
 @click.option('-p', '--port', default=8000, type=int)
-def docker_start(port):
+@click.option('-b', '--backend-name', default=None)
+def docker_start(port, backend_name):
     from flask_app.app import create_app
     from flask_app.models import db
+    from flask_app.utils import profiling
     import flask_migrate
     import gunicorn.app.base
 
     _ensure_conf()
 
     app = create_app(config={'PROPAGATE_EXCEPTIONS': True})
+    profiling.set_backend_name(backend_name)
 
     flask_migrate.Migrate(app, db)
 
     with app.app_context():
         flask_migrate.upgrade()
 
-    workers_count = (multiprocessing.cpu_count() * 2) + 1
+    # We only allocate one worker per core, since we have two backends to account for
+    # (both API and UI, not to mention the Rust backend in the future)
+    workers_count = multiprocessing.cpu_count()
 
     class StandaloneApplication(gunicorn.app.base.BaseApplication):
 

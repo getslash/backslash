@@ -1,6 +1,8 @@
 version: '3'
 services:
-  webapp:
+  python-backend-api:
+    image: getslash/backslash:unstable
+  python-backend-ui:
     image: getslash/backslash:unstable
   api-server:
     image: getslash/backslash:unstable
