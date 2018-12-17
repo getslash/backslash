@@ -1,29 +1,54 @@
 version: '3'
 services:
 
-  webapp:
+  python-backend-api:
     image: getslash/backslash
     command: [
         "dockerize",
         "-timeout", "3600s",
         "-wait", "tcp://db:5432",
         "-wait", "tcp://rabbitmq:5672",
-        "pipenv", "run", "manage", "docker-start"
+        "-wait", "tcp://api-server:8000",
+        "pipenv", "run", "manage", "docker-start",
+        "-b", "python-backend-api",
         ]
-    volumes:
+    volumes: &python-backend-volumes
       - "conf:/conf"
       - "uploads:/uploads"
-    environment:
+    environment: &python-backend-env
       - CONFIG_DIRECTORY=/conf
       - BACKSLASH_REDIS_SERVER=redis
       - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
       - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
       - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
+      - METRICS_URL=http://api-server:8000/
     depends_on:
       - db
       - redis
+      - api-server
     logging:
       driver: journald
+
+  python-backend-ui:
+    image: getslash/backslash
+    command: [
+        "dockerize",
+        "-timeout", "3600s",
+        "-wait", "tcp://db:5432",
+        "-wait", "tcp://rabbitmq:5672",
+        "-wait", "tcp://api-server:8000",
+        # This is necessary to avoid a race in configuration directory creation
+        "-wait", "tcp://python-backend-api:8000",
+        "pipenv", "run", "manage", "docker-start",
+        "-b", "python-backend-ui",
+        ]
+    volumes: *python-backend-volumes
+    environment: *python-backend-env
+    depends_on:
+      - python-backend-api
+    logging:
+      driver: journald
+
 
   worker:
     image: getslash/backslash
@@ -73,15 +98,11 @@ services:
 
   api-server:
     image: getslash/backslash
-    command: ["dockerize",
-              "-timeout", "3600s",
-              "-wait", "http://webapp:8000", "/api-server", "0.0.0.0", "8000", "webapp", "8000"]
+    command: ["/api-server", "0.0.0.0", "8000"]
     logging:
       driver: journald
     environment:
       - SENTRY_DSN=
-    depends_on:
-      - webapp
 
   nginx:
     image: getslash/backslash
@@ -93,9 +114,15 @@ services:
       - BACKSLASH_USE_SSL=
     command: ["dockerize",
               "-timeout", "3600s",
-              "-wait", "http://webapp:8000",
+              "-wait", "http://python-backend-api:8000",
+              "-wait", "http://python-backend-ui:8000",
               "-wait", "http://api-server:8000/metrics",
               "pipenv", "run", "manage", "docker-nginx-start"]
+
+    depends_on:
+      - python-backend-api
+      - python-backend-ui
+      - api-server
     ports:
       - "8000:80"
     logging:

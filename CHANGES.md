@@ -1,10 +1,16 @@
 # Changelog
 
 
-## Version 2.14.0
+## Version 2.15.0
 
 * UPGRADE NOTE: This version changes the docker-compose.yml used to deploy Backslash. Please update
   the configuration when performing the upgrade
+* Switch to dual-backend mode - one for API calls and the other for UI-related traffic. This avoids
+  starvation of the UI responsiveness when lots of sessions report to Backslash at a high rate
+
+## Version 2.14.0
+
+* UPGRADE NOTE: This version changes the docker-compose.yml used to deploy Backslash. Please update the configuration when performing the upgrade
 * Added API server, written in Rust, to monitor API performance and abusing clients
 * Many bug fixes and small enhancements
 

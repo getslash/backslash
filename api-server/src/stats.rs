@@ -1,8 +1,5 @@
 use actix::prelude::*;
-use actix_web::{
-    client::ClientResponse, http::header::HeaderValue, AsyncResponder, HttpMessage, HttpRequest,
-    Responder,
-};
+use actix_web::{AsyncResponder, HttpRequest, Query, Responder, State};
 use aggregators::{CountHistorgram, DurationAggregator};
 use failure::Error;
 use state::AppState;
@@ -10,6 +7,7 @@ use std::collections::HashMap;
 use std::fmt::Write;
 use std::net::IpAddr;
 use std::time::Duration;
+use utils::duration_from_secs;
 
 const HISTOGRAM_RESOLUTION_SECONDS: usize = 60;
 const HISTOGRAM_NUM_BINS: usize = 10;
@@ -22,7 +20,6 @@ pub struct StatsCollector {
     clients: HashMap<IpAddr, CountHistorgram>,
     num_sessions: u64,
     num_tests: u64,
-    num_pending_requests: u64,
 }
 
 pub(crate) trait RequestTimesMap {
@@ -50,7 +47,6 @@ impl StatsCollector {
             clients: HashMap::new(),
             num_tests: 0,
             num_sessions: 0,
-            num_pending_requests: 0,
         }
     }
 }
@@ -71,86 +67,60 @@ impl Actor for StatsCollector {
     }
 }
 
-pub struct RequestStarted;
-
-impl Message for RequestStarted {
-    type Result = ();
-}
-
-impl Handler<RequestStarted> for StatsCollector {
-    type Result = ();
-
-    fn handle(&mut self, _msg: RequestStarted, _ctx: &mut Context<Self>) {
-        self.num_pending_requests += 1;
-    }
-}
-
-pub struct RequestEnded {
+#[derive(Debug, Deserialize)]
+pub struct RequestInfo {
     pub(crate) endpoint: Option<String>,
     pub(crate) peer: Option<IpAddr>,
-    pub(crate) timing: Option<RequestTimes>,
-    pub(crate) is_success: bool,
+    pub(crate) total: f64,
+    pub(crate) active: f64,
+    pub(crate) db: f64,
 }
 
-#[derive(Debug)]
-pub(crate) struct RequestTimes {
-    pub(crate) total: Duration,
-    pub(crate) active: Duration,
-    pub(crate) db: Duration,
+impl Message for RequestInfo {
+    type Result = ();
 }
 
-impl RequestTimes {
-    pub(crate) fn from_headers(headers: Option<&ClientResponse>) -> Option<Self> {
-        headers.map(|resp| resp.headers()).and_then(|headers| {
-            Some(Self {
-                total: duration_from_header(headers.get("X-Timing-Total"))?,
-                active: duration_from_header(headers.get("X-Timing-Active"))?,
-                db: duration_from_header(headers.get("X-Timing-DB"))?,
-            })
-        })
+impl Handler<RequestInfo> for StatsCollector {
+    type Result = ();
+
+    fn handle(&mut self, msg: RequestInfo, _ctx: &mut Context<Self>) {
+        if let Some(endpoint) = msg.endpoint {
+            self.total_times
+                .ingest(&endpoint, duration_from_secs(msg.total));
+            self.active_times
+                .ingest(&endpoint, duration_from_secs(msg.active));
+            self.db_times.ingest(&endpoint, duration_from_secs(msg.db));
+
+            if let Some(addr) = msg.peer {
+                let hist = self
+                    .clients
+                    .entry(addr)
+                    .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
+                hist.inc();
+            }
+        }
     }
 }
 
-fn duration_from_header(value: Option<&HeaderValue>) -> Option<Duration> {
-    value
-        .and_then(|header_value| header_value.to_str().ok())
-        .and_then(|header_str| header_str.parse::<f64>().ok())
-        .map(|secs: f64| Duration::from_millis((secs.max(0.) * 1000.) as u64))
+enum EntityType {
+    Session,
+    Test,
 }
 
-impl Message for RequestEnded {
+struct EntityStarted(EntityType);
+
+impl Message for EntityStarted {
     type Result = ();
 }
 
-impl Handler<RequestEnded> for StatsCollector {
+impl Handler<EntityStarted> for StatsCollector {
     type Result = ();
 
-    fn handle(&mut self, msg: RequestEnded, _ctx: &mut Context<Self>) {
-        self.num_pending_requests -= 1;
-
-        if let Some(endpoint) = msg.endpoint {
-            if msg.is_success {
-                if endpoint == "api.report_test_start" {
-                    self.num_tests += 1;
-                } else if endpoint == "api.report_session_start" {
-                    self.num_sessions += 1;
-                }
-            }
-
-            if let Some(timing) = msg.timing {
-                self.total_times.ingest(&endpoint, timing.total);
-                self.active_times.ingest(&endpoint, timing.active);
-                self.db_times.ingest(&endpoint, timing.db);
-
-                if let Some(addr) = msg.peer {
-                    let hist = self
-                        .clients
-                        .entry(addr)
-                        .or_insert_with(|| CountHistorgram::init(HISTOGRAM_NUM_BINS));
-                    hist.inc();
-                }
-            }
-        }
+    fn handle(&mut self, msg: EntityStarted, _ctx: &mut Context<Self>) {
+        match msg.0 {
+            EntityType::Session => self.num_sessions += 1,
+            EntityType::Test => self.num_tests += 1,
+        };
     }
 }
 
@@ -177,13 +147,6 @@ impl Handler<QueryStats> for StatsCollector {
             "backslash_num_new_tests",
             self.num_tests,
             "Number of tests started since Backslash came up",
-        );
-
-        write_gauge(
-            &mut returned,
-            "backslash_num_pending_requests",
-            self.num_pending_requests,
-            "Number of requests pending or being processed",
         );
 
         write_latency_group(&mut returned, "total", &self.total_times);
@@ -216,7 +179,8 @@ fn write_gauge(writer: &mut Write, name: &str, value: u64, help: &str) {
         writer,
         "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}\n",
         name, help, value
-    );
+    )
+    .unwrap();
 }
 
 fn write_latency_group(
@@ -264,9 +228,10 @@ fn write_gauge_map<K, V, R, F>(
     R: std::fmt::Display,
     K: Eq + std::hash::Hash + std::fmt::Display,
 {
-    write!(writer, "# HELP {0} {1}\n# TYPE {0} gauge\n", name, help,);
-
-    for (key, value) in values.iter() {
+    for (index, (key, value)) in values.iter().enumerate() {
+        if index == 0 {
+            write!(writer, "# HELP {0} {1}\n# TYPE {0} gauge\n", name, help,).unwrap();
+        }
         write!(
             writer,
             "{}{{{}=\"{}\"}} {}\n",
@@ -274,10 +239,30 @@ fn write_gauge_map<K, V, R, F>(
             key_name,
             key,
             encode(value)
-        );
+        )
+        .unwrap();
     }
 }
 
 pub fn render(req: &HttpRequest<AppState>) -> impl Responder {
     req.state().stats_collector.send(QueryStats).responder()
+}
+
+pub fn update((state, timing): (State<AppState>, Query<RequestInfo>)) -> &'static str {
+    state.stats_collector.do_send(timing.into_inner());
+    "ok"
+}
+
+pub fn notify_session_start(state: State<AppState>) -> &'static str {
+    state
+        .stats_collector
+        .do_send(EntityStarted(EntityType::Session));
+    "ok"
+}
+
+pub fn notify_test_start(state: State<AppState>) -> &'static str {
+    state
+        .stats_collector
+        .do_send(EntityStarted(EntityType::Test));
+    "ok"
 }

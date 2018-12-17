@@ -1,6 +1,11 @@
 version: '3'
 services:
-  webapp:
+  python-backend-api:
+    environment:
+      - BACKSLASH_TESTING=1
+    logging:
+      driver: json-file
+  python-backend-ui:
     environment:
       - BACKSLASH_TESTING=1
     logging:

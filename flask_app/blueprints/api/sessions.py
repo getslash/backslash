@@ -13,6 +13,7 @@ from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
 from ...utils.users import has_role
+from ...utils import profiling
 from .blueprint import API
 
 NoneType = type(None)
@@ -99,6 +100,7 @@ def report_session_start(logical_id: str=None,
         if parent_logical_id:
             Session.query.filter_by(logical_id=parent_logical_id).first_or_404()
         error_abort('Tried to report a session which conflicts with an existing session', code=requests.codes.conflict)
+    profiling.notify_session_start()
     return returned
 
 
