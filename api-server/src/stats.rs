@@ -149,6 +149,18 @@ impl Handler<QueryStats> for StatsCollector {
             "Number of tests started since Backslash came up",
         );
 
+        write_gauge(
+            &mut returned, "backslash_internal_timers_size",
+            (self.total_times.len() + self.active_times.len() + self.db_times.len()) as u64,
+            "Size of timer map held by metrics server"
+        );
+
+        write_gauge(
+            &mut returned, "backslash_internal_client_map_size",
+            self.clients.len() as u64,
+            "Size of timer map held by metrics server"
+        );
+
         write_latency_group(&mut returned, "total", &self.total_times);
         write_latency_group(&mut returned, "active", &self.active_times);
         write_latency_group(&mut returned, "db", &self.db_times);
