@@ -91,8 +91,6 @@ def notify_test_start():
 def _safe_http_post(url, *args, **kwargs):
     if url is not None:
         try:
-            resp = requests.post(url, *args, **kwargs)
+            _ = requests.post(url, *args, **kwargs)
         except Exception:
-            _logger.error(
-                f"Swallowing exception during metrics reporting to {url}", exc_info=True
-            )
+            pass
