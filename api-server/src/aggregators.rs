@@ -33,7 +33,7 @@ impl DurationAggregator {
         self.window.push_front(value);
 
         self.sum += value;
-        if self.window.len() > self.window_size as usize {
+        if self.window.len() > self.window_size {
             let popped = self.window.pop_back().unwrap();
             self.sum -= popped;
 
