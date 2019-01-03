@@ -22,7 +22,6 @@ use actix::prelude::*;
 use actix_web::{server, App};
 use env_logger::Builder;
 use log::info;
-use sentry_actix::SentryMiddleware;
 use state::AppState;
 use stats::StatsCollector;
 use std::env;
@@ -55,7 +54,6 @@ fn main() {
 
     let server = server::new(move || {
         App::with_state(AppState::init(stats_collector.clone()))
-            .middleware(SentryMiddleware::new())
             .resource("/metrics/request", |r| {
                 r.post().with(stats::update);
             })

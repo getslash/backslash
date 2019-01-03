@@ -119,6 +119,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
         ).label('test'),
         select([func.array_agg(
             func.json_build_object(
+                'timestamp', models.Error.timestamp,
                 'message', models.Error.message)
         )]).where(models.Error.test_id == models.Test.id).label('errors'),
         select([
