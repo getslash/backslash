@@ -1,5 +1,5 @@
 use actix::prelude::*;
-use stats::StatsCollector;
+use crate::stats::StatsCollector;
 
 pub struct AppState {
     pub(crate) stats_collector: Addr<StatsCollector>,
