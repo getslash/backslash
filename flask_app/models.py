@@ -746,8 +746,11 @@ class Replication(db.Model, TypenameMixin):
 
     def reset(self):
         self.paused = True
-        self.last_chunk_finished = self.last_replicated_id = self.backlog_remaining = \
-            self.last_error = None
+        self.last_replicated_timestamp = None
+        self.last_replicated_id = None
+        self.last_chunk_finished = None
+        self.backlog_remaining = None
+        self.last_error = None
         self.untimed_done = False
         self.avg_per_second = 0
 
