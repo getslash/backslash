@@ -744,6 +744,9 @@ class Replication(db.Model, TypenameMixin):
 
     _client = None
 
+    def __repr__(self):
+        return f'<Replica to {self.url}>'
+
     def reset(self):
         self.paused = True
         self.last_replicated_timestamp = None
