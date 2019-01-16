@@ -23,14 +23,13 @@ def status():
     with app.app_context():
         replica = models.Replication.query.first()
         print("Found replica", replica)
-        for i in range(num_iterations):
-            with _timing(f"Fetching tests to replicate #{i+1}/{num_iterations}"):
-                tests = list(
-                    models.db.session.execute(
-                        replications._get_tests_to_replicate_query(replica)
-                    )
+        with _timing(f"Fetching tests to replicate..."):
+            tests = list(
+                models.db.session.execute(
+                    replications._get_tests_to_replicate_query(replica, bulk_size=5)
                 )
-                print(f"Found {len(tests)} to replicate. First one is {tests[0]}")
+            )
+            print(f"Found {len(tests)} to replicate. First one is {tests[0]}")
 
 
 @contextmanager
