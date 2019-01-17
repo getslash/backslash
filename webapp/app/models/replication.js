@@ -11,6 +11,17 @@ export default DS.Model.extend({
   backlog_remaining: DS.attr("number"),
   last_error: DS.attr(),
   paused: DS.attr(),
+  last_replicated_timestamp: DS.attr(),
+
+  last_replicated_timestamp_str: computed(
+    "last_replicated_timestamp",
+    function() {
+      let timestamp = this.get("last_replicated_timestamp");
+      if (timestamp) {
+        return moment.unix(timestamp);
+      }
+    }
+  ),
 
   time_remaining: computed("avg_per_second", "backlog_remaining", function() {
     let remaining = this.get("backlog_remaining");
