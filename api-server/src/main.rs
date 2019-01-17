@@ -1,29 +1,15 @@
 #![deny(warnings)]
-extern crate actix;
-extern crate actix_web;
-extern crate env_logger;
-extern crate failure;
-extern crate futures;
-extern crate log;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate sentry;
-extern crate sentry_actix;
-extern crate structopt;
-extern crate url;
-
 mod aggregators;
 mod state;
 mod stats;
 mod utils;
 
+use crate::state::AppState;
+use crate::stats::StatsCollector;
 use actix::prelude::*;
 use actix_web::{server, App};
 use env_logger::Builder;
 use log::info;
-use state::AppState;
-use stats::StatsCollector;
 use std::env;
 use std::net::IpAddr;
 use structopt::StructOpt;

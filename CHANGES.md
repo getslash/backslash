@@ -1,6 +1,10 @@
 # Changelog
 
 
+## Version 2.15.4
+
+* Several fixes to Elasticsearch replication logic
+
 ## Version 2.15.0
 
 * UPGRADE NOTE: This version changes the docker-compose.yml used to deploy Backslash. Please update

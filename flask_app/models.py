@@ -476,6 +476,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
         Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
         Index('ix_test_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
+        Index('ix_test_updated_at_id', updated_at.asc(), id.asc()),
     )
 
     @rendered_field
@@ -744,10 +745,16 @@ class Replication(db.Model, TypenameMixin):
 
     _client = None
 
+    def __repr__(self):
+        return f'<Replica to {self.url}>'
+
     def reset(self):
         self.paused = True
-        self.last_chunk_finished = self.last_replicated_id = self.backlog_remaining = \
-            self.last_error = None
+        self.last_replicated_timestamp = None
+        self.last_replicated_id = None
+        self.last_chunk_finished = None
+        self.backlog_remaining = None
+        self.last_error = None
         self.untimed_done = False
         self.avg_per_second = 0
 

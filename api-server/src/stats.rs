@@ -1,13 +1,14 @@
 use actix::prelude::*;
 use actix_web::{AsyncResponder, HttpRequest, Query, Responder, State};
-use aggregators::{CountHistorgram, DurationAggregator};
+use crate::aggregators::{CountHistorgram, DurationAggregator};
 use failure::Error;
-use state::AppState;
+use crate::state::AppState;
 use std::collections::HashMap;
 use std::fmt::Write;
 use std::net::IpAddr;
 use std::time::Duration;
-use utils::duration_from_secs;
+use crate::utils::duration_from_secs;
+use serde_derive::Deserialize;
 
 const HISTOGRAM_RESOLUTION_SECONDS: usize = 60;
 const HISTOGRAM_NUM_BINS: usize = 10;

@@ -8,7 +8,7 @@ export function initialize(/* application */) {
       L: "DD/MM/YYYY",
       LL: "D MMMM YYYY",
       LLL: "D MMMM YYYY LT",
-      LLLL: "dddd D MMMM YYYY LT"
+      LLLL: "dddd D MMMM YYYY LT",
     },
     calendar: {
       lastDay: "[Yesterday at] LTS",
@@ -16,12 +16,12 @@ export function initialize(/* application */) {
       nextDay: "[Tomorrow at] LTS",
       lastWeek: "[last] dddd [at] LTS",
       nextWeek: "dddd [at] LTS",
-      sameElse: "L LTS"
-    }
+      sameElse: "L LTS",
+    },
   });
 }
 
 export default {
   name: "moment",
-  initialize: initialize
+  initialize: initialize,
 };
