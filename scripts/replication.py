@@ -18,7 +18,6 @@ def cli():
 
 @cli.command()
 def status():
-    num_iterations = 3
     app = create_app()
     with app.app_context():
         replica = models.Replication.query.first()
@@ -26,7 +25,7 @@ def status():
         with _timing(f"Fetching tests to replicate..."):
             tests = list(
                 models.db.session.execute(
-                    replications._get_tests_to_replicate_query(replica, bulk_size=5)
+                    replications._get_tests_to_replicate_query(replica)
                 )
             )
             print(f"Found {len(tests)} to replicate. First one is {tests[0]}")
