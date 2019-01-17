@@ -476,6 +476,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
         Index('ix_test_test_info_id_start_time', test_info_id, start_time.desc()),
         Index('ix_test_timespan', 'timespan', postgresql_using='gist'),
         Index('ix_test_updated_at', updated_at.asc(), postgresql_where=(updated_at != None)),
+        Index('ix_test_updated_at_id', updated_at.asc(), id.asc()),
     )
 
     @rendered_field

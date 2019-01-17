@@ -23,7 +23,7 @@ def reliable_task(task_func, stale_timeout=10 * 60):
 
     @functools.wraps(task_func)
     def new_func(*args, **kwargs):
-        get_redis_client().setex(task_key, 'true', time=stale_timeout)
+        get_redis_client().setex(name=task_key, value='true', time=stale_timeout)
         return task_func(*args, **kwargs)
 
     returned = queue.task(new_func)

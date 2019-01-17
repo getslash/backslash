@@ -429,6 +429,7 @@ class ReplicationsResource(ModelResource):
         'paused',
         'avg_per_second',
         'backlog_remaining',
+        'last_replicated_timestamp',
         'last_error',
         'service_type',
         'username',
