@@ -30,9 +30,9 @@
 {{/if}}
 
 {{#if session_model.has_fatal_errors}}
-  <p class="faint">
+  <div class="alert alert-danger" role="alert">
     The session was terminated due to a fatal error encountered during its execution.
-  </p>
+  </div>
 {{/if}}
 
 {{#if session_model.is_parent_session}}

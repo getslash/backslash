@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.15.5
+
+* Sessions dead due to fatal exceptions now show a much clearer indication in their sidebar
+* Fixed replication progress indication
 
 ## Version 2.15.4
 
