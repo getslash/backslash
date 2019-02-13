@@ -27,11 +27,27 @@
                   <span class="label label-danger">error</span>
                 {{/if}}
               {{/if}}
+              {{#if replication.lagging}}
+                <span class="label label-danger">lagging</span>
+              {{/if}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 pad-medium">
+              {{#if (and replication.active replication.lagging)}}
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    Resyncing...
+                  </div>
+                </div>
+              {{/if}}
             </div>
           </div>
           <div class="row">
             <div class="col-sm-9 faint">
-              Last test replicated from: <span title="{{replication.last_replicated_timestamp_str}}">{{moment-time ago=replication.last_replicated_timestamp}}</span>
+              <small>
+                Lagging by {{round replication.lag_seconds}} seconds
+              </small>
             </div>
           </div>
         </div>
