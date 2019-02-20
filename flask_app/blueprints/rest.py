@@ -436,6 +436,23 @@ class ReplicationsResource(ModelResource):
         'url'
     ]
 
+    def _render_many(self, objects, *, in_collection: bool):
+        returned = super()._render_many(objects, in_collection=in_collection)
+        [latest_timestamp] = models.db.session.query(func.max(models.Test.updated_at)).one()
+
+        if latest_timestamp:
+            latest_timestamp = latest_timestamp.timestamp()
+
+        for replication in returned['replications']:
+            last_replicated = replication['last_replicated_timestamp']
+            if not latest_timestamp or not last_replicated:
+                lag = None
+            else:
+                lag = latest_timestamp - last_replicated
+            replication['lag_seconds'] = lag
+
+        return returned
+
 
 @blueprint.route('/admin_alerts')
 def get_admin_alerts():

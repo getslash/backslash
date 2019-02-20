@@ -11,31 +11,14 @@ export default DS.Model.extend({
   backlog_remaining: DS.attr("number"),
   last_error: DS.attr(),
   paused: DS.attr(),
+  lag_seconds: DS.attr("number"),
   last_replicated_timestamp: DS.attr(),
 
-  last_replicated_timestamp_str: computed(
-    "last_replicated_timestamp",
-    function() {
-      let timestamp = this.get("last_replicated_timestamp");
-      if (timestamp) {
-        return moment.unix(timestamp);
-      }
+  lagging: computed('lag_seconds', function() {
+    let lag_seconds = this.get('lag_seconds');
+    if (lag_seconds === null) {
+      return true;
     }
-  ),
-
-  time_remaining: computed("avg_per_second", "backlog_remaining", function() {
-    let remaining = this.get("backlog_remaining");
-    let avg = this.get("avg_per_second");
-    if (!avg) {
-      return 0;
-    }
-    let seconds_remaining = remaining / avg;
-    if (seconds_remaining > 3600) {
-      return `${Math.trunc(seconds_remaining / 3600)} hours`;
-    } else if (seconds_remaining > 60) {
-      return `${Math.trunc(seconds_remaining / 60)} minutes`;
-    } else {
-      return `${seconds_remaining} seconds`;
-    }
+    return lag_seconds > 5 * 60;
   }),
 });
