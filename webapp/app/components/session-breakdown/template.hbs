@@ -36,7 +36,7 @@
 {{#with (sub (or session.total_num_tests session.num_finished_tests) session.num_finished_tests) as |num_not_run|}}
   <div class="not-run">
     {{#elements/tool-tip title=(concat num_not_run " tests not run")}}
-      <i class="fa fa-minus"></i> {{num_not_run}}
+      <i class="fa fa-question-circle"></i> {{num_not_run}}
     {{/elements/tool-tip}}
   </div>
 
