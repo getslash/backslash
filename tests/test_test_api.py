@@ -284,6 +284,50 @@ def test_cannot_report_interruption_on_planned_test(started_session, test_name, 
     assert test.refresh().status.lower() != 'interrupted'
 
 
+def test_skipped_test_adds_error(started_session, started_test):
+    started_test.mark_skipped("skipped")
+    started_test.add_error("error")
+    started_test.report_end()
+    started_session.report_end()
+    assert started_session.refresh().num_skipped_tests == 0
+    assert started_session.num_error_tests == 1
+    assert started_session.num_finished_tests == 1
+
+
+def test_errored_test_adds_skip(started_session, started_test):
+    started_test.add_error("error")
+    started_test.mark_skipped("skipped")
+    started_test.report_end()
+    started_session.report_end()
+    assert started_session.refresh().num_skipped_tests == 0
+    assert started_session.num_error_tests == 1
+    assert started_session.num_finished_tests == 1
+
+
+def test_ended_error_test_adds_skip(started_session, started_test):
+    started_test.add_error("error")
+    started_test.report_end()
+    started_test.mark_skipped("skipped")
+    started_session.report_end()
+    started_session.refresh()
+    assert started_session.num_skipped_tests == 0
+    assert started_session.num_error_tests == 1
+    assert started_session.num_finished_tests == 1
+
+
+def test_error_failure_test_adds_skip(started_session, started_test):
+    started_test.add_error("error", is_failure=True)
+    started_test.add_error("error", is_failure=False)
+    started_test.mark_skipped("skipped")
+    started_test.report_end()
+    started_session.report_end()
+    started_session.refresh()
+    assert started_session.num_skipped_tests == 0
+    assert started_session.num_error_tests == 1
+    assert started_session.num_failed_tests == 0
+
+
+
 @pytest.fixture(params=[True, False])
 def params(request):
     encodable = request.param
