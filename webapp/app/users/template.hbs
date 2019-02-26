@@ -4,4 +4,4 @@
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
 {{/tool-bar}}
 
-{{query-results results=users meta=users.meta page=(mut page) use_item_box=true}}
+{{query-results results=users meta=users.meta page=(mut page) page_size=(mut page_size) use_item_box=true}}
