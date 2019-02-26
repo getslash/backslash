@@ -3,10 +3,9 @@
     {{capitalize (pluralize (display-name "subject"))}}
   </div>
   {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
-  {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
 {{/tool-bar}}
 
-{{results-nav page=(mut page) has_next=subjects.meta.has_more }}
+{{results-nav page_size=(mut page_size) page=(mut page) has_next=subjects.meta.has_more }}
 
 {{#each subjects as |subject|}}
   {{#link-to 'subject' subject.name classNames="item subject"}}

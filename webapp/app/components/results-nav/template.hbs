@@ -1,3 +1,19 @@
+{{#if page_size}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-5" as |dd|}}
+    {{#dd.toggle classNames="faint"}}{{page_size}} Results <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each available_page_sizes as |available_page_size|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (mut page_size) available_page_size}}>
+            {{available_page_size}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+{{/if}}
+
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "first_page")}} title="Go to first page"><i class="fa fa-angle-double-left"></i></a>
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "prev_page")}} title="Go to previous page"><i class="fa fa-angle-left"></i></a>
 
