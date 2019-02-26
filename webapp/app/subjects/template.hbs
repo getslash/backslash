@@ -6,7 +6,7 @@
   {{dropdown-menu title=(concat page_size " results") value=(mut page_size) options=available_page_sizes}}
 {{/tool-bar}}
 
-{{pagination-nav page=(mut page) has_next=subjects.meta.has_more }}
+{{results-nav page=(mut page) has_next=subjects.meta.has_more }}
 
 {{#each subjects as |subject|}}
   {{#link-to 'subject' subject.name classNames="item subject"}}
@@ -23,4 +23,4 @@
   {{/link-to}}
 {{/each}}
 
-{{pagination-nav page=(mut page) has_next=subjects.meta.has_more }}
+{{results-nav page=(mut page) has_next=subjects.meta.has_more }}
