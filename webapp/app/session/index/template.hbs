@@ -43,14 +43,10 @@
   {{query-results
     results=sortedTests
     page=(mut page)
-    show_users=false
     page_size=(mut page_size)
+    filter_controller=this
+    show_users=false
     show_subjects=false
-    show_successful=show_successful
-    show_unsuccessful=show_unsuccessful
-    show_abandoned=show_abandoned
-    show_skipped=show_skipped
-    show_planned=show_planned
     session_model=session_model
     meta=collection.meta
   }}

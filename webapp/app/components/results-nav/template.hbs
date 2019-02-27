@@ -1,6 +1,28 @@
+{{#if filter_controller}}
+
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "filter"}} <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each filters as |filter|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (toggle filter.attr filter_controller)}}>
+            {{#if (get filter_controller filter.attr)}}
+              {{fa-icon "check" fixedWidth=true}}
+            {{else}}
+              {{fa-icon "fw"}}
+            {{/if}}
+            Show {{filter.name}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+{{/if}}
+
 {{#if page_size}}
-  {{#bs-dropdown classNames="justify-content-center align-self-center mr-5" as |dd|}}
-    {{#dd.toggle classNames="faint"}}{{page_size}} Results <span class="caret"></span>{{/dd.toggle}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{page_size}} Results <span class="caret"></span>{{/dd.toggle}}
     {{#dd.menu as |menu|}}
 
       {{#each available_page_sizes as |available_page_size|}}
@@ -13,6 +35,7 @@
     {{/dd.menu}}
   {{/bs-dropdown}}
 {{/if}}
+
 
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "first_page")}} title="Go to first page"><i class="fa fa-angle-double-left"></i></a>
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "prev_page")}} title="Go to previous page"><i class="fa fa-angle-left"></i></a>
