@@ -5626,21 +5626,6 @@ linkify-it@^2.0.0:
   dependencies:
     uc.micro "^1.0.1"
 
-liquid-fire@0.29.2:
-  version "0.29.2"
-  resolved "https://registry.yarnpkg.com/liquid-fire/-/liquid-fire-0.29.2.tgz#db3900c0d6554262e2c2f30a3f24681a3006f850"
-  dependencies:
-    broccoli-funnel "^1.0.1"
-    broccoli-merge-trees "^1.0.0"
-    broccoli-stew "^1.4.2"
-    ember-cli-babel "^6.6.0"
-    ember-cli-htmlbars "^2.0.1"
-    ember-cli-version-checker "^2.0.0"
-    ember-getowner-polyfill "^2.0.1"
-    ember-hash-helper-polyfill "^0.2.0"
-    match-media "^0.2.0"
-    velocity-animate "^1.5.1"
-
 livereload-js@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/livereload-js/-/livereload-js-2.2.2.tgz#6c87257e648ab475bc24ea257457edcc1f8d0bc2"
