@@ -1,52 +1,40 @@
-
-<div class="left-badge {{if display.show_side_labels 'expanded'}}">
-  <div class="open-hint">
-    <i class="fa fa-chevron-right"></i>
-  </div>
-  <div class="summary">
-    {{session-breakdown session=session show_total_count=false}}
-  </div>
-</div>
-<div class="main-info">
-  {{#if session.child_id}}
-    Child ID: {{session.child_id}}, Session ID: {{session.display_id}}
-  {{else}}
-    {{status-icon status=session.computed_status}}
-    {{#elements/tool-tip title=session.user_display_name}}
-      {{#link-to 'user' session.user_email}}
-        {{users/user-avatar email=session.user_email real_email=session.real_email small=true}}
-      {{/link-to}}
-    {{/elements/tool-tip}}
-    <div class="user-info">
-      <small>{{#link-to 'user' session.user_email}}{{session.user_display_name}}{{/link-to}}</small>
+<div class="row">
+  <!-- left column -->
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="col">
+        {{status-icon status=session.computed_status}}
+        {{#if show_subjects}}
+          {{subject-info subjects=session.subjects}}
+        {{/if}}
+      </div>
     </div>
-  {{/if}}
-</div>
-
-
-<div class="subject-info">
-  {{#if show_subjects}}
-    {{subject-info subjects=session.subjects}}
-  {{/if}}
-  {{#if show_labels}}
-    {{#each session.labels as |label|}}
-      {{item-label label=label}}
-    {{/each}}
-  {{/if}}
-</div>
-
-<div class="additional-info {{if display.humanize_times 'humanized'}}">
-
-  {{item-times start=session.start_time end=session.end_time humanize=display.humanize_times}}
-
-  <div class="duration">
-    {{humanize-duration start=session.start_time end=session.end_time}}
+    <div class="row">
+      <div class="col">
+        <small>
+        {{#link-to 'user' session.user_email}}
+          {{session.user_display_name}}
+        {{/link-to}}
+        </small>
+      </div>
+    </div>
   </div>
-</div>
+  <!-- right column -->
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="col">
+        {{session-breakdown session=session show_total_count=false}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {{#if show_labels}}
+          {{#each session.labels as |label|}}
+            {{item-label label=label}}
+          {{/each}}
+        {{/if}}
 
-{{item-comment-overview item=session}}
-
-
-<div class="right-label warnings expand-on-hover {{if session.total_num_warnings 'visible'}}">
-  <i class="fa fa-warning"></i> <span class="summary">{{pluralize session.total_num_warnings "Warning"}}</span>
+      </div>
+    </div>
+  </div>
 </div>

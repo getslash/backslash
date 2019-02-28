@@ -23,7 +23,7 @@ pre, .mono {
  *******************************************************************************/
 
 @import 'proofing.scss';
-
+@import 'item.scss';
 @import 'fonts.scss';
 @import 'font-awesome';
 
@@ -34,12 +34,7 @@ pre, .mono {
 
 @import 'dropdowns.scss';
 @import 'toggles.scss';
-
-@import 'items.scss';
-
-@import 'sessions.scss';
 @import 'users.scss';
-
 @import 'boxes.scss';
 
 @import 'navigation.scss';
