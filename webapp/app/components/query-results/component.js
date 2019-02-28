@@ -3,6 +3,7 @@ import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 
 export default Component.extend({
+  classNames: ["container-fluid"],
   results: null,
   meta: null,
   show_subjects: true,
@@ -11,10 +12,4 @@ export default Component.extend({
   filter_controller: null,
 
   display: service(),
-
-  actions: {
-    set_page_size(size) {
-      this.set("page_size", size);
-    },
-  },
 });

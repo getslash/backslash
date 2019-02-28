@@ -1,0 +1,9 @@
+.item {
+    @extend .p-2;
+    @extend .mt-2;
+
+    border: 1px solid silver;
+    border-left: 5px solid;
+
+    border-color: $brand-success;
+}
