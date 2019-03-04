@@ -5,5 +5,10 @@
     border: 1px solid silver;
     border-left: 5px solid;
 
-    border-color: $brand-success;
+    &.success {
+        border-color: $brand-success;
+    }
+    &.error, &.failure {
+        border-color: $brand-danger;
+    }
 }
