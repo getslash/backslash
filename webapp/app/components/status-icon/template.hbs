@@ -11,7 +11,11 @@
       {{#if (eq status_lower "planned")}}
         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
       {{else}}
-        <i class="fa fa-times"></i>
+        {{#if (eq status_lower "debugging") }}
+          <i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i>
+        {{else}}
+          <i class="fa fa-times"></i>
+        {{/if}}
       {{/if}}
     {{/if}}
   {{/if}}

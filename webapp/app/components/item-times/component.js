@@ -1,5 +1,6 @@
-import { inject as service } from '@ember/service';
-import Component from '@ember/component';
+import { inject as service } from "@ember/service";
+import { oneWay } from "@ember/object/computed";
+import Component from "@ember/component";
 
 /* global moment */
 
@@ -8,8 +9,10 @@ export default Component.extend({
 
   classNames: ["times"],
 
-  start: null,
-  end: null,
+  item: null,
+
+  start: oneWay("item.start_time"),
+  end: oneWay("item.end_time"),
   humanize: true,
 
   raw_times_text: function() {
@@ -18,7 +21,7 @@ export default Component.extend({
 
     let returned = this._format(start) + " - ";
     if (!start) {
-      return "Not started yet"
+      return "Not started yet";
     }
     if (end) {
       returned += this._format(end);
@@ -33,7 +36,7 @@ export default Component.extend({
     let start = this.get("start");
     let end = this.get("end");
     if (!start) {
-      return "Not started yet"
+      return "Not started yet";
     }
     if (!end) {
       return "Started " + this._humanize(start);
@@ -54,5 +57,5 @@ export default Component.extend({
   _format(t) {
     const format = this.get("user_prefs").get_cached("time_format");
     return moment.unix(t).format(format);
-  }
+  },
 });

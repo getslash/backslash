@@ -13,3 +13,13 @@
 &.failed {
     color: $brand-danger !important;
 }
+
+&.debugging {
+    animation: debugging-animation 3s infinite;
+}
+
+@keyframes debugging-animation {
+    from {opacity: 1.0}
+    50% {opacity: 0.5}
+    to {opacity: 1.0}
+}

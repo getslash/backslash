@@ -1,6 +1,6 @@
 <div class="row">
   <!-- left column -->
-  <div class="col-sm-6">
+  <div class="col-sm-6 col-md-4">
     <div class="row">
       <div class="col">
         {{status-icon status=session.computed_status}}
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col d-none d-md-block">
         <small>
         {{#link-to 'user' session.user_email}}
           {{session.user_display_name}}
@@ -18,12 +18,16 @@
         </small>
       </div>
     </div>
-  </div>
-  <!-- right column -->
-  <div class="col-sm-6">
     <div class="row">
       <div class="col">
-        {{session-breakdown session=session show_total_count=false}}
+      </div>
+    </div>
+  </div>
+  <!-- middle column -->
+  <div class="col-md-4 d-none d-md-block">
+    <div class="row">
+      <div class="col">
+        {{item-times item=session}}
       </div>
     </div>
     <div class="row">
@@ -33,8 +37,32 @@
             {{item-label label=label}}
           {{/each}}
         {{/if}}
-
       </div>
+    </div>
+  </div>
+  <!-- right column -->
+  <div class="col-sm-6 col-md-4">
+    <div class="row justify-content-end">
+      <div class="col-sm-2 faint">
+        {{#if session.num_comments}}
+          <span>
+            {{fa-icon "comment"}} {{session.num_comments}}
+            {{#bs-popover triggerEvents="hover"}}
+              {{session.last_comment.user_email}} -- {{session.last_comment.comment}}
+            {{/bs-popover}}
+          </span>
+        {{/if}}
+      </div>
+      <div class="col-sm-6 co-md-4">
+        {{session-breakdown session=session show_total_count=false}}
+      </div>
+    </div>
+    <div class="row">
+
+    </div>
+    <div class="row">
+
+
     </div>
   </div>
 </div>

@@ -1,11 +1,11 @@
-import Component from '@ember/component';
+import Component from "@ember/component";
 
 export default Component.extend({
   tagName: "span",
 
   label: "",
 
-  classNames: ["label", "label-default"],
+  classNames: "badge badge-pill",
 
   classNameBindings: ["label_color"],
 
@@ -24,7 +24,7 @@ export default Component.extend({
   },
 
   label_color: function() {
-    let h = this.get_hash_code(this.get("label")) % 5 + 1;
+    let h = (this.get_hash_code(this.get("label")) % 5) + 1;
     return "label-color-" + h;
-  }.property("label")
+  }.property("label"),
 });
