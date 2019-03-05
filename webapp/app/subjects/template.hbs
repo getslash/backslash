@@ -2,24 +2,7 @@
   <div class="navbar-text">
     {{capitalize (pluralize (display-name "subject"))}}
   </div>
-  {{dropdown-select value=(mut sort) options=sort_options title="Sort"}}
 {{/tool-bar}}
 
-{{results-nav page_size=(mut page_size) page=(mut page) has_next=subjects.meta.has_more }}
 
-{{#each subjects as |subject|}}
-  {{#link-to 'subject' subject.name classNames="item subject"}}
-    <div class="name" title="{{subject.name}}">
-      {{subject.name}}
-    </div>
-    <div class="faint vertical-center-flex">
-      {{#if subject.last_activity}}
-        Last active {{moment-time ago=subject.last_activity}}
-      {{else}}
-        Last active: N/A
-      {{/if}}
-    </div>
-  {{/link-to}}
-{{/each}}
-
-{{results-nav page=(mut page) has_next=subjects.meta.has_more }}
+{{query-results results=subjects page_size=(mut page_size) page=(mut page)}}
