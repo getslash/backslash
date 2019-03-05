@@ -1,29 +1,42 @@
-import { oneWay, equal } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
-import Component from '@ember/component';
+import { assign } from "@ember/polyfills";
+import { oneWay } from "@ember/object/computed";
+import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
+import Component from "@ember/component";
+import { lower_case } from "../../utils/computed";
 
 export default Component.extend({
   display: service(),
+  router: service(),
+
   attributeBindings: ["href"],
-  tagName: "a",
-  classNames: ["item", "test", "clickable"],
+  classNames: "item test clickable",
+  classNameBindings: "status_lowercase",
 
-  classNameBindings: [
-    "test.computed_status",
-    "test.has_any_error:unsuccessful"
-  ],
-
-  test: oneWay("item"),
   session_model: null,
-  is_running: equal("test.computed_status", "running"),
+  test: oneWay("item"),
+  status_lowercase: lower_case("test.status"),
 
-
-
-  href: function() {
-    let returned = `/#/sessions/${this.get("test.session_display_id")}/tests/${this.get("test.display_id")}`;
-    if (this.get("test.has_any_error")) {
-      returned += "/errors";
+  display_params: computed("test.{parameters,variation}", function() {
+    let variation = this.get("test.variation");
+    let params = this.get("test.parameters");
+    if (!params) {
+      params = variation;
     }
+    if (variation) {
+      for (var key in variation) {
+        if (!Number.isInteger(variation[key])) {
+          params[key] = variation[key];
+        }
+      }
+    }
+
+    let returned = assign({}, this.get("variation"), params);
     return returned;
-  }.property("test"),
+  }),
+
+  click(e) {
+    e.stopPropagation();
+    return this.get("router").transitionTo("test", this.get("test.display_id"));
+  },
 });

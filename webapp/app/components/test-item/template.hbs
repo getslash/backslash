@@ -1,58 +1,108 @@
-<div class="left-badge">
-  <div class="summary">
-    {{#if is_running}}
-      <div>
-        Still running...
+<div class="row">
+  <!-- left column -->
+  <div class="col-sm-1">
+    <div class="row">
+      <div class="col">
+        {{star-marker starred_object=test}}
+        {{status-icon status=test.computed_status session_model=session_model}}
       </div>
-    {{/if}}
-    {{#if test.first_error}}
-      {{test.first_error.exception_type}}: {{test.first_error.message}}
-      {{#if (gt test.num_errors 1) }}
-        <div>
-          <i class="fa fa-exclamation-circle"></i> +{{sub test.num_errors 1}}
-        </div>
-      {{/if}}
-    {{else}}
-      {{#if (eq status 'skipped')}}
-        Skipped ({{test.skip_reason}})
-      {{/if}}
-    {{/if}}
-
+    </div>
   </div>
-</div>
-
-<div class="main-info">
-  {{star-marker starred_object=test}}
-  {{status-icon status=test.computed_status session_model=session_model}}
-  {{#if show_user}}
-      {{#elements/tool-tip title=test.user_display_name}}
-        {{#link-to 'user' test.user_email}}
-        {{users/user-avatar email=test.user_email small=true}}
-        {{/link-to}}
-      {{/elements/tool-tip}}
-      <div class="user-info">
-        <small>{{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
+  <div class="col-sm-7">
+    <div class="row">
+      <div class="col text-truncate">
+        <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
+        {{format-test-name test.info with_filename=false}}
       </div>
-  {{/if}}
-  <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
-  {{tests/test-name info=test.info variation=test.variation parameters=test.parameters}}
-</div>
+    </div>
+    <div class="row">
+      <div class="col text-truncate">
+        {{#if test.variation}}
+          <span>
+            {{#bs-popover title="Test Parameters" placement="auto" triggerEvents="hover"}}
+              {{#each-in display_params as |name value|}}
+                <div>
+                  {{name}}: <code>{{if value value 'None'}}</code>
+                </div>
+              {{/each-in}}
+            {{/bs-popover}}
+            <ul class="params">
 
-{{#if show_subjects}}
-  <div class="subject-info">
-      {{subject-info subjects=test.subjects}}
+              {{#each-in display_params as |name value|}}
+
+                <li>{{name}}=<code>{{if value value 'None'}}</code>
+                </li>
+              {{/each-in}}
+            </ul>
+          </span>
+        {{else}}
+          &nbsp;
+        {{/if}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {{#if show_user}}
+          <div class="user-info">
+            <small>{{#link-to 'user' test.user_email}}{{test.user_display_name}}{{/link-to}}</small>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-truncate">
+        {{#if test.num_warnings }}
+          <div class="badge badge-pill badge-warning text-white" title="{{test.num_warnings}} warnings">
+            {{fa-icon "exclamation-triangle"}} {{test.num_warnings}}
+          </div>
+        {{/if}}
+        {{#if test.has_any_error}}
+          <span class="badge badge-pill badge-danger mr-2">{{fa-icon "times"}} {{add test.num_errors test.num_failures}}</span>
+          <span class="text-danger">
+            {{test.first_error.message}}
+          </span>
+        {{else}}
+          {{#if test.skip_reason}}
+            <span class="badge badge-pill badge-secondary text-white mr-2">
+              Skipped
+            </span> <span class="text-black-50">
+              {{test.skip_reason}}
+            </span>
+          {{/if}}
+          &nbsp;
+        {{/if}}
+      </div>
+    </div>
   </div>
-{{/if}}
-
-<div class="additional-info {{if display.humanize_times 'humanized'}}">
-  {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
-  <div class="duration">
-    {{humanize-duration start=test.start_time end=test.end_time}}
+  <!-- right column -->
+  <div class="col-sm-4">
+    <div class="row">
+      <div class="col">
+        {{item-times start=test.start_time end=test.end_time humanize=display.humanize_times}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {{#if show_subjects}}
+          <div class="subject-info">
+            {{subject-info subjects=test.subjects}}
+          </div>
+        {{else}}
+          &nbsp;
+        {{/if}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {{#if test.last_comment}}
+          <div class="text-truncate text-black-50">
+            <span class="mr-2">{{if (not (eq test.num_comments 1)) test.num_comments}} {{fa-icon "comment"}}</span> {{test.last_comment.comment}}
+          </div>
+        {{else}}
+          &nbsp;
+        {{/if}}
+      </div>
+    </div>
   </div>
-</div>
 
-{{item-comment-overview item=test}}
-
-<div class="right-label expand-on-hover warnings {{if test.num_warnings 'visible'}}">
-  <i class="fa fa-warning"></i> <span class="summary">{{pluralize test.num_warnings "Warning"}}</span>
 </div>
