@@ -11,4 +11,7 @@
     &.error, &.failure {
         border-color: $brand-danger;
     }
+    &.skipped {
+        border-color: $brand-warning;
+    }
 }

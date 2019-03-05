@@ -88,29 +88,6 @@ span.warning, i.warning
     background: $gray-lighter;
 }
 
-/* Margins shortcut */
-$added-margin-amount: 1em;
-$large-factor: 4;
-$medium-factor: 2;
-
-@mixin margin-modifiers($location) {
-
-    margin-#{$location}: $added-margin-amount;
-    &.margin-large {
-	margin-#{$location}: $added-margin-amount * $large-factor;
-    }
-
-    &.margin-medium {
-	margin-#{$location}: $added-margin-amount * $medium-factor;
-    }
-}
-
-
-.add-margin-top { @include margin-modifiers(top); }
-.add-margin-bottom { @include margin-modifiers(bottom); }
-.add-margin-left { @include margin-modifiers(left); }
-.add-margin-right { @include margin-modifiers(right); }
-
 span {
     &.skip, &.warning {
 	color: $brand-warning;

@@ -3,9 +3,36 @@
     .test-index {
         color: darken($gray-lighter, 10%);
         min-width: 4em;
+        display: inline-block;
 
         &:before {
             content: "#";
+        }
+    }
+
+    ul.params {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        color: silver;
+
+        li {
+            display: inline-block;
+
+            &:after {
+                content: ',';
+            }
+
+
+            &:last-of-type:after {
+                content:'';
+            }
+
+            code {
+                background: white;
+                border-bottom: 1px dashed silver;
+                color: silver;
+            }
         }
     }
 }

@@ -7,8 +7,7 @@ export default Component.extend({
 
   status_lower: lower_case("status"),
 
-  spaced: true,
   classNames: "status-icon",
-  classNameBindings: ["spaced:spaced", "status_lower"],
+  classNameBindings: ["status_lower"],
   tagName: "span",
 });
