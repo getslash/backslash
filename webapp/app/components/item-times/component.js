@@ -6,6 +6,7 @@ import Component from "@ember/component";
 
 export default Component.extend({
   user_prefs: service(),
+  display: service(),
 
   classNames: ["times"],
 
@@ -13,7 +14,7 @@ export default Component.extend({
 
   start: oneWay("item.start_time"),
   end: oneWay("item.end_time"),
-  humanize: true,
+  humanize: oneWay("display.humanize_times"),
 
   raw_times_text: function() {
     let start = this.get("start");
