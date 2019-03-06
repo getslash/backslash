@@ -36,6 +36,23 @@
   {{/bs-dropdown}}
 {{/if}}
 
+{{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+  {{#dd.toggle classNames="faint nodecoration"}}Display <span class="caret"></span>{{/dd.toggle}}
+  {{#dd.menu as |menu|}}
+    {{#menu.item}}
+      <a class="dropdown-item clickable" {{action (toggle "humanize_times" display)}}>
+        {{#if display.humanize_times}}
+          {{fa-icon "check" fixedWidth=true}}
+        {{else}}
+          {{fa-icon "fw"}}
+        {{/if}}
+        Human-friendly times
+      </a>
+    {{/menu.item}}
+  {{/dd.menu}}
+{{/bs-dropdown}}
+
+
 
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "first_page")}} title="Go to first page"><i class="fa fa-angle-double-left"></i></a>
 <a class="btn btn-default first {{if (not has_prev) 'disabled'}}" onclick={{if has_prev (action "prev_page")}} title="Go to previous page"><i class="fa fa-angle-left"></i></a>

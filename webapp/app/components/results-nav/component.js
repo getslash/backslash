@@ -1,9 +1,12 @@
+import { inject as service } from "@ember/service";
 import config from "../../config/environment";
 import { notEmpty, gt } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import Component from "@ember/component";
 
 export default Component.extend({
+  display: service(),
+
   classNames: "d-flex mt-1",
 
   available_page_sizes: config.APP.available_page_sizes,

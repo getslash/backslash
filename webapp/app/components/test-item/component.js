@@ -6,7 +6,6 @@ import Component from "@ember/component";
 import { lower_case } from "../../utils/computed";
 
 export default Component.extend({
-  display: service(),
   router: service(),
 
   attributeBindings: ["href"],
