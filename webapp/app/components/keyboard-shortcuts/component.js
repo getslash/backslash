@@ -114,6 +114,7 @@ export default Component.extend(KeyboardShortcuts, {
     element.off();
     this.set("quick_search_open", false);
     this.get("display").set("show_help", false);
+    this.set("help_displayed", false);
   },
 
   _do_if_in(paths, callback) {
@@ -173,7 +174,11 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     close_boxes_or_home() {
-      if (this.get("quick_search_open") || this.get("display.show_help")) {
+      if (
+        this.get("quick_search_open") ||
+        this.get("display.show_help") ||
+        this.get("help_displayed")
+      ) {
         this._close_boxes();
       } else {
         this._do_if_in(["sessions", "session.index"], function(controller) {
