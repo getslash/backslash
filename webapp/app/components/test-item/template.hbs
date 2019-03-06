@@ -7,6 +7,15 @@
         {{status-icon status=test.computed_status session_model=session_model}}
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        {{#if test.status_description}}
+          <span class="badge badge-light b-1">
+            {{test.status_description}}
+          </span>
+        {{/if}}
+      </div>
+    </div>
   </div>
   <div class="col-sm-7">
     <div class="row">
