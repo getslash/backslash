@@ -3,6 +3,7 @@ import time
 
 from munch import Munch
 from ..utils import run_suite
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 @pytest.fixture(scope="session")
@@ -84,22 +85,21 @@ class _UI:
             password = self.admin_password
 
         for retry in range(3):
-            if retry:
-                self.driver.refresh()
-                time.sleep(1)
-            if self.is_logged_in():
-                assert retry, "Attempt to log in when we are already logged in"
+            try:
+                login_input = self.driver.find_element_by_id("username")
+                login_input.clear()
+                login_input.send_keys(username)
+                password_input = self.driver.find_element_by_id("password")
+                password_input.clear()
+                password_input.send_keys(password)
+                self.driver.find_element_by_class_name("btn-success").click()
+                assert self.is_logged_in(), "Not logged in!"
+            except StaleElementReferenceException:
+                continue
+            else:
                 break
-            login_input = self.driver.find_element_by_id("username")
-            login_input.send_keys(username)
-            password_input = self.driver.find_element_by_id("password")
-            password_input.send_keys(password)
-            self.driver.find_element_by_class_name("btn-success").click()
-            if self.is_logged_in():
-                break
-
         else:
-            assert False, "Could not log in!"
+            assert False, "Cannot log in!"
 
     def is_logged_in(self):
         logout_buttons = self.driver.find_elements_by_css_selector("button.logout")
