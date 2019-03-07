@@ -3,18 +3,16 @@ import { oneWay } from "@ember/object/computed";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
-import { lower_case } from "../../utils/computed";
 
 export default Component.extend({
   router: service(),
 
   attributeBindings: ["href"],
   classNames: "item test clickable",
-  classNameBindings: "status_lowercase",
+  classNameBindings: "test.status_lowercase",
 
   session_model: null,
   test: oneWay("item"),
-  status_lowercase: lower_case("test.status"),
 
   display_params: computed("test.{parameters,variation}", function() {
     let variation = this.get("test.variation");
