@@ -1,7 +1,10 @@
 import { computed } from "@ember/object";
+import { lower_case } from "../utils/computed";
 import Mixin from "@ember/object/mixin";
 
 export default Mixin.create({
+  status_lowercase: lower_case("computed_status"),
+
   computed_status: computed(
     "status",
     "in_pdb",
@@ -49,7 +52,7 @@ export default Mixin.create({
         return "interrupted";
       }
 
-      if (this.get("num_skipped_tests") || status === "skipped") {
+      if (status === "skipped") {
         return "skipped";
       }
 

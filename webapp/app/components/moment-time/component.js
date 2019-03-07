@@ -1,10 +1,11 @@
 /* global moment */
-import { inject as service } from '@ember/service';
+import { inject as service } from "@ember/service";
 
-import Component from '@ember/component';
+import Component from "@ember/component";
 
 export default Component.extend({
   tagName: "span",
+  classNames: "text-nowrap",
 
   user_prefs: service(),
 
@@ -22,7 +23,7 @@ export default Component.extend({
       let value = moment.unix(ago);
       let now = moment();
 
-      if (value.isAfter(now) && !this.get('allow_future')) {
+      if (value.isAfter(now) && !this.get("allow_future")) {
         value = now;
       }
 
@@ -51,5 +52,5 @@ export default Component.extend({
       value = value.format(format);
     }
     return value;
-  }.property("time_value")
+  }.property("time_value"),
 });

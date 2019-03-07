@@ -2,15 +2,6 @@
 
   <ul class="navbar-nav">
     <span class="navbar-text">
-      {{#if session_model.parent_logical_id}}
-        {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
-          <i class="fa fa-arrows-alt"></i>
-        {{/link-to}}
-      {{else}}
-        {{#if session_model.is_parent_session}}
-          <i class="fa fa-arrows-alt" title="Parallel session"></i>
-        {{/if}}
-      {{/if}}
       Session {{elements/copyable-text value=session_model.display_id}}
     </span>
   </ul>
@@ -21,9 +12,9 @@
       <span class="navbar-text">
         <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
       </span>
-        {{#if (can "admin")}}
-          <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
-        {{/if}}
+      {{#if (can "admin")}}
+        <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
+      {{/if}}
     {{else}}
       {{#if (can "admin")}}
         <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
@@ -34,71 +25,206 @@
 
 {{/tool-bar}}
 
-{{#collapsible-sidebar collapsed=(mut display.session_side_bar_collapsed) as |section|}}
-  {{#if section.side}}
-    {{session-overview session_model=session_model metadata=metadata user=user timings=timings}}
-  {{else}}
-    {{#bs-nav type="tabs" as |nav|}}
+<div class="item {{session_model.status_lowercase}} m-2 p-2">
+  <div class="row">
+    <!-- left column -->
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col">
+          {{status-icon status=session_model.computed_status}}
+          {{subject-info subjects=session_model.subjects}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              {{#link-to "user.sessions" session_model.user_email}}
+                {{user.display_name}}
+              {{/link-to}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          {{#each session_model.labels as |label|}}
+            {{item-label label=label}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!-- middle left column -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="row">
+        <div class="col text-muted">
+          <div>
+            <small>
+              {{fa-icon "calendar-o"}} {{moment-time unix=session_model.start_time}} &rarr; {{moment-time unix=session_model.end_time}}
+            </small>
+          </div>
+          <div>
+            <small>
+              {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row d-none d-lg-block">
+        <div class="col text-muted">
+          {{#each timings as |timing|}}
+            <div class="row faint">
+              <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
+              <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+            </div>
+          {{/each}}
 
-      {{#nav.item}}{{#nav.link-to 'session.index'}}Tests{{/nav.link-to}}{{/nav.item}}
-      {{#if session_model.num_errors}}
-        {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
-	  {{/if}}
-      {{#if session_model.num_interruptions}}
-	    {{#nav.item}}
-          {{#nav.link-to 'session.interruptions'}}
-	        <a href>Interruptions <span class="badge badge-pill badge-danger">{{session_model.num_interruptions}}</span></a>
-	      {{/nav.link-to}}
-        {{/nav.item}}
-	  {{/if}}
+        </div>
+      </div>
+    </div>
+    <!-- middle right column -->
+    <div class="d-none d-lg-block col-lg-3">
+      <div class="row">
+        <div class="col">
+          {{#if session_model.infrastructure}}
+            <small>
+              <span class="text-muted text-nowrap mr-5">
+                {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+              </span>
+            </small>
+          {{/if}}
+          {{#each metadata_display_items as |item|}}
+            {{#with (get metadata item.key) as |value|}}
+              {{#if value}}
+                <small>
+                  <span class="text-muted text-nowrap mr-5">
+                    <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+                  </span>
+                </small>
 
-      {{#with session_model.num_warnings as |num_warnings|}}
-	    {{#if num_warnings}}
-	      {{#nav.item}}{{#nav.link-to "session.warnings"}}
-		    Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
-	      {{/nav.link-to}}{{/nav.item}}
-	    {{/if}}
-	  {{/with}}
+              {{/if}}
+            {{/with}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!-- right column -->
+    <div class="col-sm-2">
+      <div class="row">
+        <div class="col d-flex justify-content-end">
+          {{session-breakdown session=session_model show_total_count=false}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"></div>
+      </div>
+    </div>
+  </div>
 
-      {{#nav.item}}{{#nav.link-to "session.info"}}Info{{/nav.link-to}}{{/nav.item}}
-
+  <div class="row">
+    <div class="col-sm-12">
       {{#if session_model.is_parent_session}}
-        {{#nav.item}}
-          {{#nav.link-to "session.children"}}
-            Child Sessions
-          {{/nav.link-to}}
-        {{/nav.item}}
+        {{#info-badge icon="arrows-alt" text="Parallel"}}
+          This session was run in parallel mode. Actual tests run by child sessions.
+        {{/info-badge}}
       {{/if}}
 
-	  {{#nav.item}}
-        {{#nav.link-to "session.comments"}}
-          Comments
-	      {{#if session_model.num_comments}}
-		    <div class="badge badge-pill badge-light">{{session_model.num_comments}}</div>
-	      {{/if}}
-	    {{/nav.link-to}}
-      {{/nav.item}}
+      {{#if session_model.parent_logical_id}}
+        {{#link-to "session" session_model.parent_logical_id}}
+          {{#info-badge icon="arrows-alt" text="Parallel"}}
+            Session is a part of a parallel session. Child id: #{{session_model.child_id}}. Click to go to parent session
+          {{/info-badge}}
+        {{/link-to}}
+      {{/if}}
 
-      {{#if current_test }}
-	    {{#if (s-starts-with router.currentRouteName 'session.test') }}
-          {{#nav.item}}
-            <a class="nav-link">
-		      Test #{{current_test.test_index}}
-            </a>
-          {{/nav.item}}
-	    {{else}}
-	      {{#nav.item}}
-	        {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
-		      Test #{{current_test.test_index}}
-	        {{/nav.link-to}}
-	      {{/nav.item}}
-	    {{/if}}
-	  {{/if}}
-    {{/bs-nav}}
 
-    {{outlet}}
+      {{#if session_model.in_pdb }}
+        {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
+          Session is currently being investigated using an interactive debugger
+        {{/info-badge}}
+      {{/if}}
+
+      {{#if session_model.has_fatal_errors}}
+        {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
+          The session was terminated due to a fatal error encountered during its execution.
+        {{/info-badge}}
+      {{/if}}
+
+      {{#if session_model.is_abandoned}}
+        {{#info-badge icon="question" text="Abandoned"}}
+          Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
+        {{/info-badge}}
+      {{/if}}
+
+
+    </div>
+  </div>
+</div>
+
+
+{{#bs-nav type="tabs" as |nav|}}
+
+  {{#nav.item}}{{#nav.link-to 'session.index'}}Tests{{/nav.link-to}}{{/nav.item}}
+  {{#if session_model.num_errors}}
+    {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
   {{/if}}
-{{/collapsible-sidebar}}
+  {{#if session_model.num_interruptions}}
+	{{#nav.item}}
+      {{#nav.link-to 'session.interruptions'}}
+	    <a href>Interruptions <span class="badge badge-pill badge-danger">{{session_model.num_interruptions}}</span></a>
+	  {{/nav.link-to}}
+    {{/nav.item}}
+  {{/if}}
+
+  {{#with session_model.num_warnings as |num_warnings|}}
+	{{#if num_warnings}}
+	  {{#nav.item}}{{#nav.link-to "session.warnings"}}
+		Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+	  {{/nav.link-to}}{{/nav.item}}
+	{{/if}}
+  {{/with}}
+
+  {{#nav.item}}{{#nav.link-to "session.info"}}Info{{/nav.link-to}}{{/nav.item}}
+
+  {{#if session_model.is_parent_session}}
+    {{#nav.item}}
+      {{#nav.link-to "session.children"}}
+        Child Sessions
+      {{/nav.link-to}}
+    {{/nav.item}}
+  {{/if}}
+
+  {{#nav.item}}
+    {{#nav.link-to "session.comments"}}
+      Comments
+	  {{#if session_model.num_comments}}
+		<div class="badge badge-pill badge-light">{{session_model.num_comments}}</div>
+	  {{/if}}
+	{{/nav.link-to}}
+  {{/nav.item}}
+
+  {{#if current_test }}
+	{{#if (s-starts-with router.currentRouteName 'session.test') }}
+      {{#nav.item}}
+        <a class="nav-link">
+		  Test #{{current_test.test_index}}
+        </a>
+      {{/nav.item}}
+	{{else}}
+	  {{#nav.item}}
+	    {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
+		  Test #{{current_test.test_index}}
+	    {{/nav.link-to}}
+	  {{/nav.item}}
+	{{/if}}
+  {{/if}}
+{{/bs-nav}}
+
+{{outlet}}
 
 
 {{#if investigating}}
