@@ -9,6 +9,8 @@ export default Component.extend({
   classNameBindings: ["session.status_lowercase"],
   show_labels: true,
 
+  attributeBindings: ["session.display_id:data-session-id"],
+
   session: alias("item"),
 
   in_pdb: oneWay("session.in_pdb"),
