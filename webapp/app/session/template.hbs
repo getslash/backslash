@@ -25,221 +25,221 @@
 
 {{/tool-bar}}
 
-<div class="item {{session_model.status_lowercase}} m-2 p-2">
-  <div class="row">
-    <!-- left column -->
-    <div class="col-sm-4">
-      <div class="row">
-        <div class="col">
-          {{status-icon status=session_model.computed_status}}
-          {{subject-info subjects=session_model.subjects}}
+<div class="p-3">
+  <div class="session-overview border border-{{status-to-brand session_model.status}} container-fluid">
+    <div class="row">
+      <div class="col p-2 bg-{{status-to-brand session_model.status}} text-white">Session details <div class="badge badge-light ml-2">{{session_model.status_lowercase}}</div></div>
+    </div>
+    <div class="row p-3">
+      <!-- left column -->
+      <div class="col-sm-4">
+        <div class="row">
+          <div class="col">
+            {{subject-info subjects=session_model.subjects}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="d-none d-lg-inline-block">Started by</span>{{#link-to "user.sessions" session_model.user_email}}
+              {{user.display_name}}
+            {{/link-to}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            {{#each session_model.labels as |label|}}
+              {{item-label label=label}}
+            {{/each}}
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="row">
-            <div class="col">
-              {{#link-to "user.sessions" session_model.user_email}}
-                {{user.display_name}}
-              {{/link-to}}
+      <!-- middle left column -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="row">
+          <div class="col text-muted">
+            <div>
+              <small>
+                {{fa-icon "calendar-o"}} {{moment-time unix=session_model.start_time}} &rarr; {{moment-time unix=session_model.end_time}}
+              </small>
+            </div>
+            <div>
+              <small>
+                {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+              </small>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          {{#each session_model.labels as |label|}}
-            {{item-label label=label}}
-          {{/each}}
-        </div>
-      </div>
-    </div>
-    <!-- middle left column -->
-    <div class="col-sm-6 col-lg-3">
-      <div class="row">
-        <div class="col text-muted">
-          <div>
-            <small>
-              {{fa-icon "calendar-o"}} {{moment-time unix=session_model.start_time}} &rarr; {{moment-time unix=session_model.end_time}}
-            </small>
-          </div>
-          <div>
-            <small>
-              {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
-            </small>
+        <div class="row d-none d-lg-block">
+          <div class="col text-muted">
+            {{#each timings as |timing|}}
+              <div class="row faint">
+                <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
+                <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+              </div>
+            {{/each}}
+
           </div>
         </div>
       </div>
-      <div class="row d-none d-lg-block">
-        <div class="col text-muted">
-          {{#each timings as |timing|}}
-            <div class="row faint">
-              <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
-              <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
-            </div>
-          {{/each}}
+      <!-- middle right column -->
+      <div class="d-none d-lg-block col-lg-3">
+        <div class="row">
+          <div class="col">
+            {{#if session_model.infrastructure}}
+              <small>
+                <span class="text-muted text-nowrap mr-5">
+                  {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+                </span>
+              </small>
+            {{/if}}
+            {{#each metadata_display_items as |item|}}
+              {{#with (get metadata item.key) as |value|}}
+                {{#if value}}
+                  <small>
+                    <span class="text-muted text-nowrap mr-5">
+                      <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+                    </span>
+                  </small>
 
+                {{/if}}
+              {{/with}}
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <!-- right column -->
+      <div class="col-sm-2">
+        <div class="row">
+          <div class="col d-flex justify-content-end">
+            {{session-breakdown session=session_model show_total_count=false}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col"></div>
         </div>
       </div>
     </div>
-    <!-- middle right column -->
-    <div class="d-none d-lg-block col-lg-3">
-      <div class="row">
-        <div class="col">
-          {{#if session_model.infrastructure}}
-            <small>
-              <span class="text-muted text-nowrap mr-5">
-                {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-              </span>
-            </small>
-          {{/if}}
-          {{#each metadata_display_items as |item|}}
-            {{#with (get metadata item.key) as |value|}}
-              {{#if value}}
-                <small>
-                  <span class="text-muted text-nowrap mr-5">
-                    <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
-                  </span>
-                </small>
 
-              {{/if}}
-            {{/with}}
-          {{/each}}
-        </div>
-      </div>
-    </div>
-    <!-- right column -->
-    <div class="col-sm-2">
-      <div class="row">
-        <div class="col d-flex justify-content-end">
-          {{session-breakdown session=session_model show_total_count=false}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-12">
-      {{#if session_model.is_parent_session}}
-        {{#info-badge icon="arrows-alt" text="Parallel"}}
-          This session was run in parallel mode. Actual tests run by child sessions.
-        {{/info-badge}}
-      {{/if}}
-
-      {{#if session_model.parent_logical_id}}
-        {{#link-to "session" session_model.parent_logical_id}}
+    <div class="row p-3">
+      <div class="col-sm-12">
+        {{#if session_model.is_parent_session}}
           {{#info-badge icon="arrows-alt" text="Parallel"}}
-            Session is a part of a parallel session. Child id: #{{session_model.child_id}}. Click to go to parent session
+            This session was run in parallel mode. Actual tests run by child sessions.
           {{/info-badge}}
-        {{/link-to}}
-      {{/if}}
+        {{/if}}
+
+        {{#if session_model.parent_logical_id}}
+          {{#link-to "session" session_model.parent_logical_id}}
+            {{#info-badge icon="arrows-alt" text="Parallel"}}
+              Session is a part of a parallel session. Child id: #{{session_model.child_id}}. Click to go to parent session
+            {{/info-badge}}
+          {{/link-to}}
+        {{/if}}
 
 
-      {{#if session_model.in_pdb }}
-        {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
-          Session is currently being investigated using an interactive debugger
-        {{/info-badge}}
-      {{/if}}
+        {{#if session_model.in_pdb }}
+          {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
+            Session is currently being investigated using an interactive debugger
+          {{/info-badge}}
+        {{/if}}
 
-      {{#if session_model.has_fatal_errors}}
-        {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
-          The session was terminated due to a fatal error encountered during its execution.
-        {{/info-badge}}
-      {{/if}}
+        {{#if session_model.has_fatal_errors}}
+          {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
+            The session was terminated due to a fatal error encountered during its execution.
+          {{/info-badge}}
+        {{/if}}
 
-      {{#if session_model.is_abandoned}}
-        {{#info-badge icon="question" text="Abandoned"}}
-          Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
-        {{/info-badge}}
-      {{/if}}
+        {{#if session_model.is_abandoned}}
+          {{#info-badge icon="question" text="Abandoned"}}
+            Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
+          {{/info-badge}}
+        {{/if}}
 
 
+      </div>
     </div>
   </div>
-</div>
+  </div>
 
 
-{{#bs-nav type="tabs" as |nav|}}
+  {{#bs-nav type="tabs" as |nav|}}
 
-  {{#nav.item}}{{#nav.link-to 'session.index'}}Tests{{/nav.link-to}}{{/nav.item}}
-  {{#if session_model.num_errors}}
-    {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
-  {{/if}}
-  {{#if session_model.num_interruptions}}
-	{{#nav.item}}
-      {{#nav.link-to 'session.interruptions'}}
-	    <a href>Interruptions <span class="badge badge-pill badge-danger">{{session_model.num_interruptions}}</span></a>
+    {{#nav.item}}{{#nav.link-to 'session.index'}}Tests{{/nav.link-to}}{{/nav.item}}
+    {{#if session_model.num_errors}}
+      {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
+    {{/if}}
+    {{#if session_model.num_interruptions}}
+	  {{#nav.item}}
+        {{#nav.link-to 'session.interruptions'}}
+	      <a href>Interruptions <span class="badge badge-pill badge-danger">{{session_model.num_interruptions}}</span></a>
+	    {{/nav.link-to}}
+      {{/nav.item}}
+    {{/if}}
+
+    {{#with session_model.num_warnings as |num_warnings|}}
+	  {{#if num_warnings}}
+	    {{#nav.item}}{{#nav.link-to "session.warnings"}}
+		  Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+	    {{/nav.link-to}}{{/nav.item}}
+	  {{/if}}
+    {{/with}}
+
+    {{#nav.item}}{{#nav.link-to "session.info"}}Info{{/nav.link-to}}{{/nav.item}}
+
+    {{#if session_model.is_parent_session}}
+      {{#nav.item}}
+        {{#nav.link-to "session.children"}}
+          Child Sessions
+        {{/nav.link-to}}
+      {{/nav.item}}
+    {{/if}}
+
+    {{#nav.item}}
+      {{#nav.link-to "session.comments"}}
+        Comments
+	    {{#if session_model.num_comments}}
+		  <div class="badge badge-pill badge-light">{{session_model.num_comments}}</div>
+	    {{/if}}
 	  {{/nav.link-to}}
     {{/nav.item}}
-  {{/if}}
 
-  {{#with session_model.num_warnings as |num_warnings|}}
-	{{#if num_warnings}}
-	  {{#nav.item}}{{#nav.link-to "session.warnings"}}
-		Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
-	  {{/nav.link-to}}{{/nav.item}}
-	{{/if}}
-  {{/with}}
-
-  {{#nav.item}}{{#nav.link-to "session.info"}}Info{{/nav.link-to}}{{/nav.item}}
-
-  {{#if session_model.is_parent_session}}
-    {{#nav.item}}
-      {{#nav.link-to "session.children"}}
-        Child Sessions
-      {{/nav.link-to}}
-    {{/nav.item}}
-  {{/if}}
-
-  {{#nav.item}}
-    {{#nav.link-to "session.comments"}}
-      Comments
-	  {{#if session_model.num_comments}}
-		<div class="badge badge-pill badge-light">{{session_model.num_comments}}</div>
+    {{#if current_test }}
+	  {{#if (s-starts-with router.currentRouteName 'session.test') }}
+        {{#nav.item}}
+          <a class="nav-link">
+		    Test #{{current_test.test_index}}
+          </a>
+        {{/nav.item}}
+	  {{else}}
+	    {{#nav.item}}
+	      {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
+		    Test #{{current_test.test_index}}
+	      {{/nav.link-to}}
+	    {{/nav.item}}
 	  {{/if}}
-	{{/nav.link-to}}
-  {{/nav.item}}
+    {{/if}}
+  {{/bs-nav}}
 
-  {{#if current_test }}
-	{{#if (s-starts-with router.currentRouteName 'session.test') }}
-      {{#nav.item}}
-        <a class="nav-link">
-		  Test #{{current_test.test_index}}
-        </a>
-      {{/nav.item}}
-	{{else}}
-	  {{#nav.item}}
-	    {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
-		  Test #{{current_test.test_index}}
-	    {{/nav.link-to}}
-	  {{/nav.item}}
-	{{/if}}
+  {{outlet}}
+
+
+  {{#if investigating}}
+    {{#modal-dialog close="cancel_investigating"
+       targetAttachment="center"
+       translucentOverlay=true}}
+      <p>You are marking this session as <strong>investigted</strong></p>
+      <div class="container-fluid">
+        {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
+      </div>
+      <div class="container-fluid add-margin-top">
+        {{#if investigate_conclusion}}
+	      <button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
+        {{/if}}
+        <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
+      </div>
+    {{/modal-dialog}}
   {{/if}}
-{{/bs-nav}}
-
-{{outlet}}
-
-
-{{#if investigating}}
-  {{#modal-dialog close="cancel_investigating"
-     targetAttachment="center"
-     translucentOverlay=true}}
-    <p>You are marking this session as <strong>investigted</strong></p>
-    <div class="container-fluid">
-      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
-    </div>
-    <div class="container-fluid add-margin-top">
-      {{#if investigate_conclusion}}
-	    <button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
-      {{/if}}
-      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
-    </div>
-  {{/modal-dialog}}
-{{/if}}
