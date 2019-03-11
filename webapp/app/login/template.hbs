@@ -1,40 +1,40 @@
-  <div class="container mt-5">
-    <div class="col-md-4 offset-md-4">
-      <h1>Sign in Required</h1>
+<div class="container mt-5">
+  <div class="col-md-4 offset-md-4">
+    <h1>Sign in Required</h1>
 
-      <p>You must be logged in to use Backslash</p>
+    <p>You must be logged in to use Backslash</p>
 
-      <form class="login-form">
-	<div class="form-group {{if login_error 'has-error'}}">
-	  <label class="control-label" for="username">Username/Email</label>
-	  {{input type="username" class="form-control" id="username" value=username required=true}}
-	</div>
+    <form class="login-form">
+	  <div class="form-group {{if login_error 'has-error'}}">
+	    <label class="control-label" for="username">Username/Email</label>
+	    {{input type="username" class="form-control" id="username" value=username required=true}}
+	  </div>
 
-	<div class="form-group {{if login_error 'has-error'}}">
-	  <label class="control-label" for="password">Password</label>
-	  {{input type="password" class="form-control" id="password" value=password required=true}}
-	  {{#if login_error}}
-	    <p class="help-block">Login failed - {{login_error}}</p>
-	  {{/if}}
-	</div>
+	  <div class="form-group {{if login_error 'has-error'}}">
+	    <label class="control-label" for="password">Password</label>
+	    {{input type="password" class="form-control" id="password" value=password required=true}}
+	    {{#if login_error}}
+	      <p class="help-block">Login failed - {{login_error}}</p>
+	    {{/if}}
+	  </div>
 
-	<div class="form-group">
-	  <button class="btn btn-success btn-lg w-100" {{action "login"}}>Sign In</button>
-	</div>
+	  <div class="form-group">
+	    <button class="btn btn-success btn-lg w-100" {{action "login"}}>Sign In</button>
+	  </div>
 
 
-      </form>
-      {{#if runtime_config.google_oauth2_enabled}}
-        <p class="text-center">
-	  Or
-        </p>
+    </form>
+    {{#if runtime_config.google_oauth2_enabled}}
+      <p class="text-center">
+	    Or
+      </p>
 
-	<div class="form-group">
-	  <button class="btn btn-lg btn-outline-secondary w-100" {{action "login_google"}}>
-	    <i class="fa fa-google"></i> Sign in with Google
-	  </button>
-	</div>
-      {{/if}}
+	  <div class="form-group">
+	    <button class="btn btn-lg btn-outline-secondary w-100" {{action "login_google"}}>
+	      <i class="fa fa-google"></i> Sign in with Google
+	    </button>
+	  </div>
+    {{/if}}
 
-    </div>
   </div>
+</div>
