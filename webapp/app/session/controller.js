@@ -1,5 +1,4 @@
 import { inject as service } from "@ember/service";
-import { computed } from "@ember/object";
 import Controller from "@ember/controller";
 
 export default Controller.extend({
@@ -7,15 +6,7 @@ export default Controller.extend({
   test_filters: null,
 
   display: service(),
-  runtime_config: service(),
   api: service(),
-
-  metadata_display_items: computed(function() {
-    let returned = this.get("runtime_config").get_cached(
-      "session_metadata_display_items"
-    );
-    return returned;
-  }),
 
   actions: {
     async discard() {
