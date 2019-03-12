@@ -16,9 +16,11 @@
       </div>
       <div class="row">
         <div class="col">
+          {{#if session_model.user_email}}
           <span class="d-none d-lg-inline-block">Started by</span>{{#link-to "user.sessions" session_model.user_email}}
             {{user.display_name}}
           {{/link-to}}
+          {{/if}}
         </div>
       </div>
       <div class="row">
