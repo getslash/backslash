@@ -16,48 +16,6 @@
     }
 }
 
-.skip-reason {
-
-    &:before {
-	content: "Skip reason: ";
-	font-family: sans-serif;
-	opacity: 0.5;
-	margin-right: 1em;
-    }
-    background-color: lighten($brand-warning, 1%);
-    font-family: monospace;
-    white-space: pre;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Separators */
-.sub-section-heading
-{
-    height: 2px;
-    background-color: $sub-section-heading-color;
-    background: linear-gradient(135deg, $sub-section-heading-color 0%,rgba(0, 0, 0, 0) 100%);
-    color: $sub-section-heading-color;
-    margin-top: 2em;
-    margin-left: 1em;
-    margin-bottom:2em;
-
-    span
-    {
-      position: relative;
-      top: -0.5em;
-      left: 2em;
-      background-color: white;
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-}
-
-.inline-block {
-    display: inline-block;
-}
-
 .copy-btn {
     @extend .btn;
     cursor: pointer;
