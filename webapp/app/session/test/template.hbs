@@ -1,87 +1,47 @@
-<div class="container-fluid">
-  <h3>
-    {{star-marker starred_object=test_model}}
-    {{status-icon status=test_model.computed_status session_model=session_model}}
-    {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}}
-  </h3>
+{{test-overview test_model=test_model test_metadata=test_metadata session_model=session_model}}
 
-  <small>from <strong>{{elements/copyable-text value=test_model.info.file_name}}</strong></small>
+<div class="mt-3">
 
-  {{#if (eq test_model.status "SKIPPED")}}
-    <p>
-      <strong>Skipped:</strong> {{test_model.skip_reason}}
-    </p>
-  {{/if}}
-
-  <div class="row add-margin-top add-margin-bottom">
-    <div class="col-sm-12"><strong>Test ID</strong>: {{elements/copyable-text value=test_model.display_id}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="add-margin-left">
-      <i class="fa fa-history"></i> Previous executions...
-    </a>
-
-    {{#each metadata_links as |metadata_link|}}
-      <a href="{{metadata_link.url}}" class="add-margin-left" target="_blank" rel=noopener><img src="{{metadata_link.icon}}" class="text-height"/> {{metadata_link.name}}</a>
-    {{/each}}
-
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12">
-      {{#each metadata_display_items as |item|}}
-        {{#with (get test_metadata item.key) as |value|}}
-          {{#if value}}
-            <p>
-              <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{value}}</strong>
-            </p>
-          {{/if}}
-        {{/with}}
-      {{/each}}
-    </div>
-  </div>
-
-</div>
-
-
-{{#bs-nav type="tabs" as |nav|}}
-
-
-  {{#nav.item}}
-    {{#nav.link-to 'session.test.index'}}
-	  Test Info
-    {{/nav.link-to}}
-  {{/nav.item}}
-  
-  {{#if test_model.num_errors}}
-    {{#nav.item}}
-	  {{#nav.link-to 'session.test.errors'}}
-	    Errors <span class="badge badge-pill badge-danger">{{test_model.num_errors}}</span>
-	  {{/nav.link-to}}
+  {{#bs-nav type="tabs" as |nav|}}
+    {{#nav.item classNames="test-info-tab"}}
+      {{#nav.link-to 'session.test.index'}}
+        Test Info
+      {{/nav.link-to}}
     {{/nav.item}}
-  {{/if}}
-  
-  {{#if test_model.num_interruptions}}
-	{{#link-to 'session.test.interruptions' tagName='li'}}
-	  Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
-	{{/link-to}}
-  {{/if}}
-  {{#with test_model.num_warnings as |num_warnings|}}
-	{{#if num_warnings}}
+
+    {{#if test_model.num_errors}}
       {{#nav.item}}
-	    {{#nav.link-to 'session.test.warnings'}}
-	      Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
-	    {{/nav.link-to}}
+        {{#nav.link-to 'session.test.errors'}}
+          Errors <span class="badge badge-pill badge-danger">{{test_model.num_errors}}</span>
+        {{/nav.link-to}}
       {{/nav.item}}
-	{{/if}}
-  {{/with}}
+    {{/if}}
 
-  {{#nav.item}}
-    {{#nav.link-to 'session.test.comments'}}
-	  Comments
-	  {{#if test_model.num_comments}}
-	    <span class="badge badge-pill badge-light"> {{test_model.num_comments}} </span>
-	  {{/if}}
-    {{/nav.link-to}}
-  {{/nav.item}}
+    {{#if test_model.num_interruptions}}
+      {{#link-to 'session.test.interruptions' tagName='li'}}
+        Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
+      {{/link-to}}
+    {{/if}}
+    {{#with test_model.num_warnings as |num_warnings|}}
+      {{#if num_warnings}}
+        {{#nav.item}}
+          {{#nav.link-to 'session.test.warnings'}}
+            Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+          {{/nav.link-to}}
+        {{/nav.item}}
+      {{/if}}
+    {{/with}}
 
-{{/bs-nav}}
+    {{#nav.item}}
+      {{#nav.link-to 'session.test.comments'}}
+        Comments
+        {{#if test_model.num_comments}}
+          <span class="badge badge-pill badge-light"> {{test_model.num_comments}} </span>
+        {{/if}}
+      {{/nav.link-to}}
+    {{/nav.item}}
+
+  {{/bs-nav}}
+</div>
 
 {{outlet}}

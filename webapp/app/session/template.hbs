@@ -70,13 +70,13 @@
 
   {{#if current_test }}
 	{{#if (s-starts-with router.currentRouteName 'session.test') }}
-      {{#nav.item}}
+      {{#nav.item class=(concat "test-tab text-white bg-" (status-to-brand current_test.status))}}
         <a class="nav-link">
 		  Test #{{current_test.test_index}}
         </a>
       {{/nav.item}}
 	{{else}}
-	  {{#nav.item}}
+	  {{#nav.item class=(concat "test-tab")}}
 	    {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
 		  Test #{{current_test.test_index}}
 	    {{/nav.link-to}}
@@ -85,22 +85,6 @@
   {{/if}}
 {{/bs-nav}}
 
-{{outlet}}
-
-
-{{#if investigating}}
-  {{#modal-dialog close="cancel_investigating"
-     targetAttachment="center"
-     translucentOverlay=true}}
-    <p>You are marking this session as <strong>investigted</strong></p>
-    <div class="container-fluid">
-      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
-    </div>
-    <div class="container-fluid add-margin-top">
-      {{#if investigate_conclusion}}
-	    <button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
-      {{/if}}
-      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
-    </div>
-  {{/modal-dialog}}
-{{/if}}
+<div>
+  {{outlet}}
+</div>

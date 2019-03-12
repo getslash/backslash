@@ -1,0 +1,39 @@
+<div class="container-fluid border border-{{status-to-brand test_model.status}}">
+  <div class="row">
+    <div class="col p-2 bg-{{status-to-brand test_model.status}} text-white">Test #{{test_model.test_index}} <div class="badge badge-light ml-2">{{test_model.status_lowercase}}</div></div>
+  </div>
+
+  <div class="row">
+    <!-- first column -->
+    <div class="col text-muted">
+      <div class="row">
+        <div class="col p-2">
+
+          {{fa-icon "info-circle"}} {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-2">
+          {{fa-icon "info-circle"}} {{elements/copyable-text value=test_model.display_id}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="add-margin-left">{{fa-icon "history"}} Previous executions...</a>
+        </div>
+      </div>
+    </div>
+    <!-- second column -->
+    <div class="col text-muted">
+      <div class="row">
+        <div class="col p-2">
+          {{#each metadata_display_items as |item|}}
+            {{#with (get test_metadata item.key) as |value|}}
+              {{#if value}}
+                <p>
+                  <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{value}}</strong>
+                </p>
+              {{/if}}
+            {{/with}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
