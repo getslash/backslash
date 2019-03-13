@@ -6,15 +6,11 @@ import { inject as service } from "@ember/service";
 export default Component.extend({
   runtime_config: service(),
 
-  classNames: "px-3 pb-3",
+  classNames: "p-3",
 
   session_model: null,
   test_metadata: null,
   test_model: null,
-
-  didRender() {
-    this.$().css("top", `${Ember.$(".session-overview").height()}px`);
-  },
 
   metadata_links: computed("test_metadata", function() {
     let returned = [];
@@ -39,5 +35,22 @@ export default Component.extend({
 
   metadata_display_items: computed(function() {
     return this.get("runtime_config").get_cached("test_metadata_display_items");
+  }),
+
+  scm_details: computed("test_model", function() {
+    let self = this;
+    let test_model = self.get("test_model");
+
+    if (!test_model.get("scm")) {
+      return {};
+    }
+
+    let returned = EmberObject.create({
+      Revision: test_model.get("scm_revision"),
+      "File Hash": test_model.get("file_hash"),
+      "Local Branch": test_model.get("scm_local_branch"),
+      "Remote Branch": test_model.get("scm_remote_branch"),
+    });
+    return returned;
   }),
 });

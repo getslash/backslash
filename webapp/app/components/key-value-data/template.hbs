@@ -1,8 +1,21 @@
-<table>
-{{#each-in data as |key value|}}
-  <tr>
-    <td class="key">{{key}}</td>
-    <td class="value">{{value}}</td>
-  </tr>
-{{/each-in}}
+<table class="table table-sm table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th colspan="2">{{title}}</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {{#each-in data as |key value|}}
+      <tr>
+        <td>
+          {{key}}
+        </td>
+        <td>
+          {{value}}
+        </td>
+      </tr>
+    {{/each-in}}
+
+  </tbody>
 </table>

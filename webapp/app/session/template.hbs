@@ -61,20 +61,20 @@
     {{#nav.link-to "session.comments"}}
       Comments
 	  {{#if session_model.num_comments}}
-		<div class="badge badge-pill badge-light">{{session_model.num_comments}}</div>
+		<div cilass="badge badge-pill badge-light">{{session_model.num_comments}}</div>
 	  {{/if}}
 	{{/nav.link-to}}
   {{/nav.item}}
 
   {{#if current_test }}
 	{{#if (s-starts-with router.currentRouteName 'session.test') }}
-      {{#nav.item class=(concat "test-tab text-white bg-" (status-to-brand current_test.status))}}
+      {{#nav.item}}
         <a class="nav-link">
 		  Test #{{current_test.test_index}}
         </a>
       {{/nav.item}}
 	{{else}}
-	  {{#nav.item class=(concat "test-tab")}}
+	  {{#nav.item}}
 	    {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
 		  Test #{{current_test.test_index}}
 	    {{/nav.link-to}}
