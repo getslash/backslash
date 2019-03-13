@@ -25,11 +25,9 @@
 
 {{/tool-bar}}
 
-{{session-overview session_model=session_model user=user metadata=metadata}}
-
 {{#bs-nav type="tabs" as |nav|}}
 
-  {{#nav.item}}{{#nav.link-to 'session.index'}}Tests{{/nav.link-to}}{{/nav.item}}
+  {{#nav.item}}{{#nav.link-to 'session.index'}}Overview{{/nav.link-to}}{{/nav.item}}
   {{#if session_model.num_errors}}
     {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
   {{/if}}
