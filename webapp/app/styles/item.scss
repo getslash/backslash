@@ -1,18 +1,30 @@
+@mixin item-box-mixin($color) {
+    box-shadow: inset 10px 0 0 0 $color;
+
+    &:hover {
+        background: #fafafa;
+    }
+}
+
+
 .item {
     @extend .p-2;
+    @extend .pl-3;
     @extend .mt-2;
 
+    overflow: hidden;
     border: 1px solid #eee;
-    border-left: 7px solid;
+    border-left: none;
 
+    @include item-box-mixin(gray);
 
     &.success {
-        border-left-color: $brand-success;
+        @include item-box-mixin($brand-success);
     }
     &.error, &.failure {
-        border-left-color: $brand-danger;
+        @include item-box-mixin($brand-danger);
     }
     &.skipped {
-        border-left-color: $brand-warning;
+        @include item-box-mixin($brand-warning);
     }
 }

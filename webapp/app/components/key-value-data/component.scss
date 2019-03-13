@@ -1,16 +1,6 @@
 & {
-    border: 1px solid silver;
-    padding: 1em;
-    .key {
-        font-weight: bold;
-        padding: 10px;
-    }
-    .value {
+    tbody tr td:nth-child(2) {
         font-family: monospace;
-        background-color: $gray-lighter;
-        padding: 3px;
-        white-space: pre;
-        border: 1px solid silver;
-        border-radius: 3px;
+        font-size: small;
     }
 }

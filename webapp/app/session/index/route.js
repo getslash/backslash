@@ -47,6 +47,7 @@ export default Route.extend(
         metadata: metadata,
         user: this.modelFor("session").user,
         tests: this.store.query("test", query_params),
+        timings: this.modelFor("session").timings,
         filters: filters,
       }).catch(function(exception) {
         let message = exception.errors.get("firstObject");

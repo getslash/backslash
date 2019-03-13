@@ -6,7 +6,7 @@ export default Component.extend({
   classNames: "p-3 session-overview",
   session_model: null,
   user: null,
-
+  metadata: null,
   runtime_config: service(),
 
   metadata_display_items: computed(function() {

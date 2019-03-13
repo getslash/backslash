@@ -1,45 +1,27 @@
-
-<div class="container-fluid">
-  <table class="table data">
+<div class="p-3">
+  <table class="table table-sm table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th colspan="2">Metadata</th>
+      </tr>
+    </thead>
     <tbody>
-
-      {{#each-in related_groups as |name value|}}
-        <tr>
-          <td><i class="fa fa-fw"></i>{{pluralize value.length name omitCount=true}}</td>
-          {{# if (eq value.length 1)}}
-            <td>{{value}}</td>
-            {{ else }}
-            <td>
-              <ul>
-                {{#each value as |v|}}
-                  <li>{{v}}</li>
-                {{/each}}
-              </ul>
-            </td>
-          {{/if}}
-        </tr>
-      {{/each-in}}
       {{#each all_metadata as |item|}}
-	{{#if (and (not (s-starts-with item.name "slash::")) (not (eq item.name "slash")))}}
-          <tr>
-            <td>
-              <i class="fa fa-fw {{if item.expandable (if item.expanded 'fa-caret-down clickable' 'fa-caret-right clickable')}}" {{action (toggle "expanded" item)}}></i>
-              {{#if item.expandable}}
-              {{/if}}
-              {{capitalize (undasherize item.name)}}
-            </td>
+        <tr>
+          <td>{{capitalize (undasherize item.name)}}</td>
+          <td>
             {{#if (s-starts-with item.value "http://" "https://")}}
-              <td>{{linkify item.value urlLength=50}}</td>
+
+              {{linkify item.value}}
             {{else}}
-              <td>{{elements/copyable-text copy_value=item.value value=(if item.expanded item.value item.short_value) preformatted=true}}</td>
+              {{item.value}}
             {{/if}}
-          </tr>
-        {{/if}}
+          </td>
+        </tr>
       {{/each}}
     </tbody>
   </table>
 </div>
-
 
 {{#if slash_tags}}
   <div class="module">
@@ -48,32 +30,16 @@
     </div>
     <div class="content">
       <dl class="dl-horizontal">
-	{{#each slash_tags_without_values as |name|}}
-	  <dt>{{name}}</dt>
-	  <dd></dd>
-	{{/each}}
-	{{#each-in slash_tags.values as |name value|}}
-	  <dt>{{name}}</dt>
-	  <dd>{{value}}</dd>
-	{{/each-in}}
+	    {{#each slash_tags_without_values as |name|}}
+	      <dt>{{name}}</dt>
+	      <dd></dd>
+	    {{/each}}
+	    {{#each-in slash_tags.values as |name value|}}
+	      <dt>{{name}}</dt>
+	      <dd>{{value}}</dd>
+	    {{/each-in}}
       </dl>
     </div>
   </div>
 {{/if}}
 
-{{#if slash_version}}
-  <div class="module">
-    <div class="content"><img src="assets/img/slash-icon-black.svg" class="text-height"> {{slash_version}}</div>
-  </div>
-{{/if}}
-
-{{#if slash_commandline}}
-  <div class="module">
-    <div class="title">Command-line</div>
-    <div class="content">
-      <div class="console">
-        {{slash_commandline}}
-      </div>
-    </div>
-  </div>
-{{/if}}
