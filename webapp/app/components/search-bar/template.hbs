@@ -3,8 +3,15 @@
     {{input class="form-control search-bar" id="search-field" placeholder="Search for..." value=entered_search}}
   {{/escape-focus}}
   <div class="input-group">
-    <button class="btn btn-default" type="submit" {{action "search"}}><i class="fa fa-search"></i></button>
-    <i class="fa fa-spin fa-circle-o-notch {{if searching 'visible'}} searching-spinner"></i>
+
+    <button class="btn btn-secondary mx-2" type="submit" {{action "search"}}>
+      {{#if searching}}
+        <span class="spinner-border spinner-border-sm"></span>
+      {{else}}
+        {{fa-icon "search"}}
+      {{/if}}
+    </button>
+
   </div>
 
   {{#if show_help}}
