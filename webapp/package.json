@@ -17,7 +17,7 @@
     "test": "ember test"
   },
   "devDependencies": {
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^4.3.0",
     "broccoli-asset-rev": "^2.4.5",
     "broccoli-funnel": "^2.0.1",
     "broccoli-merge-trees": "^3.0.0",
