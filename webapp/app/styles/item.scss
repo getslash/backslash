@@ -21,7 +21,7 @@
     &.success {
         @include item-box-mixin($brand-success);
     }
-    &.error, &.failure {
+    &.error, &.failure, &.failed {
         @include item-box-mixin($brand-danger);
     }
     &.skipped {
