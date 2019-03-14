@@ -1,26 +1,27 @@
-<div class="p-3">
-  <table class="table table-sm table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th colspan="2">Metadata</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each all_metadata as |item|}}
-        <tr>
-          <td>{{capitalize (undasherize item.name)}}</td>
-          <td>
-            {{#if (s-starts-with item.value "http://" "https://")}}
 
-              {{linkify item.value}}
-            {{else}}
-              {{item.value}}
-            {{/if}}
-          </td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
+<div class="m-3 card">
+  <div class="card-header">
+    Metadata
+  </div>
+  <div class="card-body p-3">
+    <table class="table table-sm table-bordered">
+      <tbody>
+        {{#each all_metadata as |item|}}
+          <tr>
+            <td class="text-muted">{{capitalize (undasherize item.name)}}</td>
+            <td>
+              {{#if (s-starts-with item.value "http://" "https://")}}
+
+                {{linkify item.value}}
+              {{else}}
+                {{item.value}}
+              {{/if}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 {{#if slash_tags}}
