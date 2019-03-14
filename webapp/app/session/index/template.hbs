@@ -3,40 +3,35 @@
 {{#tool-bar}}
   {{#if (not hide_search)}}
     {{#search-bar search=(mut search) searching=searching}}
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <td><code>name = testname</code></td>
-              <td>Find tests with name <code>name</code></td>
-            </tr>
-            <tr>
-              <td><code>file = testfile.py</code></td>
-              <td>Find tests ran from file <code>testfile.py</code></td>
-            </tr>
-            <tr>
-              <td><code>class = TestClass</code></td>
-              <td>Find tests ran from class <code>TestClass</code></td>
-            </tr>
-            <tr>
-              <td><code>status = some_status</code></td>
-              <td>Find tests which are now in status <code>some_status</code></td>
-            </tr>
-            <tr>
-              <td><code>error_message ~ msg</code></td>
-              <td>Find tests which failed with error message containing <code>msg</code></td>
-            </tr>
-            <tr>
-              <td><code>starred</code></td>
-              <td>Find tests which the current user marked as starred</td>
-            </tr>
-          </tbody>
-        </table>
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td><code>name = testname</code></td>
+            <td>Find tests with name <code>name</code></td>
+          </tr>
+          <tr>
+            <td><code>file = testfile.py</code></td>
+            <td>Find tests ran from file <code>testfile.py</code></td>
+          </tr>
+          <tr>
+            <td><code>class = TestClass</code></td>
+            <td>Find tests ran from class <code>TestClass</code></td>
+          </tr>
+          <tr>
+            <td><code>status = some_status</code></td>
+            <td>Find tests which are now in status <code>some_status</code></td>
+          </tr>
+          <tr>
+            <td><code>error_message ~ msg</code></td>
+            <td>Find tests which failed with error message containing <code>msg</code></td>
+          </tr>
+          <tr>
+            <td><code>starred</code></td>
+            <td>Find tests which the current user marked as starred</td>
+          </tr>
+        </tbody>
+      </table>
     {{/search-bar}}
-    {{#if (and (can "admin") (and (not searching) search)) }}
-      {{#dropdown-menu align="left" title="Search Results"}}
-        <li><a class="clickable" {{action "discard_results"}}>Discard</a></li>
-      {{/dropdown-menu}}
-    {{/if}}
   {{/if}}
 {{/tool-bar}}
 {{#if error}}
