@@ -1,14 +1,22 @@
 {{#if error.exception_attributes}}
   {{#expandable-div title="Exception attributes"}}
-    {{variable-list vars=error.exception_attributes}}
+    <table class="table table-hover variable-table">
+      <tbody>
+      {{#each error.exception_attributes as |var|}}
+        <tr>
+          <td>{{var.name}}</td>
+          <td>{{var.value.value}}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
   {{/expandable-div}}
 {{/if}}
 
 {{#if loading }}
-  <div>
+  <div class="m-3 p-3">
     <div class="spinner-border" role="status">
     </div>
-    Loading Traceback...
   </div>
 
 {{else}}

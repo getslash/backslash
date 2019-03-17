@@ -49,3 +49,19 @@
         }
     }
 }
+
+.variable-table {
+    font-size: 75%;
+
+    td {
+        @extend .p-1;
+    }
+    td:first-child {
+        @extend .text-muted;
+        background: #eee;
+    }
+    td:last-child {
+        font-family: monospace;
+    }
+}
+
