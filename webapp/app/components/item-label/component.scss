@@ -1,5 +1,5 @@
 & {
-
+    @extend .clickable;
     margin-right: 2px;
 
     &.label-color-1 {
@@ -22,5 +22,9 @@
 
     &.label-color-5 {
 	    background: #4DD0E1;
+    }
+
+    &:hover {
+        background: #eee;
     }
 }
