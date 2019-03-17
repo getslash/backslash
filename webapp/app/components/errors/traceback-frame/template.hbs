@@ -1,23 +1,33 @@
-  <div class="frame-info">
-    {{expand-toggle expanded=(mut frame.expanded)}}
-    <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
+<div class="frame-info p-2">
+  {{expand-toggle expanded=(mut frame.expanded)}}
+  <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
+</div>
+
+{{# if frame.expanded }}
+
+  <div class="frame-code m-2">
+    {{#each frame.code_lines_before as |line num|}}
+      <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
+    {{/each}}
+    <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
+    {{#each frame.code_lines_after as |line num|}}
+      <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
+    {{/each}}
   </div>
 
-  {{# if frame.expanded }}
+  {{#if variables}}
+    <div class="p-3">
 
-    <div class="frame-code">
-      {{#each frame.code_lines_before as |line num|}}
-        <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
-      {{/each}}
-      <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
-      {{#each frame.code_lines_after as |line num|}}
-        <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
-      {{/each}}
+      <table class="table-hover variable-table">
+        <tbody>
+          {{#each variables as |var|}}
+            <tr>
+              <td>{{var.name}}</td>
+              <td>{{var.value.value}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
-
-    {{#if (or has_globals has_locals)}}
-
-      {{variable-list vars=sorted_locals}}
-      {{variable-list vars=sorted_globals}}
-    {{/if}}
   {{/if}}
+{{/if}}
