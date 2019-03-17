@@ -6,6 +6,9 @@
       {{#if test_model.status_description}}
         <div class="badge badge-dark text-white ml-2">{{test_model.status_description}}</div>
       {{/if}}
+      {{#if test_model.skip_reason}}
+        <span class="badge badge-warning border border-dark ml-2 text-truncate"><small>{{test_model.skip_reason}}</small></span>
+      {{/if}}
     </div>
   </div>
 
@@ -115,6 +118,6 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
 
 </div>
