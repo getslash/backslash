@@ -46,7 +46,7 @@
           {{/link-to}}
         {{/nav.item}}
         <form class="form-inline" class="mr-sm-2">
-          <button type="submit" class="btn btn-default  my-2 my-sm-0 logout" {{action "logout"}}>Logout</button>
+          <button type="submit" class="btn btn-secondary my-2 my-sm-0 logout" {{action "logout"}}>Logout</button>
         </form>
       {{/navbar.nav}}
     {{/with}}
@@ -57,7 +57,7 @@
 {{keyboard-shortcuts}}
 
 {{#if (and (can "admin") admin_alerts)}}
-  <div class="container add-margin-top">
+  <div class="container mt-3">
 
     {{#each admin_alerts as |alert|}}
       <div class="alert alert-danger" role="alert">

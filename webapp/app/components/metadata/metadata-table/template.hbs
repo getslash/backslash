@@ -1,5 +1,5 @@
 
-<div class="m-3 card">
+<div class="m-3 card overflow-hidden">
   <div class="card-header">
     Metadata
   </div>
@@ -9,7 +9,7 @@
         {{#each all_metadata as |item|}}
           <tr>
             <td class="text-muted">{{capitalize (undasherize item.name)}}</td>
-            <td>
+            <td class="text-truncate">
               {{#if (s-starts-with item.value "http://" "https://")}}
 
                 {{linkify item.value}}
