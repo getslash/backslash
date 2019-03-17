@@ -1,11 +1,11 @@
-<div class="frame-info p-2">
+<div class="frame-info p-2 overflow-hidden">
   {{expand-toggle expanded=(mut frame.expanded)}}
   <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
 </div>
 
 {{# if frame.expanded }}
 
-  <div class="frame-code m-2">
+  <div class="frame-code m-2 overflow-hidden">
     {{#each frame.code_lines_before as |line num|}}
       <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
     {{/each}}
@@ -16,7 +16,7 @@
   </div>
 
   {{#if variables}}
-    <div class="p-3">
+    <div class="p-3 overflow-hidden">
 
       <table class="table-hover variable-table">
         <tbody>

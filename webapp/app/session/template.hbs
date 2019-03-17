@@ -13,11 +13,11 @@
         <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
       </span>
       {{#if (can "admin")}}
-        <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
+        <button {{action "preserve"}} class="ml-5 btn btn-secondary undo-discard-btn">Preserve</button>
       {{/if}}
     {{else}}
       {{#if (can "admin")}}
-        <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
+        <button {{action "discard"}} class="btn discard-btn ml-5 btn-secondary" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
       {{/if}}
     {{/if}}
   </ul>

@@ -7,7 +7,7 @@
         <div class="badge badge-dark text-white ml-2">{{test_model.status_description}}</div>
       {{/if}}
       {{#if test_model.skip_reason}}
-        <span class="badge badge-warning border border-dark ml-2 text-truncate"><small>{{test_model.skip_reason}}</small></span>
+        <div class="badge badge-warning border border-dark ml-2">{{test_model.skip_reason}}</div>
       {{/if}}
     </div>
   </div>
@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col">
           {{fa-icon "info-circle"}}
-          {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="add-margin-left">{{fa-icon "history"}} Previous executions...</a>
+          {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="ml-3">{{fa-icon "history"}} {{#bs-tooltip placement="auto"}}Previous Executions{{/bs-tooltip}}</a>
         </div>
       </div>
       <div class="row">
