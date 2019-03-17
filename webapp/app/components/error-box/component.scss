@@ -3,6 +3,11 @@
     border: 1px solid #ddd;
     border-left-color: $brand-danger;
 
+    .exception-message {
+        background: #fee;
+        font-size: 75%;
+    }
+
     &.interruption {
         border-left-color: gray;
     }

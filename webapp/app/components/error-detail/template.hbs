@@ -5,24 +5,22 @@
 {{/if}}
 
 {{#if loading }}
-  <div class="box">
-    <div class="info">
-      <i class="fa fa-spin fa-refresh"></i> Loading Traceback...
+  <div>
+    <div class="spinner-border" role="status">
     </div>
+    Loading Traceback...
   </div>
 
 {{else}}
 
   {{#if (and error.traceback_url (not error.traceback))  }}
-    <div class="box error">
-      <div class="info">
-        Could not load traceback
-      </div>
+    <div class="p-1 m-3 background-danger text-white">
+      <strong>Could not load traceback</strong>
     </div>
   {{else}}
-    <p>
-      Traceback (<a class="clickable" {{action "toggle_all_frames"}}>{{if all_expanded 'collapse' 'expand'}} all</a>):
-    </p>
+    <div class="p-3">
+      Traceback (<a class="text-primary clickable" {{action "toggle_all_frames"}}>{{if all_expanded 'collapse' 'expand'}} all</a>):
+    </div>
     {{#each error.traceback as |frame|}}
       {{errors/traceback-frame frame=frame override_expand=override_expand}}
     {{/each}}
