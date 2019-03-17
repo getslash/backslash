@@ -1,21 +1,3 @@
-
-/* Test details: Command-line */
-.console {
-    @extend .mono;
-    background-color: $console-bg;
-    border: 2px solid $gray-lighter;
-    color: $gray-lighter;
-    overflow: auto;
-    padding: 1em;
-    white-space: nowrap;
-
-    &:before {
-        color: $gray-light;
-        content: "$";
-        padding-right: 0.5em;
-    }
-}
-
 .copy-btn {
     @extend .btn;
     cursor: pointer;
@@ -36,5 +18,34 @@
 
     .success {
 	bacground-color: $mild-green;
+    }
+}
+
+.badge-split {
+    span {
+        background: gray;
+        color: white;
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+
+        &:last-child {
+            border-top-right-radius: 10rem;
+            border-bottom-right-radius: 10rem;
+            margin-right: 0;
+        }
+
+        &:first-child {
+            background: silver;
+            color: gray;
+            border-top-left-radius: 10rem;
+            border-bottom-left-radius: 10rem;
+            margin-right: 0;
+        }
     }
 }
