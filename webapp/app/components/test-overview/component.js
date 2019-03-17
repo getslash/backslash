@@ -12,6 +12,26 @@ export default Component.extend({
   test_metadata: null,
   test_model: null,
 
+  slash_tags: computed("metadata", function() {
+    let metadata = this.get("metadata");
+    if (!metadata) {
+      return null;
+    }
+    let tags = metadata["slash::tags"];
+    if (!tags) {
+      return null;
+    }
+
+    let returned = [];
+    for (let name of tags.names) {
+      returned.push({ name: name, value: null });
+    }
+    for (const [name, value] of Object.entries(tags.values)) {
+      returned.push({ name: name, value: value });
+    }
+    return returned;
+  }),
+
   metadata_links: computed("test_metadata", function() {
     let returned = [];
     let metadata = this.get("test_metadata");

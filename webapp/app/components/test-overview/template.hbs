@@ -32,6 +32,21 @@
           {{fa-icon "info-circle"}} {{elements/copyable-text value=test_model.display_id}}
         </div>
       </div>
+      <div class="row">
+        <div class="col d-none d-lg-block">
+          {{#each slash_tags as |tag|}}
+            {{#if tag.value}}
+              <div class="badge-split">
+                <span>{{tag.name}}</span><span>{{tag.value}}</span>
+              </div>
+            {{else}}
+              <div class="badge-secondary badge badge-pill">
+              {{tag.name}}
+            </div>
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
     </div>
     <div class="col">
       <div class="row">
