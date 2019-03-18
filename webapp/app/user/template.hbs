@@ -1,11 +1,14 @@
-<div class="mx-3">
+<div class="m-3 my-5">
+
   <h1>{{users/user-avatar user=model large=true}} {{model.display_name}} {{# if (not (eq model.display_name model.email))}}<small>({{model.email}})</small>{{/if}}</h1>
+</div>
 
-
+<div class="m-3">
 
 
   {{# with session.data.authenticated.user_info as |user|}}
     {{#bs-nav type="tabs" as |nav|}}
+      {{#nav.item}}{{#nav.link-to "user.sessions"}}Sessions{{/nav.link-to}}{{/nav.item}}
       {{#nav.item}}{{#nav.link-to "user.preferences"}}Preferences{{/nav.link-to}}{{/nav.item}}
       {{#if (can "admin") }}
         {{#nav.item}}{{#nav.link-to "user.admin"}}Admin{{/nav.link-to}}{{/nav.item}}

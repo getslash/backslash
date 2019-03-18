@@ -40,14 +40,27 @@
 
 
       {{#navbar.nav as |nav|}}
-        {{#nav.item}}
-          {{#link-to "user.sessions" u.email class="nav-link"}}
+        {{#nav.dropdown classNames="user-dropdown" as |dd|}}
+          {{#dd.toggle}}
             {{users/user-avatar user=u}} {{u.display_name}}
-          {{/link-to}}
-        {{/nav.item}}
-        <form class="form-inline" class="mr-sm-2">
-          <button type="submit" class="btn btn-secondary my-2 my-sm-0 logout" {{action "logout"}}>Logout</button>
-        </form>
+          {{/dd.toggle}}
+          {{#dd.menu as |ddm|}}
+            {{#ddm.item}}
+              {{#ddm.link-to "user.sessions" u.id}}My Sessions{{/ddm.link-to}}
+            {{/ddm.item}}
+
+            {{#ddm.item}}
+              {{#ddm.link-to "user.preferences" u.id}}Preferences{{/ddm.link-to}}
+            {{/ddm.item}}
+
+            {{ddm.divider}}
+            {{#ddm.item}}
+              <a {{action "logout"}} class="logout-button dropdown-item clickable">Logout</a>
+            {{/ddm.item}}
+          {{/dd.menu}}
+
+        {{/nav.dropdown}}
+
       {{/navbar.nav}}
     {{/with}}
   {{/if}}

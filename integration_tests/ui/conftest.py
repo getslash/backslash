@@ -102,13 +102,13 @@ class _UI:
             assert False, "Cannot log in!"
 
     def is_logged_in(self):
-        logout_buttons = self.driver.find_elements_by_css_selector("button.logout")
+        logout_buttons = self.driver.find_elements_by_css_selector(".user-dropdown")
         return bool(logout_buttons)
 
     def logout(self):
-        logout_buttons = self.driver.find_elements_by_css_selector("button.logout")
-        if logout_buttons:
-            logout_buttons[0].click()
+        self.driver.find_element_by_css_selector(".user-dropdown").click()
+        logout_button = self.driver.find_element_by_css_selector(".logout-button")
+        logout_button.click()
         self.driver.find_element_by_id("username")
 
     def assert_no_element(self, css_selector):

@@ -1,60 +1,60 @@
-{{#tool-bar}}
-  {{#if (not hide_search)}}
+{{#if (not hide_search)}}
+  {{#tool-bar}}
     {{#search-bar search=(mut search) searching=searching}}
 
-        <table class="table table-striped">
-          <tbody>
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td><code>start_time &lt; -30d </code></td>
+            <td>Find sessions which started more than 30 days ago</td>
+          </tr>
+          <tr>
+            <td><code>end_time &gt; -15d</code></td>
+            <td>Find sessions which ended less than 15 days ago</td>
+          </tr>
+          <tr>
+            <td><code>at = '26/11/2016 13:08:40'</code></td>
+            <td>Find sessions which were running at the given date</td>
+          </tr>
+          <tr>
+            <td><code>user = someuser</code></td>
+            <td>Find sessions run by user <code>someuser</code></td>
+          </tr>
+          <tr>
+            <td><code>{{display-name "subject"}} = microwave01</code></td>
+            <td>Find sessions which ran on <code>microwave01</code></td>
+          </tr>
+          <tr>
+            <td><code>{{display-name "related_entity"}} = some_related</code></td>
+            <td>Find tests which with <code>some_related</code></td>
+          </tr>
+          <tr>
+            <td><code>product_version = 1.0.0</code></td>
+            <td>Find sessions which ran on product version <code>1.0.0</code></td>
+          </tr>
+          <tr>
+            <td><code>product = Microwave</code></td>
+            <td>Find sessions which ran on a specific product type</td>
+          </tr>
+          <tr>
+            <td><code>test = test_something</code></td>
+            <td>Find sessions which contain a test named <code>test_something</code></td>
+          </tr>
+
+          {{# if (can "admin")}}
             <tr>
-              <td><code>start_time &lt; -30d </code></td>
-              <td>Find sessions which started more than 30 days ago</td>
+              <td><code>python_version &gt; 3.5</code></td>
+              <td>Search by Python version</td>
             </tr>
             <tr>
-              <td><code>end_time &gt; -15d</code></td>
-              <td>Find sessions which ended less than 15 days ago</td>
-            </tr>
-            <tr>
-              <td><code>at = '26/11/2016 13:08:40'</code></td>
-              <td>Find sessions which were running at the given date</td>
-            </tr>
-            <tr>
-              <td><code>user = someuser</code></td>
-              <td>Find sessions run by user <code>someuser</code></td>
-            </tr>
-            <tr>
-              <td><code>{{display-name "subject"}} = microwave01</code></td>
-              <td>Find sessions which ran on <code>microwave01</code></td>
-            </tr>
-            <tr>
-              <td><code>{{display-name "related_entity"}} = some_related</code></td>
-              <td>Find tests which with <code>some_related</code></td>
-            </tr>
-            <tr>
-              <td><code>product_version = 1.0.0</code></td>
-              <td>Find sessions which ran on product version <code>1.0.0</code></td>
-            </tr>
-            <tr>
-              <td><code>product = Microwave</code></td>
-              <td>Find sessions which ran on a specific product type</td>
-            </tr>
-            <tr>
-              <td><code>test = test_something</code></td>
-              <td>Find sessions which contain a test named <code>test_something</code></td>
+              <td><code>commandline ~ slash</code></td>
+              <td>Search by command-line substrings</td>
             </tr>
 
-            {{# if (can "admin")}}
-              <tr>
-                <td><code>python_version &gt; 3.5</code></td>
-                <td>Search by Python version</td>
-              </tr>
-              <tr>
-                <td><code>commandline ~ slash</code></td>
-                <td>Search by command-line substrings</td>
-              </tr>
+          {{/if}}
 
-            {{/if}}
-
-          </tbody>
-        </table>
+        </tbody>
+      </table>
 
     {{/search-bar}}
     {{#if (and (can "admin") (and (not searching) search)) }}
@@ -69,9 +69,9 @@
       {{/bs-dropdown}}
 
     {{/if}}
-  {{/if}}
+  {{/tool-bar}}
+{{/if}}
 
-{{/tool-bar}}
 
 {{#if error}}
   {{request-error-details error=error}}
