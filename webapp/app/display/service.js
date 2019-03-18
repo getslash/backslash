@@ -1,12 +1,13 @@
-import Service from '@ember/service';
-import { computed } from '@ember/object';
+import Service from "@ember/service";
+import { computed } from "@ember/object";
 
 const _DEFAULTS = {
   humanize_times: true,
   comments_expanded: false,
   show_side_labels: false,
   show_help: false,
-  session_side_bar_collapsed: false
+  session_side_bar_collapsed: false,
+  show_avatars: false,
 };
 
 let _classvars = {};
@@ -30,7 +31,7 @@ let _setting = computed({
       return _DEFAULTS[key];
     }
     return value === "true";
-  }
+  },
 });
 
 for (let field_name in _DEFAULTS) {
