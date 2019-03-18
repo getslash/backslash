@@ -36,10 +36,10 @@
         </div>
       </div>
       <div class="row">
-        <div class="col d-none d-lg-block">
+        <div class="col d-none d-lg-block py-1">
           {{#each slash_tags as |tag|}}
             {{#if tag.value}}
-              <div class="badge-split">
+              <div class="badge-split d-inline-block">
                 <span>{{tag.name}}</span><span>{{tag.value}}</span>
               </div>
             {{else}}

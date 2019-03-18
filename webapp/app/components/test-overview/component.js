@@ -23,11 +23,15 @@ export default Component.extend({
     }
 
     let returned = [];
-    for (let name of tags.names) {
-      returned.push({ name: name, value: null });
-    }
     for (const [name, value] of Object.entries(tags.values)) {
       returned.push({ name: name, value: value });
+    }
+
+    for (let name of tags.names) {
+      if (tags.values.hasOwnProperty(name)) {
+        continue;
+      }
+      returned.push({ name: name, value: null });
     }
     return returned;
   }),
