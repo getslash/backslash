@@ -38,12 +38,17 @@ export default Component.extend({
         if (value.length > _MAX_VALUE_SIZE) {
           short_value = short_value.substr(0, _MAX_VALUE_SIZE) + "...";
         }
+        let css_class = null;
+        if (attrname === "slash::commandline") {
+          css_class = "metadata-commandline";
+        }
         returned.push(
           EmberObject.create({
             name: attrname,
             value: value,
             short_value: short_value,
             expanded: false,
+            css_class: css_class,
             expandable: short_value !== value,
           })
         );

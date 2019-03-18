@@ -2,7 +2,7 @@
     box-shadow: inset 10px 0 0 0 $color;
 
     &:hover {
-        background: #fafafa;
+        background: $gray-100;
     }
 }
 
@@ -13,7 +13,7 @@
     @extend .mt-2;
 
     overflow: hidden;
-    border: 1px solid #eee;
+    border: 1px solid $gray-100;
     border-left: none;
 
     @include item-box-mixin(gray);

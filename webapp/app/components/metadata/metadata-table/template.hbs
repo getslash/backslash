@@ -4,12 +4,12 @@
     Metadata
   </div>
   <div class="card-body p-3">
-    <table class="table table-sm table-bordered">
+    <table class="table table-sm table-hover">
       <tbody>
         {{#each all_metadata as |item|}}
           <tr>
             <td class="text-muted">{{capitalize (undasherize item.name)}}</td>
-            <td class="text-truncate">
+            <td class="text-truncate {{item.css_class}}">
               {{#if (s-starts-with item.value "http://" "https://")}}
 
                 {{linkify item.value}}
@@ -23,24 +23,4 @@
     </table>
   </div>
 </div>
-
-{{#if slash_tags}}
-  <div class="module">
-    <div class="title">
-      Test Tags
-    </div>
-    <div class="content">
-      <dl class="dl-horizontal">
-	    {{#each slash_tags_without_values as |name|}}
-	      <dt>{{name}}</dt>
-	      <dd></dd>
-	    {{/each}}
-	    {{#each-in slash_tags.values as |name value|}}
-	      <dt>{{name}}</dt>
-	      <dd>{{value}}</dd>
-	    {{/each-in}}
-      </dl>
-    </div>
-  </div>
-{{/if}}
 

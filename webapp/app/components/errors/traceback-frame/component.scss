@@ -10,7 +10,7 @@
     }
 
     .frame-info {
-        background: #eee;
+        background: $gray-100;
 
         font-size: x-small;
     }
@@ -29,7 +29,7 @@
             white-space: pre-wrap;
 
             &.around {
-                background-color: #eee;
+                background-color: $gray-100;
                 color: gray;
                 display: block;
             }

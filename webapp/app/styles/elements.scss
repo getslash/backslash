@@ -58,7 +58,7 @@
     }
     td:first-child {
         @extend .text-muted;
-        background: #eee;
+        background: $gray-100;
     }
     td:last-child {
         font-family: monospace;
