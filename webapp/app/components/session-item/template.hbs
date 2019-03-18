@@ -12,9 +12,12 @@
     <div class="row">
       <div class="col d-none d-md-block">
         <small>
-        {{#link-to 'user' session.user_email}}
-          {{session.user_display_name}}
-        {{/link-to}}
+          {{#link-to 'user' session.user_email}}
+            {{#if user_prefs.show_avatars}}
+              {{users/avatar-image email=session.user_email}}
+            {{/if}}
+            {{session.user_display_name}}
+          {{/link-to}}
         </small>
       </div>
     </div>

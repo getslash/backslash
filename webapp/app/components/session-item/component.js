@@ -5,6 +5,7 @@ import Component from "@ember/component";
 export default Component.extend({
   display: service(),
   router: service(),
+  user_prefs: service(),
   classNames: "item session clickable",
   classNameBindings: ["session.status_lowercase"],
   show_labels: true,

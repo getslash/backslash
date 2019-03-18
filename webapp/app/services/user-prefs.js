@@ -1,11 +1,12 @@
-import { Promise as EmberPromise } from 'rsvp';
-import EmberObject from '@ember/object';
-import Service, { inject as service } from '@ember/service';
+import { Promise as EmberPromise } from "rsvp";
+import EmberObject from "@ember/object";
+import Service, { inject as service } from "@ember/service";
 
 export default Service.extend({
   api: service(),
 
   init() {
+    this._super(...arguments);
     this.set("_cache", EmberObject.create());
   },
 
@@ -19,21 +20,26 @@ export default Service.extend({
 
   get_all() {
     let self = this;
-    return this.get("api").call("get_preferences").then(function(r) {
-      for (let attr in r.result) {
-        if (r.result.hasOwnProperty(attr)) {
-          self.set(`_cache.${attr}`, r.result[attr]);
-          self.set("_cache_populated", true);
+    return this.get("api")
+      .call("get_preferences")
+      .then(function(r) {
+        for (let attr in r.result) {
+          if (r.result.hasOwnProperty(attr)) {
+            self.set(`_cache.${attr}`, r.result[attr]);
+            self.set(attr, r.result[attr]);
+            self.set("_cache_populated", true);
+          }
         }
-      }
-      return r.result;
-    });
+        return r.result;
+      });
   },
 
   set_pref(name, value) {
+    let self = this;
     return this.get("api")
       .call("set_preference", { preference: name, value: value })
       .then(function(result) {
+        self.set(name, result.result);
         return result.result;
       });
   },
@@ -57,5 +63,5 @@ export default Service.extend({
     return new EmberPromise(function(resolve) {
       resolve(returned);
     });
-  }
+  },
 });
