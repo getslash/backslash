@@ -27,6 +27,7 @@ before_install:
   - curl https://releases.rancher.com/install-docker/17.09.sh | sudo bash -
 
   # build the Backslash docker image
+  - git describe --tags
   - python scripts/travis_version_fix.py
   - sudo docker build -f ./docker/Dockerfile -t getslash/backslash .
 
