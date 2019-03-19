@@ -23,6 +23,11 @@
     </div>
     <div class="row">
       <div class="col">
+        {{#if session.is_parent_session}}
+          <div class="badge badge-light">
+            {{fa-icon "random"}} Parallel
+          </div>
+        {{/if}}
       </div>
     </div>
   </div>

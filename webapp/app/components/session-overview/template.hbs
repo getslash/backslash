@@ -110,20 +110,21 @@
     </div>
   </div>
 
-  <div class="row p-3">
+  <div class="row p-2">
     <div class="col-sm-12">
       {{#if session_model.is_parent_session}}
-        {{#info-badge icon="arrows-alt" text="Parallel"}}
-          This session was run in parallel mode. Actual tests run by child sessions.
-        {{/info-badge}}
+        <div class="badge badge-light border border-dark">
+          {{fa-icon "random"}} Parallel Session
+        </div>
       {{/if}}
 
       {{#if session_model.parent_logical_id}}
-        {{#link-to "session" session_model.parent_logical_id}}
-          {{#info-badge icon="arrows-alt" text="Parallel"}}
-            Session is a part of a parallel session. Child id: #{{session_model.child_id}}. Click to go to parent session
-          {{/info-badge}}
-        {{/link-to}}
+        <div class="badge badge-light border border-dark">
+          {{fa-icon "random"}}
+          {{#link-to "session" session_model.parent_logical_id}}
+            Parallel child #{{session_model.child_id}}
+          {{/link-to}}
+        </div>
       {{/if}}
 
 
