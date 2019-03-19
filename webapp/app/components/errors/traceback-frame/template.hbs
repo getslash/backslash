@@ -21,10 +21,36 @@
       <table class="table-hover variable-table">
         <tbody>
           {{#each variables as |var|}}
-            <tr>
-              <td>{{var.name}}</td>
-              <td>{{var.value.value}}</td>
-            </tr>
+            {{#if (not (s-starts-with var.name "self."))}}
+              <tr>
+                <td>{{var.name}}</td>
+                <td>
+                  {{#if (eq var.name "self")}}
+                    {{expand-toggle expanded=(mut var.expanded)}}
+                  {{/if}}
+                  {{var.value.value}}
+                </td>
+              </tr>
+              {{#if (and var.expanded (eq var.name "self"))}}
+                <tr>
+                  <td></td>
+                  <td>
+                    <table class="table-hover variable-table">
+                      <tbody>
+                        {{#each variables as |var|}}
+                          {{#if (s-starts-with var.name "self.")}}
+                            <tr>
+                              <td>{{var.name}}</td>
+                              <td>{{var.value.value}}</td>
+                            </tr>
+                          {{/if}}
+                        {{/each}}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              {{/if}}
+            {{/if}}
           {{/each}}
         </tbody>
       </table>
