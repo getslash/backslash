@@ -7,7 +7,7 @@ export default Component.extend({
 
   status_lower: lower_case("status"),
 
-  classNames: "status-icon",
+  classNames: "status-icon mr-2",
   classNameBindings: ["status_lower"],
   tagName: "span",
 });
