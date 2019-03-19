@@ -28,21 +28,13 @@
       <div class="col text-truncate">
         {{#if test.variation}}
           <span>
-            {{#bs-popover title="Test Parameters" placement="auto" triggerEvents="hover"}}
+            <div class="params text-muted">
               {{#each-in display_params as |name value|}}
-                <div>
-                  {{name}}: <code>{{if value value 'None'}}</code>
+                <div class="param text-monospace">
+                  {{name}}=<code>{{if value value 'None'}}</code>
                 </div>
               {{/each-in}}
-            {{/bs-popover}}
-            <ul class="params">
-
-              {{#each-in display_params as |name value|}}
-
-                <li>{{name}}=<code>{{if value value 'None'}}</code>
-                </li>
-              {{/each-in}}
-            </ul>
+            </div>
           </span>
         {{else}}
           &nbsp;
