@@ -1,6 +1,20 @@
 & {
-    tbody tr td:nth-child(2) {
-        font-family: monospace;
-        font-size: small;
+    @extend .m-3;
+    thead {
+        background: $gray-100;
+    }
+    th, td {
+        @extend .px-3;
+        @extend .py-2;
+    }
+    tbody tr  {
+        td:nth-child(1) {
+            @extend .text-nowrap;
+            background: $gray-100;
+        }
+        td:nth-child(2) {
+            @extend .text-monospace;
+            width: 100%;
+        }
     }
 }

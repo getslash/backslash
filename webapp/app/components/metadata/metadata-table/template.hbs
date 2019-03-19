@@ -1,26 +1,2 @@
-
-<div class="m-3 card overflow-hidden">
-  <div class="card-header">
-    Metadata
-  </div>
-  <div class="card-body p-3">
-    <table class="table table-sm table-hover">
-      <tbody>
-        {{#each all_metadata as |item|}}
-          <tr>
-            <td class="text-muted">{{capitalize (undasherize item.name)}}</td>
-            <td class="text-truncate {{item.css_class}}">
-              {{#if (s-starts-with item.value "http://" "https://")}}
-
-                {{linkify item.value}}
-              {{else}}
-                {{item.value}}
-              {{/if}}
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
-</div>
+{{key-value-data data=all_metadata title="Metadata" normalize_names=true}}
 

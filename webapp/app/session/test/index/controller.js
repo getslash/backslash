@@ -1,18 +1,23 @@
 import EmberObject from "@ember/object";
+import { computed } from "@ember/object";
 import Controller from "@ember/controller";
 
 import RelativeItemJump from "../../../mixins/relative-item-jump";
 
 export default Controller.extend(RelativeItemJump, {
-  additional_metadata: function() {
+  additional_metadata: computed(function() {
     return {};
-  }.property("test_model"),
+  }),
 
-  params: function() {
+  params: computed("test_model.{parameters,variation}", function() {
     let params = this.get("test_model.parameters");
-    if (params) {
-      return params;
+    if (!params) {
+      params = this.get("test_model.variation");
     }
-    return this.get("test_model.variation");
-  }.property("test_model"),
+    let returned = [];
+    for (let [key, value] of Object.entries(params)) {
+      returned.push({ name: key, value: value });
+    }
+    return returned;
+  }),
 });

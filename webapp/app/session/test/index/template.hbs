@@ -1,14 +1,7 @@
 {{#if params}}
-  <div class="m-3">
-
-    <div class="card">
-      <div class="card-header">Parameters</div>
-      <div class="card-body">
-        {{key-value-data data=params title="Parameters"}}
-      </div>
-    </div>
-  </div>
+  {{key-value-data data=params title="Parameters"}}
 {{/if}}
+
 
 
 {{metadata/metadata-table metadata=metadata additional=additional_metadata}}
