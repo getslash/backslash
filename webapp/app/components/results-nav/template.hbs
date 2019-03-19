@@ -52,6 +52,28 @@
   {{/dd.menu}}
 {{/bs-dropdown}}
 
+{{#if sort_options}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}Sort <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each sort_options as |sort_option|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (mut sort) sort_option}}>
+            {{#if (eq sort sort_option)}}
+              {{fa-icon "check" fixedWidth=true}}
+            {{else}}
+              {{fa-icon "fw"}}
+            {{/if}}
+            {{capitalize (undasherize sort_option)}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+
+{{/if}}
+
 
 
 <a class="btn btn-default first {{if (not has_prev) 'disabled' 'clickable'}}" onclick={{if has_prev (action "first_page")}} title="Go to first page"><i class="fa fa-angle-double-left"></i></a>
