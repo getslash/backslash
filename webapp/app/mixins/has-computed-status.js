@@ -1,9 +1,14 @@
 import { computed } from "@ember/object";
+import { equal } from "@ember/object/computed";
 import { lower_case } from "../utils/computed";
 import Mixin from "@ember/object/mixin";
 
 export default Mixin.create({
   status_lowercase: lower_case("computed_status"),
+
+  is_success: equal("status_lowercase", "success"),
+  is_skipped: equal("status_lowercase", "skipped"),
+  is_running: equal("status_lowercase", "running"),
 
   computed_status: computed(
     "status",
@@ -13,7 +18,6 @@ export default Mixin.create({
     "num_skipped_tests",
     "num_interrupted_tests",
     "has_any_error",
-    "is_running",
     function() {
       let status = this.get("status");
       if (!status) {
@@ -22,8 +26,10 @@ export default Mixin.create({
 
       status = status.toLowerCase();
       let interrupted =
-        this.get("is_interrupted") || this.get("num_interrupted_tests");
-      let running = this.get("is_running") || status === "running";
+        this.get("is_interrupted") ||
+        this.get("num_interrupted_tests") ||
+        this.get("num_interruptions");
+      let running = status === "running";
 
       if (
         (this.get("is_abandoned") || this.get("is_session_abandoned")) &&

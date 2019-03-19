@@ -63,7 +63,7 @@
             {{test.first_error.message}}
           </span>
         {{else}}
-          {{#if test.skip_reason}}
+          {{#if test.is_skipped }}
             <span class="badge badge-pill badge-secondary text-white mr-2">
               Skipped
             </span> <span class="text-black-50">
