@@ -18,9 +18,11 @@
     {{/if}}
 
     {{#if test_model.num_interruptions}}
-      {{#link-to 'session.test.interruptions' tagName='li'}}
-        Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
-      {{/link-to}}
+      {{#nav.item}}
+        {{#nav.link-to 'session.test.interruptions'}}
+          Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
+        {{/nav.link-to}}
+      {{/nav.item}}
     {{/if}}
     {{#with test_model.num_warnings as |num_warnings|}}
       {{#if num_warnings}}
