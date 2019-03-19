@@ -48,12 +48,19 @@
     <div class="row justify-content-end">
       <div class="col-sm-2 faint">
         {{#if session.num_comments}}
-          <span>
+          {{#link-to "session.comments" session.display_id bubbles=false classNames="nodecoration"}}
             {{fa-icon "comment"}} {{session.num_comments}}
             {{#bs-popover triggerEvents="hover"}}
-              {{session.last_comment.user_email}} -- {{session.last_comment.comment}}
+              <div class="row">
+                <div class="col-sm-2">
+                  {{users/avatar-image email=session.last_comment.user_email}}
+                </div>
+                <div class="col-sm-10">
+                  {{markdown-to-html session.last_comment.comment}}
+                </div>
+              </div>
             {{/bs-popover}}
-          </span>
+          {{/link-to}}
         {{/if}}
       </div>
       <div class="col-sm-6 co-md-4">
