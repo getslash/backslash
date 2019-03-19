@@ -10,6 +10,7 @@ export function statusToBrand(params /*, hash*/) {
       return "success";
     case "error":
     case "failure":
+    case "failed":
       return "danger";
     case "skipped":
     case "skip":
