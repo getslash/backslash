@@ -15,7 +15,7 @@ export default Controller.extend(RelativeItemJump, {
       params = this.get("test_model.variation");
     }
     let returned = [];
-    for (let [key, value] of Object.entries(params)) {
+    for (let [key, value] of Object.entries(params || {})) {
       returned.push({ name: key, value: value });
     }
     return returned;

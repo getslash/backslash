@@ -59,9 +59,9 @@
         {{/if}}
         {{#if test.has_any_error}}
           <span class="badge badge-pill badge-danger mr-2">{{fa-icon "times"}} {{add test.num_errors test.num_failures}}</span>
-          <span class="text-danger">
+          {{#link-to "session.test.errors" test.session_display_id test.display_id classNames="text-danger nodecoration text-monospace test-error-link" bubbles=false}}
             {{test.first_error.message}}
-          </span>
+          {{/link-to}}
         {{else}}
           {{#if test.is_skipped }}
             <span class="badge badge-pill badge-secondary text-white mr-2">

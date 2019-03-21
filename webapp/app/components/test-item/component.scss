@@ -14,4 +14,10 @@
         margin-left: 7.5em;
         font-size: 75%;
     }
+
+    .test-error-link {
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
