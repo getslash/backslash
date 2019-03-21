@@ -17,16 +17,7 @@
             {{var.name}}
           {{/if}}
         </td>
-        <td>
-          {{#if (s-starts-with var.value "http://" "https://")}}
-
-            {{linkify var.value}}
-          {{else}}
-
-            {{var.value}}
-          {{/if}}
-
-        </td>
+        <td>{{#if (s-starts-with var.value "http://" "https://")}}{{linkify var.value}}{{else}}{{var.value}}{{/if}}</td>
       </tr>
     {{/each}}
 
