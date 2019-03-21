@@ -8,7 +8,7 @@ export default Component.extend({
   tagName: "img",
 
   attributeBindings: ["src"],
-  classNames: ["avatar-image"],
+  classNames: ["avatar-image", "m-1 mr-2"],
   classNameBindings: ["is_proxy:proxy", "is_real:real"],
 
   src: computed("email", function() {
