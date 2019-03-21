@@ -1,109 +1,103 @@
 <div class="container">
-  <div class="col-md-4 hidden-xs-down hidden-sm-down">
-    <img src="assets/img/backslash-setup.png" style="width: 100%">
+  <div class="row mt-5">
+    <div class="col-md-4 hidden-xs-down hidden-sm-down">
+      <img src="assets/img/backslash-setup.png" style="width: 100%">
+    </div>
+    <div class="col-md-8">
+      <h1>Initial Setup</h1>
+      <p>
+        Welcome to Backslash! We will need to set up some basic parameters so that you can get started properly.
+      </p>
+
+      <form>
+        <h2>Admin User</h2>
+
+        <div class="form-group">
+	      <label class="control-label" for="admin-email">Admin User</label>
+	      {{input type="email" class="form-control" id="admin-email" placeholder="admin@domain.com" value=config.admin_user_email}}
+	      <p class="help-block">This user will be added to Backslash and made admin</p>
+        </div>
+        <div class="form-group has-feedback">
+	      <label class="control-label" for="admin-password-1">Admin User Password</label>
+
+	      {{input type="password" class=password_classes id="admin-password-1" placeholder="Password" value=config.admin_user_password required=true}}
+        </div>
+        <div class="form-group has-feedback">
+	      <label class="control-label" for="admin-password-2">Repeat Admin User Password</label>
+
+	      {{input type="password" id="admin-password-2" placeholder="Password" value=admin_user_password_2 class=password_classes required=true}}
+
+	      {{#if passwords_mismatch }}
+	        <p class="help-block">Password mismatch</p>
+	      {{/if}}
+        </div>
+
+        <h2>Authentication</h2>
+
+        <div class="form-group">
+	      <label class="control-label" for="default-domain">Default Email Domain</label>
+	      {{input class="form-control" id="default-domain" value=config.default_domain placeholder="yourcompany.com"}}
+	      <p class="help-block">This will be appended to usernames to form the lookup email to authenticate</p>
+	      {{#if config.default_domain}}
+	        <p class="help-block">Will turn <strong>username</strong> into <strong>{{concat "username@" config.default_domain}})</strong></p>
+	      {{/if}}
+        </div>
+
+        <div class="form-group">
+
+	      <div class="checkbox">
+	        <label>
+	          {{input type="checkbox" id="social-google-enable" checked=config.google_oauth2_enabled}}
+	          Enable Google OAuth2 Authentication
+	        </label>
+	      </div>
+
+	      {{#if config.google_oauth2_enabled}}
+	        <div class="form-group">
+	          <label class="control-label" for="google-oauth2-client-id">OAuth2 Client ID</label>
+	          {{input class="form-control" id="google-oauth2-client-id" value=config.google_oauth2_client_id placeholder="XXXX.apps.googleusercontent.com" required=true}}
+	        </div>
+
+	        <div class="form-group">
+	          <label class="control-label" for="google-oauth2-client-secret">OAuth2 Client Secret</label>
+	          {{input class="form-control" id="google-oauth2-client-secret" value=config.google_oauth2_client_secret placeholder="XXXXXX" required=true}}
+	        </div>
+
+	        <p class="help-block">Can be obtained from <a href="https://console.developers.google.com/apis/credentials">the Google Developer Console</a></p>
+	      {{/if}}
+
+
+        </div>
+
+        <div class="form-group">
+
+	      <div class="checkbox">
+	        <label>
+	          {{input type="checkbox" id="ldap-enable" checked=config.ldap_login_enabled}}
+	          Enable LDAP Authentication
+	        </label>
+	      </div>
+
+	      {{#if config.ldap_login_enabled}}
+	        <div class="form-group">
+	          <label class="control-label" for="ldap-uri">LDAP URI</label>
+	          {{input class="form-control" id="ldap-uri" value=config.ldap_uri placeholder="ldaps://XXXXX" required=true}}
+	        </div>
+
+	        <div class="form-group">
+	          <label class="control-label" for="ldap-base-dn">LDAP Base DN</label>
+	          {{input class="form-control" id="ldap-base-dn" value=config.ldap_base_dn placeholder="XXXXXX" required=true}}
+	        </div>
+
+	      {{/if}}
+        </div>
+
+        {{#if (and admin_user_password admin_user_password_2 (not passwords_mismatch) config.admin_user_email)}}
+	      <button class="btn btn-success btn-lg" {{action "setup"}}>Get Started!</button>
+
+        {{/if}}
+      </form>
+
+    </div>
   </div>
-  <div class="col-md-8">
-    <h1>Initial Setup</h1>
-    <p>
-      Welcome to Backslash! We will need to set up some basic parameters so that you can get started properly.
-    </p>
-
-
-    <form>
-      <h2>Admin User</h2>
-
-      <div class="form-group">
-	<label class="control-label" for="admin-email">Admin User</label>
-	{{input type="email" class="form-control" id="admin-email" placeholder="admin@domain.com" value=config.admin_user_email}}
-	<p class="help-block">This user will be added to Backslash and made admin</p>
-      </div>
-      <div class="form-group has-feedback {{password_classes}}">
-	<label class="control-label" for="admin-password-1">Admin User Password</label>
-	{{#if (or passwords_mismatch passwords_match)}}
-	  <span class="glyphicon glyphicon-{{if passwords_match 'ok' 'remove'}} form-control-feedback" aria-hidden="true"></span>
-	{{/if}}
-
-	{{input type="password" class="form-control" id="admin-password-1" placeholder="Password" value=config.admin_user_password}}
-      </div>
-      <div class="form-group has-feedback {{password_classes}}">
-	<label class="control-label" for="admin-password-2">Repeat Admin User Password</label>
-	{{#if (or passwords_mismatch passwords_match)}}
-	  <span class="glyphicon glyphicon-{{if passwords_match 'ok' 'remove'}} form-control-feedback" aria-hidden="true"></span>
-	{{/if}}
-
-	{{input type="password" class="form-control" id="admin-password-2" placeholder="Password" value=admin_user_password_2}}
-
-	{{#if passwords_mismatch }}
-	  <p class="help-block">Password mismatch</p>
-	{{/if}}
-      </div>
-
-      <h2>Authentication</h2>
-
-      <div class="form-group">
-	<label class="control-label" for="default-domain">Default Email Domain</label>
-	{{input class="form-control" id="default-domain" value=config.default_domain placeholder="yourcompany.com"}}
-	<p class="help-block">This will be appended to usernames to form the lookup email to authenticate</p>
-	{{#if config.default_domain}}
-	  <p class="help-block">Will turn <strong>username</strong> into <strong>{{concat "username@" config.default_domain}})</strong></p>
-	{{/if}}
-      </div>
-
-      <div class="form-group">
-
-	<div class="checkbox">
-	  <label>
-	    {{input type="checkbox" id="social-google-enable" checked=config.google_oauth2_enabled}}
-	    Enable Google OAuth2 Authentication
-	  </label>
-	</div>
-
-	{{#if config.google_oauth2_enabled}}
-	  <div class="form-group">
-	    <label class="control-label" for="google-oauth2-client-id">OAuth2 Client ID</label>
-	    {{input class="form-control" id="google-oauth2-client-id" value=config.google_oauth2_client_id placeholder="XXXX.apps.googleusercontent.com" required=true}}
-	  </div>
-
-	  <div class="form-group">
-	    <label class="control-label" for="google-oauth2-client-secret">OAuth2 Client Secret</label>
-	    {{input class="form-control" id="google-oauth2-client-secret" value=config.google_oauth2_client_secret placeholder="XXXXXX" required=true}}
-	  </div>
-
-	  <p class="help-block">Can be obtained from <a href="https://console.developers.google.com/apis/credentials">the Google Developer Console</a></p>
-	{{/if}}
-
-
-      </div>
-
-      <div class="form-group">
-
-	<div class="checkbox">
-	  <label>
-	    {{input type="checkbox" id="ldap-enable" checked=config.ldap_login_enabled}}
-	    Enable LDAP Authentication
-	  </label>
-	</div>
-
-	{{#if config.ldap_login_enabled}}
-	  <div class="form-group">
-	    <label class="control-label" for="ldap-uri">LDAP URI</label>
-	    {{input class="form-control" id="ldap-uri" value=config.ldap_uri placeholder="ldaps://XXXXX" required=true}}
-	  </div>
-
-	  <div class="form-group">
-	    <label class="control-label" for="ldap-base-dn">LDAP Base DN</label>
-	    {{input class="form-control" id="ldap-base-dn" value=config.ldap_base_dn placeholder="XXXXXX" required=true}}
-	  </div>
-
-	{{/if}}
-      </div>
-
-      {{#if (and passwords_match config.admin_user_email)}}
-	<button class="btn btn-success btn-lg" {{action "setup"}}>Get Started!</button>
-
-      {{/if}}
-    </form>
-
-  </div>
-
 </div>

@@ -5,14 +5,14 @@
     <p>You must be logged in to use Backslash</p>
 
     <form class="login-form">
-	  <div class="form-group {{if login_error 'has-error'}}">
+	  <div class="form-group">
 	    <label class="control-label" for="username">Username/Email</label>
-	    {{input type="username" class="form-control" id="username" value=username required=true}}
+	    {{input type="username" class=(concat "form-control" (if login_error " is-invalid")) id="username" value=username required=true}}
 	  </div>
 
-	  <div class="form-group {{if login_error 'has-error'}}">
+	  <div class="form-group">
 	    <label class="control-label" for="password">Password</label>
-	    {{input type="password" class="form-control" id="password" value=password required=true}}
+	    {{input type="password" class=(concat "form-control" (if login_error " is-invalid")) id="password" value=password required=true}}
 	    {{#if login_error}}
 	      <p class="help-block">Login failed - {{login_error}}</p>
 	    {{/if}}
