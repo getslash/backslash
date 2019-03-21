@@ -1,15 +1,6 @@
 {{#if error.exception_attributes}}
   {{#expandable-div title="Exception attributes"}}
-    <table class="table table-hover variable-table">
-      <tbody>
-      {{#each error.exception_attributes as |var|}}
-        <tr>
-          <td>{{var.name}}</td>
-          <td>{{var.value.value}}</td>
-        </tr>
-      {{/each}}
-      </tbody>
-    </table>
+    {{variable-table variables=error.exception_attributes}}
   {{/expandable-div}}
 {{/if}}
 

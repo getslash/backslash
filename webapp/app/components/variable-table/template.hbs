@@ -1,0 +1,35 @@
+<tbody>
+  {{#each variables as |var|}}
+    {{#if (not (s-starts-with var.name "self."))}}
+      <tr>
+        <td>{{var.name}}</td>
+        <td class="justify-content-between">
+          {{#if (eq var.name "self")}}
+            {{expand-toggle expanded=(mut var.expanded)}}
+          {{/if}}
+          {{var.value.value}}
+          {{#copy-button clipboardText=var.value.value title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
+        </td>
+      </tr>
+      {{#if (and var.expanded (eq var.name "self"))}}
+        <tr>
+          <td></td>
+          <td>
+            <table class="table-hover variable-table">
+              <tbody>
+                {{#each variables as |var|}}
+                  {{#if (s-starts-with var.name "self.")}}
+                    <tr>
+                      <td>{{var.name}}</td>
+                      <td class="justify-content-between align-self-center">{{var.value.value}} {{#copy-button clipboardText=var.value.value title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}</td>
+                    </tr>
+                  {{/if}}
+                {{/each}}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      {{/if}}
+    {{/if}}
+  {{/each}}
+</tbody>

@@ -1,0 +1,14 @@
+& {
+    tbody {
+        tr {
+            td {
+                &>.copy-btn {
+                    visibility: hidden;
+                }
+                &:hover>.copy-btn {
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}
