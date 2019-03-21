@@ -19,15 +19,17 @@
   </div>
   <div class="col-sm-7">
     <div class="row">
+      <div class="col-1 text-muted">
+        #{{or test.test_index '???'}}
+      </div>
       <div class="col text-truncate">
-        <div class="test-index">{{if test.test_index test.test_index '???'}}</div>
         <strong>{{format-test-name test.info with_filename=false}}</strong>
       </div>
     </div>
     <div class="row">
+      <div class="col-1"></div>
       <div class="col text-truncate">
         {{#if test.variation}}
-          <span>
             <div class="params text-muted">
               {{#each-in display_params as |name value|}}
                 <div class="param text-monospace">
@@ -35,7 +37,6 @@
                 </div>
               {{/each-in}}
             </div>
-          </span>
         {{else}}
           &nbsp;
         {{/if}}
