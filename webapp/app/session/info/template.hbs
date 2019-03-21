@@ -1,25 +1,31 @@
-{{#if session_model.subjects}}
-  <div class="container-fluid add-margin-top">
-    <div class="row-fluid">
-      <div class="col-sm-2">
-        Ran on
-      </div>
-      <div class="col-sm-10">
-        {{#each session_model.subjects as |s|}}
-	      <div>
-		    <i class="fa fa-rocket"></i> {{#link-to 'subject' s.name}}{{s.name}}{{/link-to}} <span class="label label-fine">{{s.version}}</span>
-	      </div>
-	      <dl class="dl-horitontal-left-aligned">
-		    <dt>Product</dt>
-		    <dd>{{s.product}}</dd>
-		    <dt>Revision</dt>
-		    <dd>{{elements/copyable-text value=s.revision}}</dd>
-	      </dl>
-	    {{/each}}
-
+<div class="m-3 card">
+  <div class="card-header">Subjects</div>
+  <div class="card-body">
+    <div class="container-fluid">
+      <div class="row">
+        {{#each session_model.subjects as |subject|}}
+          <div class="col-sm-6 col-md-4">
+            {{#link-to "subject" subject.name}}{{subject.name}}{{/link-to}}
+            <small><strong>{{subject.product}} <div class="badge bade-pill">{{subject.version}}</div></strong></small>
+            <small>rev. {{elements/copyable-text value=subject.revision}}</small>
+          </div>
+        {{/each}}
       </div>
     </div>
   </div>
+</div>
+
+{{#if related_entities}}
+
+  <div class="m-3 card">
+    <div class="card-header">Related Entities</div>
+    <div class="card-body">
+      {{#each related_entities as |entity|}}
+        {{#link-to "sessions" (query-params search=(concat "related=" entity.name))}}{{entity.name}}{{/link-to}} <small><div class="badge badge-pill badge-secondary">{{entity.entity_type}}</div></small>
+      {{/each}}
+    </div>
+  </div>
+
 {{/if}}
 
 {{metadata/metadata-table metadata=metadata additional=additional_metadata related_entities=related_entities}}

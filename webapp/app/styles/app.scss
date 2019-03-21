@@ -1,7 +1,5 @@
-@import '_overrides.scss';
-@import 'bootstrap';
+@import "ember-bootstrap/bootstrap";
 @import 'colors.scss';
-
 @import "pod-styles";
 
 // Fonts
@@ -15,12 +13,6 @@ pre, .mono {
     font-family: 'Fira Mono', monospace;
 }
 
-
-// Body padding
-body {
-    padding-top: 52px;
-}
-
 // elements
 .text-height {
     height: 1em;
@@ -31,7 +23,7 @@ body {
  *******************************************************************************/
 
 @import 'proofing.scss';
-
+@import 'item.scss';
 @import 'fonts.scss';
 @import 'font-awesome';
 
@@ -42,13 +34,7 @@ body {
 
 @import 'dropdowns.scss';
 @import 'toggles.scss';
-
-@import 'items.scss';
-
-@import 'sessions.scss';
 @import 'users.scss';
-@import 'loading-indicator.scss';
-
 @import 'boxes.scss';
 
 @import 'navigation.scss';

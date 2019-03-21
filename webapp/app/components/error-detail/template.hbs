@@ -1,28 +1,34 @@
 {{#if error.exception_attributes}}
   {{#expandable-div title="Exception attributes"}}
-    {{variable-list vars=error.exception_attributes}}
+    <table class="table table-hover variable-table">
+      <tbody>
+      {{#each error.exception_attributes as |var|}}
+        <tr>
+          <td>{{var.name}}</td>
+          <td>{{var.value.value}}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
   {{/expandable-div}}
 {{/if}}
 
 {{#if loading }}
-  <div class="box">
-    <div class="info">
-      <i class="fa fa-spin fa-refresh"></i> Loading Traceback...
+  <div class="m-3 p-3">
+    <div class="spinner-border" role="status">
     </div>
   </div>
 
 {{else}}
 
   {{#if (and error.traceback_url (not error.traceback))  }}
-    <div class="box error">
-      <div class="info">
-        Could not load traceback
-      </div>
+    <div class="p-1 m-3 border border-danger">
+      <strong>Could not load traceback</strong>
     </div>
   {{else}}
-    <p>
-      Traceback (<a class="clickable" {{action "toggle_all_frames"}}>{{if all_expanded 'collapse' 'expand'}} all</a>):
-    </p>
+    <div class="p-3">
+      Traceback (<a class="text-primary clickable" {{action "toggle_all_frames"}}>{{if all_expanded 'collapse' 'expand'}} all</a>):
+    </div>
     {{#each error.traceback as |frame|}}
       {{errors/traceback-frame frame=frame override_expand=override_expand}}
     {{/each}}

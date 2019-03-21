@@ -1,0 +1,24 @@
+.item {
+    @extend .p-2;
+    @extend .pl-3;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+    border: 1px solid $gray-400;
+    border-left: 10px solid $gray-400;
+    min-height: 6em;
+
+    //@include item-box-mixin(gray);
+
+    &.success {
+        border-left-color: $brand-success;
+    }
+    &.error, &.failure, &.failed {
+        border-left-color: $brand-danger;
+    }
+    &.skipped {
+        border-left-color: $brand-warning;
+
+    }
+}

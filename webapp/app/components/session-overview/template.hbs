@@ -1,110 +1,152 @@
-{{#if user}}
-  <p>
-    By {{#link-to "user.sessions" session_model.user_email}}
-    {{if user.full_name user.full_name user.email}} {{users/user-avatar user=user real_email=session_model.real_email}}
-    {{/link-to}}
-
-    {{#if (and session_model.real_email (not (eq session_model.real_email user.email))) }}
-      <div class="faint">
-	Run through <strong>{{session_model.real_email}}</strong> {{users/user-avatar email=session_model.real_email}}
+<div class="session-overview border border-{{status-to-brand session_model.status}} container-fluid">
+  <div class="row">
+    <div class="col p-2 bg-{{status-to-brand session_model.status}} text-white">Session details <div class="badge badge-light ml-2">{{session_model.status_lowercase}}</div></div>
+  </div>
+  <div class="row p-2">
+    <!-- left column -->
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col">
+          {{subject-info subjects=session_model.subjects}}
+        </div>
       </div>
-    {{/if}}
-  </p>
-{{/if}}
+      <div class="row">
+        <div class="col">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          {{#if session_model.user_email}}
+            <span class="d-none d-lg-inline-block">Started by</span>{{#link-to "user.sessions" session_model.user_email}}
+              {{user.display_name}}
 
-<p class="add-margin-bottom">
-  {{status-label status=session_model.computed_status}}
-</p>
+            {{/link-to}}
+            {{#if session_model.real_email}}
+              <div class="d-none d-md-block text-muted"><small>Through {{session_model.real_email}}</small></div>
+            {{/if}}
 
+          {{/if}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          {{#each session_model.labels as |label|}}
+            {{item-label label=label}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!-- middle left column -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="row">
+        <div class="col text-muted">
+          <small>
+            {{fa-icon "calendar"}}
+            {{moment-time unix=session_model.start_time}} &rarr;
+            {{moment-time unix=session_model.end_time}}
+          </small>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          <div>
+            <small>
+              {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row d-none d-lg-block">
+        <div class="col text-muted">
+          {{#each timings as |timing|}}
+            <div class="row faint">
+              <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
+              <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+            </div>
+          {{/each}}
 
-{{#if session_model.is_abandoned}}
-  <p class="faint">
-    The session stopped sending keepalive signals to Backslash and is therefore considered defunct.
-  </p>
-{{/if}}
+        </div>
+      </div>
+    </div>
+    <!-- middle right column -->
+    <div class="d-none d-lg-block col-lg-3">
+      <div class="row">
+        <div class="col">
+          {{#if session_model.infrastructure}}
+            <small>
+              <span class="text-muted text-nowrap mr-5">
+                {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+                {{#with (get metadata "slash::version") as |slash_version|}}
+                  <span class="badge badge-pill">{{slash_version}}</span>
+                {{/with}}
+              </span>
+            </small>
+          {{/if}}
+          {{#each metadata_display_items as |item|}}
+            {{#with (get metadata item.key) as |value|}}
+              {{#if value}}
+                <small>
+                  <span class="text-muted text-nowrap mr-5">
+                    <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+                  </span>
+                </small>
 
-{{#if session_model.in_pdb }}
-  <p class="faint">
-    <i class="fa fa-warning"></i> Session is currently being investigated using an interactive debugger
-  </p>
-{{/if}}
-
-{{#if session_model.has_fatal_errors}}
-  <div class="alert alert-danger" role="alert">
-    The session was terminated due to a fatal error encountered during its execution.
+              {{/if}}
+            {{/with}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!-- right column -->
+    <div class="col-sm-2">
+      <div class="row">
+        <div class="col d-flex justify-content-end">
+          {{session-breakdown session=session_model show_total_count=false}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"></div>
+      </div>
+    </div>
   </div>
-{{/if}}
 
-{{#if session_model.is_parent_session}}
-  <p>
-    <i class="fa fa-arrows-alt"></i> This session was run in parallel mode. Actual tests run by child sessions.
-  </p>
-{{/if}}
+  <div class="row p-2">
+    <div class="col-sm-12">
+      {{#if session_model.is_parent_session}}
+        <div class="badge badge-light border border-dark">
+          {{fa-icon "random"}} Parallel Session
+        </div>
+      {{/if}}
 
-{{#if session_model.parent_logical_id}}
-  <p>
-    <i class="fa fa-arrows-alt"></i> This session is a part of a {{#link-to "session" session_model.parent_logical_id}}parallel session{{/link-to}}.
-  </p>
-  <p>Child ID: #{{session_model.child_id}}</p>
-{{/if}}
+      {{#if session_model.parent_logical_id}}
+        <div class="badge badge-light border border-dark">
+          {{fa-icon "random"}}
+          {{#link-to "session" session_model.parent_logical_id}}
+            Parallel child #{{session_model.child_id}}
+          {{/link-to}}
+        </div>
+      {{/if}}
 
 
-<p class="add-margin-bottom">
-  {{session-breakdown session=session_model}}
-</p>
+      {{#if session_model.in_pdb }}
+        {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
+          Session is currently being investigated using an interactive debugger
+        {{/info-badge}}
+      {{/if}}
 
-<p>
-  {{#if session_model.is_abandoned}}
-    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.next_keepalive}} (keepalive stopped at {{moment-time unix=session_model.next_keepalive}})
-  {{else}}
-    <i class="fa fa-clock-o fa-fw"></i> {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
-  {{/if}}
-</p>
+      {{#if session_model.has_fatal_errors}}
+        {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
+          The session was terminated due to a fatal error encountered during its execution.
+        {{/info-badge}}
+      {{/if}}
 
-<p>
-  <i class="fa fa-fw fa-hourglass-1"></i> {{moment-time unix=session_model.start_time}}
-</p>
+      {{#if session_model.is_abandoned}}
+        {{#info-badge icon="question" text="Abandoned"}}
+          Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
+        {{/info-badge}}
+      {{/if}}
 
-<p>
-  <i class="fa fa-fw fa-hourglass-3"></i> {{moment-time unix=session_model.end_time}}
-</p>
 
-{{#each session_model.subjects as |subject|}}
-  <p>
-    <i class="fa fa-rocket"></i>
-    {{#link-to 'subject' subject.name}}
-      <strong>{{subject.name}}</strong>
-    {{/link-to}}
-    <span class="label-fine">{{subject.version}}</span>
-  </p>
-{{/each}}
-
-{{#if session_model.infrastructure }}
-  <p>
-  {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-  </p>
-{{/if}}
-
-{{#each session_model.labels as |label|}}
-  <p>
-    {{item-label label=label}}
-  </p>
-{{/each}}
-
-{{#each metadata_display_items as |item|}}
-  {{#with (get metadata item.key) as |value|}}
-    {{#if value}}
-      <p>
-        <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
-      </p>
-    {{/if}}
-  {{/with}}
-{{/each}}
-
-{{#each timings as |timing|}}
-  <div class="row faint">
-    <div class="col-sm-6"><i class="fa fa-clock-o"></i> {{timing.name}}</div>
-    <div class="col-sm-6">{{humanized-duration start_time=0 end_time=timing.total}}</div>
+    </div>
   </div>
-{{/each}}
-
+</div>

@@ -17,11 +17,12 @@ export default Component.extend({
   _computed_duration: computed("start_time", "_corrected_end_time", function() {
     let start_time = this.get("start_time");
 
-    if (!start_time) {
+    if (start_time === undefined || start_time === null) {
       return null;
     }
 
     let end_time = this.get("_corrected_end_time");
+
     return moment.unix(end_time).diff(moment.unix(start_time)) / 1000;
   }),
 

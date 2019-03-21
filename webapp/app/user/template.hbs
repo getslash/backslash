@@ -1,17 +1,20 @@
-<div class="add-margin-left add-margin-right">
-<h1>{{users/user-avatar user=model large=true}} {{model.display_name}} {{# if (not (eq model.display_name model.email))}}<small>({{model.email}})</small>{{/if}}</h1>
+<div class="m-3 my-5">
 
-<ul class="nav nav-tabs">
-  {{#nav-link to="user.sessions"}}Sessions{{/nav-link}}
+  <h1>{{users/user-avatar user=model large=true}} {{model.display_name}} {{# if (not (eq model.display_name model.email))}}<small>({{model.email}})</small>{{/if}}</h1>
+</div>
+
+<div class="m-3">
+
+
   {{# with session.data.authenticated.user_info as |user|}}
-    {{#if (eq user.email model.email)}}
-      {{#nav-link to="user.preferences"}}Preferences{{/nav-link}}
-    {{/if}}
-    {{#if (can "admin") }}
-      {{#nav-link to="user.admin"}}Admin{{/nav-link}}
-    {{/if}}
-    {{#nav-link to="user.starred"}}Starred{{/nav-link}}
+    {{#bs-nav type="tabs" as |nav|}}
+      {{#nav.item}}{{#nav.link-to "user.sessions"}}Sessions{{/nav.link-to}}{{/nav.item}}
+      {{#nav.item}}{{#nav.link-to "user.preferences"}}Preferences{{/nav.link-to}}{{/nav.item}}
+      {{#if (can "admin") }}
+        {{#nav.item}}{{#nav.link-to "user.admin"}}Admin{{/nav.link-to}}{{/nav.item}}
+      {{/if}}
+      {{#nav.item}}{{#nav.link-to "user.starred"}}Starred{{/nav.link-to}}{{/nav.item}}
+    {{/bs-nav}}
   {{/with}}
-</ul>
 </div>
 {{outlet}}

@@ -1,6 +1,8 @@
 language: python
 sudo: required
 dist: trusty
+git:
+  depth: false
 python:
   - 3.6
 addons:
@@ -59,7 +61,7 @@ script:
   # create empty index.html so that the test on get / passes
   - mkdir webapp/dist && touch webapp/dist/index.html
   - pipenv run pytest tests --tb=line
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then pipenv run pytest integration_tests --tb=line --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Firefox --capability platform "Windows 10" --capability version latest --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then pipenv run pytest integration_tests --tb=short --app-url http://127.0.0.1:8000 --driver SauceLabs --capability browserName Firefox --capability platform "Windows 10" --capability version latest --capability tunnelIdentifier $TRAVIS_JOB_NUMBER; fi
 
 after_failure:
   - sudo docker logs backslash_webapp_1

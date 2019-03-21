@@ -1,7 +1,4 @@
 {{#tool-bar}}
-  <div class="filter-controls">
-    {{outlet "filter-controls"}}
-  </div>
   {{#search-bar search=(mut search) searching=searching}}
       <table class="table table-striped">
 	<tbody>
@@ -64,7 +61,7 @@
         Enter a search query to search for test executions
       </div>
     {{else}}
-      {{query-results results=tests meta=tests.meta page=(mut page) show_user=true}}
+      {{query-results results=tests meta=tests.meta page=(mut page) page_size=(mut page_size) show_user=true filter_controller=this}}
     {{/if}}
   {{/if}}
 {{/if}}

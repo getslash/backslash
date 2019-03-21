@@ -1,0 +1,10 @@
+@media (min-width: 768px) {
+    & {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+        background: white;
+        border-bottom: 1px solid silver;
+    }
+}

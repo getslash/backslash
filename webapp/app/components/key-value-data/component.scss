@@ -1,16 +1,20 @@
 & {
-    border: 1px solid silver;
-    padding: 1em;
-    .key {
-        font-weight: bold;
-        padding: 10px;
+    @extend .m-3;
+    thead {
+        background: $gray-100;
     }
-    .value {
-        font-family: monospace;
-        background-color: $gray-lighter;
-        padding: 3px;
-        white-space: pre;
-        border: 1px solid silver;
-        border-radius: 3px;
+    th, td {
+        @extend .px-3;
+        @extend .py-2;
+    }
+    tbody tr  {
+        td:nth-child(1) {
+            @extend .text-nowrap;
+            background: $gray-100;
+        }
+        td:nth-child(2) {
+            @extend .text-monospace;
+            width: 100%;
+        }
     }
 }

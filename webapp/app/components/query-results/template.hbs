@@ -1,4 +1,4 @@
-{{pagination-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages }}
+{{results-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages page_size=(mut page_size) filter_controller=filter_controller sort=(mut sort) sort_options=sort_options}}
 
 {{#each results as |result|}}
   {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model show_user=show_users}}
@@ -8,4 +8,4 @@
   </div>
 {{/each}}
 
-{{pagination-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages }}
+{{results-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages }}

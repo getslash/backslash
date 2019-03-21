@@ -43,12 +43,5 @@ export default PaginatedFilteredRoute.extend(
       controller.set("page", model.sessions.get("meta.page"));
     },
 
-    renderTemplate() {
-      this._super(...arguments);
-      this.render("filter-controls", {
-        into: "subject",
-        outlet: "filter-controls"
-      });
-    }
   }
 );

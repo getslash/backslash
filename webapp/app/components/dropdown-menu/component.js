@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 
 export default Component.extend({
-  tagName: "ul",
+  tagName: "li",
 
-  classNames: "nav navbar-nav add-margin-right",
+  classNames: "nav-item dropdown",
   classNameBindings: ["alignment"],
 
   alignment: function() {
