@@ -16,6 +16,11 @@ env:
     - secure: UK8uZD6VvqxxosDCsog6cl0hFng1KVerbEPAfulFpMBybPRM6M0ifspl+hK0AfHQvHtA8PMCs+KsZBb3CV2E5RwoIgXWEBC2t8+XsfU3p2fnhbuz/5S2xs/CvGLhMloeIpc8fIQ7qdRk0pdOqkUK5yMkkV7jfJsqw2HyTS5FOAk=
     - secure: UoIM5vtfs+bBcb63aNa4aFV4lCrwgaABKrdYlqkw+vwE6S212a5ssfIn/41Tw80jZ/qBhSMhylIi2Cp6XWQbuSLjNUK1Ar7O0K8HX69QdcUCnofxwHLKSe7wREYhF6QtAegsw5pmSIYTLvHnp3k+6I0tw2DyvSJejS0dv3WWKzw=
 
+branches:
+  except:
+    - trying.tmp
+    - staging.tmp
+
 
 services:
   - redis-server
