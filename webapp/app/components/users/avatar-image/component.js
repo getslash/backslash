@@ -1,3 +1,4 @@
+import { computed } from "@ember/object";
 import Component from "@ember/component";
 
 export default Component.extend({
@@ -10,10 +11,10 @@ export default Component.extend({
   classNames: ["avatar-image"],
   classNameBindings: ["is_proxy:proxy", "is_real:real"],
 
-  src: function() {
+  src: computed("email", function() {
     let returned =
       "https://www.gravatar.com/avatar/" + window.md5(this.get("email"));
     returned += "?d=mm";
     return returned;
-  }.property("email"),
+  }),
 });
