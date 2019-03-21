@@ -1,6 +1,9 @@
 <div class="frame-info p-2 overflow-hidden">
   {{expand-toggle expanded=(mut frame.expanded)}}
   <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
+  {{#if frame.is_in_test_code}}
+    <div class="badge badge-pill badge-secondary ml-2">Test Code</div>
+  {{/if}}
 </div>
 
 {{# if frame.expanded }}
