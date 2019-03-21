@@ -1,5 +1,7 @@
 & {
-    border: 1px dotted #aaa;
+    border-style: solid;
+    border-color: $gray-400;
+    border-width: 1px 0 0 0;
 
     .btn-expand {
         visibility: hidden;

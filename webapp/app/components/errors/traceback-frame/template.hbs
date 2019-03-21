@@ -7,20 +7,21 @@
 </div>
 
 {{# if frame.expanded }}
-
-  <div class="frame-code m-2 overflow-hidden">
-    {{#each frame.code_lines_before as |line num|}}
-      <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
-    {{/each}}
-    <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
-    {{#each frame.code_lines_after as |line num|}}
-      <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
-    {{/each}}
-  </div>
-
-  {{#if variables}}
-    <div class="p-3 overflow-hidden variables">
-      {{variable-table variables=variables}}
+  <div class="px-3">
+    <div class="frame-code overflow-hidden mt-3">
+      {{#each frame.code_lines_before as |line num|}}
+        <div class="line around pl-2"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
+      {{/each}}
+      <div class="line main pl-2"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
+      {{#each frame.code_lines_after as |line num|}}
+        <div class="line around pl-2"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
+      {{/each}}
     </div>
-  {{/if}}
+
+    {{#if variables}}
+      <div class="overflow-hidden variables">
+        {{variable-table variables=variables}}
+      </div>
+    {{/if}}
+  </div>
 {{/if}}
