@@ -1,30 +1,24 @@
-@mixin item-box-mixin($color) {
-    box-shadow: inset 10px 0 0 0 $color;
-
-    &:hover {
-        background: $gray-100;
-    }
-}
-
-
 .item {
     @extend .p-2;
     @extend .pl-3;
-    @extend .mt-2;
+
+    margin-top: 2px;
 
     overflow: hidden;
-    border: 1px solid $gray-100;
-    border-left: none;
+    border: 1px solid $gray-400;
+    border-left: 10px solid $gray-400;
+    min-height: 6em;
 
-    @include item-box-mixin(gray);
+    //@include item-box-mixin(gray);
 
     &.success {
-        @include item-box-mixin($brand-success);
+        border-left-color: $brand-success;
     }
     &.error, &.failure, &.failed {
-        @include item-box-mixin($brand-danger);
+        border-left-color: $brand-danger;
     }
     &.skipped {
-        @include item-box-mixin($brand-warning);
+        border-left-color: $brand-warning;
+
     }
 }
