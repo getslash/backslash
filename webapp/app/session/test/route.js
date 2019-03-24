@@ -1,7 +1,7 @@
 import { reject, hash } from "rsvp";
 import { inject as service } from "@ember/service";
 import Route from "@ember/routing/route";
-
+import { normalize_id_from_url } from "../../utils/url";
 import ComplexModelRoute from "../../mixins/complex-model-route";
 
 export default Route.extend(ComplexModelRoute, {
@@ -18,6 +18,7 @@ export default Route.extend(ComplexModelRoute, {
   },
 
   model({ test_id }) {
+    test_id = normalize_id_from_url(test_id);
     let self = this;
     let session = self.modelFor("session").session_model;
 
@@ -37,6 +38,7 @@ export default Route.extend(ComplexModelRoute, {
           })
           .then(r => r.result),
         test_model: test,
+
         timings: self
           .get("api")
           .call("get_timings", { test_id: parseInt(test.id) })

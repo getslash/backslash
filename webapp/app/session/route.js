@@ -4,6 +4,7 @@ import Route from "@ember/routing/route";
 import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import ScrollToTopMixin from "../mixins/scroll-top";
 import PollingRoute from "../mixins/polling-route";
+import { normalize_id_from_url } from "../utils/url";
 
 export default Route.extend(
   AuthenticatedRouteMixin,
@@ -16,6 +17,7 @@ export default Route.extend(
     favicon: service(),
 
     model({ id }) {
+      id = normalize_id_from_url(id);
       let self = this;
       return self.store.query("session", { id: id }).then(function(sessions) {
         let session = sessions.get("firstObject");

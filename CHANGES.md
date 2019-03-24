@@ -3,6 +3,8 @@
 ## Version 2.16.0
 
 * Major UI overhaul
+* Backslash now ignores ansi escapes in session/test URLs, dealing with Jenkins' failure to properly
+  linkify colored console outputs
 
 ## Version 2.15.5
 
