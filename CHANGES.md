@@ -5,6 +5,7 @@
 * Major UI overhaul
 * Backslash now ignores ansi escapes in session/test URLs, dealing with Jenkins' failure to properly
   linkify colored console outputs
+* `report_test_end` on an ended test now does nothing
 
 ## Version 2.15.5
 
