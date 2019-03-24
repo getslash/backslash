@@ -253,10 +253,13 @@ class ErrorResource(ModelResource):
         args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            session_id = parse_session_id(args.session_id)
-            logicl_id_subquery = db.session.query(Session.logical_id).filter(Session.id == session_id).subquery()
-            children_subquery = db.session.query(Session.id).filter(Session.parent_logical_id == logicl_id_subquery.c.logical_id).subquery()
-            query = db.session.query(Error).filter(or_(Error.session_id.in_(children_subquery), Error.session_id==session_id))
+            session = _get_object_by_id_or_logical_id(Session, args.session_id)
+            # We want to query only the session's own errors if it is either a non-parllel session or a child session
+            if session.parent_logical_id is not None or not session.is_parent_session:
+                query = db.session.query(Error).filter(Error.session_id == session.id)
+            else:
+                query = db.session.query(Error).join(Session).filter(or_(Session.id == session.id, Session.parent_logical_id == session.logical_id))
+
         elif args.test_id is not None:
             query = Error.query.filter_by(test_id=parse_test_id(args.test_id))
         else:
@@ -265,7 +268,7 @@ class ErrorResource(ModelResource):
         if args.interruptions:
             query = query.filter_by(is_interruption=True)
         else:
-            query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None))
+            query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None)) # pylint: disable=singleton-comparison
         return query
 
 
