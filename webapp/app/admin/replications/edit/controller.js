@@ -11,5 +11,9 @@ export default Controller.extend({
           self.router.transitionTo("admin.replications.index");
         });
     },
+    cancel() {
+      this.get("model").rollbackAttributes();
+      this.router.transitionTo("admin.replications.index");
+    },
   },
 });

@@ -6,6 +6,7 @@
 * Backslash now ignores ansi escapes in session/test URLs, dealing with Jenkins' failure to properly
   linkify colored console outputs
 * `report_test_end` on an ended test now does nothing
+* Replication configurations can now be edited from the UI
 
 ## Version 2.15.5
 

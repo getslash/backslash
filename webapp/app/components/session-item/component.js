@@ -1,4 +1,5 @@
 import { alias, oneWay, and } from "@ember/object/computed";
+import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 
@@ -24,17 +25,16 @@ export default Component.extend({
     );
   },
 
-  has_any_error: function() {
-    let item = this.get("item");
+  has_any_error: computed(
+    "item.{num_failed_tests,num_error_tests,num_errors}",
+    function() {
+      let item = this.get("item");
 
-    return (
-      item.get("num_error_tests") ||
-      item.get("num_failed_tests") ||
-      item.get("num_errors")
-    );
-  }.property(
-    "item.num_failed_tests",
-    "item.num_error_tests",
-    "item.num_errors"
+      return (
+        item.get("num_error_tests") ||
+        item.get("num_failed_tests") ||
+        item.get("num_errors")
+      );
+    }
   ),
 });

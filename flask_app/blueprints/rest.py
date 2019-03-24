@@ -16,6 +16,7 @@ from .. import models
 from ..models import Error, Session, Test, User, Subject, db, UserStarredTests
 from .. import activity
 from ..utils.identification import parse_test_id, parse_session_id
+from ..utils.users import has_role
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
 from ..search import get_orm_query_from_search_string
@@ -423,7 +424,7 @@ class CaseResource(ModelResource):
         return returned
 
 
-@_resource('/replications')
+@_resource('/replications', '/replications/<object_id>')
 class ReplicationsResource(ModelResource):
 
     MODEL = models.Replication
@@ -446,7 +447,12 @@ class ReplicationsResource(ModelResource):
         if latest_timestamp:
             latest_timestamp = latest_timestamp.timestamp()
 
-        for replication in returned['replications']:
+        if in_collection:
+            collection = returned['replications']
+        else:
+            collection = [returned]
+
+        for replication in collection:
             last_replicated = replication['last_replicated_timestamp']
             if not latest_timestamp or not last_replicated:
                 lag = None
@@ -455,6 +461,20 @@ class ReplicationsResource(ModelResource):
             replication['lag_seconds'] = lag
 
         return returned
+
+    def put(self, object_id=None):
+        if object_id is None:
+            error_abort('Not implemented', code=requests.codes.not_implemented)
+        if not has_role(current_user, 'admin'):
+            error_abort('Forbidden', code=requests.codes.forbidden)
+        replication = models.Replication.query.get_or_404(object_id)
+        request_json = request.get_json().get("replication", {})
+        for field_name in {'username', 'url', 'password'}:
+            value = request_json.get(field_name)
+            if value is not None:
+                setattr(replication, field_name, value)
+        models.db.session.commit()
+        return jsonify({'replication': self._render_single(replication, in_collection=False)})
 
 
 @blueprint.route('/admin_alerts')
