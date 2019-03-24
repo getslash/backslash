@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=R,locally-disabled,invalid-name,wrong-import-order,wrong-import-position,ungrouped-imports,missing-docstring,redefined-outer-name,unneeded-not,property-on-old-class,superfluous-parens,consider-iterating-dictionary,len-as-condition
+disable=R,locally-disabled,invalid-name,wrong-import-order,wrong-import-position,ungrouped-imports,missing-docstring,redefined-outer-name,unneeded-not,property-on-old-class,superfluous-parens,consider-iterating-dictionary,len-as-condition,bad-continuation
 
 [TYPECHECK]
 ignored-modules=flux.current_timeline
