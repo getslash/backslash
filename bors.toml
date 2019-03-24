@@ -1,4 +1,5 @@
 delete_merged_branches = true
+timeout-sec = 14400
 status = [
   "continuous-integration/travis-ci/push"
 ]
