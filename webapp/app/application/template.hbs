@@ -69,17 +69,8 @@
 
 {{keyboard-shortcuts}}
 
-{{#if (and (can "admin") admin_alerts)}}
-  <div class="container mt-3">
 
-    {{#each admin_alerts as |alert|}}
-      <div class="alert alert-danger" role="alert">
-        {{alert.message}}
-      </div>
-    {{/each}}
-  </div>
-{{/if}}
-
+{{notification-container position="top"}}
 
 {{outlet name="main"}}
 
