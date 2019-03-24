@@ -93,8 +93,7 @@ def test_end_test_doesnt_exist(nonexistent_test):
 
 
 def test_end_test_twice(ended_test):
-    with raises_conflict():
-        ended_test.report_end()
+    ended_test.report_end()
 
 
 def test_test_add_error(started_test):
