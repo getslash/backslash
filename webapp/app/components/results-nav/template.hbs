@@ -57,15 +57,15 @@
     {{#dd.toggle classNames="faint nodecoration"}}Sort <span class="caret"></span>{{/dd.toggle}}
     {{#dd.menu as |menu|}}
 
-      {{#each sort_options as |sort_option|}}
+      {{#each normalized_sort_options as |sort_option|}}
         {{#menu.item}}
-          <a class="dropdown-item clickable" {{action (mut sort) sort_option}}>
-            {{#if (eq sort sort_option)}}
+          <a class="dropdown-item clickable" {{action (mut sort) sort_option.option}}>
+            {{#if (eq sort sort_option.option)}}
               {{fa-icon "check" fixedWidth=true}}
             {{else}}
               {{fa-icon "fw"}}
             {{/if}}
-            {{capitalize (undasherize sort_option)}}
+            {{capitalize sort_option.display}}
           </a>
         {{/menu.item}}
       {{/each}}

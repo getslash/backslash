@@ -8,7 +8,7 @@ export default Component.extend({
   display: service(),
 
   classNames: "d-flex mt-1",
-
+  sort_options: null,
   available_page_sizes: config.APP.available_page_sizes,
   page: 1,
   has_next: false,
@@ -18,6 +18,25 @@ export default Component.extend({
 
   has_last: notEmpty("num_pages"),
   has_prev: gt("page", 1),
+
+  normalized_sort_options: computed("sort_options", function() {
+    let options = this.get("sort_options");
+    if (!options) {
+      return null;
+    }
+    let returned = [];
+
+    for (let option of options) {
+      returned.push({
+        option: option,
+        display: option
+          .split(",")
+          .map(part => part.replace("_", " "))
+          .join(", "),
+      });
+    }
+    return returned;
+  }),
 
   filters: computed(function() {
     let returned = [

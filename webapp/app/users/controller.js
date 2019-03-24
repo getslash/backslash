@@ -11,5 +11,9 @@ export default Controller.extend(SearchController, {
 
   sort: "last_activity",
 
-  sort_options: ["last_activity", "first_name", "last_name"],
+  sort_options: [
+    "last_activity",
+    "first_name,last_name",
+    "last_name,first_name",
+  ],
 });
