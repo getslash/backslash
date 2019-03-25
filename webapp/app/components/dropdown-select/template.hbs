@@ -1,8 +1,0 @@
-{{#dropdown-menu title=title}}
-  {{#each options as |option|}}
-    <li><a class="clickable" {{action "select" option}}>
-      <i class="fa fa-fw {{if (eq option value) 'fa-check'}}"></i>
-      {{capitalize (undasherize option)}}</a>
-    </li>
-  {{/each}}
-{{/dropdown-menu}}
