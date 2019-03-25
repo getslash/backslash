@@ -10,7 +10,7 @@
   {{#copy-button clipboardText=error.message title="Copy exception message to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
 </div>
 
-<div class="m-3 p-1 exception-message">{{if expanded error.message error.abbreviated_message}}</div>
+<div class="m-3 p-1 exception-message overflow-hidden {{if expanded 'overflow-scroll'}}">{{if expanded error.message error.abbreviated_message}}</div>
 
 {{#if expanded}}
   {{error-detail error=error}}{{else}}
