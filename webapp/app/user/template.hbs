@@ -7,9 +7,12 @@
 
 
   {{# with session.data.authenticated.user_info as |user|}}
+
     {{#bs-nav type="tabs" as |nav|}}
       {{#nav.item}}{{#nav.link-to "user.sessions"}}Sessions{{/nav.link-to}}{{/nav.item}}
-      {{#nav.item}}{{#nav.link-to "user.preferences"}}Preferences{{/nav.link-to}}{{/nav.item}}
+      {{#if (eq model.email user.email)}}
+        {{#nav.item}}{{#nav.link-to "user.preferences"}}Preferences{{/nav.link-to}}{{/nav.item}}
+      {{/if}}
       {{#if (can "admin") }}
         {{#nav.item}}{{#nav.link-to "user.admin"}}Admin{{/nav.link-to}}{{/nav.item}}
       {{/if}}
