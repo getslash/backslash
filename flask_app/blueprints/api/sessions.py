@@ -217,3 +217,10 @@ def preserve_session(session_id: int):
         (Session.parent_logical_id == session.logical_id) | (Session.id == session.id)
     ).update({Session.delete_at: None}, synchronize_session=False)
     db.session.commit()
+
+
+@API
+def report_reporting_stopped(session_id: int):
+    session = Session.query.get_or_404(session_id)
+    session.reporting_stopped = True
+    db.session.commit()

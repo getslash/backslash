@@ -172,6 +172,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
     next_keepalive = db.Column(db.Float, nullable=True, default=None, index=True)
+    reporting_stopped = db.Column(db.Boolean, default=False)
 
     # activity
     num_comments = db.Column(db.Integer, default=0)

@@ -212,3 +212,11 @@ def test_parallel_session_preserve(
     client.api.call.preserve_session(session_id=parent.id)
     assert parent.refresh().delete_at is None
     assert child.refresh().delete_at is None
+
+
+def test_report_reporting_stopped(client, started_session):
+    assert not started_session.reporting_stopped
+    client.api.call.report_reporting_stopped(session_id=started_session.id)
+    started_session.refresh()
+    assert started_session.end_time is None
+    assert started_session.reporting_stopped
