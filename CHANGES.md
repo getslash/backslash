@@ -7,6 +7,9 @@
   linkify colored console outputs
 * `report_test_end` on an ended test now does nothing
 * Replication configurations can now be edited from the UI
+* Backslash now supports the `report_reporting_stopped` API, indicating that client reporting ended
+  prematurely
+* Proxy users now generate activity for the users they impersonate
 
 ## Version 2.15.5
 
