@@ -1,7 +1,6 @@
 import { hash } from "rsvp";
 import { inject as service } from "@ember/service";
 import Route from "@ember/routing/route";
-import retry from "ember-retry/retry";
 import ApplicationRouteMixin from "ember-simple-auth/mixins/application-route-mixin";
 import config from "../config/environment";
 
@@ -33,24 +32,23 @@ export default Route.extend(ApplicationRouteMixin, {
     }
   },
 
-  sessionAuthenticated() {
+  async sessionAuthenticated() {
     this._super(...arguments);
-    this.load_current_user();
+    await this.load_current_user();
   },
 
-  load_current_user() {
+  async load_current_user() {
     let self = this;
     if (self.get("session.data.authenticated")) {
-      return retry(async function() {
-        let users = await self.store.query("user", { current_user: true });
-        let user = await users.get("firstObject");
-        self.set("session.data.authenticated.current_user", user);
-        let alerts = await self.store.findAll("admin_alert");
-        alerts.forEach(alert =>
-          self.get("notifications").error(alert.get("message"))
-        );
-        return self.get("user_prefs").get_all();
-      });
+      let users = await self.store.query("user", { current_user: true });
+      let user = await users.get("firstObject");
+
+      self.set("session.data.authenticated.current_user", user);
+      let alerts = await self.store.findAll("admin_alert");
+      alerts.forEach(alert =>
+        self.get("notifications").error(alert.get("message"))
+      );
+      return self.get("user_prefs").get_all();
     }
   },
 

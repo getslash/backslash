@@ -47,7 +47,7 @@ export default Route.extend(
               entity_id: parseInt(session.id),
             })
             .then(function(r) {
-              if (session.data.child_id != null) {
+              if (session.child_id != null) {
                 delete r.result["slash::commandline"];
               }
               return r.result;
@@ -66,7 +66,11 @@ export default Route.extend(
     },
 
     should_auto_refresh: function() {
-      let session_model = this.modelFor("session").session_model;
+      let parent_model = this.modelFor("session");
+      if (!parent_model) {
+        return false;
+      }
+      let session_model = parent_model.session_model;
       if (session_model) {
         const end_time = session_model.get("end_time");
         return end_time === null;

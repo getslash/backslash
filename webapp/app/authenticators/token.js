@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from "jquery";
 import Base from "ember-simple-auth/authenticators/base";
 
 export default Base.extend({
@@ -7,7 +7,7 @@ export default Base.extend({
       type: "POST",
       url: "/reauth",
       contentType: "application/json",
-      data: JSON.stringify(credentials)
+      data: JSON.stringify(credentials),
     });
   },
   authenticate: function(credentials) {
@@ -15,7 +15,7 @@ export default Base.extend({
       type: "POST",
       url: "/login",
       contentType: "application/json",
-      data: JSON.stringify(credentials)
+      data: JSON.stringify(credentials),
     });
-  }
+  },
 });

@@ -41,7 +41,7 @@
 
   {{#with session_model.num_warnings as |num_warnings|}}
 	{{#if num_warnings}}
-	  {{#nav.item}}{{#nav.link-to "session.warnings"}}
+	  {{#nav.item}}{{#nav.link-to "session.warnings" session_model.display_id}}
 		Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
 	  {{/nav.link-to}}{{/nav.item}}
 	{{/if}}

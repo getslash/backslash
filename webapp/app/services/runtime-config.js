@@ -1,26 +1,26 @@
-import EmberObject from '@ember/object';
-import Service, { inject as service } from '@ember/service';
+import EmberObject from "@ember/object";
+import Service, { inject as service } from "@ember/service";
 
 export default Service.extend({
   api: service(),
 
   init() {
+    this._super(...arguments);
     this.set("_cache", EmberObject.create());
   },
 
-  get_all() {
+  async get_all() {
     let self = this;
-    return this.get("api").call("get_app_config").then(function(r) {
-      for (let attr in r.result) {
-        if (r.result.hasOwnProperty(attr)) {
-          self.set(`_cache.${attr}`, r.result[attr]);
-        }
+    let response = await this.get("api").call("get_app_config");
+    for (let attr in response.result) {
+      if (response.result.hasOwnProperty(attr)) {
+        self.set(`_cache.${attr}`, response.result[attr]);
       }
-      return r.result;
-    });
+    }
+    return response.result;
   },
 
   get_cached(name) {
     return this.get(`_cache.${name}`);
-  }
+  },
 });
