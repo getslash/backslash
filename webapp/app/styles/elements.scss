@@ -1,23 +1,20 @@
 .copy-btn {
     @extend .btn;
+    @extend .btn-sm;
     cursor: pointer;
-    padding: 1px 4px 1px 4px;
-    background: white;
-    color: $gray-light;
-    font-size: x-small;
-
+    opacity: 0.5;
     &:hover {
-	color: black;
+        opacity: 1.0;
         background: $gray-lighter;
         border: 1px solid $gray-light;
     }
 
     &:focus, &:active {
-	outline: 0;
+	    outline: 0;
     }
 
     .success {
-	bacground-color: $mild-green;
+	    bacground-color: $mild-green;
     }
 }
 

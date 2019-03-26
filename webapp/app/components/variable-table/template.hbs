@@ -21,7 +21,7 @@
                   {{#if (s-starts-with var.name "self.")}}
                     <tr>
                       <td>{{var.name}}</td>
-                      <td class="justify-content-between align-self-center">{{var.value.value}} {{#copy-button clipboardText=var.value.value title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}</td>
+                      <td class="justify-content-between align-self-center">{{var.value.value}} {{#copy-button tagName="a" clipboardText=var.value.value title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}</td>
                     </tr>
                   {{/if}}
                 {{/each}}
