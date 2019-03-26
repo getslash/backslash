@@ -128,26 +128,12 @@ class TestResource(ModelResource):
         if args.search:
             returned = get_orm_query_from_search_string('test', args.search, abort_on_syntax_error=True)
         else:
-            returned = super(TestResource, self)._get_iterator()
+            returned = super(TestResource, self)._get_iterator().join(Session, Session.id == Test.session_id)
 
 
-        #get session
+        # get session
         if args.session_id is not None:
-            using_logical_id = False
-            try:
-                session_id = int(args.session_id)
-                stmt = db.session.query(Session).filter(Session.id == session_id).subquery()
-                children = db.session.query(Session.id).filter(Session.parent_logical_id == stmt.c.logical_id).all()
-            except ValueError:
-                using_logical_id = True
-                children = db.session.query(Session.id).filter(Session.parent_logical_id == args.session_id).all()
-
-            returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
-                        returned.filter(Test.session_id == session_id)
-            if children:
-                children_ids = [child[0] for child in children]
-                returned = returned.union(Test.query.filter(Test.session_id.in_(children_ids)))
-
+            returned = self._filter_by_session_id(returned, args.session_id)
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
@@ -160,6 +146,32 @@ class TestResource(ModelResource):
             elif args.before_index is not None:
                 returned = returned.filter(self.MODEL.test_index < args.before_index).order_by(self.MODEL.test_index.desc()).limit(1).all()
 
+        return returned
+
+    def _filter_by_session_id(self, query, session_id):
+        try:
+            int(session_id)
+        except ValueError:
+            id_field = lambda model: model.logical_id
+        else:
+            id_field = lambda model: model.id
+
+        session_aliased = aliased(Session)
+        children = (
+            db.session.query(id_field(Session))
+            .filter(
+                db.session.query(session_aliased.id)
+                .filter(id_field(session_aliased) == session_id)
+                .filter(session_aliased.logical_id == Session.parent_logical_id)
+                .exists()
+            )
+            .all()
+        )
+        children_ids = [row[0] for row in children]
+        criterion = id_field(Session) == session_id
+        if children_ids:
+            criterion |= id_field(Session).in_(children_ids)
+        returned = query.filter(criterion)
         return returned
 
     def _paginate(self, query, metadata):
