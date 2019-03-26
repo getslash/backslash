@@ -19,16 +19,6 @@ let _keys = [
     action: "filter_only_failed",
     description: "Hide all entities except failed",
   },
-  {
-    key: "c",
-    action: "toggle_inline_comment",
-    description: "Toggle comment preview for items",
-  },
-  {
-    key: "s",
-    action: "toggle_session_side_labels",
-    description: "Toggle the side breakdown panel for Sessions",
-  },
   { key: "j", action: "jump_one_down", description: "Jump to next item" },
   { key: "k", action: "jump_one_up", description: "Jump to previous item" },
 
@@ -165,9 +155,6 @@ export default Component.extend(KeyboardShortcuts, {
   },
 
   actions: {
-    toggle_session_side_labels() {
-      this.get("display").toggleProperty("show_side_labels");
-    },
 
     close_box() {
       this._close_boxes();
@@ -227,10 +214,6 @@ export default Component.extend(KeyboardShortcuts, {
       this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
         controller.filter_none_except("planned");
       });
-    },
-
-    toggle_inline_comment() {
-      this.get("display").toggleProperty("comments_expanded");
     },
 
     open_quick_search() {
