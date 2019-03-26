@@ -1,5 +1,5 @@
-import EmberObject from "@ember/object";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
 
 const _MAX_VALUE_SIZE = 100;
 
@@ -9,23 +9,7 @@ export default Component.extend({
 
   related_entities: null,
 
-  related_groups: function() {
-    let related = this.get("related_entities");
-    if (!related) {
-      return {};
-    }
-    let returned = {};
-    related.map(function(entity) {
-      let existing = returned[entity.get("entity_type")];
-      if (existing === undefined) {
-        existing = returned[entity.get("entity_type")] = [];
-      }
-      existing.push(entity.get("name"));
-    });
-    return returned;
-  }.property("related_entities"),
-
-  all_metadata: function() {
+  all_metadata: computed("additional", "metadata", function() {
     let returned = [];
 
     [this.get("additional"), this.get("metadata")].forEach(function(obj) {
@@ -39,7 +23,7 @@ export default Component.extend({
           short_value = short_value.substr(0, _MAX_VALUE_SIZE) + "...";
         }
         returned.push({
-          name: attrname,
+          name: attrname.replace("::", " "),
           value: value,
         });
       }
@@ -49,5 +33,5 @@ export default Component.extend({
       return returned;
     });
     return returned;
-  }.property("additional", "metadata"),
+  }),
 });
