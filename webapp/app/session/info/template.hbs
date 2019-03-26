@@ -1,13 +1,21 @@
 <div class="m-3 card">
-  <div class="card-header">Subjects</div>
+  <div class="card-header">{{capitalize (pluralize (display-name "subject"))}}</div>
   <div class="card-body">
     <div class="container-fluid">
       <div class="row">
         {{#each session_model.subjects as |subject|}}
           <div class="col-sm-6 col-md-4">
-            {{#link-to "subject" subject.name}}{{subject.name}}{{/link-to}}
-            <small><strong>{{subject.product}} <div class="badge bade-pill">{{subject.version}}</div></strong></small>
-            <small>rev. {{elements/copyable-text value=subject.revision}}</small>
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">
+                    {{#link-to "subject" subject.name}}{{subject.name}}{{/link-to}}
+                  </h4>
+                  <h6 class="card-subtitle mb-2 text-muted">{{subject.product}} v{{subject.version}}</h6>
+                  <h6 class="text-muted text-truncate"><small>{{fa-icon "git"}} {{subject.revision}}</small></h6>
+                  <p class="card-text">
+                  </p>
+                </div>
+            </div>
           </div>
         {{/each}}
       </div>
