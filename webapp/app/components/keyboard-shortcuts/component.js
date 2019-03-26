@@ -155,7 +155,6 @@ export default Component.extend(KeyboardShortcuts, {
   },
 
   actions: {
-
     close_box() {
       this._close_boxes();
     },
@@ -191,7 +190,7 @@ export default Component.extend(KeyboardShortcuts, {
       let appcontroller = getOwner(this).lookup("controller:application");
       let current_path = appcontroller.currentPath;
 
-      if (!current_path.startsWith("session.test.")) {
+      if (!current_path.startsWith("session.")) {
         return;
       }
 
