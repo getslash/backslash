@@ -39,10 +39,6 @@ export default Route.extend(
         page_size: params.page_size,
       };
 
-      console.log(
-        "Server version is",
-        this.runtime_config.get_cached("version")
-      );
       // TODO: remove workaround for cross-backend testing
       if (
         !this.runtime_config.get_cached("version").startsWith("2.15.") ||
