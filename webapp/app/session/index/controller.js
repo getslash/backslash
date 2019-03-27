@@ -13,7 +13,7 @@ export default PaginatedFilteredController.extend(
     queryParams: ["show_planned", "search", "sort"],
     show_planned: false,
     collection: oneWay("tests"),
-    sort: "start_time",
+    sort: "test_index",
     sort_options: ["start_time", "test_index"],
 
     available_page_sizes: config.APP.available_page_sizes,
