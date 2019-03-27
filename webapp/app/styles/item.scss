@@ -1,5 +1,5 @@
 @mixin item-box-mixin($color) {
-    box-shadow: inset 10px 0 0 0 $color;
+    box-shadow: -10px 0 0 0 $color;
 }
 
 .item {
