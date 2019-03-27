@@ -1,4 +1,5 @@
 import { hash } from "rsvp";
+import { inject as service } from "@ember/service";
 import Route from "@ember/routing/route";
 import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import RefreshableRouteMixin from "../../mixins/refreshable-route";
@@ -25,6 +26,8 @@ export default Route.extend(
       },
     },
 
+    runtime_config: service(),
+
     model: function(params) {
       let session = this.modelFor("session").session_model;
       let metadata = this.modelFor("session").metadata;
@@ -34,8 +37,19 @@ export default Route.extend(
         session_id: session_id,
         page: params.page,
         page_size: params.page_size,
-        sort: params.sort,
       };
+
+      console.log(
+        "Server version is",
+        this.runtime_config.get_cached("version")
+      );
+      // TODO: remove workaround for cross-backend testing
+      if (
+        !this.runtime_config.get_cached("version").startsWith("2.15.") ||
+        this.runtime_config.get_cached("debug")
+      ) {
+        query_params["sort"] = params.sort;
+      }
 
       let filters = {};
       for (let key in params) {
