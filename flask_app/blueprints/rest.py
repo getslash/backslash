@@ -398,11 +398,21 @@ class RelatedEntityResource(ModelResource):
             error_abort('Either test_id or session_id must be provided')
 
         if args.session_id is not None:
-            return models.Entity.query.join(models.session_entity).filter(models.session_entity.c.session_id == args.session_id)
+            return self._get_all_children_entities(args.session_id)
         elif args.test_id is not None:
             return models.Entity.query.join(models.test_entity).filter(models.test_entity.c.test_id == args.test_id)
         else:
             raise NotImplementedError() # pragma: no cover
+
+    def _get_all_children_entities(self, session_id):
+        query = models.Entity.query.join(models.session_entity).join(models.Session)
+        session_alias = aliased(models.Session)
+        criterion = models.Session.id == session_id
+        criterion |= (db.session.query(session_alias)
+                      .filter(session_alias.id == session_id)
+                      .filter(session_alias.logical_id is not None)
+                      .filter(session_alias.logical_id == models.Session.parent_logical_id).exists().correlate(models.Session))
+        return query.filter(criterion)
 
 
 @_resource('/migrations', '/migrations/<object_id>')
