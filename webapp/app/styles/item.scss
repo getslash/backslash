@@ -1,3 +1,7 @@
+@mixin item-box-mixin($color) {
+    box-shadow: inset 10px 0 0 0 $color;
+}
+
 .item {
     @extend .p-2;
     @extend .pl-3;
@@ -6,19 +10,21 @@
 
     overflow: hidden;
     border: 1px solid $gray-400;
-    border-left: 10px solid $gray-400;
+    border-left: none;
     min-height: 6em;
+
+    @include item-box-mixin($gray-400);
 
     //@include item-box-mixin(gray);
 
     &.success {
-        border-left-color: $brand-success;
+        @include item-box-mixin($brand-success);
     }
     &.error, &.failure, &.failed {
-        border-left-color: $brand-danger;
+        @include item-box-mixin($brand-danger);
     }
     &.skipped {
-        border-left-color: $brand-warning;
+        @include item-box-mixin($brand-warning);
 
     }
 }
