@@ -146,6 +146,12 @@
         {{/info-badge}}
       {{/if}}
 
+      {{#if session_model.reporting_stopped}}
+        {{#info-badge icon="exclamation-circle" text="Reporting Stopped" color="danger" fg="white"}}
+          Session stopped reporting to Backslash. Results might be incomplete.
+        {{/info-badge}}
+      {{/if}}
+
 
     </div>
   </div>

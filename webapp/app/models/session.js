@@ -111,4 +111,6 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
 
   is_delegate: notEmpty("real_email"),
   finished_running: not("is_running"),
+
+  reporting_stopped: DS.attr("boolean"),
 });
