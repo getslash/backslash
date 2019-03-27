@@ -1,23 +1,18 @@
-import { hash } from 'rsvp';
+import { hash } from "rsvp";
+import { inject as service } from "@ember/service";
 import BaseRoute from "../../../routes/base";
-import AuthenticatedRouteMixin
-  from "ember-simple-auth/mixins/authenticated-route-mixin";
-import InfinityRoute from "../../../mixins/infinity-route";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import ComplexModelRoute from "../../../mixins/complex-model-route";
 
-export default BaseRoute.extend(
-  AuthenticatedRouteMixin,
-  InfinityRoute,
-  ComplexModelRoute,
-  {
-    model: function() {
-      const parent = this.modelFor("session.test").test_model;
-      return hash({
-        warnings: this.infinityModel("warning", {
-          test_id: parent.id,
-          modelPath: "controller.warnings"
-        })
-      });
-    }
-  }
-);
+export default BaseRoute.extend(AuthenticatedRouteMixin, ComplexModelRoute, {
+  infinity: service(),
+  model: function() {
+    const parent = this.modelFor("session.test").test_model;
+    return hash({
+      warnings: this.infinity.model("warning", {
+        test_id: parent.id,
+        modelPath: "controller.warnings",
+      }),
+    });
+  },
+});
