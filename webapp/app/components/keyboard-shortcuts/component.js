@@ -1,13 +1,15 @@
-import { later } from "@ember/runloop";
 import $ from "jquery";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 import { getOwner } from "@ember/application";
 import KeyboardShortcuts from "ember-keyboard-shortcuts/mixins/component";
-import { timeout, task } from "ember-concurrency";
 
 let _keys = [
-  { key: ".", action: "open_quick_search", description: "Opens quick jump" },
+  {
+    key: ".",
+    action: "focus_quick_search",
+    description: "Focus quick search box",
+  },
   {
     key: "h",
     action: "toggle_human_times",
@@ -61,48 +63,10 @@ export default Component.extend(KeyboardShortcuts, {
   keyboardShortcuts: _shortcuts,
   keys: _keys,
 
-  api: service(),
   display: service(),
   store: service(),
 
-  search(query, sync_callback, async_callback) {
-    this.get("async_search").perform(query, async_callback);
-  },
-
-  select(obj) {
-    let self = this;
-
-    self.sendAction("close_boxes");
-    self._close_boxes();
-    self.router.transitionTo(obj.route, obj.key);
-  },
-
-  async_search: task(function*(query, callback) {
-    yield timeout(400);
-    let res = yield this.get("api").call("quick_search", { term: query });
-    res = res.result;
-    if (res.length === 0) {
-      res.push({
-        type: "session",
-        name: "Go to session " + query,
-        key: query,
-        route: "session",
-      });
-      res.push({
-        type: "test",
-        name: "Go to test " + query,
-        key: query,
-        route: "test",
-      });
-    }
-    callback(res);
-  }).restartable(),
-
   _close_boxes() {
-    let element = $("#goto-input");
-    element.typeahead("destroy");
-    element.off();
-    this.set("quick_search_open", false);
     this.get("display").set("show_help", false);
     this.set("help_displayed", false);
   },
@@ -160,11 +124,7 @@ export default Component.extend(KeyboardShortcuts, {
     },
 
     close_boxes_or_home() {
-      if (
-        this.get("quick_search_open") ||
-        this.get("display.show_help") ||
-        this.get("help_displayed")
-      ) {
+      if (this.get("display.show_help") || this.get("help_displayed")) {
         this._close_boxes();
       } else {
         this._do_if_in(["sessions", "session.index"], function(controller) {
@@ -215,52 +175,8 @@ export default Component.extend(KeyboardShortcuts, {
       });
     },
 
-    open_quick_search() {
-      let self = this;
-      self.set("quick_search_open", true);
-      later(function() {
-        let element = $("#goto-input");
-        element.typeahead(
-          {
-            hint: true,
-            highlight: true,
-            minLength: 1,
-          },
-          {
-            name: "Suggestions",
-            source: self.search.bind(self),
-            display: "name",
-            templates: {
-              suggestion: function(obj) {
-                let icon;
-                if (obj.type === "subject") {
-                  icon = "rocket";
-                } else if (obj.type === "user") {
-                  icon = "user";
-                }
-
-                return `<div><i class="fa fa-${icon}"></i> ${obj.name}</div>`;
-              },
-            },
-          }
-        );
-        element
-          .on("keyup", function(e) {
-            if (e.keyCode === 27) {
-              self._close_boxes();
-            }
-          })
-          .on("typeahead:selected", function(evt, obj) {
-            self.select(obj);
-          })
-          .on("typeahead:render", function() {
-            element
-              .parent()
-              .find(".tt-selectable:first")
-              .addClass("tt-cursor");
-          })
-          .focus();
-      });
+    focus_quick_search() {
+      $("#quick-search-input").focus();
     },
 
     jump_one_down() {

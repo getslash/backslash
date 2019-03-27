@@ -33,3 +33,7 @@
     overflow: -moz-scrollbars-none;
     -ms-overflow-style: none;
 }
+
+.transition-fast {
+    transition: all 0.25s;
+}
