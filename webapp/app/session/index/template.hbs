@@ -38,7 +38,7 @@
   {{request-error-details error=error}}
 {{else}}
   {{query-results
-    results=sortedTests
+    results=tests
     page=(mut page)
     page_size=(mut page_size)
     filter_controller=this
@@ -46,5 +46,7 @@
     show_subjects=false
     session_model=session_model
     meta=collection.meta
+    sort=(mut sort)
+    sort_options=sort_options
   }}
 {{/if}}

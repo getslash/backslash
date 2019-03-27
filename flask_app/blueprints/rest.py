@@ -95,6 +95,8 @@ class TestResource(ModelResource):
 
     MODEL = Test
     DEFAULT_SORT = (Test.start_time.desc(),)
+    SORTABLE_FIELDS = INVERSE_SORTS = ['start_time', 'test_index']
+
     from .filter_configs import TEST_FILTERS as FILTER_CONFIG
 
     def _get_object_by_id(self, object_id):

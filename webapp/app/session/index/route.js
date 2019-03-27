@@ -20,6 +20,9 @@ export default Route.extend(
         replace: true,
         refreshModel: true,
       },
+      sort: {
+        refreshModel: true,
+      },
     },
 
     model: function(params) {
@@ -31,6 +34,7 @@ export default Route.extend(
         session_id: session_id,
         page: params.page,
         page_size: params.page_size,
+        sort: params.sort,
       };
 
       let filters = {};
