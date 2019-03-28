@@ -34,7 +34,6 @@ export default Controller.extend({
     for (let fmt of formats) {
       returned.push(now.format(fmt));
     }
-
     return returned;
   }),
 
