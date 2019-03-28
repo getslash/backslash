@@ -22,7 +22,7 @@
 
 {{#if page_size}}
   {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
-    {{#dd.toggle classNames="faint nodecoration"}}{{page_size}} Results <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{page_size}} <span class="d-none d-lg-inline-block">Results</span> <span class="caret"></span>{{/dd.toggle}}
     {{#dd.menu as |menu|}}
 
       {{#each available_page_sizes as |available_page_size|}}
@@ -37,7 +37,9 @@
 {{/if}}
 
 {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
-  {{#dd.toggle classNames="faint nodecoration"}}Display <span class="caret"></span>{{/dd.toggle}}
+  {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "cog"}} <span class="d-none d-lg-inline-block">
+    Settings
+  </span> <span class="caret"></span>{{/dd.toggle}}
   {{#dd.menu as |menu|}}
     {{#menu.item}}
       <a class="dropdown-item clickable" {{action (toggle "humanize_times" display)}}>
@@ -54,7 +56,7 @@
 
 {{#if sort_options}}
   {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
-    {{#dd.toggle classNames="faint nodecoration"}}Sort <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "sort-alpha-asc"}} <span class="d-none d-lg-inline-block">Sort</span> <span class="caret"></span>{{/dd.toggle}}
     {{#dd.menu as |menu|}}
 
       {{#each normalized_sort_options as |sort_option|}}
