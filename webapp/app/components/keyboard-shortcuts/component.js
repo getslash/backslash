@@ -2,7 +2,10 @@ import $ from "jquery";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 import { getOwner } from "@ember/application";
-import KeyboardShortcuts from "ember-keyboard-shortcuts/mixins/component";
+import {
+  bindKeyboardShortcuts,
+  unbindKeyboardShortcuts,
+} from "ember-keyboard-shortcuts";
 
 let _keys = [
   {
@@ -57,7 +60,7 @@ let _FILTERABLE_VIEWS = [
   "test_info",
 ];
 
-export default Component.extend(KeyboardShortcuts, {
+export default Component.extend({
   help_displayed: false,
 
   keyboardShortcuts: _shortcuts,
@@ -65,6 +68,10 @@ export default Component.extend(KeyboardShortcuts, {
 
   display: service(),
   store: service(),
+
+  didInsertElement() {
+    bindKeyboardShortcuts(this);
+  },
 
   _close_boxes() {
     this.get("display").set("show_help", false);
