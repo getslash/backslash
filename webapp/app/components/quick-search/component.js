@@ -36,13 +36,18 @@ export default Component.extend({
 
   select(obj) {
     let self = this;
+    this.get_element().blur();
     self.router.transitionTo(obj.route, obj.key);
+  },
+
+  get_element() {
+    return $("#quick-search-input");
   },
 
   didInsertElement() {
     let self = this;
     later(function() {
-      let element = $("#quick-search-input");
+      let element = self.get_element();
       element.blur();
       let nav_container = element.closest("ul");
       element.typeahead(
