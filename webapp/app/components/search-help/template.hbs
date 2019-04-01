@@ -1,9 +1,9 @@
-<small><a class="clickable" {{action "toggleModal"}} class="text-muted">Search help...</a></small>
+<small><a {{action "toggleModal"}} class="text-muted clickable">Search help...</a></small>
 
 {{#if display.show_help}}
 
   {{#modal-dialog
-     onClose="toggleModal"
+     onClose=(action "toggleModal" this)
      targetAttachment="center"
      translucentOverlay=true}}
     <div class="container">
