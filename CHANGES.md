@@ -10,6 +10,7 @@
 * Backslash now supports the `report_reporting_stopped` API, indicating that client reporting ended
   prematurely
 * Proxy users now generate activity for the users they impersonate
+* Added traceback size field to error REST API
 
 ## Version 2.15.5
 
