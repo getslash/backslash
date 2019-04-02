@@ -1,23 +1,27 @@
-  <div class="frame-info">
-    {{expand-toggle expanded=(mut frame.expanded)}}
-    <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
-  </div>
+<div class="frame-info p-2 overflow-hidden">
+  {{expand-toggle expanded=(mut frame.expanded)}}
+  <span class="mono">{{frame.filename}}</span>, line <strong>{{frame.lineno}}</strong>, in <strong class="mono">{{frame.func_name}}</strong>:
+  {{#if frame.is_in_test_code}}
+    <div class="badge badge-pill badge-secondary ml-2">Test Code</div>
+  {{/if}}
+</div>
 
-  {{# if frame.expanded }}
-
-    <div class="frame-code">
+{{# if frame.expanded }}
+  <div class="px-3">
+    <div class="frame-code overflow-hidden mt-3">
       {{#each frame.code_lines_before as |line num|}}
-        <div class="line around"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
+        <div class="line around pl-2"><span class="lineno">{{sub frame.lineno (sub frame.code_lines_before.length num)}}.</span>{{line}}</div>
       {{/each}}
-      <div class="line main"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
+      <div class="line main pl-2"><span class="lineno">{{frame.lineno}}.</span>{{frame.code_line}}</div>
       {{#each frame.code_lines_after as |line num|}}
-        <div class="line around"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
+        <div class="line around pl-2"><span class="lineno">{{add frame.lineno (add num 1)}}.</span>{{line}}</div>
       {{/each}}
     </div>
 
-    {{#if (or has_globals has_locals)}}
-
-      {{variable-list vars=sorted_locals}}
-      {{variable-list vars=sorted_globals}}
+    {{#if variables}}
+      <div class="overflow-hidden variables">
+        {{variable-table variables=variables}}
+      </div>
     {{/if}}
-  {{/if}}
+  </div>
+{{/if}}

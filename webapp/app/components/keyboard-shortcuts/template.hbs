@@ -1,18 +1,5 @@
-{{#if quick_search_open}}
-  {{#modal-dialog
-     close="close_box"
-     container-class="quick-jump"
-     targetAttachment="center"
-     translucentOverlay=true}}
-    <div class="input-group">
-      <input type="text" class="form-control quick-search-input" id="goto-input" placeholder="Quick jump to..." style="min-width: 50em">
-    </div>
-  {{/modal-dialog}}
-{{/if}}
-
-
 {{#if help_displayed}}
-  {{#modal-dialog close="close_boxes" targetAttachment='center' translucentOverlay=true}}
+  {{#modal-dialog onClose=(toggle "help_displayed" this) targetAttachment='center' translucentOverlay=true}}
     <div class="container">
       <h3>Keyboard Shortcuts Help</h3>
       <table class="table">

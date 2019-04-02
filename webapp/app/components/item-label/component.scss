@@ -1,24 +1,31 @@
 & {
-
+    @extend .clickable;
     margin-right: 2px;
 
     &.label-color-1 {
-	background: #42A5F5;
+	    background: #42A5F5;
     }
 
     &.label-color-2 {
-	background: #5C6BC0;
+	    background: #5C6BC0;
+        color: white;
     }
 
     &.label-color-3 {
-	background: #7E57C2;
+	    background: #7E57C2;
+        color: white;
     }
 
     &.label-color-4 {
-	background: #4DB6AC;
+	    background: #4DB6AC;
     }
 
     &.label-color-5 {
-	background: #4DD0E1;
+	    background: #4DD0E1;
+    }
+
+    &:hover {
+        background: $gray-100;
+        color: black;
     }
 }

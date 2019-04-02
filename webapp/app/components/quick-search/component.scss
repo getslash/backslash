@@ -1,0 +1,8 @@
+#quick-search-input {
+    @extend .bg-dark;
+    @extend .text-white;
+    &:focus {
+        @extend .bg-white;
+        @extend .text-dark;
+    }
+}

@@ -6,7 +6,7 @@
 }
 
 .ember-load-indicator {
-    z-index: $zindex-navbar * 2;
+    z-index: $zindex-fixed * 2;
 }
 
 .clickable
@@ -63,17 +63,6 @@ span.warning, i.warning
     color: $brand-warning;
 }
 
-.details-pane
-{
-    margin-top: .5em;
-    margin-right: 1em;
-    padding: 1em;
-
-    border: 1px dashed $gray-lighter;
-
-    border-sizing: box;
-}
-
 .footer
 {
     margin-top: 5em;
@@ -87,29 +76,6 @@ span.warning, i.warning
 
     background: $gray-lighter;
 }
-
-/* Margins shortcut */
-$added-margin-amount: 1em;
-$large-factor: 4;
-$medium-factor: 2;
-
-@mixin margin-modifiers($location) {
-
-    margin-#{$location}: $added-margin-amount;
-    &.margin-large {
-	margin-#{$location}: $added-margin-amount * $large-factor;
-    }
-
-    &.margin-medium {
-	margin-#{$location}: $added-margin-amount * $medium-factor;
-    }
-}
-
-
-.add-margin-top { @include margin-modifiers(top); }
-.add-margin-bottom { @include margin-modifiers(bottom); }
-.add-margin-left { @include margin-modifiers(left); }
-.add-margin-right { @include margin-modifiers(right); }
 
 span {
     &.skip, &.warning {

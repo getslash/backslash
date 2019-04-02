@@ -1,57 +1,52 @@
+{{session-overview session_model=session_model user=user metadata=metadata timings=timings}}
+
 {{#tool-bar}}
   {{#if (not hide_search)}}
     {{#search-bar search=(mut search) searching=searching}}
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <td><code>name = testname</code></td>
-              <td>Find tests with name <code>name</code></td>
-            </tr>
-            <tr>
-              <td><code>file = testfile.py</code></td>
-              <td>Find tests ran from file <code>testfile.py</code></td>
-            </tr>
-            <tr>
-              <td><code>class = TestClass</code></td>
-              <td>Find tests ran from class <code>TestClass</code></td>
-            </tr>
-            <tr>
-              <td><code>status = some_status</code></td>
-              <td>Find tests which are now in status <code>some_status</code></td>
-            </tr>
-            <tr>
-              <td><code>error_message ~ msg</code></td>
-              <td>Find tests which failed with error message containing <code>msg</code></td>
-            </tr>
-            <tr>
-              <td><code>starred</code></td>
-              <td>Find tests which the current user marked as starred</td>
-            </tr>
-          </tbody>
-        </table>
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td><code>name = testname</code></td>
+            <td>Find tests with name <code>name</code></td>
+          </tr>
+          <tr>
+            <td><code>file = testfile.py</code></td>
+            <td>Find tests ran from file <code>testfile.py</code></td>
+          </tr>
+          <tr>
+            <td><code>class = TestClass</code></td>
+            <td>Find tests ran from class <code>TestClass</code></td>
+          </tr>
+          <tr>
+            <td><code>status = some_status</code></td>
+            <td>Find tests which are now in status <code>some_status</code></td>
+          </tr>
+          <tr>
+            <td><code>error_message ~ msg</code></td>
+            <td>Find tests which failed with error message containing <code>msg</code></td>
+          </tr>
+          <tr>
+            <td><code>starred</code></td>
+            <td>Find tests which the current user marked as starred</td>
+          </tr>
+        </tbody>
+      </table>
     {{/search-bar}}
-    {{#if (and (can "admin") (and (not searching) search)) }}
-      {{#dropdown-menu align="left" title="Search Results"}}
-        <li><a class="clickable" {{action "discard_results"}}>Discard</a></li>
-      {{/dropdown-menu}}
-    {{/if}}
   {{/if}}
 {{/tool-bar}}
 {{#if error}}
   {{request-error-details error=error}}
 {{else}}
   {{query-results
-    results=sortedTests
+    results=tests
     page=(mut page)
-    show_users=false
     page_size=(mut page_size)
+    filter_controller=this
+    show_users=false
     show_subjects=false
-    show_successful=show_successful
-    show_unsuccessful=show_unsuccessful
-    show_abandoned=show_abandoned
-    show_skipped=show_skipped
-    show_planned=show_planned
     session_model=session_model
     meta=collection.meta
+    sort=(mut sort)
+    sort_options=sort_options
   }}
 {{/if}}

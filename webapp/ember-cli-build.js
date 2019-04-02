@@ -3,25 +3,32 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const mergeTrees = require('broccoli-merge-trees');
 
 module.exports = function(/*defaults*/) {
 
   var app = new EmberApp({
-      'ember-font-awesome': {
-          useScss: true,
-      },
-      'ember-cli-bootstrap-sassy': {
-          'quiet': true
-      },
-      'ember-cli-tooltipster': {
-          importTooltipsterBorderless: true
-      },
-      vendorFiles: {
-          'handlebars.js': null
-      },
-      'ember-cli-babel': {
-          includePolyfill: true,
-      },
+    'ember-font-awesome': {
+        useScss: true,
+    },
+
+    'ember-cli-tooltipster': {
+        importTooltipsterBorderless: true
+    },
+
+    vendorFiles: {
+        'handlebars.js': null
+    },
+
+    'ember-cli-babel': {
+        includePolyfill: true,
+    },
+
+    'ember-bootstrap': {
+      'bootstrapVersion': 4,
+      'importBootstrapFont': false,
+      'importBootstrapCSS': false
+    }
   });
 
   // Use `app.import` to add additional libraries to the generated
@@ -41,15 +48,5 @@ module.exports = function(/*defaults*/) {
   app.import('bower_components/twix/dist/twix.min.js')
   app.import('bower_components/Heyoffline/heyoffline.js')
 
-
-  var mergeTrees = require('broccoli-merge-trees');
-  var pickFiles = require('broccoli-static-compiler');
-
-  var images = pickFiles('public/assets/img', {
-      srcDir: '/',
-      files: ['*'],
-      destDir: '/img'
-  });
-
-  return mergeTrees([app.toTree(), images]);
+  return mergeTrees([app.toTree()]);
 };

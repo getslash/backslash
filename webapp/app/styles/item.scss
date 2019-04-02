@@ -1,0 +1,30 @@
+@mixin item-box-mixin($color) {
+    box-shadow: -10px 0 0 0 $color;
+}
+
+.item {
+    @extend .p-2;
+    @extend .pl-3;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+    border: 1px solid $gray-400;
+    border-left: none;
+    min-height: 6em;
+
+    @include item-box-mixin($gray-400);
+
+    //@include item-box-mixin(gray);
+
+    &.success {
+        @include item-box-mixin($brand-success);
+    }
+    &.error, &.failure, &.failed {
+        @include item-box-mixin($brand-danger);
+    }
+    &.skipped {
+        @include item-box-mixin($brand-warning);
+
+    }
+}

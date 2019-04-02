@@ -1,0 +1,85 @@
+{{#if filter_controller}}
+
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" closeOnMenuClick=false as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "filter"}} <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each filters as |filter|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (toggle filter.attr filter_controller)}}>
+            {{#if (get filter_controller filter.attr)}}
+              {{fa-icon "check" fixedWidth=true}}
+            {{else}}
+              {{fa-icon "fw"}}
+            {{/if}}
+            Show {{filter.name}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+{{/if}}
+
+{{#if page_size}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{page_size}} <span class="d-none d-lg-inline-block">Results</span> <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each available_page_sizes as |available_page_size|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (mut page_size) available_page_size}}>
+            {{available_page_size}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+{{/if}}
+
+{{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+  {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "cog"}} <span class="d-none d-lg-inline-block">
+    Settings
+  </span> <span class="caret"></span>{{/dd.toggle}}
+  {{#dd.menu as |menu|}}
+    {{#menu.item}}
+      <a class="dropdown-item clickable" {{action (toggle "humanize_times" display)}}>
+        {{#if display.humanize_times}}
+          {{fa-icon "check" fixedWidth=true}}
+        {{else}}
+          {{fa-icon "fw"}}
+        {{/if}}
+        Human-friendly times
+      </a>
+    {{/menu.item}}
+  {{/dd.menu}}
+{{/bs-dropdown}}
+
+{{#if sort_options}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "sort-alpha-asc"}} <span class="d-none d-lg-inline-block">Sort</span> <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+
+      {{#each normalized_sort_options as |sort_option|}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (mut sort) sort_option.option}}>
+            {{#if (eq sort sort_option.option)}}
+              {{fa-icon "check" fixedWidth=true}}
+            {{else}}
+              {{fa-icon "fw"}}
+            {{/if}}
+            {{capitalize sort_option.display}}
+          </a>
+        {{/menu.item}}
+      {{/each}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+
+{{/if}}
+
+
+
+<a class="btn btn-default first {{if (not has_prev) 'disabled' 'clickable'}}" onclick={{if has_prev (action "first_page")}} title="Go to first page"><i class="fa fa-angle-double-left"></i></a>
+<a class="btn btn-default first {{if (not has_prev) 'disabled' 'clickable'}}" onclick={{if has_prev (action "prev_page")}} title="Go to previous page"><i class="fa fa-angle-left"></i></a>
+
+<a class="btn btn-default next {{if (not has_next) 'disabled' 'clickable'}}" onclick={{if has_next (action "next_page")}} title="Go to next page"><i class="fa fa-angle-right"></i></a>
+<a class="btn btn-default next {{if (or (not has_last) (eq page num_pages)) 'disabled' 'clickable'}}" onclick={{if has_last (action "last_page")}} title="Go to last page"><i class="fa fa-angle-double-right"></i></a>

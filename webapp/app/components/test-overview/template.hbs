@@ -1,0 +1,123 @@
+<div class="container-fluid test-overview border border-{{status-to-brand test_model.computed_status}}">
+  <div class="row">
+    <div class="col p-2 bg-{{status-to-brand test_model.computed_status}} text-white">
+      {{star-marker starred_object=test_model}}
+      Test #{{test_model.test_index}} <div class="badge badge-light ml-2">{{test_model.status_lowercase}}</div>
+      {{#if test_model.status_description}}
+        <div class="badge badge-dark text-white ml-2">{{test_model.status_description}}</div>
+      {{/if}}
+      {{#if (and test_model.is_skipped test_model.skip_reason)}}
+        <div class="badge badge-warning border border-dark ml-2">{{test_model.skip_reason}}</div>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="row p-2">
+    <!-- first column -->
+    <div class="col text-muted">
+      <div class="row">
+        <div class="col">
+          {{fa-icon "info-circle"}}
+          {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="ml-3">{{fa-icon "history"}} {{#bs-tooltip placement="auto"}}Previous Executions{{/bs-tooltip}}</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          {{fa-icon "info-circle"}}
+          {{elements/copyable-text copy_value=test_model.info.file_name}}
+          {{#if test_model.info.class_name}}
+            {{fa-icon "fa-list"}} {{elements/copyable-text value=test_model.info.class_name}}
+          {{/if}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col d-none d-lg-block">
+          {{fa-icon "info-circle"}} {{elements/copyable-text value=test_model.display_id}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col d-none d-lg-block py-1">
+          {{#each slash_tags as |tag|}}
+            {{#if tag.value}}
+              <div class="badge-split d-inline-block">
+                <span>{{tag.name}}</span><span>{{tag.value}}</span>
+              </div>
+            {{else}}
+              <div class="badge-secondary badge badge-pill">
+              {{tag.name}}
+            </div>
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div class="col text-muted">
+          <small>
+            {{fa-icon "calendar"}}
+            {{moment-time unix=test_model.start_time}} &rarr;
+            {{moment-time unix=test_model.end_time}}
+          </small>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          <div>
+            <small>
+              {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=test_model.start_time end_time=test_model.end_time}}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row d-none d-lg-block">
+        <div class="col text-muted">
+          {{#each timings as |timing|}}
+            <div class="row faint">
+              <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
+              <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!-- second column -->
+    <div class="col text-muted">
+      <div class="row">
+        <div class="col">
+          {{#each metadata_display_items as |item|}}
+            {{#with (get metadata item.key) as |value|}}
+              {{#if value}}
+                <small>
+                  <span class="text-muted text-nowrap mr-5">
+                    <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+                  </span>
+                </small>
+
+              {{/if}}
+            {{/with}}
+
+          {{/each}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col d-none d-lg-block">
+          <small>
+            {{#each-in scm_details as |name value|}}
+              <div title="{{name}}">
+                {{fa-icon "git-square"}}
+                <span class="text-muted">{{name}}: </span>{{elements/copyable-text value=value}}
+              </div>
+            {{/each-in}}
+            {{#if test_model.scm_dirty }}
+              <div class="badge badge-warning text-white">
+                {{fa-icon "exclamation-triangle"}} SCM Dirty
+              </div>
+            {{/if}}
+          </small>
+        </div>
+      </div>
+    </div>
+    </div>
+
+</div>

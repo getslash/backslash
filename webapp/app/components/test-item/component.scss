@@ -2,10 +2,21 @@
 
     .test-index {
         color: darken($gray-lighter, 10%);
-        min-width: 4em;
+        width: 4em;
+        display: inline-block;
 
         &:before {
             content: "#";
+        }
+    }
+
+    .params {
+        font-size: 75%;
+    }
+
+    .test-error-link {
+        &:hover {
+            text-decoration: underline;
         }
     }
 }

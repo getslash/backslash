@@ -3,16 +3,17 @@
     border: 1px solid #ddd;
     border-left-color: $brand-danger;
 
+    .exception-message {
+        @extend .text-monospace;
+        white-space: pre;
+        font-size: 75%;
+    }
+
     &.interruption {
         border-left-color: gray;
     }
 
     border-left-width: 7px;
-
-    .copy-btn {
-        margin-top: -0.2em;
-        margin-left: 1em;
-    }
 
     .info {
         padding: 0.5em;

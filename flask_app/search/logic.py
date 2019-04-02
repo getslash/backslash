@@ -124,7 +124,7 @@ class TestSearchContext(SearchContext):
 
     def get_base_query(self):
         return (Test.query
-                .join(Session)
+                .join(Session, Session.id == Test.session_id)
                 .join(TestInformation)
                 .join(User, User.id == Session.user_id))
 

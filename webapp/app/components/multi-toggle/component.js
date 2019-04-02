@@ -1,4 +1,5 @@
-import Component from '@ember/component';
+import { computed } from "@ember/object";
+import Component from "@ember/component";
 
 export default Component.extend({
   saving: false,
@@ -6,7 +7,7 @@ export default Component.extend({
   display: null,
   options: null,
 
-  options_and_display: function() {
+  normalized_options: computed("options", "display", function() {
     let display = this.get("display");
     let options = this.get("options");
 
@@ -14,17 +15,17 @@ export default Component.extend({
       display = options;
     }
 
-    let returned = {};
+    let returned = [];
 
     for (let i = 0; i < options.length; ++i) {
-      returned[options[i]] = display[i];
+      returned.push({ option: options[i], display: display[i] });
     }
     return returned;
-  }.property("options", "display"),
+  }),
 
   actions: {
     choose: function(option) {
       this.sendAction("action", option);
-    }
-  }
+    },
+  },
 });

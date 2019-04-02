@@ -101,6 +101,7 @@ def upload_traceback(error_id):
         if os.path.exists(temporary_location):
             os.unlink(temporary_location)
         raise
+    error.traceback_size = os.stat(location).st_size
     db.session.add(error)
     db.session.commit()
     return jsonify({'traceback_url': error.traceback_url})

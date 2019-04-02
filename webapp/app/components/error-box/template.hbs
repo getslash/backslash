@@ -1,8 +1,16 @@
-<div class="info">
-  {{expand-toggle expanded=(mut expanded)}} {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}}): <span class="mono">{{error.exception_type}}</span> {{#copy-button clipboardText=error.message title="Copy exception message to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
+<div class="p-1">
+  {{expand-toggle expanded=(mut expanded)}}
+  <div class="text-muted d-inline-block">
+
+    {{moment-time unix=error.timestamp}} ({{moment-time ago=error.timestamp}}):
+  </div>
+  <span class="text-monospace text-danger">
+    {{error.exception_type}}
+  </span>
+  {{#copy-button clipboardText=error.message title="Copy exception message to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
 </div>
 
-<div class="message mono"> {{if expanded error.message error.abbreviated_message}} </div>
+<div class="m-3 p-1 exception-message overflow-hidden {{if expanded 'overflow-scroll'}}">{{if expanded error.message error.abbreviated_message}}</div>
 
 {{#if expanded}}
   {{error-detail error=error}}{{else}}

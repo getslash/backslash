@@ -1,2 +1,7 @@
 & {
+    table {
+        tbody tr td:first-child {
+            background: $gray-100;
+        }
+    }
 }

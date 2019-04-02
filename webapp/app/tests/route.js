@@ -41,12 +41,4 @@ export default PaginatedFilteredRoute.extend(AuthenticatedRouteMixin, ComplexMod
       });
   },
 
-  renderTemplate() {
-    this._super(...arguments);
-    this.render("filter-controls", {
-      into: "tests",
-      outlet: "filter-controls"
-    });
-  }
-
 });

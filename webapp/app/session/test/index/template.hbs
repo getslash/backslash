@@ -1,75 +1,7 @@
-<div class="container-fluid add-margin-top">
-  <div class="row">
-    <div class="col-sm-4">
-      <p>
-	    <i class="fa fa-clock-o"></i>
-        {{humanized-duration start_time=test_model.start_time end_time=test_model.end_time}}
-      </p>
-      {{#if test_model.status_description}}
-        <p>Current status: <strong>{{test_model.status_description}}</strong></p>
-      {{/if}}
-      <p>
-	<i class="fa fa-hourglass-1"></i> {{moment-time unix=test_model.start_time}}
-      </p>
-      <p>
-	<i class="fa fa-hourglass-3"></i> {{moment-time unix=test_model.end_time}}
-      </p>
-    </div>
-    <div class="col-sm-3">
-      {{#each timings as |timing|}}
-      <div class="row faint">
-        <div class="col-sm-6"><i class="fa fa-clock-o"></i> {{timing.name}}</div>
-        <div class="col-sm-6">{{humanized-duration seconds=timing.total}}</div>
-      </div>
-      {{/each}}
-    </div>
-  </div>
-</div>
-
-
-<div class="container-fluid add-margin-top">
-  <div class="row">
-    <div class="col-sm-12">
-      <p>
-	<i class="fa fa-file"></i> {{elements/copyable-text value=test_model.info.file_name}}
-      </p>
-      {{#if test_model.info.class_name}}
-	<p>
-	  <i class="fa fa-list"></i> {{elements/copyable-text value=test_model.info.class_name}}
-	</p>
-      {{/if}}
-      <p>
-	<i class="fa fa-arrow-circle-o-right"></i> {{elements/copyable-text value=test_model.info.name}}
-      </p>
-
-    </div>
-  </div>
-</div>
-
 {{#if params}}
-  <div class="container-fluid">
-    {{key-value-data data=params}}
-  </div>
+  {{key-value-data data=params title="Parameters"}}
 {{/if}}
 
-<div class="container-fluid">
-  <div class="col-sm-12">
-    {{#each-in scm_details as |name value|}}
-      {{#if value}}
-	<p>
-	  <i class="fa fa-git-square"></i> {{name}}: {{elements/copyable-text value=value}}
-	</p>
-      {{/if}}
-    {{/each-in}}
-    {{#if test_model.scm_dirty }}
-      <p>
-	<i class="fa fa-exclamation-triangle warning"></i> Working directory contained uncommitted changes when this test was run
-      </p>
-    {{/if}}
-  </div>
-</div>
 
 
-<p class="add-margin-top">
-  {{metadata/metadata-table metadata=metadata additional=additional_metadata}}
-</p>
+{{metadata/metadata-table metadata=metadata additional=additional_metadata}}

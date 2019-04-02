@@ -16,6 +16,7 @@ from .. import models
 from ..models import Error, Session, Test, User, Subject, db, UserStarredTests
 from .. import activity
 from ..utils.identification import parse_test_id, parse_session_id
+from ..utils.users import has_role
 from ..utils.rest import ModelResource
 from ..filters import filter_by_statuses
 from ..search import get_orm_query_from_search_string
@@ -94,6 +95,8 @@ class TestResource(ModelResource):
 
     MODEL = Test
     DEFAULT_SORT = (Test.start_time.desc(),)
+    SORTABLE_FIELDS = INVERSE_SORTS = ['start_time', 'test_index']
+
     from .filter_configs import TEST_FILTERS as FILTER_CONFIG
 
     def _get_object_by_id(self, object_id):
@@ -127,26 +130,12 @@ class TestResource(ModelResource):
         if args.search:
             returned = get_orm_query_from_search_string('test', args.search, abort_on_syntax_error=True)
         else:
-            returned = super(TestResource, self)._get_iterator()
+            returned = super(TestResource, self)._get_iterator().join(Session, Session.id == Test.session_id)
 
 
-        #get session
+        # get session
         if args.session_id is not None:
-            using_logical_id = False
-            try:
-                session_id = int(args.session_id)
-                stmt = db.session.query(Session).filter(Session.id == session_id).subquery()
-                children = db.session.query(Session.id).filter(Session.parent_logical_id == stmt.c.logical_id).all()
-            except ValueError:
-                using_logical_id = True
-                children = db.session.query(Session.id).filter(Session.parent_logical_id == args.session_id).all()
-
-            returned = Test.query.join(Session).filter(Session.logical_id == args.session_id) if using_logical_id else \
-                        returned.filter(Test.session_id == session_id)
-            if children:
-                children_ids = [child[0] for child in children]
-                returned = returned.union(Test.query.filter(Test.session_id.in_(children_ids)))
-
+            returned = self._filter_by_session_id(returned, args.session_id)
 
         if args.info_id is not None:
             returned = returned.filter(Test.test_info_id == args.info_id)
@@ -159,6 +148,32 @@ class TestResource(ModelResource):
             elif args.before_index is not None:
                 returned = returned.filter(self.MODEL.test_index < args.before_index).order_by(self.MODEL.test_index.desc()).limit(1).all()
 
+        return returned
+
+    def _filter_by_session_id(self, query, session_id):
+        try:
+            int(session_id)
+        except ValueError:
+            id_field = lambda model: model.logical_id
+        else:
+            id_field = lambda model: model.id
+
+        session_aliased = aliased(Session)
+        children = (
+            db.session.query(id_field(Session))
+            .filter(
+                db.session.query(session_aliased.id)
+                .filter(id_field(session_aliased) == session_id)
+                .filter(session_aliased.logical_id == Session.parent_logical_id)
+                .exists()
+            )
+            .all()
+        )
+        children_ids = [row[0] for row in children]
+        criterion = id_field(Session) == session_id
+        if children_ids:
+            criterion |= id_field(Session).in_(children_ids)
+        returned = query.filter(criterion)
         return returned
 
     def _paginate(self, query, metadata):
@@ -253,10 +268,13 @@ class ErrorResource(ModelResource):
         args = errors_query_parser.parse_args()
 
         if args.session_id is not None:
-            session_id = parse_session_id(args.session_id)
-            logicl_id_subquery = db.session.query(Session.logical_id).filter(Session.id == session_id).subquery()
-            children_subquery = db.session.query(Session.id).filter(Session.parent_logical_id == logicl_id_subquery.c.logical_id).subquery()
-            query = db.session.query(Error).filter(or_(Error.session_id.in_(children_subquery), Error.session_id==session_id))
+            session = _get_object_by_id_or_logical_id(Session, args.session_id)
+            # We want to query only the session's own errors if it is either a non-parllel session or a child session
+            if session.parent_logical_id is not None or not session.is_parent_session:
+                query = db.session.query(Error).filter(Error.session_id == session.id)
+            else:
+                query = db.session.query(Error).join(Session).filter(or_(Session.id == session.id, Session.parent_logical_id == session.logical_id))
+
         elif args.test_id is not None:
             query = Error.query.filter_by(test_id=parse_test_id(args.test_id))
         else:
@@ -265,7 +283,7 @@ class ErrorResource(ModelResource):
         if args.interruptions:
             query = query.filter_by(is_interruption=True)
         else:
-            query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None))
+            query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None)) # pylint: disable=singleton-comparison
         return query
 
 
@@ -380,11 +398,21 @@ class RelatedEntityResource(ModelResource):
             error_abort('Either test_id or session_id must be provided')
 
         if args.session_id is not None:
-            return models.Entity.query.join(models.session_entity).filter(models.session_entity.c.session_id == args.session_id)
+            return self._get_all_children_entities(args.session_id)
         elif args.test_id is not None:
             return models.Entity.query.join(models.test_entity).filter(models.test_entity.c.test_id == args.test_id)
         else:
             raise NotImplementedError() # pragma: no cover
+
+    def _get_all_children_entities(self, session_id):
+        query = models.Entity.query.join(models.session_entity).join(models.Session)
+        session_alias = aliased(models.Session)
+        criterion = models.Session.id == session_id
+        criterion |= (db.session.query(session_alias)
+                      .filter(session_alias.id == session_id)
+                      .filter(session_alias.logical_id is not None)
+                      .filter(session_alias.logical_id == models.Session.parent_logical_id).exists().correlate(models.Session))
+        return query.filter(criterion)
 
 
 @_resource('/migrations', '/migrations/<object_id>')
@@ -420,7 +448,7 @@ class CaseResource(ModelResource):
         return returned
 
 
-@_resource('/replications')
+@_resource('/replications', '/replications/<object_id>')
 class ReplicationsResource(ModelResource):
 
     MODEL = models.Replication
@@ -443,7 +471,12 @@ class ReplicationsResource(ModelResource):
         if latest_timestamp:
             latest_timestamp = latest_timestamp.timestamp()
 
-        for replication in returned['replications']:
+        if in_collection:
+            collection = returned['replications']
+        else:
+            collection = [returned]
+
+        for replication in collection:
             last_replicated = replication['last_replicated_timestamp']
             if not latest_timestamp or not last_replicated:
                 lag = None
@@ -452,6 +485,20 @@ class ReplicationsResource(ModelResource):
             replication['lag_seconds'] = lag
 
         return returned
+
+    def put(self, object_id=None):
+        if object_id is None:
+            error_abort('Not implemented', code=requests.codes.not_implemented)
+        if not has_role(current_user, 'admin'):
+            error_abort('Forbidden', code=requests.codes.forbidden)
+        replication = models.Replication.query.get_or_404(object_id)
+        request_json = request.get_json().get("replication", {})
+        for field_name in {'username', 'url', 'password'}:
+            value = request_json.get(field_name)
+            if value is not None:
+                setattr(replication, field_name, value)
+        models.db.session.commit()
+        return jsonify({'replication': self._render_single(replication, in_collection=False)})
 
 
 @blueprint.route('/admin_alerts')

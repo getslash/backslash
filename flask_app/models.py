@@ -172,6 +172,7 @@ class Session(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, 
     # keepalive
     keepalive_interval = db.Column(db.Integer, nullable=True, default=None)
     next_keepalive = db.Column(db.Float, nullable=True, default=None, index=True)
+    reporting_stopped = db.Column(db.Boolean, default=False)
 
     # activity
     num_comments = db.Column(db.Integer, default=0)
@@ -520,6 +521,7 @@ class Error(db.Model, TypenameMixin):
     id = db.Column(db.Integer, primary_key=True)
     traceback = db.Column(JSON)
     traceback_url = db.Column(db.String(2048))
+    traceback_size = db.Column(db.Integer)
     exception_type = db.Column(db.String(256), index=True)
     message = db.Column(db.Text())
     timestamp = db.Column(db.Float, default=get_current_time)

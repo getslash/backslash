@@ -1,39 +1,43 @@
 {{#tool-bar}}
-  <p class="navbar-text">
-    Data Replication
-  </p>
-  <p class="navbar-text pull-right">
-    {{#link-to "admin.replications.new" class="btn btn-success"}}
-      <i class="fa fa-plus"></i> Add New...
-    {{/link-to}}
-  </p>
+  <ul class="navbar-nav">
+    <span class="navbar-text">
+      Data Replication
+    </span>
+  </ul>
+  <ul class="navbar-nav ml-auto">
+    <span class="navbar-text">
+      {{#link-to "admin.replications.new" class="btn btn-success text-white"}}
+        <i class="fa fa-plus"></i> Add New...
+      {{/link-to}}
+    </span>
+  </ul>
 {{/tool-bar}}
 
 
-<div class="container">
+<div class="container p-3">
   {{#each replications as |replication|}}
-    <div class="query-item">
+    <div class="item">
       <div class="row">
         <div class="col-sm-10">
           <div class="row">
             <div class="col-sm-6">
-              {{if replication.usernam (concat replication.username '@')}}{{replication.url}}
+              {{if replication.username (concat replication.username '@')}}{{replication.url}}
               {{#if replication.active}}
-                <span class="label label-success">running</span>
+                <span class="badge badge-success">running</span>
               {{else}}
                 {{#if replication.paused}}
-                  <span class="label label-default">paused</span>
+                  <span class="badge badge-default">paused</span>
                 {{else}}
-                  <span class="label label-danger">error</span>
+                  <span class="badge badge-danger">error</span>
                 {{/if}}
               {{/if}}
               {{#if replication.lagging}}
-                <span class="label label-danger">lagging</span>
+                <span class="badge badge-danger">lagging</span>
               {{/if}}
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-12 pad-medium">
+            <div class="col-sm-12 p-1">
               {{#if (and replication.active replication.lagging)}}
                 <div class="progress">
                   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
@@ -58,14 +62,17 @@
           {{else}}
             <a class="clickable" {{action "resetReplication" replication}}>Reset</a>
             <a class="clickable" {{action "startReplication" replication}}>Start</a>
+            <a class="clickable" {{action "editReplication" replication}}>Edit</a>
           {{/if}}
         </div>
       </div>
 
       {{#if replication.last_error}}
         <div class="row">
-          <div class="col-sm-12">
-            <pre>{{replication.last_error}}</pre>
+          <div class="col-sm-12 text-muted">
+            <small>
+              <pre>{{replication.last_error}}</pre>
+            </small>
           </div>
         </div>
       {{/if}}

@@ -1,88 +1,49 @@
-<div class="container-fluid">
-  <h3>
-    {{star-marker starred_object=test_model}}
-    {{status-icon status=test_model.computed_status session_model=session_model spaced=false}}
-    {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}}
-  </h3>
+{{test-overview test_model=test_model metadata=test_metadata session_model=session_model timings=timings}}
 
-  <small>from <strong>{{elements/copyable-text value=test_model.info.file_name}}</strong></small>
+<div class="mt-3">
 
-  {{#if (eq test_model.status "SKIPPED")}}
-    <p>
-      <strong>Skipped:</strong> {{test_model.skip_reason}}
-    </p>
-  {{/if}}
+  {{#bs-nav type="tabs" as |nav|}}
+    {{#nav.item classNames="test-info-tab"}}
+      {{#nav.link-to 'session.test.index'}}
+        Test Info
+      {{/nav.link-to}}
+    {{/nav.item}}
 
-  <div class="row add-margin-top add-margin-bottom">
-    <div class="col-sm-12"><strong>Test ID</strong>: {{elements/copyable-text value=test_model.display_id}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="add-margin-left">
-      <i class="fa fa-history"></i> Previous executions...
-    </a>
+    {{#if test_model.num_errors}}
+      {{#nav.item}}
+        {{#nav.link-to 'session.test.errors'}}
+          Errors <span class="badge badge-pill badge-danger">{{test_model.num_errors}}</span>
+        {{/nav.link-to}}
+      {{/nav.item}}
+    {{/if}}
 
-    {{#each metadata_links as |metadata_link|}}
-      <a href="{{metadata_link.url}}" class="add-margin-left" target="_blank" rel=noopener><img src="{{metadata_link.icon}}" class="text-height"/> {{metadata_link.name}}</a>
-    {{/each}}
-
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12">
-      {{#each metadata_display_items as |item|}}
-        {{#with (get test_metadata item.key) as |value|}}
-          {{#if value}}
-            <p>
-              <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{value}}</strong>
-            </p>
-          {{/if}}
-        {{/with}}
-      {{/each}}
-    </div>
-  </div>
-
-</div>
-
-
-<div class="navigation">
-  <div class="tabs">
-    <ul class="nav nav-tabs">
-
-      {{#link-to 'session.test.index' tagName='li'}}
-	<a href>
-	  Test Info
-	</a>
-      {{/link-to}}
-
-      {{#if test_model.num_errors}}
-	{{#link-to 'session.test.errors' tagName='li'}}
-	  <a href>Errors <span class="label label-danger">{{test_model.num_errors}}</span></a>
-	{{/link-to}}
+    {{#if test_model.num_interruptions}}
+      {{#nav.item}}
+        {{#nav.link-to 'session.test.interruptions'}}
+          Interruptions <span class="badge badge-pill badge-danger">{{test_model.num_interruptions}}</span>
+        {{/nav.link-to}}
+      {{/nav.item}}
+    {{/if}}
+    {{#with test_model.num_warnings as |num_warnings|}}
+      {{#if num_warnings}}
+        {{#nav.item}}
+          {{#nav.link-to 'session.test.warnings'}}
+            Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+          {{/nav.link-to}}
+        {{/nav.item}}
       {{/if}}
+    {{/with}}
 
-      {{#if test_model.num_interruptions}}
-	{{#link-to 'session.test.interruptions' tagName='li'}}
-	  <a href>Interruptions <span class="label label-danger">{{test_model.num_interruptions}}</span></a>
-	{{/link-to}}
-      {{/if}}
+    {{#nav.item}}
+      {{#nav.link-to 'session.test.comments'}}
+        Comments
+        {{#if test_model.num_comments}}
+          <span class="badge badge-pill badge-secondary">{{test_model.num_comments}}</span>
+        {{/if}}
+      {{/nav.link-to}}
+    {{/nav.item}}
 
-      {{#with test_model.num_warnings as |num_warnings|}}
-	{{#if num_warnings}}
-	  {{#link-to 'session.test.warnings' tagName='li'}}
-	    <a href>Warnings <span class="label label-warning">{{num_warnings}}</span></a>
-	  {{/link-to}}
-	{{/if}}
-      {{/with}}
-
-      {{#link-to 'session.test.comments' tagName='li'}}
-	<a href>Comments
-	  {{#if test_model.num_comments}}
-	    <span class="label label-default"> {{test_model.num_comments}} </span>
-	  {{/if}}
-	</a>
-      {{/link-to}}
-
-
-    </ul>
-  </div>
+  {{/bs-nav}}
 </div>
-
 
 {{outlet}}

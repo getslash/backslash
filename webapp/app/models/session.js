@@ -1,10 +1,9 @@
-import { not, oneWay, notEmpty } from '@ember/object/computed';
+import { not, oneWay, notEmpty } from "@ember/object/computed";
 import DS from "ember-data";
 import HasLogicalId from "../mixins/has-logical-id";
 import HasComputedStatus from "../mixins/has-computed-status";
 
 export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
-
   start_time: DS.attr("number"),
   end_time: DS.attr("number"),
 
@@ -29,7 +28,14 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   delete_at: DS.attr("number"),
 
   is_ok() {
-    return !(this.get('num_errors') || this.get('num_error_tests') || this.get('num_failed_tests') || this.get('num_failures') || this.get('is_abandoned') || this.get('is_interrupted'));
+    return !(
+      this.get("num_errors") ||
+      this.get("num_error_tests") ||
+      this.get("num_failed_tests") ||
+      this.get("num_failures") ||
+      this.get("is_abandoned") ||
+      this.get("is_interrupted")
+    );
   },
 
   num_successful_tests: function() {
@@ -60,9 +66,9 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   }.property("num_finished_tests", "total_num_tests"),
 
   has_tests_left_to_run: not("ran_all_tests"),
-  has_fatal_errors: DS.attr('boolean'),
+  has_fatal_errors: DS.attr("boolean"),
 
-  has_any_error: oneWay('num_errors'),
+  has_any_error: oneWay("num_errors"),
 
   total_num_tests: DS.attr("number"),
   hostname: DS.attr(),
@@ -104,10 +110,7 @@ export default DS.Model.extend(HasLogicalId, HasComputedStatus, {
   real_email: DS.attr(),
 
   is_delegate: notEmpty("real_email"),
+  finished_running: not("is_running"),
 
-  is_running: function() {
-    return this.get("status") === "RUNNING";
-  }.property("status"),
-
-  finished_running: not("is_running")
+  reporting_stopped: DS.attr("boolean"),
 });

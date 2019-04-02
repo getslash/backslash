@@ -1,9 +1,9 @@
-import EmberRouter from '@ember/routing/router';
-import config from './config/environment';
+import EmberRouter from "@ember/routing/router";
+import config from "./config/environment";
 
 const Router = EmberRouter.extend({
   location: config.locationType,
-  rootURL: config.rootURL
+  rootURL: config.rootURL,
 });
 
 Router.map(function() {
@@ -16,7 +16,7 @@ Router.map(function() {
     this.route("warnings");
     this.route("info");
     this.route("children");
-    this.route("test", {path: "/tests/:test_id"}, function() {
+    this.route("test", { path: "/tests/:test_id" }, function() {
       this.route("interruptions");
       this.route("errors");
       this.route("warnings");
@@ -46,13 +46,14 @@ Router.map(function() {
   this.route("not-found", { path: "/*:unknown" });
   this.route("tests");
 
-  this.route('admin', function() {
-    this.route('migrations');
-    this.route('replications', function() {
-      this.route('new');
+  this.route("admin", function() {
+    this.route("migrations");
+    this.route("replications", function() {
+      this.route("new");
+      this.route("edit", { path: "/admin/replications/:replication_id/edit" });
     });
   });
-  this.route('cases');
+  this.route("cases");
 });
 
 export default Router;

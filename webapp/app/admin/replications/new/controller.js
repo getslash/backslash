@@ -1,14 +1,15 @@
-import Controller from '@ember/controller';
-import { inject as service } from "@ember/service";
+import Controller from "@ember/controller";
 
 export default Controller.extend({
-
-    actions: {
-        save() {
-            let self = this;
-            self.get('model').save().then(function() {
-                self.router.transitionTo('admin.replications.index');
-            });
-        },
+  actions: {
+    save() {
+      let self = this;
+      self
+        .get("model")
+        .save()
+        .then(function() {
+          self.router.transitionTo("admin.replications.index");
+        });
     },
+  },
 });

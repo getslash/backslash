@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from ...auth import get_or_create_user
 
 from ...search import get_orm_query_from_search_string
-from ...models import Session, Test, db, SessionMetadata
+from ...models import Session, Test, db, SessionMetadata, User
 from ...utils import get_current_time, statuses
 from ...utils.api_utils import requires_role
 from ...utils.subjects import get_or_create_subject_instance
@@ -44,9 +44,11 @@ def report_session_start(logical_id: str=None,
             error_abort('User {} is not authorized to run tests on others behalf. Tried running as {}'.format(g.token_user.email, user_email),
                         code=requests.codes.forbidden)
         real_user_id = g.token_user.id
-        user_id = get_or_create_user({'email': user_email}).id
+        real_user = get_or_create_user({'email': user_email})
+        user_id = real_user.id
     else:
         user_id = g.token_user.id
+        real_user = None
         real_user_id = None
 
     if keepalive_interval is None and ttl_seconds is not None:
@@ -66,6 +68,9 @@ def report_session_start(logical_id: str=None,
         keepalive_interval=keepalive_interval,
         ttl_seconds=ttl_seconds,
     )
+
+    if real_user is not None:
+        real_user.last_activity = flux.current_timeline.time()
 
     returned.mark_started()
 
@@ -211,4 +216,11 @@ def preserve_session(session_id: int):
     Session.query.filter(
         (Session.parent_logical_id == session.logical_id) | (Session.id == session.id)
     ).update({Session.delete_at: None}, synchronize_session=False)
+    db.session.commit()
+
+
+@API
+def report_reporting_stopped(session_id: int):
+    session = Session.query.get_or_404(session_id)
+    session.reporting_stopped = True
     db.session.commit()

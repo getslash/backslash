@@ -4,8 +4,10 @@ $copy-button-margin: 2px;
 & {
   box-sizing: border-box;
   display: inline-block;
-  border: 1px solid rgba(0, 0, 0, 0);
-  border-bottom: 1px dashed silver;
+  &>span {
+      border: 1px solid rgba(0, 0, 0, 0);
+      border-bottom: 1px dashed silver;
+  }
   position: relative;
 
   margin: -$copy-button-margin;
@@ -22,13 +24,5 @@ $copy-button-margin: 2px;
   &.preformatted {
       font-family: monospace;
       white-space: pre;
-  }
-
-  &:hover {
-      background: $gray-lighter;
-      //border-radius: 2px;
-
-      border: 1px dashed silver;
-
   }
 }

@@ -1,124 +1,88 @@
 {{#tool-bar}}
-      <ul class="nav navbar-nav navbar-right add-margin-right">
-        <p class="navbar-text" >
-          {{#if session_model.delete_at }}
-            <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
-            {{#if (can "admin")}}
-              <button {{action "preserve"}} class="add-margin-left btn undo-discard-btn">Preserve</button>
-            {{/if}}
-          {{else}}
-            {{#if (can "admin")}}
-              <button {{action "discard"}} class="btn discard-btn" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
-            {{/if}}
-          {{/if}}
-        </p>
-      </ul>
-    <ul class="nav navbar-nav">
-      <p class="navbar-text">
-        {{#if session_model.parent_logical_id}}
-          {{#link-to 'session' session_model.parent_logical_id title="Part of a Parallel Session. Click to go to parent"}}
-            <i class="fa fa-arrows-alt"></i>
-          {{/link-to}}
-        {{else}}
-          {{#if session_model.is_parent_session}}
-            <i class="fa fa-arrows-alt" title="Parallel session"></i>
-          {{/if}}
-        {{/if}}
 
-        Session {{elements/copyable-text value=session_model.display_id}}</p>
-    </ul>
+  <ul class="navbar-nav">
+    <span class="navbar-text">
+      Session {{elements/copyable-text value=session_model.display_id}}
+    </span>
+  </ul>
+
+  <ul class="navbar-nav ml-auto">
+
+    {{#if session_model.delete_at }}
+      <span class="navbar-text">
+        <i class="fa fa-warning"></i> This session will be deleted {{moment-time ago=session_model.delete_at allow_future=true}}
+      </span>
+      {{#if (can "admin")}}
+        <button {{action "preserve"}} class="ml-5 btn btn-secondary undo-discard-btn">Preserve</button>
+      {{/if}}
+    {{else}}
+      {{#if (can "admin")}}
+        <button {{action "discard"}} class="btn discard-btn ml-5 btn-secondary" title="Marks this session for deletion. Discarded sessions are deleted after a predefined grace period, and cannot be recovered after that point."><i class="fa fa-trash"></i> Discard</button>
+      {{/if}}
+    {{/if}}
+  </ul>
+
 
 {{/tool-bar}}
 
-{{#collapsible-sidebar collapsed=(mut display.session_side_bar_collapsed) as |section|}}
-  {{#if section.side}}
-    {{session-overview session_model=session_model metadata=metadata user=user timings=timings}}
-  {{else}}
-    <div class="navigation">
-      <div class="tabs">
-	<ul class="nav nav-tabs">
-	  {{#link-to 'session.index' tagName='li'}}
-	    <a href>Tests </a>
-	  {{/link-to}}
-	  {{#if session_model.num_errors}}
-	    {{#link-to 'session.errors' tagName='li'}}
-	      <a href>Session Errors <span class="label label-danger">{{session_model.num_errors}}</span></a>
-	    {{/link-to}}
-	  {{/if}}
+{{#bs-nav type="tabs" as |nav|}}
 
-          {{#if session_model.num_interruptions}}
-	    {{#link-to 'session.interruptions' tagName='li'}}
-	      <a href>Interruptions <span class="label label-danger">{{session_model.num_interruptions}}</span></a>
-	    {{/link-to}}
-	  {{/if}}
-
-	  {{#with session_model.num_warnings as |num_warnings|}}
-	    {{#if num_warnings}}
-	      {{#link-to 'session.warnings' tagName='li'}}
-		<a href>Session Warnings <span class="label label-warning">{{num_warnings}}</span></a>
-	      {{/link-to}}
-	    {{/if}}
-	  {{/with}}
-
-	  {{#link-to 'session.info' tagName='li'}}
-	    <a href>Info
-	    </a>
-	  {{/link-to}}
-    {{#if session_model.is_parent_session}}
-      {{#link-to 'session.children' tagName='li'}}
-      <a href>Child Sessions
-      </a>
-      {{/link-to}}
-    {{/if}}
-
-	  {{#link-to 'session.comments' tagName='li'}}
-	    <a href>Comments
-	      {{#if session_model.num_comments}}
-		<div class="label label-default">{{session_model.num_comments}}</div>
-	      {{/if}}
-	    </a>
-	  {{/link-to}}
-
-	  {{#if current_test }}
-	    {{#if (s-starts-with router.currentRouteName 'session.test') }}
-	      <li class="active">
-	        <a>
-		  Test #{{current_test.test_index}}
-	        </a>
-	      </li>
-	    {{else}}
-	      <li>
-	        {{#link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
-		  Test #{{current_test.test_index}}
-	        {{/link-to}}
-	      </li>
-	    {{/if}}
-	  {{/if}}
-
-	</ul>
-      </div>
-      <div class="filter-controls">
-	{{outlet "filter-controls"}}
-      </div>
-    </div>
-    {{outlet}}
+  {{#nav.item}}{{#nav.link-to 'session.index'}}Overview{{/nav.link-to}}{{/nav.item}}
+  {{#if session_model.num_errors}}
+    {{#nav.item}}{{#nav.link-to 'session.errors'}}Session Errors <span class="badge badge-pill badge-danger">{{session_model.num_errors}}</span>{{/nav.link-to}}{{/nav.item}}
   {{/if}}
-{{/collapsible-sidebar}}
+  {{#if session_model.num_interruptions}}
+	{{#nav.item}}
+      {{#nav.link-to 'session.interruptions'}}
+	    Interruptions <span class="badge badge-pill badge-danger">{{session_model.num_interruptions}}</span>
+	  {{/nav.link-to}}
+    {{/nav.item}}
+  {{/if}}
 
+  {{#with session_model.num_warnings as |num_warnings|}}
+	{{#if num_warnings}}
+	  {{#nav.item}}{{#nav.link-to "session.warnings" session_model.display_id}}
+		Session Warnings <span class="badge badge-pill badge-warning">{{num_warnings}}</span>
+	  {{/nav.link-to}}{{/nav.item}}
+	{{/if}}
+  {{/with}}
 
-{{#if investigating}}
-  {{#modal-dialog close="cancel_investigating"
-     targetAttachment="center"
-     translucentOverlay=true}}
-    <p>You are marking this session as <strong>investigted</strong></p>
-    <div class="container-fluid">
-      {{textarea value=investigate_conclusion cols="80" rows="6" class="form-control" placeholder="Investigation conclusion (e.g. 'Test bug')"}}
-    </div>
-    <div class="container-fluid add-margin-top">
-      {{#if investigate_conclusion}}
-	<button class="btn btn-default pull-right add-margin-left" {{action "finish_investigating"}}>Submit</button>
-      {{/if}}
-      <button class="btn btn-danger pull-right add-margin-left" {{action "cancel_investigating"}}>Cancel</button>
-    </div>
-  {{/modal-dialog}}
-{{/if}}
+  {{#nav.item}}{{#nav.link-to "session.info"}}Info{{/nav.link-to}}{{/nav.item}}
+
+  {{#if session_model.is_parent_session}}
+    {{#nav.item}}
+      {{#nav.link-to "session.children"}}
+        Child Sessions
+      {{/nav.link-to}}
+    {{/nav.item}}
+  {{/if}}
+
+  {{#nav.item}}
+    {{#nav.link-to "session.comments"}}
+      Comments
+	  {{#if session_model.num_comments}}
+		<div class="badge badge-pill badge-secondary">{{session_model.num_comments}}</div>
+	  {{/if}}
+	{{/nav.link-to}}
+  {{/nav.item}}
+
+  {{#if current_test }}
+	{{#if (s-starts-with router.currentRouteName 'session.test') }}
+      {{#nav.item}}
+        <a class="nav-link">
+		  Test #{{current_test.test_index}}
+        </a>
+      {{/nav.item}}
+	{{else}}
+	  {{#nav.item}}
+	    {{#nav.link-to (if current_test.has_any_error 'session.test.errors' 'session.test') session_model.id current_test.id}}
+		  Test #{{current_test.test_index}}
+	    {{/nav.link-to}}
+	  {{/nav.item}}
+	{{/if}}
+  {{/if}}
+{{/bs-nav}}
+
+<div>
+  {{outlet}}
+</div>

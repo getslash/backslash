@@ -189,8 +189,7 @@ def report_test_end(id: int, duration: (float, int)=None):
         abort(requests.codes.not_found)
 
     if test.end_time is not None:
-        # we have a test, but it already ended
-        error_abort('Test already ended', code=requests.codes.conflict)
+        return
 
     with updating_session_counters(test):
         if duration is None:

@@ -1,7 +1,6 @@
-import { hash } from 'rsvp';
-import Route from '@ember/routing/route';
-import AuthenticatedRouteMixin
-  from "ember-simple-auth/mixins/authenticated-route-mixin";
+import { hash } from "rsvp";
+import Route from "@ember/routing/route";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 
 export default Route.extend(AuthenticatedRouteMixin, {
   model: function(params) {
@@ -12,9 +11,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
       error: this.store.queryRecord("error", {
         session_id: session.id,
         page: params.index,
-        page_size: 1
+        page_size: 1,
       }),
-      session: this.store.find("session", session.id)
+      session: this.store.find("session", session.id),
+      c,
     });
   },
 
@@ -25,5 +25,5 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   renderTemplate: function() {
     this.render("single_error");
-  }
+  },
 });

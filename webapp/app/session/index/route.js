@@ -1,7 +1,7 @@
-import { hash } from 'rsvp';
-import Route from '@ember/routing/route';
-import AuthenticatedRouteMixin
-  from "ember-simple-auth/mixins/authenticated-route-mixin";
+import { hash } from "rsvp";
+import { inject as service } from "@ember/service";
+import Route from "@ember/routing/route";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import RefreshableRouteMixin from "../../mixins/refreshable-route";
 import StatusFilterableRoute from "../../mixins/status-filterable/route";
 import SearchRouteMixin from "../../mixins/search-route";
@@ -15,23 +15,37 @@ export default Route.extend(
     title: "Session",
     queryParams: {
       show_planned: {
-        refreshModel: true
+        refreshModel: true,
       },
       search: {
         replace: true,
-        refreshModel: true
+        refreshModel: true,
+      },
+      sort: {
+        refreshModel: true,
       },
     },
 
+    runtime_config: service(),
+
     model: function(params) {
       let session = this.modelFor("session").session_model;
+      let metadata = this.modelFor("session").metadata;
       const session_id = parseInt(session.id);
 
       let query_params = {
         session_id: session_id,
         page: params.page,
-        page_size: params.page_size
+        page_size: params.page_size,
       };
+
+      // TODO: remove workaround for cross-backend testing
+      if (
+        !this.runtime_config.get_cached("version").startsWith("2.15.") ||
+        this.runtime_config.get_cached("debug")
+      ) {
+        query_params["sort"] = params.sort;
+      }
 
       let filters = {};
       for (let key in params) {
@@ -44,8 +58,11 @@ export default Route.extend(
       }
       return hash({
         session_model: session,
+        metadata: metadata,
+        user: this.modelFor("session").user,
         tests: this.store.query("test", query_params),
-        filters: filters
+        timings: this.modelFor("session").timings,
+        filters: filters,
       }).catch(function(exception) {
         let message = exception.errors.get("firstObject");
         if (message) {
@@ -58,14 +75,6 @@ export default Route.extend(
           return { error: message };
         }
         throw exception; //reraise
-      });
-    },
-
-    renderTemplate() {
-      this._super(...arguments);
-      this.render("filter-controls", {
-        into: "session",
-        outlet: "filter-controls"
       });
     },
 
