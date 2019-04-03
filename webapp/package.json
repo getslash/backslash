@@ -24,6 +24,7 @@
     "broccoli-asset-rev": "^3.0.0",
     "broccoli-funnel": "^2.0.1",
     "broccoli-merge-trees": "^3.0.0",
+    "corejs-typeahead": "^1.2.1",
     "ember-ajax": "^5.0.0",
     "ember-aupac-typeahead": "3.1.0",
     "ember-bootstrap": "^2.6.0",
@@ -74,7 +75,8 @@
     "qunit-dom": "^0.8.0",
     "sass": "^1.17.3",
     "showdown": "^1.6.4",
-    "torii": "^0.10.1"
+    "torii": "^0.10.1",
+    "twix": "^1.2.1"
   },
   "engines": {
     "node": "6.* || 8.* || >= 10.*"

@@ -1,9 +1,8 @@
-import { hash } from 'rsvp';
-import { inject as service } from '@ember/service';
+import { hash } from "rsvp";
+import { inject as service } from "@ember/service";
 
 import PaginatedFilteredRoute from "../routes/paginated_filtered_route";
-import AuthenticatedRouteMixin
-  from "ember-simple-auth/mixins/authenticated-route-mixin";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
 import PollingRoute from "../mixins/polling-route";
 import ScrollToTopMixin from "../mixins/scroll-top";
 import SearchRouteMixin from "../mixins/search-route";
@@ -16,7 +15,6 @@ export default PaginatedFilteredRoute.extend(
   SearchRouteMixin,
   StatusFilterableRoute,
   {
-    offline: service(),
     titleToken: "Sessions",
 
     user_prefs: service(),
@@ -24,21 +22,21 @@ export default PaginatedFilteredRoute.extend(
     queryParams: {
       search: {
         replace: true,
-        refreshModel: true
+        refreshModel: true,
       },
       page: {
-        refreshModel: true
+        refreshModel: true,
       },
       page_size: {
-        refreshModel: true
-      }
+        refreshModel: true,
+      },
     },
 
     model(params) {
       let query_params = {
         page: params.page,
         filter: params.filter,
-        page_size: params.page_size
+        page_size: params.page_size,
       };
       let filters = {};
       for (let key in params) {
@@ -56,23 +54,22 @@ export default PaginatedFilteredRoute.extend(
         query_params.user_id = user_id;
       }
       return hash({
-          sessions: this.store.query("session", query_params),
-          filters: this.transfer_filter_params(params),
-          __prefs: this.get("user_prefs").ensure_cache_populated()
-        })
-        .catch(function(exception) {
-          let message = exception.errors.get("firstObject");
-          if (message) {
-            if (message.detail === "The adapter operation was aborted") {
-              return false;
-            }
-            if (message.status === "404") {
-              return { error: message.title };
-            }
-            return { error: message };
+        sessions: this.store.query("session", query_params),
+        filters: this.transfer_filter_params(params),
+        __prefs: this.get("user_prefs").ensure_cache_populated(),
+      }).catch(function(exception) {
+        let message = exception.errors.get("firstObject");
+        if (message) {
+          if (message.detail === "The adapter operation was aborted") {
+            return false;
           }
-          throw exception; //reraise
-        });
+          if (message.status === "404") {
+            return { error: message.title };
+          }
+          return { error: message };
+        }
+        throw exception; //reraise
+      });
     },
 
     resetController(controller, isExiting) {
@@ -97,7 +94,6 @@ export default PaginatedFilteredRoute.extend(
       this._super(...arguments);
       controller.set("error", null);
       controller.setProperties(model);
-      this.get("offline");
       if (!model.error) {
         controller.set("page", model.sessions.get("meta.page"));
         controller.set("page_size", model.sessions.get("meta.page_size"));
@@ -107,6 +103,5 @@ export default PaginatedFilteredRoute.extend(
     get_user_id_parameter: function() {
       return undefined;
     },
-
   }
 );

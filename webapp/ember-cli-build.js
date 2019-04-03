@@ -44,8 +44,7 @@ module.exports = function(/*defaults*/) {
   // along with the exports of each module as its value.
   app.import("node_modules/js-md5/src/md5.js");
   app.import("node_modules/moment/moment.js");
-  app.import("bower_components/twix/dist/twix.min.js");
-  app.import("bower_components/Heyoffline/heyoffline.js");
+  app.import("node_modules/twix/dist/twix.min.js");
 
   return mergeTrees([app.toTree()]);
 };
