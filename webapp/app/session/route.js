@@ -11,7 +11,6 @@ export default Route.extend(
   ScrollToTopMixin,
   PollingRoute,
   {
-    offline: service(),
     api: service(),
     title: "Session Tests",
     favicon: service(),
@@ -81,7 +80,6 @@ export default Route.extend(
     setupController: function(controller, model) {
       this._super(controller, model);
       controller.setProperties(model);
-      this.get("offline");
     },
 
     resetController(controller) {

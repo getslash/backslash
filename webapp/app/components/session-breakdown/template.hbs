@@ -4,40 +4,46 @@
 <div class="inner">
 
   <div class="success">
-    {{#elements/tool-tip title=(concat session.num_successful_tests " successful tests")}}
-      <i class="fa fa-check"></i> {{session.num_successful_tests}}
-    {{/elements/tool-tip}}
+
+    {{#bs-tooltip}}
+      {{session.num_successful_tests}} successful tests
+    {{/bs-tooltip}}
+    <i class="fa fa-check"></i> {{session.num_successful_tests}}
   </div>
 
   {{# with (add session.num_failed_tests session.num_error_tests) as |num_errors|}}
     <div class="failed">
-      {{#elements/tool-tip title=(concat num_errors " unsuccessful tests")}}
-        <i class="fa fa-times"></i> {{num_errors}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{session.num_errors}} unsuccessful tests
+      {{/bs-tooltip}}
+      <i class="fa fa-times"></i> {{num_errors}}
     </div>
   {{/with}}
 
   {{#if session.num_skipped_tests}}
     <div class="skipped">
-      {{#elements/tool-tip title=(concat session.num_skipped_tests " skipped tests")}}
-        <i class="fa fa-share"></i> {{session.num_skipped_tests}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{session.num_skipped_tests}} skipped tests
+      {{/bs-tooltip}}
+      <i class="fa fa-share"></i> {{session.num_skipped_tests}}
     </div>
   {{/if}}
 
   {{#if session.num_interrupted_tests}}
     <div class="interrupted">
-      {{#elements/tool-tip title=(concat session.num_interrupted_tests " interrupted tests")}}
-        <i class="fa fa-exclamation-circle"></i> {{session.num_interrupted_tests}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{session.num_interrupted_tests}} interrupted tests
+      {{/bs-tooltip}}
+      <i class="fa fa-exclamation-circle"></i> {{session.num_interrupted_tests}}
     </div>
   {{/if}}
 
   {{#with (sub (or session.total_num_tests session.num_finished_tests) session.num_finished_tests) as |num_not_run|}}
     <div class="not-run">
-      {{#elements/tool-tip title=(concat num_not_run " tests not run")}}
-        <i class="fa fa-question-circle"></i> {{num_not_run}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{num_not_run}} tests not run
+      {{/bs-tooltip}}
+      <i class="fa fa-question-circle"></i> {{num_not_run}}
     </div>
 
   {{/with}}
@@ -45,20 +51,20 @@
 
   {{#if session.num_errors}}
     <div class="errors">
-      {{#elements/tool-tip title=(concat session.num_errors " session errors")}}
-        <i class="fa fa-exclamation-circle"></i> {{session.num_errors}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{session.num_errors}} session errors
+      {{/bs-tooltip}}
+      <i class="fa fa-exclamation-circle"></i> {{session.num_errors}}
     </div>
   {{/if}}
 
 
   {{#if session.total_num_warnings}}
     <div class="warning">
-      {{#elements/tool-tip title=(concat session.total_num_warnings " total warnings")}}
-        <i class="fa fa-exclamation-triangle"></i> {{session.total_num_warnings}}
-      {{/elements/tool-tip}}
+      {{#bs-tooltip}}
+        {{session.total_num_warnings}} total warnings
+      {{/bs-tooltip}}
+      <i class="fa fa-exclamation-triangle"></i> {{session.total_num_warnings}}
     </div>
   {{/if}}
-
-
 </div>

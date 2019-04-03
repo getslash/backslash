@@ -1,4 +1,6 @@
-{{#elements/tool-tip title=status_lower}}
+{{#bs-tooltip}}
+  {{status_lower}}
+{{/bs-tooltip}}
 {{#if (eq status_lower "success")}}
   <i class="fa fa-check"></i>
 {{else}}
@@ -19,6 +21,4 @@
       {{/if}}
     {{/if}}
   {{/if}}
-
 {{/if}}
-{{/elements/tool-tip}}
