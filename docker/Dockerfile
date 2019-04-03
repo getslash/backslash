@@ -1,9 +1,9 @@
 FROM node:8 as frontend-builder
 # build frontend
-RUN npm install -g ember-cli bower
+RUN npm install -g ember-cli
 
 ADD ./webapp/ /frontend/
-RUN cd /frontend/ && yarn install && bower install --allow-root
+RUN cd /frontend/ && yarn install
 RUN cd /frontend/ && node_modules/.bin/ember build --environment production
 
 FROM ekidd/rust-musl-builder:stable as rust-builder

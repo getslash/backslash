@@ -7,5 +7,5 @@ testdb:
 	pipenv run manage db upgrade
 
 clean:
-	rm -rf .env webapp/tmp/ webapp/node_modules/ webapp/bower_components/ static
+	rm -rf .env webapp/tmp/ webapp/node_modules/ static
 	find . -name "*.pyc" -delete

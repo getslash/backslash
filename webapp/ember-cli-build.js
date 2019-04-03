@@ -11,10 +11,6 @@ module.exports = function(/*defaults*/) {
       useScss: true,
     },
 
-    "ember-cli-tooltipster": {
-      importTooltipsterBorderless: true,
-    },
-
     vendorFiles: {
       "handlebars.js": null,
     },
