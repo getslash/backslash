@@ -37,7 +37,10 @@ export default Component.extend({
     return returned;
   }),
 
-  click(e) {
+  mouseUp(e) {
+    if (window.getSelection().type == "Range") {
+      return;
+    }
     e.stopPropagation();
     return this.get("router").transitionTo("test", this.get("test.display_id"));
   },
