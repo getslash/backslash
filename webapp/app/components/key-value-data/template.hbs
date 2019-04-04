@@ -17,7 +17,8 @@
             {{var.name}}
           {{/if}}
         </td>
-        <td>{{#if (s-starts-with var.value "http://" "https://")}}{{linkify var.value}}{{else}}{{var.value}}{{/if}}</td>
+        <td>{{#if (s-starts-with var.value "http://" "https://")}}{{linkify var.value}}{{else}}{{var.value}}{{/if}}{{#copy-button clipboardText=var.value classNames="ml-2" title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
+        </td>
       </tr>
     {{/each}}
 
