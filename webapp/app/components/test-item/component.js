@@ -15,20 +15,25 @@ export default Component.extend({
   test: oneWay("item"),
 
   display_params: computed("test.{parameters,variation}", function() {
-    let variation = this.get("test.variation");
-    let params = this.get("test.parameters");
-    if (!params) {
-      params = variation;
-    }
-    if (variation) {
-      for (var key in variation) {
-        if (!Number.isInteger(variation[key])) {
-          params[key] = variation[key];
+    let seen = new Set();
+    let returned = [];
+
+    for (let params of [
+      this.get("test.parameters"),
+      this.get("test.variation"),
+    ]) {
+      if (!params) {
+        continue;
+      }
+      for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+          if (!seen.has(key)) {
+            returned.push({ name: key, value: params[key] });
+            seen.add(key);
+          }
         }
       }
     }
-
-    let returned = assign({}, this.get("variation"), params);
     return returned;
   }),
 

@@ -31,11 +31,11 @@
       <div class="col text-truncate">
         {{#if test.variation}}
             <div class="params text-muted">
-              {{#each-in display_params as |name value|}}
+              {{#each display_params as |param|}}
                 <div class="param text-monospace">
-                  {{name}}=<code>{{if value value 'None'}}</code>
+                  {{param.name}}=<code>{{if (is-null param.value) 'None' param.value}}</code>
                 </div>
-              {{/each-in}}
+              {{/each}}
             </div>
         {{else}}
           &nbsp;
