@@ -1,14 +1,24 @@
 <div class="container-fluid test-overview border border-{{status-to-brand test_model.computed_status}}">
-  <div class="row">
-    <div class="col p-2 bg-{{status-to-brand test_model.computed_status}} text-white">
+  <div class="row bg-{{status-to-brand test_model.computed_status}} text-white">
+    <div class="col p-2">
       {{star-marker starred_object=test_model}}
-      Test #{{test_model.test_index}} <div class="badge badge-light ml-2">{{test_model.status_lowercase}}</div>
+      <span class="mr-3 text-light">
+        #{{test_model.test_index}}
+      </span>
+      <span class="d-none d-md-inline-block">
+        {{test_model.info.name}}
+      </span>
+      <div class="badge badge-light ml-2">{{test_model.status_lowercase}}</div>
       {{#if test_model.status_description}}
         <div class="badge badge-dark text-white ml-2">{{test_model.status_description}}</div>
       {{/if}}
       {{#if (and test_model.is_skipped test_model.skip_reason)}}
         <div class="badge badge-warning border border-dark ml-2">{{test_model.skip_reason}}</div>
       {{/if}}
+
+    </div>
+    <div class="col p-2 d-flex justify-content-end">
+      <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="ml-3 text-white">{{fa-icon "history"}} {{#bs-tooltip placement="auto"}}Previous Executions{{/bs-tooltip}}<span class="d-none d-xl-inline-block">Previous Executions...</span> </a>
     </div>
   </div>
 
@@ -18,7 +28,7 @@
       <div class="row">
         <div class="col">
           {{fa-icon "info-circle"}}
-          {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}} <a href="#/tests?search=test_info_id%3D{{test_model.test_info_id}}" class="ml-3">{{fa-icon "history"}} {{#bs-tooltip placement="auto"}}Previous Executions{{/bs-tooltip}}</a>
+          {{elements/copyable-text copy_value=(format-test-name test_model.info) value=(format-test-name test_model.info with_filename=false)}}
         </div>
       </div>
       <div class="row">
