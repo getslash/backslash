@@ -18,7 +18,10 @@ export default Component.extend({
   in_pdb: oneWay("session.in_pdb"),
   interrupted: and("item.finished_running", "item.has_tests_left_to_run"),
 
-  click() {
+  mouseUp() {
+    if (window.getSelection().type == "Range") {
+      return;
+    }
     return this.get("router").transitionTo(
       "session",
       this.get("session.display_id")

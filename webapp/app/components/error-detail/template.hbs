@@ -22,6 +22,10 @@
     </div>
     {{#each error.traceback as |frame|}}
       {{errors/traceback-frame frame=frame override_expand=override_expand}}
+    {{else}}
+      <div class="alert alert-danger m-5">
+        No Traceback frames available
+      </div>
     {{/each}}
   {{/if}}
 {{/if}}

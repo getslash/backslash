@@ -12,7 +12,6 @@ from .bootstrapping import from_env, from_project_root
 
 _NPM_PREFIX = from_project_root('.env/npm')
 _EMBER_EXECUTABLE = os.path.join(_NPM_PREFIX, 'bin', 'ember')
-_BOWER_EXECUTABLE = os.path.join(_NPM_PREFIX, 'bin', 'bower')
 
 _logger = logbook.Logger(__name__)
 
@@ -49,9 +48,8 @@ def _bootstrap_frontend():
             from_env("frontend.timestamp"), ["webapp/package.json"]) as uptodate:
         if not uptodate:
             _logger.info("Bootstrapping frontend environment...")
-            _execute("npm install -g ember-cli bower")
+            _execute("npm install -g ember-cli")
             _execute("npm install")
-            _execute("{} install --allow-root".format(_BOWER_EXECUTABLE))
 
 @contextmanager
 def _get_timestamp_update_context(timestamp_path, paths):

@@ -12,6 +12,8 @@
 .clickable
 {
     cursor: pointer;
+}
+.no-select {
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;

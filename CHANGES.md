@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.16.1
+
+* UI fixes and corrections
+
 ## Version 2.16.0
 
 * Major UI overhaul

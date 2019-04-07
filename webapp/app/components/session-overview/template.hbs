@@ -10,84 +10,91 @@
           {{subject-info subjects=session_model.subjects}}
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          {{#if session_model.user_email}}
-            <span class="d-none d-lg-inline-block">Started by</span>{{#link-to "user.sessions" session_model.user_email}}
-              {{user.display_name}}
+      {{#if (not short)}}
 
-            {{/link-to}}
-            {{#if session_model.real_email}}
-              <div class="d-none d-md-block text-muted"><small>Through {{session_model.real_email}}</small></div>
+        <div class="row">
+          <div class="col">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            {{#if session_model.user_email}}
+              <span class="d-none d-lg-inline-block">Started by</span>{{#link-to "user.sessions" session_model.user_email}}
+                {{user.display_name}}
+
+              {{/link-to}}
+              {{#if session_model.real_email}}
+                <div class="d-none d-md-block text-muted"><small>Through {{session_model.real_email}}</small></div>
+              {{/if}}
+
             {{/if}}
-
-          {{/if}}
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          {{#each session_model.labels as |label|}}
-            {{item-label label=label}}
-          {{/each}}
+        <div class="row">
+          <div class="col">
+            {{#each session_model.labels as |label|}}
+              {{item-label label=label}}
+            {{/each}}
+          </div>
         </div>
-      </div>
+      {{/if}}
     </div>
     <!-- middle left column -->
     <div class="col-sm-6 col-lg-3">
-      <div class="row">
-        <div class="col text-muted">
-          <small>
-            {{fa-icon "calendar"}}
-            {{moment-time unix=session_model.start_time}} &rarr;
-            {{moment-time unix=session_model.end_time}}
-          </small>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-muted">
-          <div>
+      {{#if (not short)}}
+
+        <div class="row">
+          <div class="col text-muted">
             <small>
-              {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+              {{fa-icon "calendar"}}
+              {{moment-time unix=session_model.start_time}} &rarr;
+              {{moment-time unix=session_model.end_time}}
             </small>
           </div>
         </div>
-      </div>
-      <div class="row d-none d-lg-block">
-        <div class="col text-muted">
-          {{#each timings as |timing|}}
-            <div class="row faint">
-              <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
-              <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+        <div class="row">
+          <div class="col text-muted">
+            <div>
+              <small>
+                {{fa-icon "clock-o"}} Ran for {{humanized-duration start_time=session_model.start_time end_time=session_model.end_time}}
+              </small>
             </div>
-          {{/each}}
-
+          </div>
         </div>
-      </div>
+        <div class="row d-none d-lg-block">
+          <div class="col text-muted">
+            {{#each timings as |timing|}}
+              <div class="row faint">
+                <div class="col-sm-6"><small><i class="fa fa-clock-o"></i> {{timing.name}}</small></div>
+                <div class="col-sm-6"><small>{{humanized-duration start_time=0 end_time=timing.total}}</small></div>
+              </div>
+            {{/each}}
+
+          </div>
+        </div>
+      {{/if}}
     </div>
     <!-- middle right column -->
     <div class="d-none d-lg-block col-lg-3">
-      <div class="row">
-        <div class="col">
+      {{#if (not short)}}
+        <div class="row">
+          <div class="col">
           {{#if session_model.infrastructure}}
-            <small>
-              <span class="text-muted text-nowrap mr-5">
-                {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
-                {{#with (get metadata "slash::version") as |slash_version|}}
-                  <span class="badge badge-pill">{{slash_version}}</span>
+              <small>
+                <span class="text-muted text-nowrap mr-5">
+                  {{infrastructure-icon session_model.infrastructure}} {{session_model.infrastructure}}
+                  {{#with (get metadata "slash::version") as |slash_version|}}
+                    <span class="badge badge-pill">{{slash_version}}</span>
                 {{/with}}
               </span>
             </small>
           {{/if}}
           {{#each metadata_display_items as |item|}}
-            {{#with (get metadata item.key) as |value|}}
-              {{#if value}}
-                <small>
-                  <span class="text-muted text-nowrap mr-5">
-                    <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
+              {{#with (get metadata item.key) as |value|}}
+                {{#if value}}
+                  <small>
+                    <span class="text-muted text-nowrap mr-5">
+                      <i class="fa fa-info-circle"></i> {{item.name}}: <strong>{{get metadata item.key}}</strong>
                   </span>
                 </small>
 
@@ -95,8 +102,11 @@
             {{/with}}
           {{/each}}
         </div>
-      </div>
+        </div>
+      {{/if}}
     </div>
+
+
     <!-- right column -->
     <div class="col-sm-2">
       <div class="row">
@@ -110,49 +120,51 @@
     </div>
   </div>
 
-  <div class="row p-2">
-    <div class="col-sm-12">
-      {{#if session_model.is_parent_session}}
-        <div class="badge badge-light border border-dark">
-          {{fa-icon "random"}} Parallel Session
-        </div>
-      {{/if}}
+  {{#if (not short)}}
+    <div class="row p-2">
+      <div class="col-sm-12">
+        {{#if session_model.is_parent_session}}
+          <div class="badge badge-light border border-dark">
+            {{fa-icon "random"}} Parallel Session
+          </div>
+        {{/if}}
 
-      {{#if session_model.parent_logical_id}}
-        <div class="badge badge-light border border-dark">
-          {{fa-icon "random"}}
-          {{#link-to "session" session_model.parent_logical_id}}
-            Parallel child #{{session_model.child_id}}
-          {{/link-to}}
-        </div>
-      {{/if}}
-
-
-      {{#if session_model.in_pdb }}
-        {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
-          Session is currently being investigated using an interactive debugger
-        {{/info-badge}}
-      {{/if}}
-
-      {{#if session_model.has_fatal_errors}}
-        {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
-          The session was terminated due to a fatal error encountered during its execution.
-        {{/info-badge}}
-      {{/if}}
-
-      {{#if session_model.is_abandoned}}
-        {{#info-badge icon="question" text="Abandoned"}}
-          Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
-        {{/info-badge}}
-      {{/if}}
-
-      {{#if session_model.reporting_stopped}}
-        {{#info-badge icon="exclamation-circle" text="Reporting Stopped" color="danger" fg="white"}}
-          Session stopped reporting to Backslash. Results might be incomplete.
-        {{/info-badge}}
-      {{/if}}
+        {{#if session_model.parent_logical_id}}
+          <div class="badge badge-light border border-dark">
+            {{fa-icon "random"}}
+            {{#link-to "session" session_model.parent_logical_id}}
+              Parallel child #{{session_model.child_id}}
+            {{/link-to}}
+          </div>
+        {{/if}}
 
 
+        {{#if session_model.in_pdb }}
+          {{#info-badge icon="chevron-right" color="warning" border="warning" text="pdb"}}
+            Session is currently being investigated using an interactive debugger
+          {{/info-badge}}
+        {{/if}}
+
+        {{#if session_model.has_fatal_errors}}
+          {{#info-badge icon="exclamation-circle" color="danger" text="Fatal" fg="white"}}
+            The session was terminated due to a fatal error encountered during its execution.
+          {{/info-badge}}
+        {{/if}}
+
+        {{#if session_model.is_abandoned}}
+          {{#info-badge icon="question" text="Abandoned"}}
+            Session stopped sending keepalives and therefore considered defunct. Keepalives stopped at {{moment-time unix=session_model.next_keepalive}}.
+          {{/info-badge}}
+        {{/if}}
+
+        {{#if session_model.reporting_stopped}}
+          {{#info-badge icon="exclamation-circle" text="Reporting Stopped" color="danger" fg="white"}}
+            Session stopped reporting to Backslash. Results might be incomplete.
+          {{/info-badge}}
+        {{/if}}
+
+
+      </div>
     </div>
-  </div>
+  {{/if}}
 </div>

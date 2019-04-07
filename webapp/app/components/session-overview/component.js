@@ -3,7 +3,7 @@ import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 
 export default Component.extend({
-  classNames: "p-3 session-overview",
+  classNames: "p-3 session-overview overview",
   session_model: null,
   user: null,
   metadata: null,

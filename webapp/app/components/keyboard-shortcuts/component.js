@@ -2,10 +2,7 @@ import $ from "jquery";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 import { getOwner } from "@ember/application";
-import {
-  bindKeyboardShortcuts,
-  unbindKeyboardShortcuts,
-} from "ember-keyboard-shortcuts";
+import { bindKeyboardShortcuts } from "ember-keyboard-shortcuts";
 
 let _keys = [
   {
@@ -26,7 +23,11 @@ let _keys = [
   },
   { key: "j", action: "jump_one_down", description: "Jump to next item" },
   { key: "k", action: "jump_one_up", description: "Jump to previous item" },
-
+  {
+    key: "o",
+    action: "toggle_session_overview",
+    description: "Toggle session overview when looking at tests",
+  },
   {
     key: "u",
     action: "goto_session_tests",
@@ -68,6 +69,7 @@ export default Component.extend({
 
   display: service(),
   store: service(),
+  router: service(),
 
   didInsertElement() {
     bindKeyboardShortcuts(this);
@@ -192,6 +194,17 @@ export default Component.extend({
 
     jump_one_up() {
       this.jump_one("after");
+    },
+
+    toggle_session_overview() {
+      const owner = getOwner(this);
+      let appcontroller = owner.lookup("controller:application");
+      let current_route = appcontroller.currentPath;
+      if (current_route.startsWith("session.test.")) {
+        owner
+          .lookup("controller:session.test")
+          .toggleProperty("show_session_overview");
+      }
     },
   },
 });

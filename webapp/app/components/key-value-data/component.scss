@@ -1,4 +1,7 @@
 & {
+    .copy-btn {
+        visibility: hidden;
+    }
     @extend .m-3;
     thead {
         background: $gray-100;
@@ -8,13 +11,15 @@
         @extend .py-2;
     }
     tbody tr  {
+        &:hover .copy-btn {
+            visibility: visible;
+        }
         td:nth-child(1) {
             @extend .text-nowrap;
             background: $gray-100;
         }
         td:nth-child(2) {
             @extend .text-monospace;
-            white-space: pre;
             width: 100%;
         }
     }

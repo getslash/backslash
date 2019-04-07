@@ -1,7 +1,12 @@
-{{#elements/tool-tip title=(if starred_object.is_starred "unstar test" "star test")}}
+{{#bs-tooltip}}
+  {{#if starred_object.is_starred}}
+    unstar test
+  {{else}}
+    star test
+  {{/if}}
+{{/bs-tooltip}}
 {{#if starred_object.is_starred}}
     <i class="fa fa-star mr-2 starred clickable" {{action "toggle" bubbles=false}}></i>
 {{else}}
     <i class="fa fa-star-o fainter mr-2 starred clickable" {{action "toggle" bubbles=false}}></i>
 {{/if}}
-{{/elements/tool-tip}}
