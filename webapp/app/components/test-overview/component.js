@@ -1,6 +1,7 @@
 import Component from "@ember/component";
 import EmberObject from "@ember/object";
 import { computed } from "@ember/object";
+import { oneWay } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 
 export default Component.extend({
@@ -12,8 +13,8 @@ export default Component.extend({
   test_metadata: null,
   test_model: null,
 
-  slash_tags: computed("metadata", function() {
-    let metadata = this.get("metadata");
+  slash_tags: computed("test_metadata", function() {
+    let metadata = this.get("test_metadata");
     if (!metadata) {
       return null;
     }
@@ -26,7 +27,6 @@ export default Component.extend({
     for (const [name, value] of Object.entries(tags.values)) {
       returned.push({ name: name, value: value });
     }
-
     for (let name of tags.names) {
       if (tags.values.hasOwnProperty(name)) {
         continue;
@@ -45,13 +45,11 @@ export default Component.extend({
     )) {
       let value = metadata[link.key];
       if (value) {
-        returned.push(
-          EmberObject.create({
-            name: link.name,
-            url: value,
-            icon: link.icon,
-          })
-        );
+        returned.push({
+          name: link.name,
+          url: value,
+          icon: link.icon,
+        });
       }
       return returned;
     }
