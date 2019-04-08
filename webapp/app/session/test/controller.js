@@ -1,5 +1,6 @@
 import Controller from "@ember/controller";
+import { inject } from "@ember/service";
 
 export default Controller.extend({
-  show_session_overview: false,
+  user_prefs: inject(),
 });

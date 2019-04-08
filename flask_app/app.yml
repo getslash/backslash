@@ -17,6 +17,7 @@ DEFAULT_PREFERENCES:
   time_format: "DD/MM/YYYY HH:mm:ss"
   start_page: 'default'
   show_avatars: false
+  show_tes_session_overviews: false
 
 display_names:
   subject: subject
