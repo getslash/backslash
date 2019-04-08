@@ -5,14 +5,19 @@ import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 
 export default Component.extend({
-  router: service(),
+  _router: service("router"),
 
+  tagName: "a",
   attributeBindings: ["href"],
-  classNames: "item test clickable",
+  classNames: "item test clickable d-block nodecoration",
   classNameBindings: "test.status_lowercase",
 
   session_model: null,
   test: oneWay("item"),
+
+  href: computed("test.display_id", function() {
+    return this._router.urlFor("session.test", this.get("test.display_id"));
+  }),
 
   display_params: computed("test.{parameters,variation}", function() {
     let seen = new Set();
@@ -36,12 +41,4 @@ export default Component.extend({
     }
     return returned;
   }),
-
-  mouseUp(e) {
-    if (window.getSelection().type == "Range") {
-      return;
-    }
-    e.stopPropagation();
-    return this.get("router").transitionTo("test", this.get("test.display_id"));
-  },
 });
