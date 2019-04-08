@@ -1,7 +1,7 @@
 {{#if filter_controller}}
 
   {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" closeOnMenuClick=false as |dd|}}
-    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "filter"}} <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "filter"}} <span class="d-none d-lg-inline-block">Filter</span> <span class="caret"></span>{{/dd.toggle}}
     {{#dd.menu as |menu|}}
 
       {{#each filters as |filter|}}
