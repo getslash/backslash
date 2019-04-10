@@ -17,7 +17,11 @@ export default Component.extend({
   test: oneWay("item"),
 
   href: computed("test.display_id", function() {
-    return this._router.urlFor("session.test", this.get("test.display_id"));
+    return this._router.urlFor(
+      "session.test",
+      this.get("test.session_display_id"),
+      this.get("test.display_id")
+    );
   }),
 
   display_params: computed("test.{parameters,variation}", function() {
