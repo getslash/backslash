@@ -19,4 +19,10 @@
             text-decoration: underline;
         }
     }
+
+    &.compact {
+        .params, .row:not(:first-child) {
+            display: none;
+        }
+    }
 }

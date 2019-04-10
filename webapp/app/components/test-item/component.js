@@ -10,7 +10,8 @@ export default Component.extend({
   tagName: "a",
   attributeBindings: ["href"],
   classNames: "item test clickable d-block nodecoration",
-  classNameBindings: "test.status_lowercase",
+  classNameBindings: ["test.status_lowercase", "compact_view:compact"],
+  compact_view: false,
 
   session_model: null,
   test: oneWay("item"),

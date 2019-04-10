@@ -12,7 +12,7 @@ export default Controller.extend(StatusFilterableController, SearchController, {
   page_size: config.APP.default_page_size,
 
   collection: oneWay("sessions"),
-
+  compact_view: null,
   api: service(),
   display: service(),
 

@@ -52,6 +52,19 @@
           Human-friendly times
         </a>
       {{/menu.item}}
+
+      {{#if (exists compact_view)}}
+        {{#menu.item}}
+          <a class="dropdown-item clickable" {{action (toggle "compact_view" this)}}>
+            {{#if compact_view}}
+              {{fa-icon "check" fixedWidth=true}}
+            {{else}}
+              {{fa-icon "fw"}}
+            {{/if}}
+            Compact view
+          </a>
+        {{/menu.item}}
+      {{/if}}
     {{/dd.menu}}
   {{/bs-dropdown}}
 {{/if}}

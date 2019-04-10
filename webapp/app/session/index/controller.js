@@ -15,6 +15,7 @@ export default PaginatedFilteredController.extend(
     collection: oneWay("tests"),
     sort: "test_index",
     sort_options: ["start_time", "test_index"],
+    compact_view: false,
 
     available_page_sizes: config.APP.available_page_sizes,
 
