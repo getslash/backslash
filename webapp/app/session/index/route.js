@@ -39,13 +39,7 @@ export default Route.extend(
         page_size: params.page_size,
       };
 
-      // TODO: remove workaround for cross-backend testing
-      if (
-        !this.runtime_config.get_cached("version").startsWith("2.15.") ||
-        this.runtime_config.get_cached("debug")
-      ) {
-        query_params["sort"] = params.sort;
-      }
+      query_params["sort"] = params.sort;
 
       let filters = {};
       for (let key in params) {
