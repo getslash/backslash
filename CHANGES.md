@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 2.16.2
+
+* Add optional compact view for tests - can be toggled both from the results bar and through the 'c'
+  keyboard shortcut
+* Session overview in test view is now a user preference that can be set to show or hide the session
+  details by default
+* Restored accidentally removed metadata links for tests
+* Bug fixes
+
 ## Version 2.16.1
 
 * UI fixes and corrections
