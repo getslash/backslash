@@ -15,6 +15,11 @@ let _keys = [
     action: "toggle_human_times",
     description: "Toggles human-readable times",
   },
+  {
+    key: "c",
+    action: "toggle_compact_view",
+    description: "Toggles compact view where available",
+  },
   { key: "a", action: "filter_none", description: "Show all entities" },
   {
     key: "f",
@@ -170,6 +175,16 @@ export default Component.extend({
 
     toggle_human_times() {
       this.get("display").toggleProperty("humanize_times");
+    },
+
+    toggle_compact_view() {
+      let approute = getOwner(this).lookup("route:application");
+      let appcontroller = getOwner(this).lookup("controller:application");
+      let path = appcontroller.currentPath;
+      let controller = approute.controllerFor(path);
+      if (controller.get("compact_view") !== undefined) {
+        controller.toggleProperty("compact_view");
+      }
     },
 
     filter_only_failed() {
