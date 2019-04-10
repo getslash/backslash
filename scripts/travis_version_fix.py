@@ -10,3 +10,6 @@ if __name__ == "__main__":
 
     with open('flask_app/__version__.py', 'w') as f:
         print(f'__version__ = "{version}"', file=f)
+
+    with open('webapp/app/utils/ui_version.js', 'w') as f:
+        print(f'export default "{version}";', file=f)

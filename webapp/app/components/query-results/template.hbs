@@ -1,4 +1,4 @@
-{{results-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages page_size=(mut page_size) filter_controller=filter_controller sort=(mut sort) sort_options=sort_options compact_view=(mut compact_view)}}
+{{results-nav page=(mut page) has_next=meta.has_more num_pages=meta.num_pages page_size=(mut page_size) filter_controller=filter_controller sort=(mut sort) sort_options=sort_options compact_view=(mut compact_view) show_settings=true}}
 
 {{#each results as |result|}}
   {{component (concat result.type "-item") item=result show_subjects=show_subjects  session_model=session_model show_user=show_users compact_view=compact_view}}
