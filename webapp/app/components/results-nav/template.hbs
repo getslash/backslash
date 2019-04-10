@@ -36,23 +36,25 @@
   {{/bs-dropdown}}
 {{/if}}
 
-{{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
-  {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "cog"}} <span class="d-none d-lg-inline-block">
-    Settings
-  </span> <span class="caret"></span>{{/dd.toggle}}
-  {{#dd.menu as |menu|}}
-    {{#menu.item}}
-      <a class="dropdown-item clickable" {{action (toggle "humanize_times" display)}}>
-        {{#if display.humanize_times}}
-          {{fa-icon "check" fixedWidth=true}}
-        {{else}}
-          {{fa-icon "fw"}}
-        {{/if}}
-        Human-friendly times
-      </a>
-    {{/menu.item}}
-  {{/dd.menu}}
-{{/bs-dropdown}}
+{{#if show_settings}}
+  {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
+    {{#dd.toggle classNames="faint nodecoration"}}{{fa-icon "cog"}} <span class="d-none d-lg-inline-block">
+      Settings
+    </span> <span class="caret"></span>{{/dd.toggle}}
+    {{#dd.menu as |menu|}}
+      {{#menu.item}}
+        <a class="dropdown-item clickable" {{action (toggle "humanize_times" display)}}>
+          {{#if display.humanize_times}}
+            {{fa-icon "check" fixedWidth=true}}
+          {{else}}
+            {{fa-icon "fw"}}
+          {{/if}}
+          Human-friendly times
+        </a>
+      {{/menu.item}}
+    {{/dd.menu}}
+  {{/bs-dropdown}}
+{{/if}}
 
 {{#if sort_options}}
   {{#bs-dropdown classNames="justify-content-center align-self-center mr-2" as |dd|}}
