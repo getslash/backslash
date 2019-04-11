@@ -1,16 +1,16 @@
 <div class="container-fluid mt-3">
   <div class="row p-1">
-    <div class="col p-3 border border-light">
+    <div class="col p-3 ">
       <h4>Date format</h4>
       {{multi-toggle value=user_prefs.time_format options=time_formats display=display_time_formats action=(action "choose_option" "time_format") saving=saving}}
     </div>
   </div>
   <div class="row">
-    <div class="col-3 p-3 m-1 border border-light">
+    <div class="col-3 p-3 m-1 ">
       <h4>Landing Page</h4>
       {{multi-toggle value=user_prefs.start_page options=start_pages action=(action "choose_option" "start_page") saving=saving}}
     </div>
-    <div class="col-3 p-3 m-1 border border-light">
+    <div class="col-3 p-3 m-1 ">
       <h4>Misc Display Options</h4>
       <div class="d-flex mb-1 justify-content-between">
         Show avatars {{boolean-toggle action=(action "toggle_option" "show_avatars") value=user_prefs.show_avatars}}
