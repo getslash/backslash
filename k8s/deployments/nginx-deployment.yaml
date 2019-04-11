@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: nginx
+    spec:
+      containers:
+      - args:
+        - dockerize
+        - -timeout
+        - 3600s
+        - -wait
+        - http://python-backend-api:8000
+        - -wait
+        - http://python-backend-ui:8000
+        - -wait
+        - http://api-server:8000/metrics
+        - pipenv
+        - run
+        - manage
+        - docker-nginx-start
+        env:
+        - name: BACKSLASH_HOSTNAME
+        - name: BACKSLASH_USE_SSL
+        image: getslash/backslash
+        name: nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /conf
+          name: conf
+        - mountPath: /uploads
+          name: uploads
+      restartPolicy: Always
+      volumes:
+      - name: conf
+        persistentVolumeClaim:
+          claimName: conf
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+status: {}

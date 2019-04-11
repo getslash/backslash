@@ -20,6 +20,9 @@ if __name__ == "__main__":
         tag = 'latest'
     elif travis_branch == 'develop':
         tag = 'unstable'
+    elif travis_branch == 'feature/k8s':
+        # TODO: remove this
+        tag = 'k8s'
     else:
         tag = None
 

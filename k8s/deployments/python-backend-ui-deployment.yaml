@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: python-backend-ui
+  name: python-backend-ui
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: python-backend-ui
+    spec:
+      containers:
+      - args:
+        - dockerize
+        - -timeout
+        - 3600s
+        - -wait
+        - tcp://db:5432
+        - -wait
+        - tcp://rabbitmq:5672
+        - -wait
+        - tcp://api-server:8000
+        - -wait
+        - tcp://python-backend-api:8000
+        - pipenv
+        - run
+        - manage
+        - docker-start
+        - -b
+        - python-backend-ui
+        env:
+        - name: BACKSLASH_CELERY_BROKER_URL
+          value: amqp://guest:guest@rabbitmq
+        - name: BACKSLASH_DATABASE_URI
+          value: postgresql://backslash@db/backslash
+        - name: BACKSLASH_REDIS_SERVER
+          value: redis
+        - name: BACKSLASH_TRACEBACKS_PATH
+          value: /uploads/tracebacks
+        - name: CONFIG_DIRECTORY
+          value: /conf
+        - name: METRICS_URL
+          value: http://api-server:8000/
+        image: getslash/backslash
+        name: python-backend-ui
+        resources: {}
+        volumeMounts:
+        - mountPath: /conf
+          name: conf
+        - mountPath: /uploads
+          name: uploads
+      restartPolicy: Always
+      volumes:
+      - name: conf
+        persistentVolumeClaim:
+          claimName: conf
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+status: {}
