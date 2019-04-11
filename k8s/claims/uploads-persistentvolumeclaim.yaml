@@ -6,6 +6,7 @@ metadata:
     io.kompose.service: uploads
   name: uploads
 spec:
+  storageClassName: backslash-storage
   accessModes:
   - ReadWriteOnce
   resources:

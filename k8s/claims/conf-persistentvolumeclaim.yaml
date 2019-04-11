@@ -6,6 +6,7 @@ metadata:
     io.kompose.service: conf
   name: conf
 spec:
+  storageClassName: backslash-storage
   accessModes:
   - ReadWriteOnce
   resources:
