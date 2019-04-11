@@ -211,15 +211,13 @@ export default Component.extend({
       this.jump_one("after");
     },
 
-    async toggle_session_overview() {
+    toggle_session_overview() {
       const owner = getOwner(this);
       let appcontroller = owner.lookup("controller:application");
       let current_route = appcontroller.currentPath;
       if (current_route.startsWith("session.test.")) {
         let controller = owner.lookup("controller:session.test");
-        let user_prefs = controller.get("user_prefs");
-        let value = user_prefs.get("show_test_session_overviews");
-        await user_prefs.set_pref("show_test_session_overviews", !value);
+        controller.toggleProperty("show_session_overview");
       }
     },
   },
