@@ -20,8 +20,12 @@
         }
     }
 
+    &:not(.compact) .params.inline {
+        display: none;
+    }
+
     &.compact {
-        .params, .row:not(:first-child) {
+        .row:not(:first-child) {
             display: none;
         }
     }

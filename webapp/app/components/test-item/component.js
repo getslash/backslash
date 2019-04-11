@@ -38,11 +38,27 @@ export default Component.extend({
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
           if (!seen.has(key)) {
-            returned.push({ name: key, value: params[key] });
+            let parts = key.split(".");
+            let short = key;
+            let full = null;
+            if (parts.length > 1) {
+              short = parts[parts.length - 1];
+              full = key;
+            }
+            returned.push({
+              name: key,
+              short_name: short,
+              full_name: full,
+              value: params[key],
+              last: false,
+            });
             seen.add(key);
           }
         }
       }
+    }
+    if (returned.length > 0) {
+      returned[returned.length - 1].last = true;
     }
     return returned;
   }),
