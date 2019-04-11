@@ -14,7 +14,7 @@
   {{# with (add session.num_failed_tests session.num_error_tests) as |num_errors|}}
     <div class="failed">
       {{#bs-tooltip}}
-        {{session.num_errors}} unsuccessful tests
+        {{num_errors}} unsuccessful tests
       {{/bs-tooltip}}
       <i class="fa fa-times"></i> {{num_errors}}
     </div>
