@@ -117,5 +117,5 @@ class _UI:
     def find_session_link(self, session):
         self.driver.refresh()
         return self.driver.find_element_by_xpath(
-            f"//div[@data-session-id='{session.id}']"
+            f"//a[@data-session-id='{session.id}']"
         )

@@ -24,6 +24,11 @@
       </div>
       <div class="col text-truncate">
         <strong>{{format-test-name test.info with_filename=false}}</strong>
+        <span class="inline params text-monospace">
+          {{#each display_params as |param|}}
+            <span class="param-name">{{#if param.full_name}}{{#bs-tooltip}}{{param.full_name}}{{/bs-tooltip}}{{/if}}{{param.short_name}}</span>=<code>{{param.value}}</code>{{if (not param.last) ','}}
+          {{/each}}
+        </span>
       </div>
     </div>
     <div class="row">

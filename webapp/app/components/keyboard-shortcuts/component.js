@@ -15,6 +15,11 @@ let _keys = [
     action: "toggle_human_times",
     description: "Toggles human-readable times",
   },
+  {
+    key: "c",
+    action: "toggle_compact_view",
+    description: "Toggles compact view where available",
+  },
   { key: "a", action: "filter_none", description: "Show all entities" },
   {
     key: "f",
@@ -172,6 +177,16 @@ export default Component.extend({
       this.get("display").toggleProperty("humanize_times");
     },
 
+    toggle_compact_view() {
+      let approute = getOwner(this).lookup("route:application");
+      let appcontroller = getOwner(this).lookup("controller:application");
+      let path = appcontroller.currentPath;
+      let controller = approute.controllerFor(path);
+      if (controller.get("compact_view") !== undefined) {
+        controller.toggleProperty("compact_view");
+      }
+    },
+
     filter_only_failed() {
       this._do_if_in(_FILTERABLE_VIEWS, function(controller) {
         controller.filter_all_except("unsuccessful");
@@ -201,9 +216,8 @@ export default Component.extend({
       let appcontroller = owner.lookup("controller:application");
       let current_route = appcontroller.currentPath;
       if (current_route.startsWith("session.test.")) {
-        owner
-          .lookup("controller:session.test")
-          .toggleProperty("show_session_overview");
+        let controller = owner.lookup("controller:session.test");
+        controller.toggleProperty("show_session_overview");
       }
     },
   },

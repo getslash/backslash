@@ -1,8 +1,8 @@
-{{#if show_session_overview}}
+{{#if session_overview_visible}}
   {{session-overview session_model=session_model short=true}}
 {{/if}}
 
-{{test-overview test_model=test_model metadata=test_metadata session_model=session_model timings=timings}}
+{{test-overview test_model=test_model test_metadata=test_metadata session_model=session_model timings=timings}}
 
 <div class="mt-3">
 

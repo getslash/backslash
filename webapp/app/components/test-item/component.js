@@ -5,14 +5,24 @@ import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 
 export default Component.extend({
-  router: service(),
+  _router: service("router"),
 
+  tagName: "a",
   attributeBindings: ["href"],
-  classNames: "item test clickable",
-  classNameBindings: "test.status_lowercase",
+  classNames: "item test clickable d-block nodecoration",
+  classNameBindings: ["test.status_lowercase", "compact_view:compact"],
+  compact_view: false,
 
   session_model: null,
   test: oneWay("item"),
+
+  href: computed("test.display_id", function() {
+    return this._router.urlFor(
+      "session.test",
+      this.get("test.session_display_id"),
+      this.get("test.display_id")
+    );
+  }),
 
   display_params: computed("test.{parameters,variation}", function() {
     let seen = new Set();
@@ -28,20 +38,28 @@ export default Component.extend({
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
           if (!seen.has(key)) {
-            returned.push({ name: key, value: params[key] });
+            let parts = key.split(".");
+            let short = key;
+            let full = null;
+            if (parts.length > 1) {
+              short = parts[parts.length - 1];
+              full = key;
+            }
+            returned.push({
+              name: key,
+              short_name: short,
+              full_name: full,
+              value: params[key],
+              last: false,
+            });
             seen.add(key);
           }
         }
       }
     }
+    if (returned.length > 0) {
+      returned[returned.length - 1].last = true;
+    }
     return returned;
   }),
-
-  mouseUp(e) {
-    if (window.getSelection().type == "Range") {
-      return;
-    }
-    e.stopPropagation();
-    return this.get("router").transitionTo("test", this.get("test.display_id"));
-  },
 });

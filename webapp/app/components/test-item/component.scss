@@ -19,4 +19,14 @@
             text-decoration: underline;
         }
     }
+
+    &:not(.compact) .params.inline {
+        display: none;
+    }
+
+    &.compact {
+        .row:not(:first-child) {
+            display: none;
+        }
+    }
 }

@@ -13,8 +13,9 @@ export default Component.extend({
   page: 1,
   has_next: false,
   num_pages: null,
-
+  show_settings: true,
   filter_controller: null,
+  compact_view: null,
 
   has_last: notEmpty("num_pages"),
   has_prev: gt("page", 1),

@@ -1,4 +1,5 @@
 import { hash } from "rsvp";
+import UI_VERSION from "../utils/ui_version";
 import { inject as service } from "@ember/service";
 import Route from "@ember/routing/route";
 import ApplicationRouteMixin from "ember-simple-auth/mixins/application-route-mixin";
@@ -55,5 +56,6 @@ export default Route.extend(ApplicationRouteMixin, {
   setupController(controller, model) {
     controller.setProperties(model);
     controller.set("version", model.runtime_config.version);
+    controller.set("ui_version", UI_VERSION);
   },
 });
