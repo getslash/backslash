@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.16.3
+
+* Fix preferences issue due to a typo
+
 ## Version 2.16.2
 
 * Add optional compact view for tests - can be toggled both from the results bar and through the 'c'
