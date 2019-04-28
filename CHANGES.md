@@ -3,6 +3,7 @@
 ## Version 2.16.4
 
 * Fix multiline support in metadata view
+* Fix 'F' keyboard shortcut on test search view
 
 ## Version 2.16.3
 
