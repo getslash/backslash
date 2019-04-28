@@ -61,6 +61,7 @@ _keys.forEach(function(k) {
 let _FILTERABLE_VIEWS = [
   "sessions",
   "session.index",
+  "tests",
   "user.sessions",
   "subject",
   "test_info",
