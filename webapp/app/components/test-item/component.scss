@@ -1,13 +1,7 @@
 & {
-
     .test-index {
-        color: darken($gray-lighter, 10%);
-        width: 4em;
-        display: inline-block;
-
-        &:before {
-            content: "#";
-        }
+        color: $gray-500;
+        min-width: 5em;
     }
 
     .params {

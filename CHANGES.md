@@ -5,6 +5,7 @@
 * Fix multiline support in metadata view
 * Fix 'F' keyboard shortcut on test search view
 * Clear quick search text box after jumping to its view
+* Cosmetic fixes
 
 ## Version 2.16.3
 
