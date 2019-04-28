@@ -4,11 +4,11 @@
 
 * Fix multiline support in metadata view
 * Fix 'F' keyboard shortcut on test search view
+* Clear quick search text box after jumping to its view
 
 ## Version 2.16.3
 
 * Fix preferences issue due to a typo
-* Clear quick search text box after jumping to its view
 
 ## Version 2.16.2
 
