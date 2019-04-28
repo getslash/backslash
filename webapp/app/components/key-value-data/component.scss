@@ -9,6 +9,9 @@
     th, td {
         @extend .px-3;
         @extend .py-2;
+        &.multiline {
+            white-space: pre;
+        }
     }
     tbody tr  {
         &:hover .copy-btn {

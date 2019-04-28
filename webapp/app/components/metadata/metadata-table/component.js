@@ -24,6 +24,7 @@ export default Component.extend({
         }
         returned.push({
           name: attrname.replace("::", " "),
+          multiline: typeof value == "string" && value.indexOf("\n") !== -1,
           value: value,
         });
       }

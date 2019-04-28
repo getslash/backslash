@@ -16,8 +16,13 @@
           {{else}}
             {{var.name}}
           {{/if}}
+          {{#if var.multiline}}
+            <span class="ml-2 clickable" {{action (toggle "collapsed" var)}}>
+              {{fa-icon (if var.collapsed "caret-right" "caret-down")}}
+            </span>
+          {{/if}}
         </td>
-        <td>{{#if (s-starts-with var.value "http://" "https://")}}{{linkify var.value}}{{else}}{{var.value}}{{/if}}{{#copy-button clipboardText=var.value classNames="ml-2" title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
+        <td class="{{if (and var.multiline (not var.collapsed)) 'multiline'}}">{{#if (s-starts-with var.value "http://" "https://")}}{{linkify var.value}}{{else}}{{var.value}}{{/if}}{{#copy-button clipboardText=var.value classNames="ml-2" title="Copy to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
         </td>
       </tr>
     {{/each}}
