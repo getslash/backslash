@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.16.4
+
+* Fix multiline support in metadata view
+
 ## Version 2.16.3
 
 * Fix preferences issue due to a typo
