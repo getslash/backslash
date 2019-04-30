@@ -19,15 +19,17 @@
   </div>
   <div class="col-sm-7">
     <div class="row">
-      <div class="col-1 text-muted">
-        #{{or test.test_index '???'}}
-      </div>
-      <div class="col text-truncate">
-        <strong>{{format-test-name test.info with_filename=false}}</strong>
-        <span class="inline params text-monospace">
-          {{#each display_params as |param|}}
-            <span class="param-name">{{#if param.full_name}}{{#bs-tooltip}}{{param.full_name}}{{/bs-tooltip}}{{/if}}{{param.short_name}}</span>=<code>{{param.value}}</code>{{if (not param.last) ','}}
-          {{/each}}
+      <div class="col">
+        <span class="d-none d-lg-inline-block test-index">
+          #{{or test.test_index '???'}}
+        </span>
+        <span class="text-truncate">
+          <strong>{{format-test-name test.info with_filename=false}}</strong>
+          <span class="inline params text-monospace">
+            {{#each display_params as |param|}}
+              <span class="param-name">{{#if param.full_name}}{{#bs-tooltip}}{{param.full_name}}{{/bs-tooltip}}{{/if}}{{param.short_name}}</span>=<code>{{param.value}}</code>{{if (not param.last) ','}}
+            {{/each}}
+          </span>
         </span>
       </div>
     </div>
@@ -35,13 +37,13 @@
       <div class="col-1"></div>
       <div class="col text-truncate">
         {{#if test.variation}}
-            <div class="params text-muted">
-              {{#each display_params as |param|}}
-                <div class="param text-monospace">
-                  {{param.name}}=<code>{{if (is-null param.value) 'None' param.value}}</code>
-                </div>
-              {{/each}}
-            </div>
+          <div class="params text-muted">
+            {{#each display_params as |param|}}
+              <div class="param text-monospace">
+                {{param.name}}=<code>{{if (is-null param.value) 'None' param.value}}</code>
+              </div>
+            {{/each}}
+          </div>
         {{else}}
           &nbsp;
         {{/if}}

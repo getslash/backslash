@@ -35,9 +35,11 @@ export default Component.extend({
   },
 
   select(obj) {
-    let self = this;
-    this.get_element().blur();
-    self.router.transitionTo(obj.route, obj.key);
+    let input = this.get_element();
+    input.blur();
+    this.router.transitionTo(obj.route, obj.key).then(function() {
+      input.val("");
+    });
   },
 
   get_element() {
