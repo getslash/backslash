@@ -1,5 +1,10 @@
 # Changelog
 
+
+## Version 2.16.5
+
+* Make metadata links open in a new tab
+
 ## Version 2.16.4
 
 * Fix multiline support in metadata view
