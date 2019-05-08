@@ -122,6 +122,11 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
                 'timestamp', models.Error.timestamp,
                 'message', models.Error.message)
         )]).where(models.Error.test_id == models.Test.id).label('errors'),
+        select([func.array_agg(
+            func.json_build_object(
+                'timestamp', models.Warning.timestamp,
+                'message', models.Warning.message)
+        )]).where(models.Warning.test_id == models.Test.id).label('warnings'),
         select([
             func.json_object_agg(models.SessionMetadata.key,
                                  models.SessionMetadata.metadata_item).label('session_metadata')
