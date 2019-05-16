@@ -472,7 +472,7 @@ class ReplicationsResource(ModelResource):
             latest_timestamp = latest_timestamp.timestamp()
 
         if in_collection:
-            collection = returned['replications']
+            collection = returned.get('replications', [])
         else:
             collection = [returned]
 
