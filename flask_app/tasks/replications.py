@@ -106,6 +106,7 @@ def _get_tests_to_replicate_query(replica, bulk_size=200):
          if column_name not in {'timespan', 'parameters'}],
 
         models.User.email.label('user_email'),
+        models.Session.logical_id.label('session_logical_id'),
         cast(models.Test.parameters, sqlalchemy.Text).label('parameters'),
         func.json_build_object(
             "file_name",
