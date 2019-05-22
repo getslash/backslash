@@ -461,7 +461,8 @@ class ReplicationsResource(ModelResource):
         'last_error',
         'service_type',
         'username',
-        'url'
+        'url',
+        'index_name'
     ]
 
     def _render_many(self, objects, *, in_collection: bool):
