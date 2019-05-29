@@ -8,6 +8,9 @@
     {{error.exception_type}}
   </span>
   {{#copy-button clipboardText=error.message title="Copy exception message to clipboard"}}<i class="fa fa-copy"></i>{{/copy-button}}
+  {{#if error.is_fatal}}
+    <div class="badge badge-danger">Fatal</div>
+  {{/if}}
 </div>
 
 <div class="m-3 p-1 exception-message overflow-scroll">{{if expanded error.message error.abbreviated_message}}</div>

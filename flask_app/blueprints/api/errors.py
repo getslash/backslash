@@ -20,8 +20,8 @@ from ..rest import blueprint as rest_blueprint
 NoneType = type(None)
 
 
-@API(version=4)
-def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False, is_interruption: bool=False): # pylint: disable=bad-whitespace
+@API(version=5)
+def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (list, NoneType)=None, timestamp: (float, int)=None, test_id: int=None, session_id: int=None, is_failure: bool=False, is_interruption: bool=False, is_fatal: bool=None): # pylint: disable=bad-whitespace
     # pylint: disable=superfluous-parens
     if not ((test_id is not None) ^ (session_id is not None)):
         error_abort('Either test_id or session_id required')
@@ -54,6 +54,7 @@ def add_error(message: str, exception_type: (str, NoneType)=None, traceback: (li
                     traceback_url=_normalize_traceback_get_url(traceback),
                     is_interruption=is_interruption,
                     is_failure=is_failure,
+                    is_fatal=is_fatal,
                     timestamp=timestamp)
         obj.errors.append(err)
         if not is_interruption and obj.end_time is not None:
