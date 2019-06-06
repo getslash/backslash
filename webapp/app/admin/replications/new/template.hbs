@@ -17,6 +17,10 @@
       {{input class="form-control" value=model.url placeholder="URL or hostname" required=true}}
     </div>
     <div class="form-group">
+      <label>Index name</label>
+      {{input type="text" class="form-control" value=model.index_name placeholder="default is backslash" required=true}}
+    </div>
+    <div class="form-group">
       <label>Credentials</label>
       {{input type="text" class="form-control" value=model.username placeholder="User Name (Optional)"}}
     </div>

@@ -13,7 +13,7 @@ export default DS.Model.extend({
   paused: DS.attr(),
   lag_seconds: DS.attr("number"),
   last_replicated_timestamp: DS.attr(),
-
+  index_name: DS.attr(),
   lagging: computed('lag_seconds', function() {
     let lag_seconds = this.get('lag_seconds');
     if (lag_seconds === null) {

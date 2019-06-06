@@ -768,12 +768,6 @@ class Replication(db.Model, TypenameMixin):
             return False
         return flux.current_timeline.time() - self.last_chunk_finished < self.STALE_TIMEOUT
 
-    def get_client(self):
-        from elasticsearch import Elasticsearch
-        if self._client is None:
-            self._client = Elasticsearch([self.url])
-        return self._client
-
 class UserStarredTests(db.Model):
     __tablename__ = "user_starred_tests"
     id = db.Column(db.Integer, primary_key=True)
