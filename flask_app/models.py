@@ -527,6 +527,7 @@ class Error(db.Model, TypenameMixin):
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
     is_interruption = db.Column(db.Boolean, default=False)
+    is_fatal = db.Column(db.Boolean)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
