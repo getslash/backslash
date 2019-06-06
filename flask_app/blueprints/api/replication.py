@@ -8,11 +8,11 @@ from ...tasks.replications import do_elasticsearch_replication
 NoneType = type(None)
 
 
-@API
+@API(version=2)
 @requires_role('admin')
-def create_replication(url: str, username: (str, NoneType)=None, password: (str, NoneType)=None):
+def create_replication(url: str, index_name: str='backslash', username: (str, NoneType)=None, password: (str, NoneType)=None):
     returned = Replication(
-        url=url, username=username, password=password)
+        url=url, index_name=index_name, username=username, password=password)
     db.session.add(returned)
     db.session.commit()
     return returned

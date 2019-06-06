@@ -461,7 +461,8 @@ class ReplicationsResource(ModelResource):
         'last_error',
         'service_type',
         'username',
-        'url'
+        'url',
+        'index_name'
     ]
 
     def _render_many(self, objects, *, in_collection: bool):
@@ -472,7 +473,7 @@ class ReplicationsResource(ModelResource):
             latest_timestamp = latest_timestamp.timestamp()
 
         if in_collection:
-            collection = returned['replications']
+            collection = returned.get('replications', [])
         else:
             collection = [returned]
 

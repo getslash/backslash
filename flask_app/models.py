@@ -527,6 +527,7 @@ class Error(db.Model, TypenameMixin):
     timestamp = db.Column(db.Float, default=get_current_time)
     is_failure = db.Column(db.Boolean, default=False)
     is_interruption = db.Column(db.Boolean, default=False)
+    is_fatal = db.Column(db.Boolean)
     test_id = db.Column(db.ForeignKey('test.id', ondelete='CASCADE'), nullable=True, index=True)
     session_id = db.Column(db.ForeignKey('session.id', ondelete='CASCADE'), nullable=True, index=True)
 
@@ -767,12 +768,6 @@ class Replication(db.Model, TypenameMixin):
         if self.last_error is not None:
             return False
         return flux.current_timeline.time() - self.last_chunk_finished < self.STALE_TIMEOUT
-
-    def get_client(self):
-        from elasticsearch import Elasticsearch
-        if self._client is None:
-            self._client = Elasticsearch([self.url])
-        return self._client
 
 class UserStarredTests(db.Model):
     __tablename__ = "user_starred_tests"
