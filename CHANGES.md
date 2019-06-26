@@ -1,6 +1,10 @@
 # Changelog
 
 
+## Version 2.17.1
+
+* Fix session replica bug
+
 ## Version 2.17.0
 
 * Add test warnings to replica query
