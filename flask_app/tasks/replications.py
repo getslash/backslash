@@ -304,6 +304,9 @@ class SessionIndex(ElasticsearchIndex):
         next_keepalive = result.get('next_keepalive')
         result['is_abandoned'] = not (result.get('end_time') or next_keepalive is None or next_keepalive > get_current_time())
 
+    def get_fields_to_stringify(self):
+        return ("session_metadata",)
+
 def get_next_bulk_query(query, replica, es_index):
     query = query.where(es_index.get_filter())
 
