@@ -1,6 +1,18 @@
 # Changelog
 
 
+## Version 2.17.1
+
+* Fix session replica bug
+
+## Version 2.17.0
+
+* Add test warnings to replica query
+* Add `is_fatal` indication to errors
+* Support multiple replication indexes. Current indexes: session, test
+* Add `session_logical_id` to test index
+* Document negative search for error_message
+
 ## Version 2.16.5
 
 * Make metadata links open in a new tab
