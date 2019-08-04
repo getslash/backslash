@@ -1,5 +1,6 @@
 from .blueprint import API
 from flask_security import current_user
+from flask import g
 from ...models import Session, Test, db, Comment
 
 
@@ -12,8 +13,8 @@ def post_comment(comment: str, session_id: int=None, test_id: int=None):
         obj = Session.query.get_or_404(session_id)
     else:
         obj = Test.query.get_or_404(test_id)
-
-    returned = Comment(user_id=current_user.id, comment=comment)
+    user_id = current_user.get_id() or g.token_user.get_id()
+    returned = Comment(user_id=user_id, comment=comment)
     obj.comments.append(returned)
 
     obj.num_comments = type(obj).num_comments + 1
