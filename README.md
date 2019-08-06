@@ -1,11 +1,16 @@
 # Backslash
 
-![Build Status](https://secure.travis-ci.org/getslash/backslash.png?branch=master ) 
+|                       |                                                                                    |
+|-----------------------|------------------------------------------------------------------------------------|
+| Build Status          | ![Build Status](https://secure.travis-ci.org/getslash/backslash.png?branch=master) |
+| Supported Versions    | ![Supported Versions](https://img.shields.io/badge/python-3.6-green.svg)    |
 
 Backslash is a centralized service for tracking execution of automated tests.
 
-For more information and documentation, please see [the official website](https://getslash.github.io/backslash).
+* [Official website](https://getslash.github.io/backslash)
+* [Documentation](https://backslash.readthedocs.io/en/latest/)
+* [Python client](https://github.com/getslash/backslash-python)
 
 
-# License 
+## License
 Backslash is distributed under the BSD 3-clause license.
