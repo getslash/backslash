@@ -1,6 +1,11 @@
 # Changelog
 
 
+## Version 2.17.2
+
+* Fix pagination in subject view
+* Fix post_comment API when using runtoken
+
 ## Version 2.17.1
 
 * Fix session replica bug
