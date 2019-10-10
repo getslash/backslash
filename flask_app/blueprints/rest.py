@@ -128,6 +128,9 @@ class TestResource(ModelResource):
             args.session_id = request.view_args.get('session_id')
 
         if args.search:
+            search_tokens = args.search.split()
+            if 'has_warnings' in search_tokens and args.session_id is None:
+                abort(requests.codes.forbidden)
             returned = get_orm_query_from_search_string('test', args.search, abort_on_syntax_error=True)
         else:
             returned = super(TestResource, self)._get_iterator().join(Session, Session.id == Test.session_id)

@@ -130,6 +130,8 @@ class TestSearchContext(SearchContext):
 
     def get_fallback_filter(self, term):
         query = TestInformation.name.contains(term)
+        if term == "has_warnings":
+            query = query | (Test.num_warnings > 0)
         if term == "starred" and current_user and current_user.is_authenticated:
             query = query | db.session.query(UserStarredTests).filter(UserStarredTests.user_id == current_user.id, UserStarredTests.test_id == Test.id).exists().correlate(Test)
         return query
