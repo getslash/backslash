@@ -33,7 +33,7 @@ def create_app(config=None, setup_logging=True):
     for yaml_path in configs:
         if os.path.isfile(yaml_path):
             with open(yaml_path) as yaml_file:
-                app.config.update(yaml.load(yaml_file))
+                app.config.update(yaml.full_load(yaml_file))
 
     app.config.update(config)
 
