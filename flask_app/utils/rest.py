@@ -167,4 +167,6 @@ def rest_error_abort(message, code=400):
         ],
     })
     response.status_code = code
-    raise HTTPException(response=response)
+    exc = HTTPException(response=response)
+    exc.code = code
+    raise exc
