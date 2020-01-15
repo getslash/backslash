@@ -36,7 +36,7 @@ def complete_runtoken_request(request_id):
     token = create_new_runtoken(current_user)
     db.session.commit()
     # set reply
-    redis.setex(key, token, _REDIS_TOKEN_TTL)
+    redis.set(name=key, value=token, ex=_REDIS_TOKEN_TTL)
     return 'success'
 
 
@@ -51,8 +51,8 @@ def create_new_runtoken(user):
 
 def _create_new_runtoken_request():
     request_id = str(uuid4())
-    get_redis_client().setex(
-        _get_request_key(request_id), '', _REDIS_REQUEST_TTL)
+    redis = get_redis_client()
+    redis.set(name=_get_request_key(request_id), value='', ex=_REDIS_TOKEN_TTL)
     return request_id
 
 def _get_request_key(request_id):
