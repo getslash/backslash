@@ -4,7 +4,7 @@ import os
 
 import requests
 
-from flask import Blueprint, abort, request, jsonify, current_app, Response
+from flask import Blueprint, abort, request, jsonify, current_app, Response, g
 from flask_restful import Api, reqparse
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func, or_
@@ -353,6 +353,9 @@ class CommentResource(ModelResource):
 
         return models.Comment.query.filter_by(session_id=args.session_id, test_id=args.test_id)
 
+    def _get_user_id(self):
+        return current_user.get_id() or g.token_user.get_id()
+
     def delete(self, object_id=None):
         if object_id is None:
             error_abort('Not implemented', code=requests.codes.not_implemented)
@@ -361,7 +364,7 @@ class CommentResource(ModelResource):
             obj = models.Session.query.get(comment.session_id)
         else:
             obj = models.Test.query.get(comment.test_id)
-        if comment.user_id != current_user.id:
+        if comment.user_id != self._get_user_id():
             error_abort('Not allowed to delete comment', code=requests.codes.forbidden)
         obj.num_comments = type(obj).num_comments - 1
         models.db.session.add(obj)
@@ -372,7 +375,7 @@ class CommentResource(ModelResource):
         if object_id is None:
             error_abort('Not implemented', code=requests.codes.not_implemented)
         comment = models.Comment.query.get_or_404(object_id)
-        if comment.user_id != current_user.id:
+        if comment.user_id != self._get_user_id():
             error_abort('Not allowed to delete comment', code=requests.codes.forbidden)
         comment.comment = request.get_json().get('comment', {}).get('comment')
         comment.edited = True
