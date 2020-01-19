@@ -187,7 +187,7 @@ impl Handler<QueryStats> for StatsCollector {
     }
 }
 
-fn write_gauge(writer: &mut Write, name: &str, value: u64, help: &str) {
+fn write_gauge(writer: &mut dyn Write, name: &str, value: u64, help: &str) {
     write!(
         writer,
         "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}\n",
@@ -197,7 +197,7 @@ fn write_gauge(writer: &mut Write, name: &str, value: u64, help: &str) {
 }
 
 fn write_latency_group(
-    writer: &mut Write,
+    writer: &mut dyn Write,
     name: &str,
     values: &HashMap<String, DurationAggregator>,
 ) {
@@ -230,7 +230,7 @@ fn write_latency_group(
 }
 
 fn write_gauge_map<K, V, R, F>(
-    writer: &mut Write,
+    writer: &mut dyn Write,
     name: &str,
     values: &HashMap<K, V>,
     key_name: &str,

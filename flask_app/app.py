@@ -6,7 +6,7 @@ from flask_mail import Mail
 import logbook
 import logging
 from logbook.compat import redirect_logging
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 from raven.contrib.flask import Sentry
 from werkzeug.exceptions import HTTPException
 
@@ -33,7 +33,7 @@ def create_app(config=None, setup_logging=True):
     for yaml_path in configs:
         if os.path.isfile(yaml_path):
             with open(yaml_path) as yaml_file:
-                app.config.update(yaml.load(yaml_file))
+                app.config.update(yaml.full_load(yaml_file))
 
     app.config.update(config)
 

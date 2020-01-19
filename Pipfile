@@ -13,8 +13,8 @@ flask-simple-api = ">=1.4.0"
 munch = "*"
 pendulum = ">=2.0.1"
 pyparsing = "*"
-raven = {extras = ["flask"], version = "*"}
-celery = {extras = ["redis"], version = "*"}
+raven = {extras = ["flask"],version = "*"}
+celery = {extras = ["redis"],version = "*"}
 gunicorn = "*"
 watchdog = "*"
 google-api-python-client = "*"
@@ -38,6 +38,7 @@ click = "<7"
 redis = "*"
 pyyaml = "*"
 itsdangerous = "*"
+logbook = "*"
 
 [dev-packages]
 pytest = "*"

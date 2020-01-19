@@ -1,5 +1,11 @@
 default: test
 
+test:
+	pipenv run manage unittest
+
+testserver:
+	pipenv run manage testserver
+
 testdb:
 	pg_ctl init -D /tmp/pgsql -w
 	pg_ctl start -D /tmp/pgsql -w
