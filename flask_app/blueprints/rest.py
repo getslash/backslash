@@ -281,7 +281,7 @@ class ErrorResource(ModelResource):
             abort(requests.codes.bad_request)
 
         if args.interruptions:
-            query = query.filter_by(is_interruption=True)
+            query = query.filter(self.MODEL.is_interruption == True)
         else:
             query = query.filter((self.MODEL.is_interruption == False) | (self.MODEL.is_interruption == None)) # pylint: disable=singleton-comparison
         return query
