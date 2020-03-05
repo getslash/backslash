@@ -261,11 +261,28 @@ class SessionIndex(ElasticsearchIndex):
                      'timestamp', models.Error.timestamp,
                      'message', models.Error.message)
              )]).where(models.Error.session_id == models.Session.id).label('session_errors'),
-             select([func.array_agg(
-                 func.json_build_object(
-                     'timestamp', models.Warning.timestamp,
-                     'message', models.Warning.message)
-             )]).where(models.Warning.session_id == models.Session.id).label('session_warnings'),
+            select([
+                func.array_agg(
+                    func.json_build_object(
+                        "name", models.Subject.name,
+                        "product", models.Product.name,
+                        "version", models.ProductVersion.version,
+                        "revision", models.ProductRevision.revision,
+                    )
+                )
+            ]).select_from(
+                models.session_subject
+                    .join(models.SubjectInstance)
+                    .join(models.Subject)
+                    .join(models.ProductRevision)
+                    .join(models.ProductVersion)
+                    .join(models.Product)
+            ).where(models.session_subject.c.session_id == models.Session.id).label('subjects'),
+            select([func.array_agg(
+                func.json_build_object(
+                    'timestamp', models.Warning.timestamp,
+                    'message', models.Warning.message)
+            )]).where(models.Warning.session_id == models.Session.id).label('session_warnings'),
             select([
                 func.array_agg(
                     func.json_build_object(
