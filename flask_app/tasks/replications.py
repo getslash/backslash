@@ -318,8 +318,14 @@ class SessionIndex(ElasticsearchIndex):
         return returned
 
     def enrich_result(self, result):
+        def _is_abandoned():
+            if next_keepalive is None:
+                return False
+            if next_keepalive > get_current_time():
+                return False
+            return result.get('end_time') is None
         next_keepalive = result.get('next_keepalive')
-        result['is_abandoned'] = not (result.get('end_time') or next_keepalive is None or next_keepalive > get_current_time())
+        result['is_abandoned'] = _is_abandoned()
 
     def get_fields_to_stringify(self):
         return ("session_metadata",)
