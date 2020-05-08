@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 2.17.3
+
+**NOTE**: the default `BACKSLASH_DATABASE_URI` has been changed in this release (in
+`docker-compose.yml`). When upgrading an existing instance, make sure to leave the
+`BACKSLASH_DATABASE_URI` in your docker-compose file as it were before the upgrade, or otherwise
+the backend will lose ability to connect to the database.
+
+* Fix Travis deployment
+
 
 ## Version 2.17.2
 

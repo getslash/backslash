@@ -68,6 +68,7 @@ after_failure:
   - sudo docker logs backslash_python-backend-ui_1
   - sudo docker logs backslash_python-backend-api_1
   - sudo docker logs backslash_api-server_1
+  - sudo docker logs backslash_db_1
 
 after_success:
   - pipenv run travis_publish

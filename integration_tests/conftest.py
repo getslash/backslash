@@ -56,9 +56,9 @@ def integration_url(request, timeout=30):
 def _do_setup_if_needed(url):
     with requests.Session() as s:
         s.headers.update({"Content-type": "application/json"})
-        if s.post(url.add_path("api/get_app_config"), data="{}").json()["result"][
-            "setup_needed"
-        ]:
+        resp = s.post(url.add_path("api/get_app_config"), data="{}")
+        resp.raise_for_status()
+        if resp.json()["result"]["setup_needed"]:
             resp = s.post(
                 url.add_path("api/setup"),
                 data=json.dumps(
