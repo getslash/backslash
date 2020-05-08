@@ -18,7 +18,7 @@ services:
     environment: &python-backend-env
       - CONFIG_DIRECTORY=/conf
       - BACKSLASH_REDIS_SERVER=redis
-      - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
+      - BACKSLASH_DATABASE_URI=postgresql://backslash:backslash@db/backslash
       - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
       - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
       - METRICS_URL=http://api-server:8000/
@@ -58,7 +58,7 @@ services:
     environment:
       - CONFIG_DIRECTORY=/conf
       - BACKSLASH_REDIS_SERVER=redis
-      - BACKSLASH_DATABASE_URI=postgresql://backslash@db/backslash
+      - BACKSLASH_DATABASE_URI=postgresql://backslash:backslash@db/backslash
       - BACKSLASH_TRACEBACKS_PATH=/uploads/tracebacks
       - BACKSLASH_CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
     volumes:
@@ -75,6 +75,7 @@ services:
     environment:
       - POSTGRES_USER=backslash
       - POSTGRES_DB=backslash
+      - POSTGRES_PASSWORD=backslash
     volumes:
       - "db:/var/lib/postgresql/data"
     logging:
