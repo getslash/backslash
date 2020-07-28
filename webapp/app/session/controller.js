@@ -10,10 +10,15 @@ export default Controller.extend({
 
   actions: {
     async discard() {
-      await this.get("api").call("discard_session", {
-        session_id: parseInt(this.get("session_model.id")),
-      });
-      await this.get("session_model").reload();
+      var days = parseInt(prompt("Number of days to keep session " + this.get("session_model.logical_id"), "10"), 10);
+      if (Number.isInteger(days))
+      {
+        await this.get("api").call("discard_session", {
+          session_id: parseInt(this.get("session_model.id")),
+          grace_period_seconds: days * 60 * 60 * 24
+        });
+        await this.get("session_model").reload();
+      }
     },
 
     async preserve() {
