@@ -20,16 +20,15 @@ export default Controller.extend(StatusFilterableController, SearchController, {
 
   actions: {
     async discard_results() {
-      if (
-        !window.confirm(
-          "This will mark all search results for future deletion. Are you sure?"
-        )
-      ) {
-        return;
+      var days = parseInt(prompt("This will mark all search results for future deletion."
+        + "\n" + "Please provide number of days to keep sessions"), 10);
+      if (Number.isInteger(days))
+      {
+        await this.get("api").call("discard_sessions_search", {
+          search_string: this.get("search"),
+          grace_period_seconds: days * 60 * 60 * 24
+        });
       }
-      await this.get("api").call("discard_sessions_search", {
-        search_string: this.get("search"),
-      });
     },
   },
 });
