@@ -21,8 +21,9 @@ def add_warning(message:str, filename:str=None, lineno:int=None, test_id:int=Non
         timestamp = get_current_time()
 
     warning = Warning.query.filter_by(session_id=session_id, test_id=test_id, lineno=lineno, filename=filename, message=message).first()
+    unique_warnings_num = len(Warning.query.filter_by(session_id=session_id, test_id=test_id).all())
     if warning is None:
-        if obj.num_warnings < current_app.config['MAX_WARNINGS_PER_ENTITY']:
+        if unique_warnings_num < current_app.config['MAX_WARNINGS_PER_ENTITY']:
             warning = Warning(message=message, timestamp=timestamp, filename=filename, lineno=lineno, test_id=test_id, session_id=session_id)
             db.session.add(warning)
     else:
