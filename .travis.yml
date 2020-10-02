@@ -35,7 +35,7 @@ before_install:
 
   # build the Backslash docker image
   - python scripts/travis_version_fix.py
-  - sudo docker build -f ./docker/Dockerfile -t getslash/backslash .
+  - sudo docker build --no-cache -f ./docker/Dockerfile -t getslash/backslash .
 
 
   # update docker-compose
