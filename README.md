@@ -44,5 +44,30 @@ pipenv run manage db upgrade
 $ make test
 ```
 
+### Running the Test Server
+
+First make sure your frontend is built:
+
+``` shell
+$ cd webapp
+$ npm install -g ember-cli # only if you don't already have ember-cli
+$ yarn install
+$ ember build
+```
+
+Then start the test server:
+
+``` shell
+$ pipenv run manage testserver
+```
+
+### Running Integration + UI Tests
+
+Once you have a test server running:
+
+``` shell
+$  pipenv run pytest integration_tests -x --app-url http://127.0.0.1:8000 --driver Chrome
+```
+
 # License
 Backslash is distributed under the BSD 3-clause license.
