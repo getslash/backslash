@@ -128,24 +128,25 @@ fn build_durations(secs: &[u64]) -> DurationAggregator {
 #[test]
 fn test_min_max() {
     let durations = build_durations(&[1, 2, 3, 4]);
-    assert_eq!(durations.max_secs().unwrap(), 4.);
-    assert_eq!(durations.min_secs().unwrap(), 1.);
+    assert!((durations.max_secs().unwrap() - 4.).abs() < f64::EPSILON);
+    assert!((durations.min_secs().unwrap() - 1.).abs() < f64::EPSILON);
 }
 
 #[test]
+
 fn test_min_max_rollover1() {
     let durations = build_durations(&[1, 5, 3, 4, 3, 2, 3]);
 
-    assert_eq!(durations.max_secs().unwrap(), 4.);
-    assert_eq!(durations.min_secs().unwrap(), 2.);
+    assert!((durations.max_secs().unwrap() - 4.).abs() < f64::EPSILON);
+    assert!((durations.min_secs().unwrap() - 2.).abs() < f64::EPSILON);
 }
 
 #[test]
 fn test_min_max_rollover2() {
     let durations = build_durations(&[1, 5, 1, 5, 3, 2, 3]);
 
-    assert_eq!(durations.max_secs().unwrap(), 5.);
-    assert_eq!(durations.min_secs().unwrap(), 1.);
+    assert!((durations.max_secs().unwrap() - 5.).abs() < f64::EPSILON);
+    assert!((durations.min_secs().unwrap() - 1.).abs() < f64::EPSILON);
 }
 
 #[test]
