@@ -1,14 +1,14 @@
+use crate::aggregators::{CountHistorgram, DurationAggregator};
+use crate::state::AppState;
+use crate::utils::duration_from_secs;
 use actix::prelude::*;
 use actix_web::{AsyncResponder, HttpRequest, Query, Responder, State};
-use crate::aggregators::{CountHistorgram, DurationAggregator};
 use failure::Error;
-use crate::state::AppState;
+use serde_derive::Deserialize;
 use std::collections::HashMap;
 use std::fmt::Write;
 use std::net::IpAddr;
 use std::time::Duration;
-use crate::utils::duration_from_secs;
-use serde_derive::Deserialize;
 
 const HISTOGRAM_RESOLUTION_SECONDS: usize = 60;
 const HISTOGRAM_NUM_BINS: usize = 10;
@@ -24,7 +24,7 @@ pub struct StatsCollector {
 }
 
 pub(crate) trait RequestTimesMap {
-    fn ingest<'a>(&mut self, path: &str, timing: Duration);
+    fn ingest(&mut self, path: &str, timing: Duration);
 }
 
 impl RequestTimesMap for HashMap<String, DurationAggregator> {
@@ -151,15 +151,17 @@ impl Handler<QueryStats> for StatsCollector {
         );
 
         write_gauge(
-            &mut returned, "backslash_internal_timers_size",
+            &mut returned,
+            "backslash_internal_timers_size",
             (self.total_times.len() + self.active_times.len() + self.db_times.len()) as u64,
-            "Size of timer map held by metrics server"
+            "Size of timer map held by metrics server",
         );
 
         write_gauge(
-            &mut returned, "backslash_internal_client_map_size",
+            &mut returned,
+            "backslash_internal_client_map_size",
             self.clients.len() as u64,
-            "Size of timer map held by metrics server"
+            "Size of timer map held by metrics server",
         );
 
         write_latency_group(&mut returned, "total", &self.total_times);
@@ -188,9 +190,9 @@ impl Handler<QueryStats> for StatsCollector {
 }
 
 fn write_gauge(writer: &mut dyn Write, name: &str, value: u64, help: &str) {
-    write!(
+    writeln!(
         writer,
-        "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}\n",
+        "# HELP {0} {1}\n# TYPE {0} gauge\n{0} {2}",
         name, help, value
     )
     .unwrap();
@@ -243,11 +245,11 @@ fn write_gauge_map<K, V, R, F>(
 {
     for (index, (key, value)) in values.iter().enumerate() {
         if index == 0 {
-            write!(writer, "# HELP {0} {1}\n# TYPE {0} gauge\n", name, help,).unwrap();
+            writeln!(writer, "# HELP {0} {1}\n# TYPE {0} gauge", name, help,).unwrap();
         }
-        write!(
+        writeln!(
             writer,
-            "{}{{{}=\"{}\"}} {}\n",
+            "{}{{{}=\"{}\"}} {}",
             name,
             key_name,
             key,
