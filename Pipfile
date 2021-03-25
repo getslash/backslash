@@ -34,11 +34,12 @@ SQLAlchemy = ">=1.1.0"
 URLObject = "*"
 weber_utils = "*"
 Werkzeug = ">=0.10.2"
-click = "<7"
+click = "<8"
 redis = "*"
 pyyaml = "*"
 itsdangerous = "*"
 logbook = "*"
+email-validator = "*"
 
 [dev-packages]
 pytest = "*"
