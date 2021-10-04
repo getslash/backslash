@@ -1,0 +1,28 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: backslash
+          POSTGRES_PASSWORD: backslash
+          POSTGRES_USER: backslash
+        ports:
+          - 5432:5432
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update 
+          sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+      - run: pip install pipenv
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: pipenv install -d
+      - run: pipenv run manage db upgrade
