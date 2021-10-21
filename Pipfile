@@ -16,7 +16,7 @@ URLObject = "*"
 Werkzeug = ">=0.10.2"
 alembic = ">=0.7.3"
 celery = {extras = ["redis"], version = "*"}
-click = "<7"
+click = "<9"
 dateparser = "*"
 "dogpile.cache" = "*"
 elasticsearch = "<7.0.0,>=6.0.0"
