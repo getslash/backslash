@@ -26,3 +26,5 @@ jobs:
         uses: actions/checkout@v2
       - run: pipenv install -d
       - run: pipenv run manage db upgrade
+      - run: pipenv run manage unittest
+      - run: pipenv run manage
