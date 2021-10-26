@@ -9,7 +9,7 @@ jobs:
         ports:
           - 6379:6379
       postgres:
-        image: postgres:latest
+        image: postgres -c fsync=off
         env:
           POSTGRES_DB: backslash
           POSTGRES_PASSWORD: backslash
@@ -22,7 +22,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          -c fsync=off
+  
     steps:
       - name: Install dependencies
         run: |
