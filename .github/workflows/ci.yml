@@ -11,9 +11,9 @@ jobs:
       postgres:
         image: bitnami/postgresql:latest
         env:
-          POSTGRES_DB: backslash
-          POSTGRES_PASSWORD: backslash
-          POSTGRES_USER: backslash
+          POSTGRESQL_DATABASE: backslash
+          POSTGRESQL_PASSWORD: backslash
+          POSTGRESQL_USERNAME: backslash
           POSTGRESQL_FSYNC: "off"
         ports:
           - 5432:5432
