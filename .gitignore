@@ -61,3 +61,8 @@ webapp/tmp
 tests/.cache
 flycheck_*
 /.pytest_cache
+
+# vscode
+.vscode
+# virtualenv
+.venv
