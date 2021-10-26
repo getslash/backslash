@@ -9,11 +9,12 @@ jobs:
         ports:
           - 6379:6379
       postgres:
-        image: postgres -c fsync=off
+        image: bitnami/postgresql:latest
         env:
           POSTGRES_DB: backslash
           POSTGRES_PASSWORD: backslash
           POSTGRES_USER: backslash
+          POSTGRESQL_FSYNC: "off"
         ports:
           - 5432:5432
         options: >-
@@ -22,6 +23,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          
   
     steps:
       - name: Install dependencies
