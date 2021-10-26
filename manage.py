@@ -165,7 +165,7 @@ def unittest():
 
 def _run_unittest():
     subprocess.check_call(
-        [sys.executable, '-m', "pytest", "tests/", "--cov=flask_app", "--cov-report=html"], cwd=from_project_root())
+        [sys.executable, '-m', "pytest", "tests/", "--cov=flask_app", "--cov-report=html", "--durations=20"], cwd=from_project_root())
 
 
 @cli.command()
