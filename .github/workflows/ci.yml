@@ -4,14 +4,27 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
       postgres:
-        image: postgres:latest
+        image: bitnami/postgresql:latest
         env:
-          POSTGRES_DB: backslash
-          POSTGRES_PASSWORD: backslash
-          POSTGRES_USER: backslash
+          POSTGRESQL_DATABASE: backslash
+          POSTGRESQL_PASSWORD: backslash
+          POSTGRESQL_USERNAME: backslash
+          POSTGRESQL_FSYNC: "off"
         ports:
           - 5432:5432
+        options: >-
+          --mount type=tmpfs,destination=/var/lib/postgresql/data
+          --health-cmd "pg_isready -d backslash -U backslash -p 5432"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+  
     steps:
       - name: Install dependencies
         run: |
@@ -26,3 +39,5 @@ jobs:
         uses: actions/checkout@v2
       - run: pipenv install -d
       - run: pipenv run manage db upgrade
+      - run: pipenv run manage unittest
+      - run: pipenv run manage

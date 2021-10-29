@@ -4,6 +4,7 @@ SECURITY_PASSWORD_HASH: sha512_crypt
 SECURITY_BLUEPRINT_NAME: auth
 # Change these settings to your own app credentials
 SQLALCHEMY_TRACK_MODIFICATIONS: false
+SQLALCHEMY_DATABASE_URI: postgresql://backslash:backslash@localhost:5432/backslash
 
 MAX_WARNINGS_PER_ENTITY: 50
 MAX_QUERY_PAGE_SIZE: 2000
