@@ -1,0 +1,43 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      postgres:
+        image: bitnami/postgresql:latest
+        env:
+          POSTGRESQL_DATABASE: backslash
+          POSTGRESQL_PASSWORD: backslash
+          POSTGRESQL_USERNAME: backslash
+          POSTGRESQL_FSYNC: "off"
+        ports:
+          - 5432:5432
+        options: >-
+          --mount type=tmpfs,destination=/var/lib/postgresql/data
+          --health-cmd "pg_isready -d backslash -U backslash -p 5432"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+  
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update 
+          sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+      - run: pip install pipenv
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: pipenv install -d
+      - run: pipenv run manage db upgrade
+      - run: pipenv run manage unittest
+      - run: pipenv run manage
