@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.18.0
+
+Moved Python to 3.9 and update the docker container to use Ubuntu 20.04
+
+
 ## Version 2.17.3
 
 **NOTE**: the default `BACKSLASH_DATABASE_URI` has been changed in this release (in
