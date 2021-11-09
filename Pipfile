@@ -53,7 +53,7 @@ tmuxp = "*"
 yarl = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.9"
 
 [scripts]
 manage = "python manage.py"

@@ -8,3 +8,4 @@ webapp/tmp/*
 /_assets_src/*
 /api-server/target/*
 /.git
+/.github
