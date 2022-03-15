@@ -13,7 +13,7 @@ from sqlalchemy.orm import aliased
 from flask_simple_api import error_abort
 from flask_security import current_user
 from .. import models
-from ..models import Error, Session, Test, User, Subject, db, UserStarredTests
+from ..models import Error, SessionMetadata, Session, TestMetadata, Test, User, Subject, db, UserStarredTests
 from .. import activity
 from ..utils.identification import parse_test_id, parse_session_id
 from ..utils.users import has_role
@@ -34,6 +34,67 @@ def _resource(*args, **kwargs):
     return decorator
 
 ##########################################################################
+
+session_metadata_parser = reqparse.RequestParser()
+session_metadata_parser.add_argument("id", type=int, default=None)
+session_metadata_parser.add_argument("key", type=str, default=None)
+session_metadata_parser.add_argument("value", type=str, default=None)
+
+@_resource('/session-metadata', '/session-metadata/<object_id>')
+class SessionMetadataResource(ModelResource):
+
+    MODEL = SessionMetadata
+
+    def _get_iterator(self):
+        args = session_metadata_parser.parse_args()
+
+        returned = super(SessionMetadataResource, self)._get_iterator()
+
+        # filter by session id
+        if args.id is not None:
+            returned = returned.filter(SessionMetadata.session_id == args.id)
+
+        # filter by key
+        if args.key is not None:
+            returned = returned.filter(SessionMetadata.key == args.key)
+
+        # filter by value
+        # TODO: Allow generic parsing of jsonb column data
+        if args.value is not None:
+            returned = returned.filter(SessionMetadata.metadata_item == args.value)
+
+        return returned
+
+
+test_metadata_parser = reqparse.RequestParser()
+test_metadata_parser.add_argument('tags', action="append", default=None)
+test_metadata_parser.add_argument('ids', action="append", type=int, default=None)
+test_metadata_parser.add_argument('key', type=str, default=None)
+
+@_resource('/test-metadata')
+class TestMetadataResource(ModelResource):
+
+    MODEL = TestMetadata
+
+    def _get_iterator(self):
+        args = test_metadata_parser.parse_args()
+
+        returned = super(TestMetadataResource, self)._get_iterator()
+
+        # filter by tags
+        if args.tags is not None:
+            returned = returned.filter(TestMetadata.metadata_item.contains({"names": args.tags}))
+
+        # filter by test ids
+        if args.ids is not None:
+            returned = returned.filter(TestMetadata.test_id.in_(args.ids))
+
+        # filter by key
+        if args.key is not None:
+            returned = returned.filter(TestMetadata.key == args.key)
+
+        return returned
+
 
 session_parser = reqparse.RequestParser()
 session_parser.add_argument('user_id', type=int, default=None)

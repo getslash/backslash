@@ -497,7 +497,7 @@ class Test(db.Model, TypenameMixin, StatusPredicatesMixin, HasSubjectsMixin, Use
 _METADATA_KEY_TYPE = db.String(1024)
 
 
-class TestMetadata(db.Model):
+class TestMetadata(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     test_id = db.Column(
@@ -506,7 +506,7 @@ class TestMetadata(db.Model):
     metadata_item = db.Column(JSONB)
 
 
-class SessionMetadata(db.Model):
+class SessionMetadata(db.Model, TypenameMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(
