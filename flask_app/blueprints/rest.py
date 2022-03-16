@@ -1,6 +1,7 @@
 # pylint: disable=no-member
 import math
 import os
+import json
 
 import requests
 
@@ -59,9 +60,17 @@ class SessionMetadataResource(ModelResource):
             returned = returned.filter(SessionMetadata.key == args.key)
 
         # filter by value
-        # TODO: Allow generic parsing of jsonb column data
+        # TODO: Allow generic parsing of jsonb column data (need to add "" around string )
         if args.value is not None:
-            returned = returned.filter(SessionMetadata.metadata_item == args.value)
+            
+            # convert strings to json string (add "")
+            value = json.dumps(args.value)
+
+            # if value is an integer do not cast
+            if args.value.isnumeric():
+                value = args.value
+
+            returned = returned.filter(SessionMetadata.metadata_item == value)
 
         return returned
 
