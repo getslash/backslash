@@ -70,7 +70,7 @@
     "eslint-plugin-ember": "^6.3.0",
     "js-md5": "^0.7.3",
     "loader.js": "^4.7.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "qunit-dom": "^0.8.0",
     "sass": "^1.17.3",
     "showdown": "^1.6.4",
