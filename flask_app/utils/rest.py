@@ -1,6 +1,7 @@
 import math
 import logbook
-from flask import jsonify, request, current_app
+import requests
+from flask import jsonify, request, current_app, abort
 
 from flask_restful import reqparse, Resource
 from werkzeug.exceptions import HTTPException
@@ -21,6 +22,8 @@ class RestResource(Resource):
         metadata = {}
         if object_id is not None:
             obj = self._get_object_by_id(object_id)
+            if obj is None:
+                abort(requests.codes.not_found) # pylint: disable=no-member
             return self._format_result({self._get_single_object_key(): self._render_single(obj, in_collection=False)}, metadata=metadata)
         else:
             with statement_timeout_context():
